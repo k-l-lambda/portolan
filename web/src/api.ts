@@ -54,12 +54,22 @@ export const api = {
     call<AnchorResponse>(`/api/anchor?${q(file)}&node=${line}&index=${index}`),
 };
 
-/** Subscribes to server file events; returns an unsubscribe function. */
+/**
+ * Subscribes to server file events; returns an unsubscribe function. EventSource reconnects
+ * by itself after a server restart; `reconnect` fires then so callers can refetch whatever
+ * changed while the connection was down.
+ */
 export function onServerEvents(handlers: {
   change?: (data: { file: string; version: string }) => void;
   files?: () => void;
+  reconnect?: () => void;
 }): () => void {
   const source = new EventSource("/api/events");
+  let connected = false;
+  source.addEventListener("hello", () => {
+    if (connected) handlers.reconnect?.();
+    connected = true;
+  });
   if (handlers.change) source.addEventListener("change", (e) => handlers.change!(JSON.parse((e as MessageEvent).data)));
   if (handlers.files) source.addEventListener("files", () => handlers.files!());
   return () => source.close();

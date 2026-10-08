@@ -7,7 +7,7 @@
 // bind it to other interfaces until authentication exists.
 
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, watch, writeFileSync, type FSWatcher } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { basename, dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -102,31 +102,92 @@ export function createRhumbServer(options: ServerOptions): Server {
     for (const res of clients) res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   };
 
-  for (const rel of listFiles()) versions.set(rel, versionOf(readFileSync(join(rootDir, rel), "utf8")));
-
-  // Watch the directory, not the files: editors and agents often replace files on save.
+  // ---------- hot reload ----------
+  // One non-recursive watcher per directory. Node's recursive watcher on Linux stops
+  // reporting a file after it is deleted and recreated (what many editors do on save), so
+  // directories are watched individually and a periodic rescan catches anything missed.
+  // Events: `change` {file, version} when a file's content changes (including recreation),
+  // `files` {} when files appear or disappear, `threads` {file} when a sidecar changes.
+  const stamps = new Map<string, string>(); // rel → "mtime:size", to skip unchanged files when polling
+  const dirWatchers = new Map<string, FSWatcher>();
   const pending = new Map<string, NodeJS.Timeout>();
-  const watcher = watch(rootDir, { recursive: !singleFile }, (_type, name) => {
-    if (!name) return;
-    const rel = name.toString().split(sep).join("/");
-    if (singleFile && rel !== singleFile && rel !== singleFile.replace(/\.rhumb$/, ".threads.jsonl")) return;
-    if (!rel.endsWith(".rhumb") && !rel.endsWith(".threads.jsonl")) return;
-    clearTimeout(pending.get(rel));
-    pending.set(rel, setTimeout(() => {
-      pending.delete(rel);
-      if (rel.endsWith(".threads.jsonl")) return broadcast("threads", { file: rel.replace(/\.threads\.jsonl$/, ".rhumb") });
-      const abs = join(rootDir, rel);
-      if (!existsSync(abs)) {
-        if (versions.delete(rel)) broadcast("files", {});
-        return;
+
+  const debounce = (key: string, fn: () => void) => {
+    clearTimeout(pending.get(key));
+    pending.set(key, setTimeout(() => (pending.delete(key), fn()), 50));
+  };
+
+  /** Re-reads one file; `force` skips the mtime/size shortcut (mtime can be coarse). */
+  const checkFile = (rel: string, force: boolean) => {
+    const abs = join(rootDir, rel);
+    let stat;
+    try {
+      stat = statSync(abs);
+    } catch {
+      stat = null;
+    }
+    if (!stat?.isFile()) {
+      stamps.delete(rel);
+      if (versions.delete(rel)) broadcast("files", {});
+      return;
+    }
+    const stamp = `${stat.mtimeMs}:${stat.size}`;
+    if (!force && stamps.get(rel) === stamp) return;
+    stamps.set(rel, stamp);
+    const version = versionOf(readFileSync(abs, "utf8"));
+    const known = versions.has(rel);
+    if (versions.get(rel) === version) return;
+    versions.set(rel, version);
+    if (!known) broadcast("files", {});
+    broadcast("change", { file: rel, version });
+  };
+
+  const dirsUnder = (dir: string): string[] => {
+    const out = [dir];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory() && !entry.name.startsWith(".") && !SKIP_DIRS.has(entry.name)) {
+        out.push(...dirsUnder(join(dir, entry.name)));
       }
-      const version = versionOf(readFileSync(abs, "utf8"));
-      const known = versions.has(rel);
-      if (versions.get(rel) === version) return;
-      versions.set(rel, version);
-      broadcast(known ? "change" : "files", { file: rel, version });
-    }, 50));
-  });
+    }
+    return out;
+  };
+
+  const syncWatchers = () => {
+    const dirs = new Set(singleFile ? [rootDir] : dirsUnder(rootDir));
+    for (const [dir, w] of dirWatchers) if (!dirs.has(dir)) (w.close(), dirWatchers.delete(dir));
+    for (const dir of dirs) {
+      if (dirWatchers.has(dir)) continue;
+      try {
+        const w = watch(dir, (_type, name) => onEvent(dir, name?.toString() ?? null));
+        w.on("error", () => (w.close(), dirWatchers.delete(dir)));
+        dirWatchers.set(dir, w);
+      } catch {
+        // Directory vanished between listing and watching; the next rescan handles it.
+      }
+    }
+  };
+
+  const rescan = () => {
+    syncWatchers();
+    const now = new Set(listFiles());
+    for (const rel of now) checkFile(rel, false);
+    for (const rel of [...versions.keys()]) if (!now.has(rel)) checkFile(rel, true);
+  };
+
+  const onEvent = (dir: string, name: string | null) => {
+    const rel = name ? relative(rootDir, join(dir, name)).split(sep).join("/") : null;
+    if (rel && singleFile && rel !== singleFile && rel !== singleFile.replace(/\.rhumb$/, ".threads.jsonl")) return;
+    if (rel?.endsWith(".threads.jsonl")) {
+      return debounce(rel, () => broadcast("threads", { file: rel.replace(/\.threads\.jsonl$/, ".rhumb") }));
+    }
+    if (rel?.endsWith(".rhumb")) return debounce(rel, () => checkFile(rel, true));
+    // Anything else may be a new or removed directory, or an unnamed event.
+    debounce("*rescan", rescan);
+  };
+
+  rescan();
+  const poll = setInterval(rescan, 2000);
+  poll.unref();
 
   const server = createServer(async (req, res) => {
     try {
@@ -257,7 +318,8 @@ export function createRhumbServer(options: ServerOptions): Server {
   }
 
   server.on("close", () => {
-    watcher.close();
+    clearInterval(poll);
+    for (const w of dirWatchers.values()) w.close();
     for (const t of pending.values()) clearTimeout(t);
     for (const res of clients) res.end();
   });

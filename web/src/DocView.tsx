@@ -1,7 +1,7 @@
 import {
   Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, type Edge as FlowEdge,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
 import { CARD_H, CARD_W, defaultCollapsed, layoutTree, nodeKey, type LaidOutEdge } from "./layout.ts";
@@ -35,13 +35,37 @@ function DocViewInner({ file }: { file: string }) {
   const [overrides, setOverrides] = useState<Map<string, boolean>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
 
-  const load = useCallback(() => {
-    api.doc(file).then((r) => (setData(r), setError(null)), (e) => setError(String(e.message)));
+  const [reloadedAt, setReloadedAt] = useState<string | null>(null);
+  const hasData = useRef(false);
+  const seq = useRef(0);
+
+  // Reloads keep the current view (collapse state, selection) and drop out-of-order responses.
+  const load = useCallback((live = false) => {
+    const mine = ++seq.current;
+    api.doc(file).then(
+      (r) => {
+        if (mine !== seq.current) return;
+        hasData.current = true;
+        setData((prev) => (prev?.version === r.version ? prev : r));
+        setError(null);
+        if (live) setReloadedAt(new Date().toLocaleTimeString());
+      },
+      (e) => {
+        if (mine !== seq.current) return;
+        // Keep showing the last good version if the file is briefly missing or unreadable.
+        if (hasData.current) setNotice(`Could not reload: ${(e as Error).message}`);
+        else setError(String((e as Error).message));
+      },
+    );
   }, [file]);
 
   useEffect(() => {
     load();
-    return onServerEvents({ change: (e) => e.file === file && load() });
+    return onServerEvents({
+      change: (e) => e.file === file && load(true),
+      files: () => load(true),
+      reconnect: () => load(true),
+    });
   }, [file, load]);
 
   const { all, parents } = useMemo(() => {
@@ -71,6 +95,8 @@ function DocViewInner({ file }: { file: string }) {
     try {
       await api.edit(file, data.version, { op: "set-status", id: node.id, status });
       setNotice(null);
+      load();
+      return;
     } catch (e) {
       setNotice(e instanceof ApiError && e.status === 409
         ? "The file changed on disk; reloaded the latest version. Try again."
@@ -165,6 +191,7 @@ function DocViewInner({ file }: { file: string }) {
           Reset view
         </button>
         {notice && <span role="status" className="notice">{notice}</span>}
+        {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
       </div>
       <div className="doc-body">
         <div className="canvas">
@@ -188,6 +215,7 @@ function DocViewInner({ file }: { file: string }) {
           </ReactFlow>
         </div>
         <SidePanel
+          key={data.version}
           file={file}
           node={node}
           state={node ? data.derived.find((s) => s.line === node.line) : undefined}

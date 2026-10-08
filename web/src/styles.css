@@ -113,6 +113,7 @@ a { color: var(--accent); }
 }
 .doc-title { font-size: 16px; margin: 0; }
 .notice { color: var(--warning); font-size: 12px; }
+.reloaded { font-size: 12px; margin-left: auto; }
 .btn {
   font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 6px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer;

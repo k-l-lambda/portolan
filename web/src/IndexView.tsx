@@ -13,7 +13,7 @@ export function IndexView() {
 
   useEffect(() => {
     load();
-    return onServerEvents({ change: load, files: load });
+    return onServerEvents({ change: load, files: load, reconnect: load });
   }, [load]);
 
   if (error) return <main className="page"><p role="alert" className="error">{error}</p></main>;
