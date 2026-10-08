@@ -2,7 +2,7 @@ import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import { memo } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { RhumbNode, Status } from "../../src/types.ts";
-import { plainTitle } from "./layout.ts";
+import { plainTitle, shortId } from "./layout.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 
 export const STATUSES: { value: Status; label: string }[] = [
@@ -16,6 +16,7 @@ export const STATUSES: { value: Status; label: string }[] = [
 
 export interface CardData extends Record<string, unknown> {
   node: RhumbNode;
+  parentId: string | null;
   state: NodeState | undefined;
   hidden: number;
   selected: boolean;
@@ -27,7 +28,7 @@ export interface CardData extends Record<string, unknown> {
 export type CardNode = Node<CardData, "card">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
-  const { node, state, hidden, selected, collapsed, onStatus, onToggle } = data;
+  const { node, parentId, state, hidden, selected, collapsed, onStatus, onToggle } = data;
   const status = node.status ?? "todo";
   const title = plainTitle(node.title) || "(untitled)";
   return (
@@ -50,7 +51,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
         <span className="card-title">{title}</span>
       </div>
       <div className="card-foot">
-        <span className="card-id">{node.id ? `^${node.id}` : "no id"}</span>
+        <span className="card-id" title={node.id ? `^${node.id}` : undefined}>{shortId(node.id, parentId)}</span>
         {state?.ready && <span className="badge badge-ready">ready</span>}
         {node.anchors.length > 0 && <span className="badge">{node.anchors.length} link{node.anchors.length > 1 ? "s" : ""}</span>}
         <ProgressBar progress={node.children.length > 0 ? state?.progress ?? null : null} />

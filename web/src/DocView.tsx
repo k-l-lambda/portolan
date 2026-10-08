@@ -4,7 +4,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
-import { CARD_H, CARD_W, layoutTree, nodeKey, type LaidOutEdge } from "./layout.ts";
+import { CARD_H, CARD_W, defaultCollapsed, layoutTree, nodeKey, type LaidOutEdge } from "./layout.ts";
 import { NodeCard, type CardNode } from "./NodeCard.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 
@@ -31,7 +31,8 @@ function DocViewInner({ file }: { file: string }) {
   const [data, setData] = useState<DocResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  // User toggles override the default (collapsed unless the subtree has doing work).
+  const [overrides, setOverrides] = useState<Map<string, boolean>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
 
   const load = useCallback(() => {
@@ -43,12 +44,27 @@ function DocViewInner({ file }: { file: string }) {
     return onServerEvents({ change: (e) => e.file === file && load() });
   }, [file, load]);
 
-  const all = useMemo(() => {
-    const map = new Map<string, RhumbNode>();
-    const walk = (ns: RhumbNode[]) => ns.forEach((n) => (map.set(nodeKey(n), n), walk(n.children)));
-    if (data) walk(data.doc.nodes);
-    return map;
+  const { all, parents } = useMemo(() => {
+    const all = new Map<string, RhumbNode>();
+    const parents = new Map<string, RhumbNode | null>();
+    const walk = (ns: RhumbNode[], parent: RhumbNode | null) => ns.forEach((n) => {
+      all.set(nodeKey(n), n);
+      parents.set(nodeKey(n), parent);
+      walk(n.children, n);
+    });
+    if (data) walk(data.doc.nodes, null);
+    return { all, parents };
   }, [data]);
+
+  const defaults = useMemo(() => (data ? defaultCollapsed(data.doc.nodes) : new Set<string>()), [data]);
+  const collapsed = useMemo(() => {
+    const out = new Set(defaults);
+    for (const [key, isCollapsed] of overrides) {
+      if (isCollapsed) out.add(key);
+      else out.delete(key);
+    }
+    return out;
+  }, [defaults, overrides]);
 
   const onStatus = useCallback(async (node: RhumbNode, status: Status) => {
     if (!data || !node.id) return;
@@ -64,14 +80,18 @@ function DocViewInner({ file }: { file: string }) {
   }, [data, file, load]);
 
   const onToggle = useCallback((node: RhumbNode) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      const key = nodeKey(node);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+    const key = nodeKey(node);
+    setOverrides((prev) => new Map(prev).set(key, !collapsed.has(key)));
+  }, [collapsed]);
+
+  /** Expands every ancestor of a node so it becomes visible. */
+  const reveal = useCallback((key: string) => {
+    setOverrides((prev) => {
+      const next = new Map(prev);
+      for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) next.set(nodeKey(p), false);
       return next;
     });
-  }, []);
+  }, [parents]);
 
   const { nodes, edges } = useMemo(() => {
     if (!data) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
@@ -85,7 +105,7 @@ function DocViewInner({ file }: { file: string }) {
       height: CARD_H,
       draggable: false,
       data: {
-        node: l.node, state: states.get(l.node.line), hidden: l.hidden,
+        node: l.node, parentId: parents.get(l.key)?.id ?? null, state: states.get(l.node.line), hidden: l.hidden,
         selected: l.key === selected, collapsed: collapsed.has(l.key), onStatus, onToggle,
       },
     }));
@@ -111,14 +131,17 @@ function DocViewInner({ file }: { file: string }) {
       };
     });
     return { nodes, edges };
-  }, [data, collapsed, selected, onStatus, onToggle]);
+  }, [data, collapsed, parents, selected, onStatus, onToggle]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
-      if (n.line === line || n.notes.some((x) => x.line === line)) return setSelected(key);
+      if (n.line === line || n.notes.some((x) => x.line === line)) {
+        reveal(key);
+        return setSelected(key);
+      }
     }
     setSelected(null);
-  }, [all]);
+  }, [all, reveal]);
 
   if (error) return <main className="page"><p role="alert" className="error">{error}</p></main>;
   if (!data) return <main className="page"><p className="muted">Loading…</p></main>;
@@ -134,8 +157,12 @@ function DocViewInner({ file }: { file: string }) {
         <span className="muted">{all.size} nodes · {data.doc.edges.length} edges</span>
         {counts.error > 0 && <span className="badge badge-error">{counts.error} errors</span>}
         {counts.warning > 0 && <span className="badge badge-warning">{counts.warning} warnings</span>}
-        <button type="button" className="btn" onClick={() => setCollapsed(new Set())} disabled={collapsed.size === 0}>
+        <button type="button" className="btn" onClick={() => setOverrides(new Map([...all.keys()].map((k) => [k, false])))}
+          disabled={collapsed.size === 0}>
           Expand all
+        </button>
+        <button type="button" className="btn" onClick={() => setOverrides(new Map())} disabled={overrides.size === 0}>
+          Reset view
         </button>
         {notice && <span role="status" className="notice">{notice}</span>}
       </div>

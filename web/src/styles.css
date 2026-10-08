@@ -100,7 +100,7 @@ a { color: var(--accent); }
 .badge-warning { color: var(--warning); }
 
 .progress {
-  position: relative; display: inline-flex; align-items: center; flex: 1 1 60px; min-width: 48px; height: 14px;
+  position: relative; display: inline-flex; align-items: center; flex: 1 1 60px; min-width: 28px; height: 14px;
   border-radius: 7px; background: var(--surface-2); overflow: hidden;
 }
 .progress-fill { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--st-done) 35%, transparent); }
@@ -127,19 +127,22 @@ a { color: var(--accent); }
   background: var(--surface); color: var(--text); cursor: pointer;
 }
 .card.selected { box-shadow: 0 0 0 2px var(--accent); }
-.card.status-doing { border-left-color: var(--st-doing); }
-.card.status-done { border-left-color: var(--st-done); }
-.card.status-blocked { border-left-color: var(--st-blocked); }
-.card.status-idea { border-left-color: var(--st-idea); border-style: dashed solid dashed solid; }
-.card.status-dropped { border-left-color: var(--st-dropped); opacity: 0.6; }
+/* Status color tints the whole card; the left border carries the full color. */
+.card { --st: var(--st-todo); border-left-color: var(--st); background: color-mix(in srgb, var(--st) 10%, var(--surface)); }
+.card.status-doing { --st: var(--st-doing); background: color-mix(in srgb, var(--st) 18%, var(--surface)); }
+.card.status-done { --st: var(--st-done); background: color-mix(in srgb, var(--st) 16%, var(--surface)); }
+.card.status-blocked { --st: var(--st-blocked); background: color-mix(in srgb, var(--st) 18%, var(--surface)); }
+.card.status-idea { --st: var(--st-idea); border-style: dashed solid dashed solid; }
+.card.status-dropped { --st: var(--st-dropped); opacity: 0.6; }
+.card .status-select, .card .toggle { background: color-mix(in srgb, var(--surface) 70%, transparent); }
 .card.status-dropped .card-title { text-decoration: line-through; }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }
 .card-title {
   font-weight: 550; line-height: 1.25; overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
-.card-foot { display: flex; gap: 6px; align-items: center; font-size: 11px; }
-.card-id { color: var(--muted); font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
+.card-foot { display: flex; gap: 5px; align-items: center; font-size: 11px; min-width: 0; }
+.card-id { flex: none; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
 .status-select {
   flex: none; font: inherit; font-size: 11px; padding: 0 2px; border-radius: 4px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--st-todo); cursor: pointer;

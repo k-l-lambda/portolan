@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { CARD_H, layoutTree, plainTitle } from "../web/src/layout.ts";
+import { CARD_H, defaultCollapsed, layoutTree, plainTitle, shortId } from "../web/src/layout.ts";
 
 describe("layoutTree", () => {
   const doc = parse(`- [ ] R ^r
@@ -40,6 +40,31 @@ b relates a
   it("keeps labeled relates between the same pair distinct", () => {
     const d = parse("- [ ] A ^a\n- [ ] B ^b\na relates b: uses\na relates b: tests\n");
     expect(layoutTree(d.nodes, d.edges, new Set()).edges.map((e) => e.key)).toEqual(["relates:a->b:uses", "relates:a->b:tests"]);
+  });
+
+  it("collapses subtrees without doing work by default", () => {
+    const d = parse(`- [/] Root ^root
+  - [x] Done branch ^done
+    - [x] Leaf ^leaf
+  - [ ] Active branch ^active
+    - [ ] Mid ^mid
+      - [/] Deep doing ^deep
+- [ ] Idle root ^idle
+  - [ ] Child ^child
+`);
+    expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["done", "idle"]);
+  });
+
+  it("shortens ids that repeat the parent id", () => {
+    expect(shortId("rhumb-parser", "rhumb")).toBe("^…-parser");
+    expect(shortId("camelot-loss-a1", "camelot-loss")).toBe("^…-a1");
+    expect(shortId("rhumbline", "rhumb")).toBe("^rhumbline");
+    expect(shortId("ui", null)).toBe("^ui");
+    expect(shortId(null, "x")).toBe("no id");
+    // Long IDs keep their end.
+    expect(shortId("camelot-next-final-teacher", null)).toBe("^…inal-teacher");
+    expect(shortId("camelot-next-final-teacher", "camelot-next")).toBe("^…inal-teacher");
+    expect(shortId("rhumb-decisions", "rhumb")).toBe("^…-decisions");
   });
 
   it("strips link syntax from titles", () => {
