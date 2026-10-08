@@ -135,6 +135,14 @@ a { color: var(--accent); }
 .card.status-blocked { --st: var(--st-blocked); background: color-mix(in srgb, var(--st) 18%, var(--surface)); }
 .card.status-idea { --st: var(--st-idea); border-style: dashed solid dashed solid; }
 .card.status-dropped { --st: var(--st-dropped); opacity: 0.6; }
+/* Freshness: the left border fades from the full status color (just updated) toward the surface (stale). */
+.card { border-left-width: 5px; border-left-color: color-mix(in srgb, var(--st) var(--fresh, 100%), var(--surface)); }
+.fresh-legend { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.fresh-swatch { width: 48px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--st-doing) 20%, var(--surface)), var(--st-doing)); }
+.fresh-info { margin: 6px 0; font-size: 12px; }
+.fresh-info dt { color: var(--muted); }
+.fresh-info dd { margin: 0 0 4px; }
+.sha { font-family: ui-monospace, monospace; }
 .card .status-select, .card .toggle { background: color-mix(in srgb, var(--surface) 70%, transparent); }
 .card.status-dropped .card-title { text-decoration: line-through; }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }

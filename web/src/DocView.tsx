@@ -2,11 +2,13 @@ import {
   Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, type Edge as FlowEdge,
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { NodeTime } from "../../src/history.ts";
 import type { RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
 import { CARD_H, CARD_W, defaultCollapsed, layoutTree, nodeKey, type LaidOutEdge } from "./layout.ts";
 import { NodeCard, type CardNode } from "./NodeCard.tsx";
 import { SidePanel } from "./SidePanel.tsx";
+import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard };
 
@@ -36,6 +38,12 @@ function DocViewInner({ file }: { file: string }) {
   const [selected, setSelected] = useState<string | null>(null);
 
   const [reloadedAt, setReloadedAt] = useState<string | null>(null);
+  // Freshness is relative to now, so re-render periodically even when nothing changes.
+  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
+  useEffect(() => {
+    const t = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 60_000);
+    return () => clearInterval(t);
+  }, []);
   const hasData = useRef(false);
   const seq = useRef(0);
 
@@ -46,7 +54,9 @@ function DocViewInner({ file }: { file: string }) {
       (r) => {
         if (mine !== seq.current) return;
         hasData.current = true;
-        setData((prev) => (prev?.version === r.version ? prev : r));
+        // A commit changes blame times without changing content, so compare those too.
+        setData((prev) => (prev?.version === r.version && prev.freshness.head === r.freshness.head
+          && prev.freshness.mtime === r.freshness.mtime ? prev : r));
         setError(null);
         if (live) setReloadedAt(new Date().toLocaleTimeString());
       },
@@ -64,6 +74,7 @@ function DocViewInner({ file }: { file: string }) {
     return onServerEvents({
       change: (e) => e.file === file && load(true),
       files: () => load(true),
+      history: () => load(true),
       reconnect: () => load(true),
     });
   }, [file, load]);
@@ -122,6 +133,7 @@ function DocViewInner({ file }: { file: string }) {
   const { nodes, edges } = useMemo(() => {
     if (!data) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
     const states = new Map(data.derived.map((s) => [s.line, s]));
+    const times = new Map(data.freshness.nodes.map((t) => [t.line, t]));
     const layout = layoutTree(data.doc.nodes, data.doc.edges, collapsed);
     const nodes: CardNode[] = layout.nodes.map((l) => ({
       id: l.key,
@@ -132,6 +144,7 @@ function DocViewInner({ file }: { file: string }) {
       draggable: false,
       data: {
         node: l.node, parentId: parents.get(l.key)?.id ?? null, state: states.get(l.node.line), hidden: l.hidden,
+        ...cardTime(times.get(l.node.line), now),
         selected: l.key === selected, collapsed: collapsed.has(l.key), onStatus, onToggle,
       },
     }));
@@ -157,7 +170,7 @@ function DocViewInner({ file }: { file: string }) {
       };
     });
     return { nodes, edges };
-  }, [data, collapsed, parents, selected, onStatus, onToggle]);
+  }, [data, collapsed, parents, selected, now, onStatus, onToggle]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -191,6 +204,9 @@ function DocViewInner({ file }: { file: string }) {
           Reset view
         </button>
         {notice && <span role="status" className="notice">{notice}</span>}
+        <span className="fresh-legend muted" title="Left edge brightness shows how recently each node's line changed">
+          <span className="fresh-swatch" aria-hidden="true" /> older → newer
+        </span>
         {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
       </div>
       <div className="doc-body">
@@ -220,9 +236,17 @@ function DocViewInner({ file }: { file: string }) {
           node={node}
           state={node ? data.derived.find((s) => s.line === node.line) : undefined}
           diagnostics={data.doc.diagnostics}
+          freshness={data.freshness}
+          now={now}
           onSelectLine={selectLine}
         />
       </div>
     </div>
   );
+}
+
+function cardTime(t: NodeTime | undefined, now: number) {
+  if (!t) return { fresh: 0, updated: undefined, updatedText: "" };
+  const how = t.source === "local" ? "uncommitted change" : `commit ${t.sha!.slice(0, 8)}`;
+  return { fresh: freshness(t.time, now), updated: t, updatedText: `Updated ${relativeTime(t.time, now)} (${absoluteTime(t.time)}, ${how})` };
 }

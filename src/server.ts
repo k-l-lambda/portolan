@@ -13,6 +13,7 @@ import { basename, dirname, extname, join, relative, resolve, sep } from "node:p
 import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
+import { HistoryTracker, nodeTimes } from "./history.ts";
 import { parse } from "./parse.ts";
 import { checkAnchors, contextFor, excerpt, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
@@ -79,6 +80,7 @@ export function createRhumbServer(options: ServerOptions): Server {
   const webDir = resolve(options.webDir ?? DEFAULT_WEB_DIR);
   const clients = new Set<ServerResponse>();
   const versions = new Map<string, string>();
+  const history = new HistoryTracker();
 
   const listFiles = () => (singleFile ? [singleFile] : scan(rootDir));
 
@@ -107,7 +109,8 @@ export function createRhumbServer(options: ServerOptions): Server {
   // reporting a file after it is deleted and recreated (what many editors do on save), so
   // directories are watched individually and a periodic rescan catches anything missed.
   // Events: `change` {file, version} when a file's content changes (including recreation),
-  // `files` {} when files appear or disappear, `threads` {file} when a sidecar changes.
+  // `files` {} when files appear or disappear, `threads` {file} when a sidecar changes,
+  // `history` {repo} when a repository's HEAD moves (commit, checkout, pull).
   const stamps = new Map<string, string>(); // rel → "mtime:size", to skip unchanged files when polling
   const dirWatchers = new Map<string, FSWatcher>();
   const pending = new Map<string, NodeJS.Timeout>();
@@ -168,6 +171,7 @@ export function createRhumbServer(options: ServerOptions): Server {
   };
 
   const rescan = () => {
+    history.pollHeads().then((repos) => repos.forEach((repo) => broadcast("history", { repo })), () => {});
     syncWatchers();
     const now = new Set(listFiles());
     for (const rel of now) checkFile(rel, false);
@@ -229,7 +233,12 @@ export function createRhumbServer(options: ServerOptions): Server {
       const derived = derive(doc);
       const anchors = checkAnchors(doc, contextFor(abs, doc, readLinked));
       const diagnostics = [...doc.diagnostics, ...derived.diagnostics, ...anchors].sort((a, b) => a.line - b.line);
-      return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes });
+      const h = await history.file(abs, version);
+      const freshness = {
+        repo: h.repo, head: h.head, tracked: h.tracked, mtime: h.mtime, dirtyLines: h.dirtyLines,
+        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h), commits: h.commits,
+      };
+      return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness });
     }
 
     if (key === "POST /api/edit") {

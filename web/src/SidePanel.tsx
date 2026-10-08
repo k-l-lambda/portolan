@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { Diagnostic, RhumbNode } from "../../src/types.ts";
-import { api, type AnchorResponse } from "./api.ts";
+import { api, type AnchorResponse, type Freshness } from "./api.ts";
+import { absoluteTime, relativeTime } from "./time.ts";
 import { renderMarkdown } from "./markdown.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 
@@ -10,11 +11,14 @@ interface Props {
   node: RhumbNode | null;
   state: NodeState | undefined;
   diagnostics: Diagnostic[];
+  freshness: Freshness;
+  now: number;
   onSelectLine: (line: number) => void;
 }
 
-export function SidePanel({ file, node, state, diagnostics, onSelectLine }: Props) {
-  if (!node) return <DiagnosticsPanel diagnostics={diagnostics} onSelectLine={onSelectLine} />;
+export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine }: Props) {
+  if (!node) return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onSelectLine={onSelectLine} />;
+  const updated = freshness.nodes.find((t) => t.line === node.line);
   const own = diagnostics.filter((d) => d.line === node.line || node.notes.some((n) => n.line === d.line));
   return (
     <aside className="panel" aria-label="Node details">
@@ -25,6 +29,20 @@ export function SidePanel({ file, node, state, diagnostics, onSelectLine }: Prop
         {state?.ready && <span className="badge badge-ready">ready</span>}
       </p>
       <ProgressBar progress={state?.progress ?? null} />
+      {updated && (
+        <dl className="fresh-info">
+          <dt>Updated</dt>
+          <dd>
+            <time dateTime={new Date(updated.time * 1000).toISOString()} title={absoluteTime(updated.time)}>
+              {relativeTime(updated.time, now)}
+            </time>
+            {" · "}
+            {updated.source === "local"
+              ? "uncommitted change (file modified time)"
+              : <>commit <span className="sha">{updated.sha!.slice(0, 8)}</span> {freshness.commits[updated.sha!]?.summary}</>}
+          </dd>
+        </dl>
+      )}
       {Object.keys(node.attrs).length > 0 && (
         <dl className="attrs">
           {Object.entries(node.attrs).map(([k, v]) => (
@@ -87,10 +105,31 @@ function AnchorView({ file, line, index }: { file: string; line: number; index: 
   );
 }
 
-function DiagnosticsPanel({ diagnostics, onSelectLine }: { diagnostics: Diagnostic[]; onSelectLine: (line: number) => void }) {
+function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
+  diagnostics: Diagnostic[]; freshness: Freshness; now: number; onSelectLine: (line: number) => void;
+}) {
+  const at = (t: number) => (
+    <time dateTime={new Date(t * 1000).toISOString()} title={absoluteTime(t)}>{relativeTime(t, now)}</time>
+  );
+  const c = freshness.lastCommit;
   return (
     <aside className="panel" aria-label="Document diagnostics">
       <h2 className="panel-title">Diagnostics</h2>
+      <dl className="fresh-info">
+        <dt>Last commit</dt>
+        <dd>
+          {!freshness.repo ? "not in a git repository"
+            : !freshness.tracked ? "not committed yet (untracked)"
+            : c ? <>{at(c.time)} · <span className="sha">{c.sha.slice(0, 8)}</span> {c.summary}</> : "none"}
+        </dd>
+        <dt>File modified</dt>
+        <dd>
+          {at(freshness.mtime)}
+          {freshness.tracked && (freshness.dirtyLines > 0
+            ? ` · ${freshness.dirtyLines} uncommitted line${freshness.dirtyLines > 1 ? "s" : ""}`
+            : " · no uncommitted changes")}
+        </dd>
+      </dl>
       {diagnostics.length === 0
         ? <p className="muted">No problems. Select a node to see its notes and diary links.</p>
         : <DiagnosticList diagnostics={diagnostics} onSelectLine={onSelectLine} />}

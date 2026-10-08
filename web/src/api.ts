@@ -1,4 +1,5 @@
 import type { EditOp } from "../../src/edit.ts";
+import type { Commit, NodeTime } from "../../src/history.ts";
 import type { NodeState } from "../../src/derive.ts";
 import type { Resolved } from "../../src/resolve.ts";
 import type { Anchor, RhumbDocument } from "../../src/types.ts";
@@ -12,11 +13,23 @@ export interface FileSummary {
   warnings: number;
 }
 
+export interface Freshness {
+  repo: string | null;
+  head: string | null;
+  tracked: boolean;
+  mtime: number;
+  dirtyLines: number;
+  lastCommit: Commit | null;
+  nodes: NodeTime[];
+  commits: Record<string, Commit>;
+}
+
 export interface DocResponse {
   file: string;
   version: string;
   doc: RhumbDocument;
   derived: NodeState[];
+  freshness: Freshness;
 }
 
 export interface AnchorResponse extends Resolved {
@@ -62,6 +75,8 @@ export const api = {
 export function onServerEvents(handlers: {
   change?: (data: { file: string; version: string }) => void;
   files?: () => void;
+  /** A repository HEAD moved: blame times may have changed without a content change. */
+  history?: () => void;
   reconnect?: () => void;
 }): () => void {
   const source = new EventSource("/api/events");
@@ -72,5 +87,6 @@ export function onServerEvents(handlers: {
   });
   if (handlers.change) source.addEventListener("change", (e) => handlers.change!(JSON.parse((e as MessageEvent).data)));
   if (handlers.files) source.addEventListener("files", () => handlers.files!());
+  if (handlers.history) source.addEventListener("history", () => handlers.history!());
   return () => source.close();
 }

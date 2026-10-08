@@ -1,9 +1,10 @@
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
-import { memo } from "react";
+import { memo, type CSSProperties } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { RhumbNode, Status } from "../../src/types.ts";
 import { plainTitle, shortId } from "./layout.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
+import type { NodeTime } from "../../src/history.ts";
 
 export const STATUSES: { value: Status; label: string }[] = [
   { value: "todo", label: "todo" },
@@ -18,6 +19,10 @@ export interface CardData extends Record<string, unknown> {
   node: RhumbNode;
   parentId: string | null;
   state: NodeState | undefined;
+  /** 0..1, drives the brightness of the left border. */
+  fresh: number;
+  updated: NodeTime | undefined;
+  updatedText: string;
   hidden: number;
   selected: boolean;
   collapsed: boolean;
@@ -28,11 +33,13 @@ export interface CardData extends Record<string, unknown> {
 export type CardNode = Node<CardData, "card">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
-  const { node, parentId, state, hidden, selected, collapsed, onStatus, onToggle } = data;
+  const { node, parentId, state, fresh, updatedText, hidden, selected, collapsed, onStatus, onToggle } = data;
   const status = node.status ?? "todo";
   const title = plainTitle(node.title) || "(untitled)";
   return (
-    <div className={`card status-${status}${selected ? " selected" : ""}`} title={title}>
+    <div className={`card status-${status}${selected ? " selected" : ""}`}
+      style={{ "--fresh": `${Math.round(20 + fresh * 80)}%` } as CSSProperties}
+      title={updatedText ? `${title}\n${updatedText}` : title}>
       <Handle type="target" position={Position.Left} id="tree-in" className="handle" />
       <Handle type="source" position={Position.Right} id="tree-out" className="handle" />
       <Handle type="target" position={Position.Top} id="x-in" className="handle" />
