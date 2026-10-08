@@ -175,6 +175,14 @@ a { color: var(--accent); }
 .react-flow__edge.edge-replaces path { stroke: var(--edge-replaces); }
 .react-flow__edge.edge-from path { stroke: var(--edge-from); }
 .react-flow__edge-text { font-size: 10px; fill: var(--muted); }
+/* Focus: hovered/selected node or edge stands out, the rest steps back. */
+.react-flow__edge path { transition: opacity 120ms, stroke-width 120ms; }
+.react-flow__edge.is-dim { opacity: 0.12; }
+.react-flow__edge.is-active path { stroke-width: 2.5; }
+.react-flow__edge.is-active .react-flow__edge-text { fill: var(--text); font-weight: 600; font-size: 11px; }
+.react-flow__node { transition: opacity 120ms; }
+.react-flow__node.is-dim { opacity: 0.35; }
+.toggle-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .react-flow__edge-textbg { fill: var(--surface); }
 .mini.status-todo { fill: var(--st-todo); }
 .mini.status-doing { fill: var(--st-doing); }

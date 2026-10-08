@@ -36,6 +36,9 @@ function DocViewInner({ file }: { file: string }) {
   // User toggles override the default (collapsed unless the subtree has doing work).
   const [overrides, setOverrides] = useState<Map<string, boolean>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
+  // Hovered node or edge; falls back to the selected node so keyboard and touch users get the same focus.
+  const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string } | null>(null);
+  const [allLabels, setAllLabels] = useState(false);
 
   const [reloadedAt, setReloadedAt] = useState<string | null>(null);
   // Freshness is relative to now, so re-render periodically even when nothing changes.
@@ -130,7 +133,7 @@ function DocViewInner({ file }: { file: string }) {
     });
   }, [parents]);
 
-  const { nodes, edges } = useMemo(() => {
+  const base = useMemo(() => {
     if (!data) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
     const states = new Map(data.derived.map((s) => [s.line, s]));
     const times = new Map(data.freshness.nodes.map((t) => [t.line, t]));
@@ -167,10 +170,48 @@ function DocViewInner({ file }: { file: string }) {
         labelBgPadding: [4, 2] as [number, number],
         labelBgBorderRadius: 4,
         selectable: false,
+        interactionWidth: 14,
       };
     });
     return { nodes, edges };
   }, [data, collapsed, parents, selected, now, onStatus, onToggle]);
+
+  // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
+  // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
+  const { nodes, edges } = useMemo(() => {
+    const focusNode = hover?.kind === "node" ? hover.id : hover ? null : selected;
+    const focusEdge = hover?.kind === "edge" ? hover.id : null;
+    const activeEdges = new Set<string>();
+    const activeNodes = new Set<string>();
+    for (const e of base.edges) {
+      if (e.id === focusEdge || (focusNode && (e.source === focusNode || e.target === focusNode))) {
+        activeEdges.add(e.id);
+        activeNodes.add(e.source).add(e.target);
+      }
+    }
+    if (focusNode) activeNodes.add(focusNode);
+    const focused = activeNodes.size > 0;
+    // One `a needs b, c: label` line becomes several edges with the same label; show it once
+    // per source unless that exact edge is hovered.
+    const shown = new Set<string>();
+    const edges = base.edges.map((e) => {
+      const active = activeEdges.has(e.id);
+      const labelKey = `${e.source}\0${String(e.label)}`;
+      const repeat = e.id !== focusEdge && shown.has(labelKey);
+      const showLabel = e.label !== undefined && !repeat && (active || (allLabels && !focused));
+      if (showLabel) shown.add(labelKey);
+      return {
+        ...e,
+        className: `${e.className}${active ? " is-active" : focused ? " is-dim" : ""}`,
+        zIndex: active ? 10 : 0,
+        label: showLabel ? e.label : undefined,
+      };
+    });
+    const nodes = focused
+      ? base.nodes.map((n) => ({ ...n, className: activeNodes.has(n.id) ? "is-active" : "is-dim" }))
+      : base.nodes;
+    return { nodes, edges };
+  }, [base, hover, selected, allLabels]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -203,6 +244,9 @@ function DocViewInner({ file }: { file: string }) {
         <button type="button" className="btn" onClick={() => setOverrides(new Map())} disabled={overrides.size === 0}>
           Reset view
         </button>
+        <label className="toggle-label">
+          <input type="checkbox" checked={allLabels} onChange={(e) => setAllLabels(e.target.checked)} /> All edge labels
+        </label>
         {notice && <span role="status" className="notice">{notice}</span>}
         <span className="fresh-legend muted" title="Left edge brightness shows how recently each node's line changed">
           <span className="fresh-swatch" aria-hidden="true" /> older → newer
@@ -222,6 +266,10 @@ function DocViewInner({ file }: { file: string }) {
             nodesDraggable={false}
             nodesConnectable={false}
             onNodeClick={(_e, n) => setSelected(n.id)}
+            onNodeMouseEnter={(_e, n) => setHover({ kind: "node", id: n.id })}
+            onNodeMouseLeave={() => setHover(null)}
+            onEdgeMouseEnter={(_e, ed) => setHover({ kind: "edge", id: ed.id })}
+            onEdgeMouseLeave={() => setHover(null)}
             onPaneClick={() => setSelected(null)}
             proOptions={{ hideAttribution: false }}
           >
