@@ -1,14 +1,16 @@
-// Local HTTP server for the frontend: serves the AST, derived values, anchor excerpts and
-// threads, applies edits, and pushes file changes over Server-Sent Events.
+// Local HTTP server for the Portolan frontend. Serves every .rhumb file under a root
+// directory (or a single file): AST, derived values, anchor excerpts and threads; applies
+// edits; pushes file changes over Server-Sent Events; and serves the built web app.
 //
 // Security: there is no authentication. The server binds to 127.0.0.1 by default and
 // rejects requests whose Host header is not a loopback name (DNS-rebinding guard). Do not
 // bind it to other interfaces until authentication exists.
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, statSync, watch, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { basename, dirname, resolve } from "node:path";
+import { basename, dirname, extname, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
 import { parse } from "./parse.ts";
@@ -17,16 +19,30 @@ import { ThreadStore, type ThreadAction } from "./threads.ts";
 import type { RhumbNode } from "./types.ts";
 
 export interface ServerOptions {
-  file: string;
-  port?: number;
-  host?: string;
+  /** A directory (serves every .rhumb below it) or a single .rhumb file. */
+  root: string;
+  /** Built web app; defaults to web/dist next to src/. */
+  webDir?: string;
 }
 
-class HttpError extends Error {}
+class HttpError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
 
 const MAX_BODY = 1 << 20;
 const MAX_LINKED_FILE = 2 << 20;
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "dist"]);
+const DEFAULT_WEB_DIR = fileURLToPath(new URL("../web/dist/", import.meta.url));
+const MIME: Record<string, string> = {
+  ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png",
+  ".ico": "image/x-icon", ".json": "application/json; charset=utf-8", ".woff2": "font/woff2",
+};
 
 export function versionOf(source: string): string {
   return createHash("sha256").update(source).digest("hex").slice(0, 16);
@@ -41,35 +57,75 @@ function readLinked(path: string): string | null {
   }
 }
 
-export function createRhumbServer(options: ServerOptions): Server {
-  const file = resolve(options.file);
-  const threads = new ThreadStore(file);
-  const clients = new Set<ServerResponse>();
+/** Relative POSIX paths of all .rhumb files under `dir`, sorted. */
+function scan(dir: string): string[] {
+  const out: string[] = [];
+  const walk = (d: string) => {
+    for (const entry of readdirSync(d, { withFileTypes: true })) {
+      if (entry.name.startsWith(".") || SKIP_DIRS.has(entry.name)) continue;
+      const full = join(d, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile() && entry.name.endsWith(".rhumb")) out.push(relative(dir, full).split(sep).join("/"));
+    }
+  };
+  walk(dir);
+  return out.sort();
+}
 
-  const load = () => {
-    const source = readFileSync(file, "utf8");
-    return { source, version: versionOf(source), doc: parse(source, { fileName: file }) };
+export function createRhumbServer(options: ServerOptions): Server {
+  const rootPath = resolve(options.root);
+  const singleFile = statSync(rootPath).isFile() ? basename(rootPath) : null;
+  const rootDir = singleFile ? dirname(rootPath) : rootPath;
+  const webDir = resolve(options.webDir ?? DEFAULT_WEB_DIR);
+  const clients = new Set<ServerResponse>();
+  const versions = new Map<string, string>();
+
+  const listFiles = () => (singleFile ? [singleFile] : scan(rootDir));
+
+  /** Maps a client-supplied relative path to an absolute .rhumb path inside the root. */
+  const fileFor = (rel: string | null): { rel: string; abs: string } => {
+    const name = rel ?? singleFile;
+    if (!name) throw new HttpError(400, "Missing file parameter");
+    const abs = resolve(rootDir, name);
+    if (!abs.startsWith(rootDir + sep) || !abs.endsWith(".rhumb")) throw new HttpError(400, "Invalid file");
+    if (singleFile && name !== singleFile) throw new HttpError(404, "File not found");
+    if (!existsSync(abs) || !statSync(abs).isFile()) throw new HttpError(404, "File not found");
+    return { rel: relative(rootDir, abs).split(sep).join("/"), abs };
+  };
+
+  const load = (abs: string) => {
+    const source = readFileSync(abs, "utf8");
+    return { source, version: versionOf(source), doc: parse(source, { fileName: abs }) };
   };
 
   const broadcast = (event: string, data: unknown) => {
     for (const res of clients) res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   };
 
-  // Watch the directory: editors and agents often replace the file instead of writing in place.
-  let lastVersion = versionOf(readFileSync(file, "utf8"));
-  let timer: NodeJS.Timeout | null = null;
-  const watcher = watch(dirname(file), (_type, name) => {
-    if (name !== basename(file) && name !== basename(threads.path)) return;
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => {
-      if (name === basename(threads.path)) return broadcast("threads", {});
-      if (!existsSync(file)) return;
-      const version = versionOf(readFileSync(file, "utf8"));
-      if (version !== lastVersion) {
-        lastVersion = version;
-        broadcast("change", { version });
+  for (const rel of listFiles()) versions.set(rel, versionOf(readFileSync(join(rootDir, rel), "utf8")));
+
+  // Watch the directory, not the files: editors and agents often replace files on save.
+  const pending = new Map<string, NodeJS.Timeout>();
+  const watcher = watch(rootDir, { recursive: !singleFile }, (_type, name) => {
+    if (!name) return;
+    const rel = name.toString().split(sep).join("/");
+    if (singleFile && rel !== singleFile && rel !== singleFile.replace(/\.rhumb$/, ".threads.jsonl")) return;
+    if (!rel.endsWith(".rhumb") && !rel.endsWith(".threads.jsonl")) return;
+    clearTimeout(pending.get(rel));
+    pending.set(rel, setTimeout(() => {
+      pending.delete(rel);
+      if (rel.endsWith(".threads.jsonl")) return broadcast("threads", { file: rel.replace(/\.threads\.jsonl$/, ".rhumb") });
+      const abs = join(rootDir, rel);
+      if (!existsSync(abs)) {
+        if (versions.delete(rel)) broadcast("files", {});
+        return;
       }
-    }, 50);
+      const version = versionOf(readFileSync(abs, "utf8"));
+      const known = versions.has(rel);
+      if (versions.get(rel) === version) return;
+      versions.set(rel, version);
+      broadcast(known ? "change" : "files", { file: rel, version });
+    }, 50));
   });
 
   const server = createServer(async (req, res) => {
@@ -79,37 +135,52 @@ export function createRhumbServer(options: ServerOptions): Server {
       const url = new URL(req.url ?? "/", "http://localhost");
       await route(req, res, url);
     } catch (err) {
-      if (!res.headersSent) send(res, err instanceof HttpError ? 400 : 500, { error: String((err as Error).message ?? err) });
+      if (res.headersSent) return;
+      const status = err instanceof HttpError ? err.status : 500;
+      send(res, status, { error: String((err as Error).message ?? err) });
     }
   });
 
   async function route(req: IncomingMessage, res: ServerResponse, url: URL) {
     const key = `${req.method} ${url.pathname}`;
+    const param = url.searchParams.get("file");
 
-    if (key === "GET /") {
-      return send(res, 200, {
-        name: "rhumb", file,
-        endpoints: ["GET /api/doc", "POST /api/edit", "GET /api/anchor", "GET /api/threads", "POST /api/threads", "GET /api/events"],
+    if (key === "GET /api/files") {
+      const files = listFiles().map((rel) => {
+        const { doc } = load(join(rootDir, rel));
+        const derived = derive(doc);
+        const roots = doc.nodes.map((n) => derived.nodes.find((s) => s.line === n.line)!.progress);
+        const progress = { done: 0, total: 0 };
+        for (const p of roots) if (p) (progress.done += p.done, progress.total += p.total);
+        const levels = [...doc.diagnostics, ...derived.diagnostics].map((d) => d.level);
+        return {
+          file: rel, title: doc.title, nodes: derived.nodes.length, progress,
+          errors: levels.filter((l) => l === "error").length,
+          warnings: levels.filter((l) => l === "warning").length,
+        };
       });
+      return send(res, 200, { root: rootDir, files });
     }
 
     if (key === "GET /api/doc") {
-      const { version, doc } = load();
+      const { rel, abs } = fileFor(param);
+      const { version, doc } = load(abs);
       const derived = derive(doc);
-      const anchors = checkAnchors(doc, contextFor(file, doc, readLinked));
+      const anchors = checkAnchors(doc, contextFor(abs, doc, readLinked));
       const diagnostics = [...doc.diagnostics, ...derived.diagnostics, ...anchors].sort((a, b) => a.line - b.line);
-      return send(res, 200, { version, doc: { ...doc, diagnostics }, derived: derived.nodes });
+      return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes });
     }
 
     if (key === "POST /api/edit") {
       // Optimistic concurrency: the client sends the version it edited against.
+      const { abs } = fileFor(param);
       const body = await readJson(req);
-      const { source, version } = load();
+      const { source, version } = load(abs);
       if (body.version !== version) return send(res, 409, { error: "Document changed", version });
       try {
         const result = applyEdit(source, body.edit as EditOp);
-        writeFileSync(file, result.source);
-        if (result.renamed) threads.retarget(result.renamed.from, result.renamed.to);
+        writeFileSync(abs, result.source);
+        if (result.renamed) new ThreadStore(abs).retarget(result.renamed.from, result.renamed.to);
         const { source: _s, ...rest } = result;
         return send(res, 200, { ...rest, version: versionOf(result.source) });
       } catch (err) {
@@ -120,34 +191,35 @@ export function createRhumbServer(options: ServerOptions): Server {
 
     if (key === "GET /api/anchor") {
       // ?node=<line>&index=<n>: the n-th anchor of the node on that line.
-      const { doc } = load();
-      const line = Number(url.searchParams.get("node"));
-      const index = Number(url.searchParams.get("index") ?? 0);
-      const node = findByLine(doc.nodes, line);
-      const anchor = node?.anchors[index];
+      const { abs } = fileFor(param);
+      const { doc } = load(abs);
+      const node = findByLine(doc.nodes, Number(url.searchParams.get("node")));
+      const anchor = node?.anchors[Number(url.searchParams.get("index") ?? 0)];
       if (!anchor) return send(res, 404, { error: "Anchor not found" });
-      const r = resolveAnchor(anchor, contextFor(file, doc, readLinked));
+      const r = resolveAnchor(anchor, contextFor(abs, doc, readLinked));
       const text = r.file ? readLinked(r.file) : null;
       return send(res, 200, { anchor, ...r, excerpt: text ? excerpt(text, r) : null });
     }
 
     if (key === "GET /api/threads") {
-      const { doc } = load();
+      const { abs } = fileFor(param);
+      const { doc } = load(abs);
       const ids = new Set<string>();
       const walk = (ns: RhumbNode[]) => ns.forEach((n) => (n.id && ids.add(n.id), walk(n.children)));
       walk(doc.nodes);
       const status = url.searchParams.get("status");
-      const { threads: list, problems } = threads.load();
+      const { threads, problems } = new ThreadStore(abs).load();
       return send(res, 200, {
-        threads: list.filter((t) => !status || t.status === status).map((t) => ({ ...t, orphan: !ids.has(t.target) })),
+        threads: threads.filter((t) => !status || t.status === status).map((t) => ({ ...t, orphan: !ids.has(t.target) })),
         problems,
       });
     }
 
     if (key === "POST /api/threads") {
+      const { abs } = fileFor(param);
       const body = (await readJson(req)) as ThreadAction;
       try {
-        return send(res, 200, { event: threads.apply(body) });
+        return send(res, 200, { event: new ThreadStore(abs).apply(body) });
       } catch (err) {
         return send(res, 400, { error: (err as Error).message });
       }
@@ -155,19 +227,38 @@ export function createRhumbServer(options: ServerOptions): Server {
 
     if (key === "GET /api/events") {
       res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" });
-      res.write(`event: hello\ndata: ${JSON.stringify({ version: lastVersion })}\n\n`);
+      res.write("event: hello\ndata: {}\n\n");
       clients.add(res);
       const ping = setInterval(() => res.write(": ping\n\n"), 30_000);
       req.on("close", () => (clearInterval(ping), clients.delete(res)));
       return;
     }
 
+    if (url.pathname.startsWith("/api/")) return send(res, 404, { error: "Not found" });
+    if (req.method === "GET") return serveStatic(res, url.pathname);
     send(res, 404, { error: "Not found" });
+  }
+
+  function serveStatic(res: ServerResponse, pathname: string) {
+    const index = join(webDir, "index.html");
+    if (!existsSync(index)) {
+      res.writeHead(503, { "content-type": "text/plain; charset=utf-8" });
+      return res.end("Web app is not built. Run `pnpm build:web` in the portolan repo.\n");
+    }
+    let path = resolve(webDir, "." + decodeURIComponent(pathname));
+    // Unknown paths fall back to index.html (client-side routing uses the hash, but be lenient).
+    if (!path.startsWith(webDir + sep) || !existsSync(path) || !statSync(path).isFile()) path = index;
+    res.writeHead(200, {
+      "content-type": MIME[extname(path)] ?? "application/octet-stream",
+      "x-content-type-options": "nosniff",
+      "content-security-policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:",
+    });
+    res.end(readFileSync(path));
   }
 
   server.on("close", () => {
     watcher.close();
-    if (timer) clearTimeout(timer);
+    for (const t of pending.values()) clearTimeout(t);
     for (const res of clients) res.end();
   });
   return server;
@@ -192,12 +283,12 @@ async function readJson(req: IncomingMessage): Promise<any> {
   const chunks: Buffer[] = [];
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > MAX_BODY) throw new HttpError("Request body too large");
+    if (size > MAX_BODY) throw new HttpError(413, "Request body too large");
     chunks.push(chunk);
   }
   try {
     return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
   } catch {
-    throw new HttpError("Invalid JSON body");
+    throw new HttpError(400, "Invalid JSON body");
   }
 }

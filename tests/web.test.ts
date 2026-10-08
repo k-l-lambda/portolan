@@ -1,0 +1,100 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { request } from "node:http";
+import type { AddressInfo } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
+import { createRhumbServer, parse } from "../src/index.ts";
+import { CARD_H, layoutTree, plainTitle } from "../web/src/layout.ts";
+
+describe("layoutTree", () => {
+  const doc = parse(`- [ ] R ^r
+  - [ ] A ^a
+    - [ ] A1 ^a1
+  - [ ] B ^b
+- [ ] S ^s
+s needs a1
+b relates a
+`);
+
+  it("centers parents on their children and keeps cross edges", () => {
+    const l = layoutTree(doc.nodes, doc.edges, new Set());
+    const at = Object.fromEntries(l.nodes.map((n) => [n.key, n]));
+    expect(at.a1!.depth).toBe(2);
+    expect(at.r!.y).toBe((at.a!.y + at.b!.y) / 2);
+    expect(at.s!.y).toBeGreaterThan(at.b!.y + CARD_H);
+    expect(l.edges.filter((e) => e.kind === "tree")).toHaveLength(3);
+    expect(l.edges.filter((e) => e.kind !== "tree").map((e) => e.key)).toEqual(["needs:s->a1", "relates:b->a"]);
+  });
+
+  it("folds edges of collapsed subtrees onto the visible ancestor", () => {
+    const l = layoutTree(doc.nodes, doc.edges, new Set(["a"]));
+    expect(l.nodes.map((n) => n.key)).not.toContain("a1");
+    expect(l.nodes.find((n) => n.key === "a")!.hidden).toBe(1);
+    expect(l.edges.filter((e) => e.kind !== "tree").map((e) => e.key)).toEqual(["needs:s->a", "relates:b->a"]);
+    // Collapsing the root hides a, a1 and b; the relates edge folds into r and disappears.
+    const r = layoutTree(doc.nodes, doc.edges, new Set(["r"]));
+    expect(r.edges.map((e) => e.key)).toEqual(["needs:s->r"]);
+  });
+
+  it("strips link syntax from titles", () => {
+    expect(plainTitle("Survey [notes](diary:x#y) and `code` \\^x")).toBe("Survey notes and code ^x");
+  });
+});
+
+describe("directory server", () => {
+  let dir: string;
+  let close: () => Promise<void> = async () => {};
+  afterEach(async () => {
+    await close();
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("lists .rhumb files, serves each by relative path and rejects escapes", async () => {
+    dir = mkdtempSync(join(tmpdir(), "portolan-"));
+    mkdirSync(join(dir, "sub"));
+    mkdirSync(join(dir, "node_modules"));
+    writeFileSync(join(dir, "a.rhumb"), "---\ntitle: Alpha\n---\n- [x] Done ^d\n- [ ] Todo ^t\n");
+    writeFileSync(join(dir, "sub", "b.rhumb"), "- [ ] B ^b\n");
+    writeFileSync(join(dir, "node_modules", "skip.rhumb"), "- [ ] X ^x\n");
+    writeFileSync(join(dir, "secret.txt"), "nope");
+    const webDir = join(dir, "web");
+    mkdirSync(webDir);
+    writeFileSync(join(webDir, "index.html"), "<!doctype html><title>t</title>");
+
+    const server = createRhumbServer({ root: dir, webDir });
+    await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+    close = () => new Promise((r) => { server.closeAllConnections(); server.close(() => r()); });
+    const port = (server.address() as AddressInfo).port;
+    const base = `http://127.0.0.1:${port}`;
+
+    const list = await (await fetch(`${base}/api/files`)).json();
+    expect(list.files.map((f: any) => f.file)).toEqual(["a.rhumb", "sub/b.rhumb"]);
+    expect(list.files[0]).toMatchObject({ title: "Alpha", nodes: 2, progress: { done: 1, total: 2 }, errors: 0 });
+
+    const b = await (await fetch(`${base}/api/doc?file=sub%2Fb.rhumb`)).json();
+    expect(b.doc.nodes[0].id).toBe("b");
+    expect((await fetch(`${base}/api/doc`)).status).toBe(400);
+    expect((await fetch(`${base}/api/doc?file=secret.txt`)).status).toBe(400);
+    expect((await fetch(`${base}/api/doc?file=..%2F..%2Fetc%2Fx.rhumb`)).status).toBe(400);
+    expect((await fetch(`${base}/api/doc?file=missing.rhumb`)).status).toBe(404);
+
+    const ok = await fetch(`${base}/api/edit?file=a.rhumb`, {
+      method: "POST", body: JSON.stringify({ version: (await (await fetch(`${base}/api/doc?file=a.rhumb`)).json()).version,
+        edit: { op: "set-status", id: "t", status: "done" } }),
+    });
+    expect(ok.status).toBe(200);
+
+    const page = await fetch(`${base}/`);
+    expect(page.headers.get("content-type")).toContain("text/html");
+    expect(page.headers.get("content-security-policy")).toContain("default-src 'self'");
+    // Static paths cannot escape the web directory.
+    const escaped = await new Promise<string>((r) =>
+      request({ host: "127.0.0.1", port, path: "/../secret.txt" }, (res) => {
+        let body = "";
+        res.on("data", (c) => (body += c));
+        res.on("end", () => r(body));
+      }).end());
+    expect(escaped).not.toContain("nope");
+  });
+});

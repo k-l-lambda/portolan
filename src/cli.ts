@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // rhumb check <file>   parse + derived + anchor diagnostics; exit 1 on errors
 // rhumb fmt <file>     assign missing IDs and normalize status aliases in place
-// rhumb serve <file> [--port N]   local API server for the frontend (127.0.0.1 only)
+// portolan serve <dir|file> [--port N]   web UI + API for every .rhumb under dir (127.0.0.1 only)
 
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -13,11 +13,11 @@ import { createRhumbServer } from "./server.ts";
 
 const [cmd, file, ...rest] = process.argv.slice(2);
 if (!cmd || !file || !["check", "fmt", "serve"].includes(cmd)) {
-  console.error("usage: rhumb <check|fmt|serve> <file.rhumb> [--port N]");
+  console.error("usage: portolan <check|fmt> <file.rhumb>\n       portolan serve <dir|file.rhumb> [--port N]");
   process.exit(2);
 }
 const path = resolve(file);
-const source = readFileSync(path, "utf8");
+const source = cmd === "serve" ? "" : readFileSync(path, "utf8");
 
 if (cmd === "check") {
   const doc = parse(source, { fileName: path });
@@ -37,7 +37,7 @@ if (cmd === "fmt") {
 if (cmd === "serve") {
   const i = rest.indexOf("--port");
   const port = i >= 0 ? Number(rest[i + 1]) : 4310;
-  createRhumbServer({ file: path }).listen(port, "127.0.0.1", () => {
-    console.log(`rhumb: serving ${path} at http://127.0.0.1:${port} (no auth, loopback only)`);
+  createRhumbServer({ root: path }).listen(port, "127.0.0.1", () => {
+    console.log(`portolan: serving ${path} at http://127.0.0.1:${port} (no auth, loopback only)`);
   });
 }

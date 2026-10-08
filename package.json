@@ -8,19 +8,31 @@
     "build:grammar": "peggy --format es --dts --allowed-start-rules Line,Inline -o src/generated/line-parser.js src/grammar.peggy",
     "pretest": "npm run build:grammar",
     "test": "vitest run",
-    "typecheck": "npm run build:grammar && tsc --noEmit",
-    "rhumb": "node src/cli.ts"
+    "typecheck": "npm run build:grammar && tsc --noEmit && tsc --noEmit -p web",
+    "portolan": "node src/cli.ts",
+    "build:web": "vite build web",
+    "dev:web": "vite web"
   },
   "dependencies": {
+    "@xyflow/react": "12.11.6",
+    "dompurify": "3.4.16",
+    "marked": "18.0.14",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "yaml": "2.9.1"
   },
   "devDependencies": {
     "@types/node": "22.20.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
     "peggy": "5.1.0",
     "typescript": "6.0.3",
+    "vite": "8.3.3",
     "vitest": "5.0.1"
   },
   "bin": {
+    "portolan": "src/cli.ts",
     "rhumb": "src/cli.ts"
   }
 }

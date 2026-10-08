@@ -192,7 +192,7 @@ describe("server", () => {
     dir = mkdtempSync(join(tmpdir(), "rhumb-"));
     const file = join(dir, "plan.rhumb");
     writeFileSync(file, SRC);
-    const server = createRhumbServer({ file });
+    const server = createRhumbServer({ root: file });
     await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
     close = () => new Promise((r) => { server.closeAllConnections(); server.close(() => r()); });
     const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
