@@ -37,10 +37,29 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
               {relativeTime(updated.time, now)}
             </time>
             {" · "}
-            {updated.source === "local"
-              ? "uncommitted change (file modified time)"
-              : <>commit <span className="sha">{updated.sha!.slice(0, 8)}</span> {freshness.commits[updated.sha!]?.summary}</>}
+            {updated.source === "local" && "uncommitted change (file modified time)"}
+            {updated.source === "link" && <>linked entry {updated.link!.date}</>}
+            {updated.source === "children" && (
+              <>newest child{" "}
+                <button type="button" className="linkish" onClick={() => onSelectLine(updated.child!.line)}>
+                  {updated.child!.id ? `^${updated.child!.id}` : `line ${updated.child!.line}`}
+                </button>
+              </>
+            )}
+            {updated.source === "commit" && <CommitRef sha={updated.lineTime.sha!} freshness={freshness} />}
           </dd>
+          {(updated.source === "link" || updated.source === "children") && (
+            <>
+              <dt>{updated.lineTime.source === "local" ? "Line edited" : "Line committed"}</dt>
+              <dd>
+                <time title={absoluteTime(updated.lineTime.time)}>{relativeTime(updated.lineTime.time, now)}</time>
+                {" · "}
+                {updated.lineTime.source === "local"
+                  ? "uncommitted change (file modified time)"
+                  : <CommitRef sha={updated.lineTime.sha!} freshness={freshness} />}
+              </dd>
+            </>
+          )}
         </dl>
       )}
       {Object.keys(node.attrs).length > 0 && (
@@ -149,4 +168,8 @@ function DiagnosticList({ diagnostics, onSelectLine }: { diagnostics: Diagnostic
       ))}
     </ul>
   );
+}
+
+function CommitRef({ sha, freshness }: { sha: string; freshness: Freshness }) {
+  return <>commit <span className="sha">{sha.slice(0, 8)}</span> {freshness.commits[sha]?.summary}</>;
 }

@@ -143,6 +143,7 @@ a { color: var(--accent); }
 .fresh-info dt { color: var(--muted); }
 .fresh-info dd { margin: 0 0 4px; }
 .sha { font-family: ui-monospace, monospace; }
+.linkish { font: inherit; padding: 0; border: 0; background: none; color: var(--accent); cursor: pointer; text-decoration: underline; }
 .card .status-select, .card .toggle { background: color-mix(in srgb, var(--surface) 70%, transparent); }
 .card.status-dropped .card-title { text-decoration: line-through; }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }

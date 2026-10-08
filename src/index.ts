@@ -5,5 +5,5 @@ export { derive, type Derived, type NodeState } from "./derive.ts";
 export { checkAnchors, contextFor, excerpt, githubSlug, resolveAnchor, type ResolveContext, type Resolved } from "./resolve.ts";
 export { foldThreads, ThreadStore, type Message, type Thread, type ThreadAction, type ThreadEvent } from "./threads.ts";
 export { createRhumbServer, versionOf, type ServerOptions } from "./server.ts";
-export { HistoryTracker, nodeTimes, parseBlame, type Commit, type FileHistory, type LineTime, type NodeTime } from "./history.ts";
+export { HistoryTracker, linkDate, nodeTimes, parseBlame, type Commit, type FileHistory, type LineTime, type NodeTime } from "./history.ts";
 export type * from "./types.ts";

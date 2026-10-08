@@ -247,6 +247,9 @@ function DocViewInner({ file }: { file: string }) {
 
 function cardTime(t: NodeTime | undefined, now: number) {
   if (!t) return { fresh: 0, updated: undefined, updatedText: "" };
-  const how = t.source === "local" ? "uncommitted change" : `commit ${t.sha!.slice(0, 8)}`;
+  const line = t.lineTime.source === "local" ? "uncommitted change" : `commit ${t.lineTime.sha!.slice(0, 8)}`;
+  const how = t.source === "link" ? `linked entry ${t.link!.date}, earlier than ${line}`
+    : t.source === "children" ? `newest child ${t.child!.id ? `^${t.child!.id}` : `line ${t.child!.line}`}`
+    : line;
   return { fresh: freshness(t.time, now), updated: t, updatedText: `Updated ${relativeTime(t.time, now)} (${absoluteTime(t.time)}, ${how})` };
 }

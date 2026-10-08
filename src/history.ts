@@ -41,8 +41,23 @@ export interface FileHistory {
   commits: Record<string, Commit>;
 }
 
-export interface NodeTime extends LineTime {
+export interface NodeTime {
   line: number;
+  /** Unix seconds: the time used for freshness. */
+  time: number;
+  /**
+   * `commit` / `local`: the node line's own time (see LineTime). `link`: the node links to a
+   * dated entry (e.g. `diary:2026/1008`) that is earlier than its commit time, so the
+   * linked date is a better estimate of when the work happened than when the map was committed.
+   * `children`: the node has no links but has child nodes; it takes the newest child's time.
+   */
+  source: "commit" | "local" | "link" | "children";
+  /** Time of the node's own line, kept so the UI can show both. */
+  lineTime: LineTime;
+  /** The dated link that set `time`, when source is `link`. */
+  link: { date: string; target: string } | null;
+  /** The child whose time was used, when source is `children`. */
+  child: { line: number; id: string | null } | null;
 }
 
 const GIT_ENV = { ...process.env, GIT_OPTIONAL_LOCKS: "0", LC_ALL: "C" };
@@ -162,16 +177,65 @@ export class HistoryTracker {
   }
 }
 
-/** Update time of each node: the time of the node's own line. */
+/**
+ * Date in a link path: `2026/1008`, `2026-10-08` or `2026/10/08` (a separator after the year
+ * is required, so issue numbers like `20251201` are not dates). Returns the date and the end
+ * of that local day in unix seconds, or null.
+ */
+export function linkDate(target: string): { date: string; time: number } | null {
+  const path = target.split("#")[0]!;
+  const re = /(?:^|[^0-9])(20\d\d|19\d\d)[-/](\d\d)[-/]?(\d\d)(?![0-9])/g;
+  for (let m; (m = re.exec(path)); ) {
+    const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const day = new Date(y, mo - 1, d, 23, 59, 59);
+    if (day.getFullYear() === y && day.getMonth() === mo - 1 && day.getDate() === d) {
+      return { date: `${m[1]}-${m[2]}-${m[3]}`, time: Math.floor(day.getTime() / 1000) };
+    }
+  }
+  return null;
+}
+
+/** Local calendar day of a unix time, as `YYYY-MM-DD`. */
+function localDay(time: number): string {
+  const d = new Date(time * 1000);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * Update time of each node: the time of the node's own line, unless the node links to a
+ * dated entry whose day is before the day of the line's own time (its commit, or the file
+ * mtime for an uncommitted line); then the latest such linked date wins (end of that day).
+ * A link dated the same day does not count as earlier.
+ */
 export function nodeTimes(doc: RhumbDocument, history: FileHistory): NodeTime[] {
   const out: NodeTime[] = [];
-  const walk = (nodes: RhumbNode[]) => {
-    for (const n of nodes) {
-      const lt = history.lines[n.line - 1] ?? { time: history.mtime, source: "local" as const, sha: null };
-      out.push({ line: n.line, ...lt });
-      walk(n.children);
+  // Returns the node's time after its children are computed, so parents can use them.
+  const visit = (n: RhumbNode): NodeTime => {
+    const slot = out.length;
+    out.push(null as unknown as NodeTime); // keep pre-order output
+    const kids = n.children.map(visit);
+    const lineTime = history.lines[n.line - 1] ?? { time: history.mtime, source: "local" as const, sha: null };
+    const base = { line: n.line, lineTime, link: null, child: null };
+
+    let t: NodeTime;
+    if (n.anchors.length === 0 && kids.length > 0) {
+      // No links: the node is as fresh as its newest child.
+      const newest = kids.reduce((a, b) => (b.time > a.time ? b : a));
+      const child = n.children[kids.indexOf(newest)]!;
+      t = { ...base, time: newest.time, source: "children", child: { line: child.line, id: child.id } };
+    } else {
+      let link: { date: string; time: number; target: string } | null = null;
+      for (const a of n.anchors) {
+        const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target);
+        if (d && (!link || d.time > link.time)) link = { ...d, target: a.target };
+      }
+      t = link !== null && link.date < localDay(lineTime.time)
+        ? { ...base, time: link.time, source: "link", link: { date: link.date, target: link.target } }
+        : { ...base, time: lineTime.time, source: lineTime.source };
     }
+    out[slot] = t;
+    return t;
   };
-  walk(doc.nodes);
+  doc.nodes.forEach(visit);
   return out;
 }

@@ -4,7 +4,7 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { createRhumbServer, HistoryTracker, nodeTimes, parse, versionOf } from "../src/index.ts";
+import { createRhumbServer, HistoryTracker, linkDate, nodeTimes, parse, versionOf } from "../src/index.ts";
 import { freshness, relativeTime } from "../web/src/time.ts";
 
 const T1 = 1767225600; // 2026-01-01T00:00:00Z
@@ -50,7 +50,7 @@ describe("HistoryTracker", () => {
     expect(h.lastCommit).toMatchObject({ time: T2, summary: "finish b" });
     const times = nodeTimes(parse(src), h);
     expect(times.map((t) => [t.line, t.time, t.source])).toEqual([[1, T1, "commit"], [2, T2, "commit"], [3, mtime, "local"]]);
-    expect(h.commits[times[1]!.sha!]!.summary).toBe("finish b");
+    expect(h.commits[times[1]!.lineTime.sha!]!.summary).toBe("finish b");
 
     // A new commit moves HEAD; the tracker notices and re-blames.
     expect(await tracker.pollHeads()).toEqual([]);
@@ -58,6 +58,86 @@ describe("HistoryTracker", () => {
     expect(await tracker.pollHeads()).toEqual([expect.stringContaining("portolan-git-")]);
     const after = nodeTimes(parse(src), await tracker.file(file, versionOf(src)));
     expect(after[2]).toMatchObject({ time: T2 + 7200, source: "commit" });
+  });
+
+  it("uses an earlier dated link instead of the commit time", async () => {
+    dir = repo();
+    const file = join(dir, "plan.rhumb");
+    const src = `---
+links:
+  diary: ../diary/{path}.md
+---
+- [x] Old work recorded late ^old
+  - [entry](diary:2025/1201#x)
+  - [later entry](diary:2025/1215#y)
+- [x] Linked after the commit [x](diary:2026/0301#z) ^future
+- [x] No dated link [x](https://example.com/issues/20251201) ^plain
+- [/] Local edit [x](diary:2025/1201#x) ^local
+`;
+    writeFileSync(file, src);
+    commit(dir, "record", T2);
+    writeFileSync(file, src.replace("[/] Local edit", "[x] Local edit"));
+    const edited = src.replace("[/] Local edit", "[x] Local edit");
+    const times = nodeTimes(parse(edited), await new HistoryTracker().file(file, versionOf(edited)));
+    const byLine = Object.fromEntries(times.map((t) => [t.line, t]));
+    // Latest dated link (Dec 15) is earlier than the commit (Feb 1).
+    expect(byLine[5]).toMatchObject({ source: "link", time: linkDate("2025/1215")!.time, link: { date: "2025-12-15" } });
+    expect(byLine[5]!.lineTime).toMatchObject({ source: "commit", time: T2 });
+    // A link dated after the commit does not move the time forward.
+    expect(byLine[8]).toMatchObject({ source: "commit", time: T2, link: null });
+    // A bare 8-digit number (an issue ID) is not a date.
+    expect(byLine[9]).toMatchObject({ source: "commit", link: null });
+    // An uncommitted line linking to an earlier day also takes the linked date.
+    expect(byLine[10]).toMatchObject({ source: "link", link: { date: "2025-12-01" } });
+    expect(byLine[10]!.lineTime.source).toBe("local");
+  });
+
+  it("does not treat a link dated the commit's own day as earlier", async () => {
+    dir = repo();
+    const file = join(dir, "same.rhumb");
+    // Commit at 00:30 local time on 2026-03-10; the link names the same day.
+    const commitTime = Math.floor(new Date(2026, 2, 10, 0, 30).getTime() / 1000);
+    const src = "- [x] Same day [x](diary:2026/0310#a) ^same\n- [x] Day before [x](diary:2026/0309#a) ^before\n";
+    writeFileSync(file, src);
+    commit(dir, "same day", commitTime);
+    const [same, before] = nodeTimes(parse(src), await new HistoryTracker().file(file, versionOf(src)));
+    expect(same).toMatchObject({ source: "commit", time: commitTime });
+    expect(before).toMatchObject({ source: "link", link: { date: "2026-03-09" } });
+  });
+
+  it("gives a link-less parent the newest child's time", async () => {
+    dir = repo();
+    const file = join(dir, "tree.rhumb");
+    const src = `- [/] Parent without links ^p
+  - [x] Old child [x](diary:2025/1201#a) ^old
+  - [/] Group without links ^g
+    - [x] Newer grandchild [x](diary:2025/1215#a) ^gc
+- [/] Parent with a link [x](diary:2025/1101#a) ^pl
+  - [x] Child [x](diary:2025/1220#a) ^c
+- [ ] Leaf without links ^leaf
+`;
+    writeFileSync(file, src);
+    commit(dir, "tree", T2);
+    const times = nodeTimes(parse(src), await new HistoryTracker().file(file, versionOf(src)));
+    const by = Object.fromEntries(times.map((t) => [t.lineTime && t.line, t]));
+    expect(times.map((t) => t.line)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    // g takes its grandchild's date, p takes the newer of old (Dec 1) and g (Dec 15).
+    expect(by[3]).toMatchObject({ source: "children", time: linkDate("2025/1215")!.time, child: { id: "gc" } });
+    expect(by[1]).toMatchObject({ source: "children", time: linkDate("2025/1215")!.time, child: { id: "g" } });
+    // A parent with its own link keeps the link rule, not its children.
+    expect(by[5]).toMatchObject({ source: "link", link: { date: "2025-11-01" } });
+    // A leaf without links keeps its line time.
+    expect(by[7]).toMatchObject({ source: "commit", time: T2 });
+  });
+
+  it("recognizes dates in link paths", () => {
+    expect(linkDate("2026/1008")?.date).toBe("2026-10-08");
+    expect(linkDate("../diary/2026-10-08.md#x")?.date).toBe("2026-10-08");
+    expect(linkDate("notes/2026/10/08/day.md")?.date).toBe("2026-10-08");
+    expect(linkDate("2026/1340")).toBeNull();
+    expect(linkDate("issues/12345")).toBeNull();
+    expect(linkDate("issues/20251201")).toBeNull();
+    expect(linkDate("../docs/rhumb-spec.md#2026-10-08")).toBeNull();
   });
 
   it("treats untracked files and files outside a repo as local", async () => {
