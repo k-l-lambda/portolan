@@ -1,0 +1,8 @@
+- Orphan note at top level
+- [!] K3 capture ^capture
+  - Waiting for the 4-GPU job to finish
+    - nested detail
+  - [ ] Child task ^child
+- [ ] Parent ^parent
+  - a note
+    - [ ] Task under a note ^under-note

@@ -1,0 +1,15 @@
+{
+  "rhumb": "0.1",
+  "title": "Basic",
+  "nodes": [
+    {"id": "root", "status": "todo", "title": "Root", "line": 6, "children": [
+      {"id": "a", "status": "done", "title": "First child", "line": 7, "children": []},
+      {"id": "b", "line": 8, "children": [
+        {"id": "c", "line": 9, "children": []}
+      ]}
+    ]},
+    {"id": "root2", "line": 10, "children": []}
+  ],
+  "edges": [],
+  "diagnostics": []
+}

@@ -1,0 +1,6 @@
+- [ ] Root ^root
+    - [ ] Four-space child ^four
+    - [ ] Sibling ^four2
+	- [ ] Tab child ^tab
+  - [ ] Bad dedent ^bad
+- [ ] Next root ^next

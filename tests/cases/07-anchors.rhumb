@@ -1,0 +1,9 @@
+---
+links:
+  diary: ../../diary-job/{path}.md
+---
+- [x] Survey [notes](diary:2026/1008#portolan) ^survey
+  - [entry](<diary:2026/1008#portolan:~:text=Explain Backlog.md>)
+  - see [spec](../docs/rhumb-spec.md#3-nodes) and <https://github.com/peggyjs/peggy>
+  - ![image](diagram.png) and `[code](not-a-link)` are not anchors
+  - [broken](wiki:Home)

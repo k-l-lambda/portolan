@@ -1,0 +1,21 @@
+- [ ] Root ^root
+  - [ ] Spec ^spec
+  - [ ] Parser ^parser
+  - [ ] Check ^check
+  - [ ] UI ^ui
+  - [ ] Old UI ^old-ui
+- [ ] Threads ^threads
+
+parser needs spec
+^check needs ^parser
+ui needs parser, check: needs a stable AST
+spec blocks ui
+threads relates ui
+ui replaces old-ui
+threads from root
+parser needs spec
+parser needs ghost
+parser wants spec
+parser needs parser
+ui needs other.rhumb^x
+root needs spec

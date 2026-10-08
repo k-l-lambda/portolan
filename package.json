@@ -1,0 +1,22 @@
+{
+  "name": "@portolan/rhumb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Parser for the Rhumb graph DSL",
+  "scripts": {
+    "build:grammar": "peggy --format es --dts --allowed-start-rules Line,Inline -o src/generated/line-parser.js src/grammar.peggy",
+    "pretest": "npm run build:grammar",
+    "test": "vitest run",
+    "typecheck": "npm run build:grammar && tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "peggy": "5.1.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.1"
+  }
+}

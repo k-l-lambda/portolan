@@ -1,0 +1,6 @@
+- [ ] A ^a
+- [ ] B ^b
+- [ ] C ^c
+a needs b
+b needs c
+a blocks c

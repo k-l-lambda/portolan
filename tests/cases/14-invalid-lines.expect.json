@@ -1,0 +1,8 @@
+{
+  "nodes": [
+    {"id": "v", "title": "Valid"},
+    {"id": "lonely", "title": ""},
+    {"id": null, "title": ""}
+  ],
+  "diagnostics": [["E001", 2], ["E001", 3], ["E001", 4], ["E011", 5], ["E011", 6]]
+}

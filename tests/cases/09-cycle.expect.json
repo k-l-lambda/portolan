@@ -1,0 +1,8 @@
+{
+  "edges": [
+    {"kind": "needs", "from": "a", "to": "b", "line": 4},
+    {"kind": "needs", "from": "b", "to": "c", "line": 5},
+    {"kind": "blocks", "from": "a", "to": "c", "line": 6}
+  ],
+  "diagnostics": [["E009", 6]]
+}

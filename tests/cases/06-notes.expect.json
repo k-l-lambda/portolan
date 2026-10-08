@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {"id": "capture", "status": "blocked",
+     "notes": [
+       {"text": "Waiting for the 4-GPU job to finish", "line": 3, "depth": 0},
+       {"text": "nested detail", "line": 4, "depth": 1}
+     ],
+     "children": [{"id": "child", "notes": [], "children": []}]},
+    {"id": "parent",
+     "notes": [{"text": "a note", "line": 7, "depth": 0}],
+     "children": [{"id": "under-note", "line": 8}]}
+  ],
+  "diagnostics": [["W001", 1], ["W002", 8]]
+}

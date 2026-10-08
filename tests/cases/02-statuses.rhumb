@@ -1,0 +1,10 @@
+- [ ] todo item ^s1
+- [/] doing item ^s2
+- [x] done item ^s3
+- [-] dropped item ^s4
+- [!] blocked item ^s5
+- [?] idea item ^s6
+- [X] uppercase done ^s7
+- [~] tilde doing ^s8
+* [ ] star marker ^s9
+- [z] unknown status ^s10

@@ -1,0 +1,14 @@
+{
+  "edges": [
+    {"kind": "needs", "from": "parser", "to": "spec", "label": null, "line": 9},
+    {"kind": "needs", "from": "check", "to": "parser", "label": null, "line": 10},
+    {"kind": "needs", "from": "ui", "to": "parser", "label": "needs a stable AST", "line": 11},
+    {"kind": "needs", "from": "ui", "to": "check", "label": "needs a stable AST", "line": 11},
+    {"kind": "blocks", "from": "spec", "to": "ui", "line": 12},
+    {"kind": "relates", "from": "threads", "to": "ui", "line": 13},
+    {"kind": "replaces", "from": "ui", "to": "old-ui", "line": 14},
+    {"kind": "from", "from": "threads", "to": "root", "line": 15},
+    {"kind": "needs", "from": "root", "to": "spec", "line": 21}
+  ],
+  "diagnostics": [["W004", 16], ["E007", 17], ["E008", 18], ["E010", 19], ["E006", 20], ["W005", 21]]
+}

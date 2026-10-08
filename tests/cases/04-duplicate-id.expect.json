@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {"id": "same", "title": "One"},
+    {"id": "same", "title": "Two"},
+    {"id": "other"}
+  ],
+  "edges": [{"kind": "needs", "from": "other", "to": "same", "line": 4}],
+  "diagnostics": [["E003", 2]]
+}

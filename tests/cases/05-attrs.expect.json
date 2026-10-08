@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"id": "a1", "title": "With attrs", "attrs": {"owner": "claude", "priority": "high"}},
+    {"id": "a2", "title": "Tags list", "attrs": {"tags": ["parser", "dsl"], "due": "2026-10-20"}},
+    {"id": "a3", "title": "Unknown key", "attrs": {"color": "red"}},
+    {"id": null, "title": "Attrs without id", "attrs": {"owner": "kl"}},
+    {"id": "a5", "title": "Braces mid {not attrs} title", "attrs": {}},
+    {"id": "a6", "title": "Unbalanced {owner: x", "attrs": {}},
+    {"id": "a7", "title": "Escaped {owner: x}", "attrs": {}},
+    {"id": "a8", "title": "Empty attrs", "attrs": {}}
+  ],
+  "diagnostics": [["I002", 3]]
+}

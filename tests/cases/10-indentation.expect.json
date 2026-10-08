@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {"id": "root", "children": [
+      {"id": "four", "children": []},
+      {"id": "four2", "children": []},
+      {"id": "tab", "children": []},
+      {"id": "bad", "children": []}
+    ]},
+    {"id": "next", "children": []}
+  ],
+  "diagnostics": [["E004", 5]]
+}

@@ -1,0 +1,7 @@
+- [ ] Explicit id ^dsl-parser
+- [ ] No id here
+- [ ] Generated id ^_k3f7q2
+- [ ] Title ends with caret \^literal
+- [ ] Invalid id ^Not_Valid
+- [ ] Caret ^mid title ^ok
+- [ ] Bad generated ^_abc

@@ -1,0 +1,17 @@
+{
+  "rhumb": "0.1",
+  "title": null,
+  "nodes": [
+    {"id": "s1", "status": "todo"},
+    {"id": "s2", "status": "doing"},
+    {"id": "s3", "status": "done"},
+    {"id": "s4", "status": "dropped"},
+    {"id": "s5", "status": "blocked"},
+    {"id": "s6", "status": "idea"},
+    {"id": "s7", "status": "done"},
+    {"id": "s8", "status": "doing"},
+    {"id": "s9", "status": "todo", "title": "star marker"},
+    {"id": "s10", "status": null}
+  ],
+  "diagnostics": [["E002", 10]]
+}

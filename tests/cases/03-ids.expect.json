@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {"id": "dsl-parser", "generated_id": false, "title": "Explicit id"},
+    {"id": null, "generated_id": false, "title": "No id here"},
+    {"id": "_k3f7q2", "generated_id": true, "title": "Generated id"},
+    {"id": null, "title": "Title ends with caret ^literal"},
+    {"id": null, "title": "Invalid id ^Not_Valid"},
+    {"id": "ok", "title": "Caret ^mid title"},
+    {"id": null, "title": "Bad generated ^_abc"}
+  ],
+  "diagnostics": [["W009", 5], ["W009", 7]]
+}

@@ -1,0 +1,8 @@
+- [ ] With attrs {owner: claude, priority: high} ^a1
+- [ ] Tags list {tags: [parser, dsl], due: 2026-10-20} ^a2
+- [ ] Unknown key {color: red} ^a3
+- [ ] Attrs without id {owner: kl}
+- [ ] Braces mid {not attrs} title ^a5
+- [ ] Unbalanced {owner: x ^a6
+- [ ] Escaped \{owner: x} ^a7
+- [ ] Empty attrs {} ^a8

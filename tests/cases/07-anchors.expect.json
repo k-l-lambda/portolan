@@ -1,0 +1,18 @@
+{
+  "links": {"diary": "../../diary-job/{path}.md"},
+  "nodes": [
+    {"id": "survey", "title": "Survey [notes](diary:2026/1008#portolan)",
+     "anchors": [
+       {"text": "notes", "target": "diary:2026/1008#portolan", "line": 5,
+        "kind": "prefix", "prefix": "diary", "path": "2026/1008", "fragment": "portolan", "text_fragment": null},
+       {"text": "entry", "target": "diary:2026/1008#portolan:~:text=Explain Backlog.md", "line": 6,
+        "kind": "prefix", "prefix": "diary", "path": "2026/1008", "fragment": "portolan", "text_fragment": "Explain Backlog.md"},
+       {"text": "spec", "target": "../docs/rhumb-spec.md#3-nodes", "line": 7,
+        "kind": "relative", "path": "../docs/rhumb-spec.md", "fragment": "3-nodes"},
+       {"text": "https://github.com/peggyjs/peggy", "target": "https://github.com/peggyjs/peggy", "line": 7,
+        "kind": "url"},
+       {"text": "broken", "target": "wiki:Home", "line": 9, "kind": "prefix", "prefix": "wiki"}
+     ]}
+  ],
+  "diagnostics": [["E005", 9]]
+}

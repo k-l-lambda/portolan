@@ -1,0 +1,30 @@
+---
+rhumb: 0.1
+title: Portolan
+links:
+  diary: ../../diary-job/{path}.md
+---
+
+- [/] Portolan project ^portolan
+  - [x] Prior-art survey ^survey
+    - [survey notes](diary:2026/1008#portolan)
+    - [Backlog.md design analysis](<diary:2026/1008#portolan:~:text=Explain Backlog.md>)
+  - [x] Naming: Portolan + Rhumb ^naming
+    - [name candidates](<diary:2026/1008#portolan:~:text=Suggest candidate names>)
+  - [/] Rhumb DSL design {owner: claude} ^dsl
+    - [/] Syntax spec ^dsl-spec
+      - Spec: [rhumb-spec.md](../docs/rhumb-spec.md)
+    - [ ] Parser + formatter ^dsl-parser
+    - [ ] check: anchor resolution and consistency checks ^dsl-check
+  - [ ] Visual frontend ^ui
+    - [ ] Mind map view ^ui-tree
+    - [ ] Dependency graph view ^ui-dag
+  - [?] Node annotations and threads ^threads
+  - [?] Agent interface (CLI / MCP) ^agent-api
+
+%% relations
+dsl-parser needs dsl-spec
+dsl-check needs dsl-parser
+ui needs dsl-parser: needs a stable AST
+agent-api needs dsl-parser
+threads relates ui-tree
