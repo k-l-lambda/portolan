@@ -212,6 +212,8 @@ Goal: when an agent edits one node, the diff touches only that line.
 
 UI write-back also goes through AST → `fmt`, never by splicing into the original text.
 
+Implementation status (0.1 tooling): `rhumb fmt` currently only assigns missing IDs and normalizes status aliases. Programmatic changes go through the edit operations in `src/edit.ts`, which rewrite only the affected lines and reject edits that add new errors. The rest of this section needs a full CST printer and is not implemented yet.
+
 ## 8. AST (JSON)
 
 ```json
@@ -239,4 +241,4 @@ UI write-back also goes through AST → `fmt`, never by splicing into the origin
 
 - Reference-style links `[text][ref]` with definition lines are not supported in 0.1.
 - Cross-file references `other.rhumb^id`.
-- The sidecar format for node annotations and threads will get its own spec.
+- The sidecar format for node annotations and threads will get its own spec. The 0.1 implementation (`src/threads.ts`) is an append-only `<name>.threads.jsonl` with `open / reply / resolve / reopen / retarget` events.

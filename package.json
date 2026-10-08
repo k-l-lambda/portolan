@@ -8,7 +8,8 @@
     "build:grammar": "peggy --format es --dts --allowed-start-rules Line,Inline -o src/generated/line-parser.js src/grammar.peggy",
     "pretest": "npm run build:grammar",
     "test": "vitest run",
-    "typecheck": "npm run build:grammar && tsc --noEmit"
+    "typecheck": "npm run build:grammar && tsc --noEmit",
+    "rhumb": "node src/cli.ts"
   },
   "dependencies": {
     "yaml": "2.9.1"
@@ -18,5 +19,8 @@
     "peggy": "5.1.0",
     "typescript": "6.0.3",
     "vitest": "5.0.1"
+  },
+  "bin": {
+    "rhumb": "src/cli.ts"
   }
 }

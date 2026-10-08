@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parse } from "../src/index.js";
+import { parse } from "../src/index.ts";
 
 const casesDir = join(import.meta.dirname, "cases");
 

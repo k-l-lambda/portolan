@@ -1,7 +1,7 @@
 import { basename, extname } from "node:path";
 import { isMap, isScalar, parseDocument } from "yaml";
 import { parse as parseLine } from "./generated/line-parser.js";
-import type { Anchor, Diagnostic, Edge, EdgeKind, Level, RhumbDocument, RhumbNode, Status } from "./types.js";
+import type { Anchor, Diagnostic, Edge, EdgeKind, Level, RhumbDocument, RhumbNode, Status } from "./types.ts";
 
 export const RHUMB_VERSION = "0.1";
 
@@ -9,14 +9,18 @@ const STATUS: Record<string, Status> = {
   " ": "todo", "/": "doing", "~": "doing", x: "done", X: "done",
   "-": "dropped", "!": "blocked", "?": "idea",
 };
-const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
+export const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
 const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links"]);
 const ATTR_KEYS = new Set(["owner", "due", "tags", "priority"]);
 const URL_SCHEMES = new Set(["http", "https", "mailto"]);
-const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
-const GEN_ID = /^_[a-z2-7]{6}$/;
+export const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
+export const GEN_ID = /^_[a-z2-7]{6}$/;
 
 const LEVELS: Record<string, Level> = { E: "error", W: "warning", I: "info" };
+
+export function diagnostic(code: string, line: number, message: string): Diagnostic {
+  return { code, level: LEVELS[code[0]!]!, line, message };
+}
 
 export interface ParseOptions {
   /** Used as the default title when front matter has none. */
@@ -40,7 +44,7 @@ type Entry =
 export function parse(source: string, options: ParseOptions = {}): RhumbDocument {
   const diagnostics: Diagnostic[] = [];
   const report = (code: string, line: number, message: string) =>
-    diagnostics.push({ code, level: LEVELS[code[0]!]!, line, message });
+    diagnostics.push(diagnostic(code, line, message));
 
   const lines = source.replace(/\r\n?/g, "\n").split("\n");
   if (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
@@ -214,7 +218,7 @@ function isSupportedVersion(version: string): boolean {
 }
 
 /** Leading whitespace width with tabs advancing to the next multiple of 4 (CommonMark). */
-function splitIndent(line: string): { indent: number; rest: string } {
+export function splitIndent(line: string): { indent: number; rest: string } {
   let col = 0;
   let i = 0;
   for (; i < line.length; i++) {
