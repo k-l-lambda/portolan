@@ -397,9 +397,10 @@ function resolveEdges(
         report("E010", stmt.line, `Edge from "${a.id}" to itself`);
         continue;
       }
-      const key = kind === "relates"
+      // Unlabeled relates is undirected; labeled edges are distinct per direction and label.
+      const key = kind === "relates" && !stmt.label
         ? `relates ${[a.id, b.id].sort().join(" ")}`
-        : `${kind} ${a.id} ${b.id}`;
+        : `${kind} ${a.id} ${b.id} ${stmt.label ?? ""}`;
       if (seen.has(key)) {
         report("W004", stmt.line, "Duplicate edge");
         continue;

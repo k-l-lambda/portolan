@@ -37,6 +37,11 @@ b relates a
     expect(r.edges.map((e) => e.key)).toEqual(["needs:s->r"]);
   });
 
+  it("keeps labeled relates between the same pair distinct", () => {
+    const d = parse("- [ ] A ^a\n- [ ] B ^b\na relates b: uses\na relates b: tests\n");
+    expect(layoutTree(d.nodes, d.edges, new Set()).edges.map((e) => e.key)).toEqual(["relates:a->b:uses", "relates:a->b:tests"]);
+  });
+
   it("strips link syntax from titles", () => {
     expect(plainTitle("Survey [notes](diary:x#y) and `code` \\^x")).toBe("Survey notes and code ^x");
   });

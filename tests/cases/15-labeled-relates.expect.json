@@ -1,0 +1,10 @@
+{
+  "edges": [
+    {"kind": "relates", "from": "a1", "to": "a0", "label": "compared against", "line": 4},
+    {"kind": "relates", "from": "a1", "to": "cohort", "label": "uses", "line": 5},
+    {"kind": "relates", "from": "a1", "to": "cohort", "label": "tests", "line": 6},
+    {"kind": "relates", "from": "a0", "to": "a1", "label": null, "line": 7},
+    {"kind": "relates", "from": "a0", "to": "a1", "label": "compared against", "line": 10}
+  ],
+  "diagnostics": [["W004", 8], ["W004", 9]]
+}

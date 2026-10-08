@@ -128,7 +128,10 @@ function run(doc: RhumbDocument, lines: string[], edit: EditOp): Omit<EditResult
       find(edit.from);
       find(edit.to);
       if (!EDGE_KINDS.has(edit.kind)) throw new EditError(`Unknown edge kind "${edit.kind}"`);
-      if (doc.edges.some((e) => e.kind === edit.kind && e.from === edit.from && e.to === edit.to)) {
+      const label = edit.label ?? null;
+      if (doc.edges.some((e) => e.kind === edit.kind && e.label === label
+        && ((e.from === edit.from && e.to === edit.to)
+          || (edit.kind === "relates" && !label && e.from === edit.to && e.to === edit.from)))) {
         throw new EditError("Edge already exists");
       }
       const hasEdges = lines.some((l) => isEdgeLine(l));

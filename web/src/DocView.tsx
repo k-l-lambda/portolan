@@ -92,6 +92,8 @@ function DocViewInner({ file }: { file: string }) {
     const edges: FlowEdge[] = layout.edges.map((e) => {
       const style = EDGE_STYLE[e.kind];
       const tree = e.kind === "tree";
+      // A labeled relates is directed (spec 5.1).
+      const arrow = style.arrow || (e.kind === "relates" && !!e.label);
       return {
         id: e.key,
         source: e.source,
@@ -101,8 +103,8 @@ function DocViewInner({ file }: { file: string }) {
         type: tree ? "smoothstep" : "default",
         className: style.className,
         style: style.dashed ? { strokeDasharray: style.dashed } : undefined,
-        markerEnd: style.arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
-        label: tree ? undefined : e.label ? `${e.kind}: ${e.label}` : e.kind,
+        markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
+        label: tree ? undefined : e.kind === "relates" && e.label ? e.label : e.label ? `${e.kind}: ${e.label}` : e.kind,
         labelBgPadding: [4, 2] as [number, number],
         labelBgBorderRadius: 4,
         selectable: false,

@@ -85,7 +85,7 @@ export function layoutTree(roots: RhumbNode[], edges: Edge[], collapsed: Set<str
     const source = shownAs.get(e.from);
     const target = shownAs.get(e.to);
     if (!source || !target || source === target) continue;
-    const key = `${e.kind}:${source}->${target}`;
+    const key = `${e.kind}:${source}->${target}${e.label ? `:${e.label}` : ""}`;
     if (seen.has(key)) continue;
     seen.add(key);
     crossEdges.push({ key, source, target, kind: e.kind, label: e.label });

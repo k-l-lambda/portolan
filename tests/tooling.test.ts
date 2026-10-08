@@ -72,6 +72,9 @@ describe("applyEdit", () => {
   it("adds and removes edges", () => {
     const added = applyEdit(SRC, { op: "add-edge", from: "other", kind: "relates", to: "root" }).source;
     expect(added.trimEnd().split("\n").at(-1)).toBe("other relates root");
+    const labeled = applyEdit(added, { op: "add-edge", from: "other", kind: "relates", to: "root", label: "uses" }).source;
+    expect(parse(labeled).edges.filter((e) => e.kind === "relates")).toHaveLength(2);
+    expect(() => applyEdit(added, { op: "add-edge", from: "root", kind: "relates", to: "other" })).toThrow("Edge already exists");
     const removed = applyEdit(SRC, { op: "remove-edge", from: "other", kind: "needs", to: "b" }).source;
     expect(removed).toContain("other needs a: label");
     expect(() => applyEdit(SRC, { op: "remove-edge", from: "a", kind: "needs", to: "b" })).toThrow("Edge not found");

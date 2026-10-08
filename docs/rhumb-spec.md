@@ -166,7 +166,7 @@ An edge line starts at column 0 and can appear anywhere in the body. `fmt` does 
 | --- | --- | --- |
 | `needs` | a depends on b; a becomes ready once b is done | yes |
 | `blocks` | a blocks b, same as `b needs a` | yes |
-| `relates` | related, undirected | no |
+| `relates` | related; undirected without a label, directed with one (see 5.1) | no |
 | `replaces` | a supersedes b | no |
 | `from` | a was derived from b (split, follow-up, spin-off) | no |
 
@@ -174,6 +174,22 @@ An edge line starts at column 0 and can appear anywhere in the body. `fmt` does 
 - The label is optional free text: `ui needs dsl-parser: needs a stable AST`. With several targets, the label applies to each resulting edge.
 - A line shaped like an edge with an unknown kind is `E008` only when its first word is a known ID; otherwise it is plain prose and `E001`. An indented edge line is also `E001`.
 - Cross-file references are not supported in 0.1. The form `other.rhumb^id` is reserved and is error `E006` for now.
+
+### 5.1 Domain relations go in labels
+
+The five kinds are kept because each is general across domains and the tools treat it differently: `needs`/`blocks` drive readiness and cycle checks, `replaces` and `from` record supersession and provenance. A relation that only appears in some kinds of work (an experiment compared against a control, a task that uses a dataset, an investigation that tests a hypothesis) is written as a labeled `relates`, not as a new keyword:
+
+```rhumb
+a1 relates a0: compared against
+train relates dataset: uses
+probe relates lr-hypothesis: tests
+```
+
+- The label is a verb phrase. The edge reads as one sentence, source + label + target: "a1 compared against a0".
+- A labeled `relates` keeps the direction it is written in. An unlabeled `relates` stays undirected.
+- Duplicates (`W004`): an unlabeled `relates` matches either direction; labeled edges match on direction and label, so `a relates b: uses` and `a relates b: tests` are two edges.
+- Use `needs` only for execution order. A treatment that is compared against a control does not need the control to finish first; write `relates … : compared against`, otherwise readiness and progress become wrong.
+- A label is promoted to a keyword only when it recurs across unrelated domains and a tool needs to treat it differently from `relates`.
 
 Edges do not use Mermaid's `-->` because an arrow is ambiguous for dependencies: `a --> b` can be read as "a depends on b" or as "a comes before b". A plain English verb sentence leaves no room for an LLM to read the direction wrong.
 

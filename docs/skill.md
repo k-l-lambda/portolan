@@ -89,13 +89,26 @@ Edge lines start at column 0, reference IDs (no `^` needed) and can go anywhere 
 | --- | --- | --- |
 | `needs` | a cannot finish (or start) before b is done | yes |
 | `blocks` | same as `b needs a`; use only when the sentence reads better that way | yes |
-| `relates` | related, no ordering | no |
+| `relates` | any other relation; add a verb-phrase label for domain meaning (see below) | no |
 | `replaces` | a supersedes b (usually b is `[-]`) | no |
 | `from` | a was split off, followed up or derived from b | no |
 
 - Do not add `needs`/`blocks` between a node and its own ancestor or descendant (`W005`); the hierarchy already says that.
 - Never create a dependency cycle (`E009`). If two items depend on each other, split one or use `relates`.
 - A label applies to every target on the line. Write one only when the reason is not obvious.
+- Use `needs` only for execution order: a really cannot finish before b is done. Do not use it for "a is compared against b", "a uses b" or "a tests b".
+- Domain relations are labeled `relates`, never new keywords. The label is a verb phrase and the edge reads source + label + target. A labeled `relates` is directed; an unlabeled one is not.
+
+```rhumb
+- [x] A0 baseline loss ^loss-a0
+- [/] A1 forward KL ^loss-a1
+- [ ] Shared fixed50 cohort ^cohort
+- [?] LR/data-size mismatch ^lr-hypothesis
+
+loss-a1 relates loss-a0: compared against
+loss-a1 relates cohort: uses
+loss-a1 relates lr-hypothesis: tests
+```
 
 ```rhumb
 - [/] Rhumb DSL ^rhumb
@@ -245,7 +258,7 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | Dedent to a level that was never opened, odd indentation | `E004` | 2 spaces per level, align siblings |
 | `foo:` link prefix missing from front matter | `E005` | add it under `links:` |
 | Edge to a typo or missing ID | `E007` | check the ID exists |
-| Unknown edge kind (`a depends b`) | `E008` | use needs/blocks/relates/replaces/from |
+| Unknown edge kind (`a depends b`, `a compares b`) | `E008` | use needs/blocks/relates/replaces/from; put domain meaning in a `relates` label |
 | Indented edge line, or prose at column 0 | `E001` | edges at column 0; prose goes in a note |
 | `a needs b` plus `b needs a` | `E009` | break the cycle |
 | Node without a title | `E011` | write a title |

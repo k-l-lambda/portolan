@@ -1,0 +1,10 @@
+- [x] A0 ^a0
+- [/] A1 ^a1
+- [ ] Cohort ^cohort
+a1 relates a0: compared against
+a1 relates cohort: uses
+a1 relates cohort: tests
+a0 relates a1
+a1 relates a0
+a1 relates a0: compared against
+a0 relates a1: compared against
