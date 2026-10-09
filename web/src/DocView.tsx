@@ -8,6 +8,7 @@ import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, nodeKey } from "./layout.ts";
 import { NodeCard, type CardNode } from "./NodeCard.tsx";
+import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
@@ -185,8 +186,6 @@ function DocViewInner({ file }: { file: string }) {
         markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
         label: e.count > 1 ? `${e.kind} ×${e.count}`
           : e.kind === "relates" && e.label ? e.label : e.label ? `${e.kind}: ${e.label}` : e.kind,
-        labelBgPadding: [4, 2] as [number, number],
-        labelBgBorderRadius: 4,
         selectable: false,
         interactionWidth: 14,
       };
@@ -216,17 +215,41 @@ function DocViewInner({ file }: { file: string }) {
     // One `a needs b, c: label` line becomes several edges with the same label; show it once
     // per source unless that exact edge is hovered.
     const shown = new Set<string>();
-    const edges = base.edges.map((e) => {
+    const visible = new Set<string>();
+    for (const e of base.edges) {
       const active = activeEdges.has(e.id);
       const labelKey = `${e.source}\0${String(e.label)}`;
       const repeat = e.id !== focusEdge && shown.has(labelKey);
-      const showLabel = e.label !== undefined && !repeat && (active || (allLabels && !focused));
-      if (showLabel) shown.add(labelKey);
+      if (e.label !== undefined && !repeat && (active || (allLabels && !focused))) {
+        shown.add(labelKey);
+        visible.add(e.id);
+      }
+    }
+    // Spread visible labels along their edges so parallel edges do not stack their text.
+    // The hovered edge is placed first and gets the best spot; cards are soft obstacles.
+    const requests: LabelRequest[] = base.edges
+      .filter((e) => visible.has(e.id))
+      .sort((a, b) => Number(b.id === focusEdge) - Number(a.id === focusEdge))
+      .map((e) => ({
+        id: e.id,
+        points: (e.data as { points: { x: number; y: number }[] }).points,
+        w: measureLabel(String(e.label)) + 12,
+        h: 18,
+      }));
+    const cards = base.nodes.filter((n) => !n.data.container).map((n) => ({ x: n.position.x, y: n.position.y, w: n.width!, h: n.height! }));
+    // Lines that are drawn prominently: the focused ones, or all of them when nothing is focused.
+    const lines = base.edges
+      .filter((e) => !focused || activeEdges.has(e.id))
+      .map((e) => ({ id: e.id, points: (e.data as { points: { x: number; y: number }[] }).points }));
+    const at = placeLabels(requests, cards, 4, lines);
+    const edges = base.edges.map((e) => {
+      const active = activeEdges.has(e.id);
       return {
         ...e,
         className: `${e.className}${active ? " is-active" : focused ? " is-dim" : ""}`,
         zIndex: active ? 10 : 0,
-        label: showLabel ? e.label : undefined,
+        label: visible.has(e.id) ? e.label : undefined,
+        data: { ...e.data, labelAt: at.get(e.id), labelClass: `${e.className}${active ? " is-active" : ""}` },
       };
     });
     const nodes = focused

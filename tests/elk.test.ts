@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "../src/index.ts";
 import { layoutElk } from "../web/src/elkLayout.ts";
-import { labelPoint, roundedPath } from "../web/src/geometry.ts";
+import { labelPoint, placeLabels, roundedPath } from "../web/src/geometry.ts";
 
 const SRC = `- [/] Root ^root
   - [x] Spec ^spec
@@ -125,5 +125,51 @@ describe("polyline helpers", () => {
     const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 20 }];
     expect(roundedPath(pts)).toMatch(/^M 0 0 L 92 0 Q 100 0 100 8 L 100 20$/);
     expect(labelPoint(pts)).toEqual({ x: 50, y: 0 });
+  });
+});
+
+describe("placeLabels", () => {
+  // Three edges leave the bottom of one card side by side and run down in parallel.
+  const parallel = [0, 12, 24].map((x, i) => ({
+    id: `e${i}`,
+    points: [{ x, y: 0 }, { x, y: 300 }],
+    w: 120,
+    h: 15,
+  }));
+  const rect = (p: { x: number; y: number }, w: number, h: number) => ({ x: p.x - w / 2, y: p.y - h / 2, w, h });
+  const hits = (a: ReturnType<typeof rect>, b: ReturnType<typeof rect>) =>
+    a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+  it("keeps labels of parallel edges from overlapping", () => {
+    const at = placeLabels(parallel);
+    const boxes = parallel.map((r) => rect(at.get(r.id)!, r.w, r.h));
+    for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) expect(hits(boxes[i]!, boxes[j]!)).toBe(false);
+    // Each label stays on its own edge.
+    parallel.forEach((r) => expect(at.get(r.id)!.x).toBe(r.points[0]!.x));
+  });
+
+  it("moves labels beside a short edge when there is no room along it", () => {
+    const short = [0, 10].map((x, i) => ({ id: `s${i}`, points: [{ x, y: 0 }, { x, y: 40 }], w: 100, h: 15 }));
+    const at = placeLabels(short);
+    const [a, b] = short.map((r) => rect(at.get(r.id)!, r.w, r.h));
+    expect(hits(a!, b!)).toBe(false);
+  });
+
+  it("keeps a label off another edge's line", () => {
+    // A horizontal line crosses the middle of e0, where its label would otherwise go.
+    const cross = { id: "x", points: [{ x: -200, y: 150 }, { x: 200, y: 150 }] };
+    const at = placeLabels([parallel[0]!], [], 4, [cross]);
+    const p = at.get("e0")!;
+    expect(Math.abs(p.y - 150)).toBeGreaterThan(15 / 2 + 4);
+  });
+
+  it("gives the first request its preferred spot", () => {
+    expect(placeLabels(parallel).get("e0")).toEqual({ x: 0, y: 150 });
+  });
+
+  it("moves a label off a card when there is room", () => {
+    const at = placeLabels([parallel[0]!], [{ x: -80, y: 120, w: 160, h: 60 }]);
+    const p = at.get("e0")!;
+    expect(p.y < 120 - 7 || p.y > 180 + 7).toBe(true);
   });
 });
