@@ -161,10 +161,10 @@ a { color: var(--accent); }
 }
 .card.selected { box-shadow: 0 0 0 2px var(--accent); }
 /* Status color tints the whole card; the left border carries the full color. */
-.card { --st: var(--st-todo); border-left-color: var(--st); background: color-mix(in srgb, var(--st) 10%, var(--surface)); }
-.card.status-doing { --st: var(--st-doing); background: color-mix(in srgb, var(--st) 18%, var(--surface)); }
-.card.status-done { --st: var(--st-done); background: color-mix(in srgb, var(--st) 16%, var(--surface)); }
-.card.status-blocked { --st: var(--st-blocked); background: color-mix(in srgb, var(--st) 18%, var(--surface)); }
+.card { --st: var(--st-todo); --card-bg: color-mix(in srgb, var(--st) 10%, var(--surface)); border-left-color: var(--st); background: var(--card-bg); }
+.card.status-doing { --st: var(--st-doing); --card-bg: color-mix(in srgb, var(--st) 18%, var(--surface)); }
+.card.status-done { --st: var(--st-done); --card-bg: color-mix(in srgb, var(--st) 16%, var(--surface)); }
+.card.status-blocked { --st: var(--st-blocked); --card-bg: color-mix(in srgb, var(--st) 18%, var(--surface)); }
 .card.status-idea { --st: var(--st-idea); border-style: dashed solid dashed solid; }
 .card.status-dropped { --st: var(--st-dropped); opacity: 0.6; }
 /* Freshness: the left border fades from the full status color (just updated) toward the surface (stale). */
@@ -223,16 +223,23 @@ a { color: var(--accent); }
 .card-header { height: 60px; display: flex; flex-direction: column; justify-content: space-between; flex: none; }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }
 /* A container frames its children: faint fill, header on top, children laid out inside by ELK. */
-.card.container { background: color-mix(in srgb, var(--st) 5%, var(--surface)); border-style: solid; box-shadow: none; }
+.card.container { --card-bg: color-mix(in srgb, var(--st) 5%, var(--surface)); background: var(--card-bg); border-style: solid; box-shadow: none; }
 .card.container .card-header { width: 216px; }
 /* xyflow sets pointer-events inline on nodes; !important lets a frame's interior pass the mouse
    through to cards and the pane (pan, zoom, hover), while its header stays clickable. */
 .react-flow__node:has(.card.container) { pointer-events: none !important; }
 .react-flow__node:has(.card.container) .card-header { pointer-events: auto; }
 .card-title {
-  font-weight: 550; line-height: 1.25; overflow: hidden;
+  flex: 1 1 0; min-width: 0; font-weight: 550; line-height: 1.25; overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
+/* Hover shows the whole title on one line that runs past the card's right edge, on the card's own
+   fill. The card keeps its size and position and every control stays where it is. A leaf card
+   rises above its neighbours (still under edge labels, z-index 400); a frame does not, since its
+   fill would cover its children. xyflow sets z-index inline, hence !important. */
+.react-flow__node:hover:not(:has(.card.container)) { z-index: 350 !important; }
+.react-flow__node:hover .card-title { display: block; overflow: visible; white-space: nowrap; -webkit-line-clamp: unset; }
+.react-flow__node:hover .card-title-text { padding-right: 6px; border-radius: 0 4px 4px 0; background: var(--card-bg); }
 .card-foot { display: flex; gap: 5px; align-items: center; font-size: 11px; min-width: 0; }
 .card-id { flex: none; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
 .status-select {
@@ -257,24 +264,34 @@ a { color: var(--accent); }
 .react-flow__edge.edge-from path { stroke: var(--edge-from); }
 /* Edge labels live in xyflow's HTML label layer; lift it above edges and nodes so no line or
    card is painted over a label. The label background masks the lines underneath. */
-.react-flow__edgelabel-renderer { z-index: 20; }
+/* Above frames (0..99), lines (100) and cards (200..299, 350 while hovered); see DocView. */
+.react-flow__edgelabel-renderer { z-index: 400; }
 .edge-label {
-  position: absolute; pointer-events: none; white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis;
+  position: absolute; pointer-events: auto; cursor: default; white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis;
   font: 600 11px/14px system-ui, -apple-system, "Segoe UI", "Noto Sans", "PingFang SC", sans-serif;
   padding: 2px 6px; border-radius: 4px; color: var(--text);
   background: var(--surface); border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
 }
+/* A focused edge (hover or selection) shows its whole label; only unfocused labels are cut. */
+.edge-label.is-active { max-width: none; overflow: visible; text-overflow: clip; }
+/* Hovering a label itself also shows its whole text. It widens in place around its centre and
+   rises above neighbouring labels; it does not move, so it cannot slip out from under the cursor. */
+.edge-label:hover { max-width: none; overflow: visible; text-overflow: clip; z-index: 1; box-shadow: 0 2px 8px rgb(0 0 0 / 0.18); }
 .edge-label.edge-needs { border-color: color-mix(in srgb, var(--edge-needs) 55%, transparent); }
 .edge-label.edge-blocks { border-color: color-mix(in srgb, var(--edge-blocks) 55%, transparent); }
 .edge-label.edge-relates { border-color: color-mix(in srgb, var(--edge-relates) 55%, transparent); }
 .edge-label.edge-replaces { border-color: color-mix(in srgb, var(--edge-replaces) 55%, transparent); }
 .edge-label.edge-from { border-color: color-mix(in srgb, var(--edge-from) 55%, transparent); }
+/* Edges are not selectable, so xyflow marks them inactive and turns off pointer events. Hovering a
+   line should still focus it, so its wide invisible hit stroke takes the pointer (the visible path
+   and the group stay inert). */
+.react-flow__edge.inactive .react-flow__edge-interaction { pointer-events: stroke; cursor: default; }
 /* Focus: hovered/selected node or edge stands out, the rest steps back. */
 .react-flow__edge path { transition: opacity 120ms, stroke-width 120ms; }
-.react-flow__edge.is-dim { opacity: 0.12; }
+/* Lines are always drawn; while something is focused the others step back but stay visible. */
+.react-flow__edge.is-dim { opacity: 0.3; }
 .react-flow__edge.is-active path { stroke-width: 2.5; }
 .react-flow__node { transition: opacity 120ms; }
-.react-flow__node.is-dim { opacity: 0.35; }
 .toggle-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .mini.status-todo { fill: var(--st-todo); }
 .mini.status-doing { fill: var(--st-doing); }

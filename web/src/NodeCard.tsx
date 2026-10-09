@@ -60,7 +60,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
         >
           {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
-        <span className="card-title">{title}</span>
+        <span className="card-title"><span className="card-title-text">{title}</span></span>
         <button
           type="button"
           className={`star-toggle nodrag${isStar ? " on" : ""}`}

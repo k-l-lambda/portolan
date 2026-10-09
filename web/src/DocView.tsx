@@ -44,6 +44,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Hovered node or edge; falls back to the selected node so keyboard and touch users get the same focus.
   const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string } | null>(null);
   const [allLabels, setAllLabels] = useState(false);
+  // Hovering a relation line focuses it. Hovering its label only shows the label's full text (CSS):
+  // the label is rendered inside the edge, so its pointer events must not count as edge hover.
+  const fromLabel = (e: { target: EventTarget | null }) => (e.target as Element | null)?.closest?.(".edge-label") != null;
 
   const [reloadedAt, setReloadedAt] = useState<string | null>(null);
   // Freshness is relative to now, so re-render periodically even when nothing changes.
@@ -193,7 +196,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       position: { x: b.x, y: b.y },
       width: b.width,
       height: b.height,
-      zIndex: b.depth,
+      // Stacking: frames at 0..99 by depth, relation lines at 100, cards at 200..299, edge labels at 400.
+      // Lines must sit above frames (whose fill would hide them) and below cards (which they route around).
+      zIndex: b.container ? b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
@@ -257,7 +262,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
-  const { nodes, edges } = useMemo(() => {
+  const { nodes, edges, focusCss } = useMemo(() => {
     // Focus set: the hovered node, else the selected one, else (with "Highlight starred") every
     // starred node, shown through its nearest visible card when it sits in a collapsed subtree.
     const visibleKeys = new Set(base.nodes.map((n) => n.id));
@@ -304,7 +309,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       .map((e) => ({
         id: e.id,
         points: (e.data as { points: { x: number; y: number }[] }).points,
-        w: measureLabel(String(e.label)) + 12,
+        // Focused labels show their whole text, so they are placed at full width.
+        w: measureLabel(String(e.label), 11, activeEdges.has(e.id)) + 14,
         h: 18,
       }));
     const cards = base.nodes.filter((n) => !n.data.container).map((n) => ({ x: n.position.x, y: n.position.y, w: n.width!, h: n.height! }));
@@ -318,15 +324,17 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       return {
         ...e,
         className: `${e.className}${active ? " is-active" : focused ? " is-dim" : ""}`,
-        zIndex: active ? 10 : 0,
+        // Constant: xyflow renders each z-index in its own SVG layer, so changing it on focus would
+        // remount the edge and its label, pulling the label out from under the pointer.
+        zIndex: 100,
         label: visible.has(e.id) ? e.label : undefined,
         data: { ...e.data, labelAt: at.get(e.id), labelClass: `${e.className}${active ? " is-active" : ""}` },
       };
     });
-    const nodes = focused
-      ? base.nodes.map((n) => ({ ...n, className: activeNodes.has(n.id) ? "is-active" : "is-dim" }))
-      : base.nodes;
-    return { nodes, edges };
+    // Nodes stay the same objects: giving them a new className makes xyflow re-measure them, and
+    // edges briefly unmount meanwhile, which dropped a hovered label from under the pointer.
+    // Dimming is a stylesheet keyed by node ID instead (see focusCss).
+    return { nodes: base.nodes, edges, focusCss: focused ? cardFocusCss(activeNodes) : "" };
   }, [base, hover, selected, allLabels, parents, highlightStars, starredList]);
 
   const selectLine = useCallback((line: number) => {
@@ -405,11 +413,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       </div>
       <div className="doc-body">
         <div className="canvas">
+          {focusCss && <style>{focusCss}</style>}
           <ReactFlow
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
+            // Use our z-indexes as given. In "basic" mode xyflow adds a node's z to its edges, so an edge
+            // changed layer (and remounted, dropping its label from under the pointer) when focus changed.
+            zIndexMode="manual"
             colorMode="system"
             fitView
             fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
@@ -419,7 +431,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onNodeClick={(_e, n) => setSelected(n.id)}
             onNodeMouseEnter={(_e, n) => setHover({ kind: "node", id: n.id })}
             onNodeMouseLeave={() => setHover(null)}
-            onEdgeMouseEnter={(_e, ed) => setHover({ kind: "edge", id: ed.id })}
+            onEdgeMouseEnter={(e, ed) => { if (!fromLabel(e)) setHover({ kind: "edge", id: ed.id }); }}
             onEdgeMouseLeave={() => setHover(null)}
             onPaneClick={() => setSelected(null)}
             proOptions={{ hideAttribution: false }}
@@ -455,4 +467,10 @@ function cardTime(t: NodeTime | undefined, now: number) {
     : t.source === "children" ? `newest child ${t.child!.id ? `^${t.child!.id}` : `line ${t.child!.line}`}`
     : line;
   return { fresh: freshness(t.time, now), updated: t, updatedText: `Updated ${relativeTime(t.time, now)} (${absoluteTime(t.time)}, ${how})` };
+}
+
+/** Dims every card except the focused ones and their frames, without touching node objects. */
+function cardFocusCss(active: Set<string>): string {
+  const keep = [...active].map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
+  return `.canvas .react-flow__node{opacity:.35}${keep ? `${keep}{opacity:1}` : ""}`;
 }

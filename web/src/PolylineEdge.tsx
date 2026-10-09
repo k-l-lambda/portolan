@@ -27,6 +27,7 @@ export const PolylineEdge = memo(function PolylineEdge(props: EdgeProps<Polyline
       {props.label !== undefined && props.label !== null && (
         <EdgeLabelRenderer>
           <div className={`edge-label ${props.data?.labelClass ?? ""}`} data-edge={props.id}
+
             style={{ transform: `translate(-50%, -50%) translate(${at.x}px, ${at.y}px)` }}>
             {props.label}
           </div>

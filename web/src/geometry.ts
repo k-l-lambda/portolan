@@ -153,9 +153,10 @@ let measureCtx: CanvasRenderingContext2D | null | undefined;
 /** Longest label in px; the label CSS uses the same max-width and ellipsis. */
 export const LABEL_MAX_W = 260;
 
-/** Width of a label in px at the label font, capped at LABEL_MAX_W; CJK-aware estimate without a DOM. */
-export function measureLabel(text: string, fontSize = 11): number {
-  return Math.min(LABEL_MAX_W, rawWidth(text, fontSize));
+/** Width of a label in px at the label font, capped at LABEL_MAX_W unless `full`; CJK-aware estimate without a DOM. */
+export function measureLabel(text: string, fontSize = 11, full = false): number {
+  const w = rawWidth(text, fontSize);
+  return full ? w : Math.min(LABEL_MAX_W, w);
 }
 
 function rawWidth(text: string, fontSize: number): number {
