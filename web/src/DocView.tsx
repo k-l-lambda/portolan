@@ -3,17 +3,19 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { NodeTime } from "../../src/history.ts";
-import type { RhumbNode, Status } from "../../src/types.ts";
+import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
-import { CARD_H, CARD_W, defaultCollapsed, layoutTree, nodeKey, type LaidOutEdge } from "./layout.ts";
+import { layoutElk, type ElkResult } from "./elkLayout.ts";
+import { defaultCollapsed, nodeKey } from "./layout.ts";
 import { NodeCard, type CardNode } from "./NodeCard.tsx";
+import { PolylineEdge } from "./PolylineEdge.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard };
+const edgeTypes = { polyline: PolylineEdge };
 
-const EDGE_STYLE: Record<LaidOutEdge["kind"], { className: string; arrow: boolean; dashed?: string }> = {
-  tree: { className: "edge-tree", arrow: false },
+const EDGE_STYLE: Record<EdgeKind, { className: string; arrow: boolean; dashed?: string }> = {
   needs: { className: "edge-needs", arrow: true },
   blocks: { className: "edge-blocks", arrow: true },
   relates: { className: "edge-relates", arrow: false, dashed: "4 4" },
@@ -133,40 +135,56 @@ function DocViewInner({ file }: { file: string }) {
     });
   }, [parents]);
 
+  // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
+  const [layout, setLayout] = useState<ElkResult | null>(null);
+  const [layoutError, setLayoutError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!data) return;
+    let live = true;
+    const times = new Map(data.freshness.nodes.map((t) => [t.line, t.time]));
+    layoutElk(data.doc.nodes, data.doc.edges, collapsed, (n) => times.get(n.line)).then(
+      (r) => live && (setLayout(r), setLayoutError(null)),
+      (e) => live && setLayoutError(`Layout failed: ${(e as Error).message}`),
+    );
+    return () => { live = false; };
+  }, [data, collapsed]);
+
   const base = useMemo(() => {
-    if (!data) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
+    if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
     const states = new Map(data.derived.map((s) => [s.line, s]));
     const times = new Map(data.freshness.nodes.map((t) => [t.line, t]));
-    const layout = layoutTree(data.doc.nodes, data.doc.edges, collapsed);
-    const nodes: CardNode[] = layout.nodes.map((l) => ({
-      id: l.key,
+    // Containers first and deeper boxes later, so children draw on top of their container.
+    const boxes = [...layout.boxes].sort((a, b) => a.depth - b.depth);
+    const nodes: CardNode[] = boxes.map((b) => ({
+      id: b.key,
       type: "card",
-      position: { x: l.x, y: l.y },
-      width: CARD_W,
-      height: CARD_H,
+      position: { x: b.x, y: b.y },
+      width: b.width,
+      height: b.height,
+      zIndex: b.depth,
       draggable: false,
       data: {
-        node: l.node, parentId: parents.get(l.key)?.id ?? null, state: states.get(l.node.line), hidden: l.hidden,
-        ...cardTime(times.get(l.node.line), now),
-        selected: l.key === selected, collapsed: collapsed.has(l.key), onStatus, onToggle,
+        node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
+        container: b.container,
+        ...cardTime(times.get(b.node.line), now),
+        selected: b.key === selected, collapsed: collapsed.has(b.key), onStatus, onToggle,
       },
     }));
-    const edges: FlowEdge[] = layout.edges.map((e) => {
+    const edges: FlowEdge[] = layout.routes.map((e) => {
       const style = EDGE_STYLE[e.kind];
-      const tree = e.kind === "tree";
       // A labeled relates is directed (spec 5.1).
       const arrow = style.arrow || (e.kind === "relates" && !!e.label);
       return {
         id: e.key,
         source: e.source,
         target: e.target,
-        sourceHandle: tree ? "tree-out" : "x-out",
-        targetHandle: tree ? "tree-in" : "x-in",
-        type: tree ? "smoothstep" : "default",
+        type: "polyline",
+        data: { points: e.points },
         className: style.className,
         style: style.dashed ? { strokeDasharray: style.dashed } : undefined,
         markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
-        label: tree ? undefined : e.kind === "relates" && e.label ? e.label : e.label ? `${e.kind}: ${e.label}` : e.kind,
+        label: e.count > 1 ? `${e.kind} ×${e.count}`
+          : e.kind === "relates" && e.label ? e.label : e.label ? `${e.kind}: ${e.label}` : e.kind,
         labelBgPadding: [4, 2] as [number, number],
         labelBgBorderRadius: 4,
         selectable: false,
@@ -174,7 +192,7 @@ function DocViewInner({ file }: { file: string }) {
       };
     });
     return { nodes, edges };
-  }, [data, collapsed, parents, selected, now, onStatus, onToggle]);
+  }, [data, layout, collapsed, parents, selected, now, onStatus, onToggle]);
 
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
@@ -191,6 +209,10 @@ function DocViewInner({ file }: { file: string }) {
     }
     if (focusNode) activeNodes.add(focusNode);
     const focused = activeNodes.size > 0;
+    // Containers of active cards stay undimmed, otherwise their opacity would fade the cards too.
+    for (const key of [...activeNodes]) {
+      for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) activeNodes.add(nodeKey(p));
+    }
     // One `a needs b, c: label` line becomes several edges with the same label; show it once
     // per source unless that exact edge is hovered.
     const shown = new Set<string>();
@@ -211,7 +233,7 @@ function DocViewInner({ file }: { file: string }) {
       ? base.nodes.map((n) => ({ ...n, className: activeNodes.has(n.id) ? "is-active" : "is-dim" }))
       : base.nodes;
     return { nodes, edges };
-  }, [base, hover, selected, allLabels]);
+  }, [base, hover, selected, allLabels, parents]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -224,7 +246,9 @@ function DocViewInner({ file }: { file: string }) {
   }, [all, reveal]);
 
   if (error) return <main className="page"><p role="alert" className="error">{error}</p></main>;
-  if (!data) return <main className="page"><p className="muted">Loading…</p></main>;
+  if (!data || !layout) {
+    return <main className="page"><p className={layoutError ? "error" : "muted"}>{layoutError ?? "Loading…"}</p></main>;
+  }
 
   const node = selected ? all.get(selected) ?? null : null;
   const counts = { error: 0, warning: 0, info: 0 };
@@ -248,6 +272,7 @@ function DocViewInner({ file }: { file: string }) {
           <input type="checkbox" checked={allLabels} onChange={(e) => setAllLabels(e.target.checked)} /> All edge labels
         </label>
         {notice && <span role="status" className="notice">{notice}</span>}
+        {layoutError && <span role="status" className="notice">{layoutError}</span>}
         <span className="fresh-legend muted" title="Left edge brightness shows how recently each node's line changed">
           <span className="fresh-swatch" aria-hidden="true" /> older → newer
         </span>
@@ -259,6 +284,7 @@ function DocViewInner({ file }: { file: string }) {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             colorMode="system"
             fitView
             fitViewOptions={{ padding: 0.15, maxZoom: 1 }}

@@ -24,6 +24,8 @@ export interface CardData extends Record<string, unknown> {
   updated: NodeTime | undefined;
   updatedText: string;
   hidden: number;
+  /** Drawn as a frame around its children instead of a card. */
+  container: boolean;
   selected: boolean;
   collapsed: boolean;
   onStatus: (node: RhumbNode, status: Status) => void;
@@ -33,17 +35,16 @@ export interface CardData extends Record<string, unknown> {
 export type CardNode = Node<CardData, "card">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
-  const { node, parentId, state, fresh, updatedText, hidden, selected, collapsed, onStatus, onToggle } = data;
+  const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, onStatus, onToggle } = data;
   const status = node.status ?? "todo";
   const title = plainTitle(node.title) || "(untitled)";
   return (
-    <div className={`card status-${status}${selected ? " selected" : ""}`}
+    <div className={`card status-${status}${container ? " container" : ""}${selected ? " selected" : ""}`}
       style={{ "--fresh": `${Math.round(20 + fresh * 80)}%` } as CSSProperties}
       title={updatedText ? `${title}\n${updatedText}` : title}>
-      <Handle type="target" position={Position.Left} id="tree-in" className="handle" />
-      <Handle type="source" position={Position.Right} id="tree-out" className="handle" />
-      <Handle type="target" position={Position.Top} id="x-in" className="handle" />
-      <Handle type="source" position={Position.Bottom} id="x-out" className="handle" />
+      <Handle type="target" position={Position.Left} className="handle" />
+      <Handle type="source" position={Position.Right} className="handle" />
+      <div className="card-header">
       <div className="card-head">
         <select
           className={`status-select nodrag status-${status}`}
@@ -73,6 +74,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
             {collapsed ? `+${hidden}` : "−"}
           </button>
         )}
+      </div>
       </div>
     </div>
   );

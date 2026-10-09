@@ -5,43 +5,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { CARD_H, defaultCollapsed, layoutTree, plainTitle, shortId } from "../web/src/layout.ts";
+import { defaultCollapsed, plainTitle, shortId } from "../web/src/layout.ts";
 
-describe("layoutTree", () => {
-  const doc = parse(`- [ ] R ^r
-  - [ ] A ^a
-    - [ ] A1 ^a1
-  - [ ] B ^b
-- [ ] S ^s
-s needs a1
-b relates a
-`);
-
-  it("centers parents on their children and keeps cross edges", () => {
-    const l = layoutTree(doc.nodes, doc.edges, new Set());
-    const at = Object.fromEntries(l.nodes.map((n) => [n.key, n]));
-    expect(at.a1!.depth).toBe(2);
-    expect(at.r!.y).toBe((at.a!.y + at.b!.y) / 2);
-    expect(at.s!.y).toBeGreaterThan(at.b!.y + CARD_H);
-    expect(l.edges.filter((e) => e.kind === "tree")).toHaveLength(3);
-    expect(l.edges.filter((e) => e.kind !== "tree").map((e) => e.key)).toEqual(["needs:s->a1", "relates:b->a"]);
-  });
-
-  it("folds edges of collapsed subtrees onto the visible ancestor", () => {
-    const l = layoutTree(doc.nodes, doc.edges, new Set(["a"]));
-    expect(l.nodes.map((n) => n.key)).not.toContain("a1");
-    expect(l.nodes.find((n) => n.key === "a")!.hidden).toBe(1);
-    expect(l.edges.filter((e) => e.kind !== "tree").map((e) => e.key)).toEqual(["needs:s->a", "relates:b->a"]);
-    // Collapsing the root hides a, a1 and b; the relates edge folds into r and disappears.
-    const r = layoutTree(doc.nodes, doc.edges, new Set(["r"]));
-    expect(r.edges.map((e) => e.key)).toEqual(["needs:s->r"]);
-  });
-
-  it("keeps labeled relates between the same pair distinct", () => {
-    const d = parse("- [ ] A ^a\n- [ ] B ^b\na relates b: uses\na relates b: tests\n");
-    expect(layoutTree(d.nodes, d.edges, new Set()).edges.map((e) => e.key)).toEqual(["relates:a->b:uses", "relates:a->b:tests"]);
-  });
-
+describe("view helpers", () => {
   it("collapses subtrees without doing work by default", () => {
     const d = parse(`- [/] Root ^root
   - [x] Done branch ^done
