@@ -87,6 +87,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     });
   }, [file, load]);
 
+  // Browser tab title: the map's own title (front matter `title`, else the file name).
+  const docTitle = data?.doc.title ?? null;
+  useEffect(() => {
+    const name = docTitle ?? file;
+    document.title = name === "Portolan" ? name : `${name} · Portolan`;
+    return () => { document.title = "Portolan"; };
+  }, [docTitle, file]);
+
   const { all, parents } = useMemo(() => {
     const all = new Map<string, RhumbNode>();
     const parents = new Map<string, RhumbNode | null>();
