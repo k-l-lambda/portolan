@@ -178,7 +178,7 @@ offset   = ("+" | "-") "L" n
 - These separators never clash with slugs: GitHub slugs are lowercase and drop `+ ^ = \` : ~`, so `L` is always uppercase in an offset or line.
 - Lines are counted as in an editor, blank lines included. The first match wins. An offset may not leave the heading's section (or the file).
 - Prefer a `^=` or text match to a bare offset: inserting a line above shifts an offset to another line, and `check` cannot notice.
-- Inside `<…>` a backslash escapes ASCII punctuation (CommonMark), so a diary entry line `* > [host] …` is written ``^=`* \> [host] …` ``. An unescaped `>` ends the target early; the link is then not recognized and the line gets warning `W011`.
+- Inside `<…>` a backslash escapes ASCII punctuation (CommonMark), so a diary entry line `* > [host] …` is written ``^=`* \> [host] …` ``. A prefix is percent-decoded after quoting, so a backtick inside it is written `%60`: a line `` * `src/edit.ts`: … `` is ``^=`* %60src/edit.ts%60` ``. An unescaped `>` ends the target early; the link is then not recognized and the line gets warning `W011`.
 - The `:~:text=` form keeps its existing meaning and cannot take an offset (its text runs to the end of the fragment).
 
 `rhumb check` resolves anchors against the actual files. An undefined prefix is error `E005`. A missing file, a missing heading, an ambiguous prefix, a text fragment or `^=` prefix that is not found, an offset that leaves its section, a line past the end of the file, or a fragment that cannot be parsed (such as `#L9-L3` or an unterminated backtick) is warning `W003`. The diary lives in another repository and may not always be present, so these are warnings, not errors.

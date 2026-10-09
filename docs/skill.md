@@ -18,6 +18,33 @@ Update the map in the same turn as the work, whenever:
 
 Keep the map structural. A note is one line: a blocked reason, a key decision, a pointer. If you need more, write it in the diary and link to it.
 
+### Write for a human reading the big picture
+
+The map is read by people scanning the whole project; the diary is where the work is reproduced. Write each node so that someone who never saw the code understands what it is and why it matters, and put the technical record behind a precise link.
+
+- **Title: a short name in plain words**, usually two to four words, naming the thing or outcome, not a file, function or flag. "Hot reload", not "`fs.watch` per directory + 2 s rescan". Do not turn titles into sentences; brevity is part of readability, and the `Why:` note carries the explanation. Keep a title that is already short and clear.
+- **First note: `Why:` and how the node serves the larger goal.** Name the user need or the parent goal it advances, so the line connects the node to the picture around it, not just restates the title.
+- **Other notes: decisions, outcomes and open questions** a reader needs to judge progress, in one plain sentence each.
+- **Technical details go to the diary**: commands, error messages, numbers, file paths, commit hashes, parameter lists, how a bug was found. Link to the exact entry, or the exact line with `^=` / `+L` (section 3), so a reader can jump straight to the evidence instead of searching.
+- If a note needs a code span to be understood, it probably belongs in the diary.
+
+```rhumb
+---
+links:
+  diary: ../{path}.md
+---
+
+%% Too technical for the map: a reader learns how it was built, not what it is for.
+- [x] fs.watch per dir + 2s rescan, SSE `change` on recreate (05b336e) ^hot-reload-raw
+  - Node 22 recursive watch drops files after rm+create; mtime/size shortcut
+
+%% Readable: what it gives the user and why, with the details one click away.
+- [x] Hot reload ^hot-reload
+  - Why: agents and editors rewrite maps while a page is open; the view must stay current or people act on stale plans.
+  - Saves that replace the file (as many editors do) no longer stop updates.
+  - [how it was fixed](<diary:2026/1008#rhumb-tooling:~:text=Implement hot reload>)
+```
+
 ## 2. Nodes
 
 ```
@@ -61,7 +88,7 @@ Every Markdown link in a node's title or notes is an anchor of that node. Prefer
 - The fragment is a GitHub heading slug (lowercase, punctuation removed, spaces → `-`). A unique prefix is enough: `#portolan` matches `## Portolan: agent-human shared mind map ...`.
 - To point at one entry under the heading, append a text fragment: `#portolan:~:text=Backlog.md`. The resolver picks the first top-level list item under that heading whose lines contain the text. Choose a distinctive phrase from the entry's first line or summary.
 - To point at a line, use `^=` (line starts with, indentation ignored) and offsets: ``#map-layout^=`* \> [host][portolan] Design a vector`+L2`` is the summary line two lines below that entry. `#heading+L3` counts from the heading. `#L42` / `#L42-L50` point at absolute lines in any file (code: `repo:src/edit.ts#L120`). Prefer `^=` or `:~:text=` to bare offsets; offsets shift when lines are inserted above.
-- If the target contains spaces, wrap the whole target in `<...>`. Inside it, write `>` as `\>` (diary entries start with `* > [host]`); an unescaped `>` breaks the link and `check` reports `W011`.
+- If the target contains spaces, wrap the whole target in `<...>`. Inside it, write `>` as `\>` (diary entries start with `* > [host]`); an unescaped `>` breaks the link and `check` reports `W011`. A backtick inside a `^=` prefix is written `%60`.
 - When you write a diary heading, start it with a word no other heading in that day's file starts with, so a short prefix like `#rhumb-tooling` stays unique. An ambiguous prefix is `W003`.
 
 ```rhumb
