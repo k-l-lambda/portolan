@@ -63,6 +63,16 @@ Next:
 - An agent loop that delivers human comments in threads to the agent and writes replies back
 - A fuller formatter
 
+## Install
+
+```sh
+npm install -g @k-l-lambda/portolan   # or: npx @k-l-lambda/portolan serve <dir>
+portolan serve path/to/maps            # then open http://127.0.0.1:4310
+rhumb check path/to/plan.rhumb
+```
+
+The package ships the compiled CLI, the library API (`import { parse } from "@k-l-lambda/portolan"`) and the built web app. It needs Node 22.12 or newer.
+
 ## Quick start
 
 pnpm is required. `npm install` crashes with npm 10.9 on this dependency set.
@@ -82,3 +92,10 @@ Then open http://127.0.0.1:4310.
 
 - [docs/rhumb-spec.md](docs/rhumb-spec.md): the Rhumb 0.1 syntax specification
 - [docs/skill.md](docs/skill.md): guide for agents that maintain a Rhumb map
+
+## Releasing
+
+Bump `version` in `package.json` and push to `main`. The [publish workflow](.github/workflows/publish.yml) publishes that version to npm if it is not there yet, using npm Trusted Publishing (no token secret; provenance is added automatically).
+
+The very first release has to be published by hand (`npm publish --access public`), because a trusted publisher can only be configured on a package that already exists. After that, on npmjs.com open the package settings, add a Trusted Publisher for GitHub Actions with user `k-l-lambda`, repository `portolan` and workflow `publish.yml`.
+

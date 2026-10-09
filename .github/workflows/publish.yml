@@ -1,0 +1,77 @@
+name: Publish to npm
+
+# Publishes @k-l-lambda/portolan when package.json on main carries a version that is not on
+# npm yet. Bump "version" in package.json and push to main to release.
+#
+# Uses npm Trusted Publishing (OIDC): no NPM_TOKEN secret. One-time setup on npmjs.com, after
+# the package exists: package settings -> Trusted Publisher -> GitHub Actions, user
+# k-l-lambda, repository portolan, workflow file publish.yml.
+
+on:
+  push:
+    branches: [main]
+    paths: [package.json]
+  workflow_dispatch:
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm Trusted Publishing (OIDC) and provenance
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Check whether this version is already on npm
+        id: version
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already published; skipping."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Will publish $NAME@$VERSION."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup pnpm
+        if: steps.version.outputs.publish == 'true'
+        uses: pnpm/action-setup@v6.1.0 # version comes from "packageManager" in package.json
+
+      - name: Setup Node.js
+        if: steps.version.outputs.publish == 'true'
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24' # Trusted Publishing needs Node >= 22.14
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false # no caching in release builds
+
+      - name: Use npm >= 11.5.1 (Trusted Publishing requirement)
+        if: steps.version.outputs.publish == 'true'
+        run: npm install -g npm@11.20.0
+
+      - name: Install dependencies
+        if: steps.version.outputs.publish == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Test
+        if: steps.version.outputs.publish == 'true'
+        run: pnpm test
+
+      # prepublishOnly runs `npm run build` (grammar, tsc to dist/, web app to web/dist/).
+      # Provenance is generated automatically with Trusted Publishing.
+      - name: Publish
+        if: steps.version.outputs.publish == 'true'
+        run: npm publish --access public
+
+      - name: Summary
+        if: steps.version.outputs.publish == 'true'
+        run: echo "## Published @k-l-lambda/portolan@${{ steps.version.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"

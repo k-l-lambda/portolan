@@ -1,25 +1,64 @@
 {
-  "name": "@portolan/rhumb",
+  "name": "@k-l-lambda/portolan",
   "version": "0.1.0",
-  "private": true,
+  "description": "A shared map of work for humans and AI agents: a mind map that is also a TODO list and task log, written in the Rhumb DSL.",
   "type": "module",
-  "description": "Parser for the Rhumb graph DSL",
+  "keywords": [
+    "mind-map",
+    "task-graph",
+    "dsl",
+    "agents",
+    "todo",
+    "diary"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "portolan": "dist/cli.js",
+    "rhumb": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web/dist",
+    "docs"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "build:grammar": "peggy --format es --dts --allowed-start-rules Line,Inline -o src/generated/line-parser.js src/grammar.peggy",
     "pretest": "npm run build:grammar",
     "test": "vitest run",
     "typecheck": "npm run build:grammar && tsc --noEmit && tsc --noEmit -p web",
     "portolan": "node src/cli.ts",
+    "build:lib": "npm run build:grammar && tsc -p tsconfig.build.json && mkdir -p dist/generated && cp src/generated/line-parser.js src/generated/line-parser.d.ts dist/generated/",
     "build:web": "vite build web",
-    "dev:web": "vite web"
+    "dev:web": "vite web",
+    "build": "npm run build:lib && npm run build:web",
+    "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k-l-lambda/portolan.git"
+  },
+  "homepage": "https://github.com/k-l-lambda/portolan#readme",
+  "bugs": {
+    "url": "https://github.com/k-l-lambda/portolan/issues"
+  },
+  "author": "k.l.lambda",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.23.0",
   "dependencies": {
-    "@xyflow/react": "12.11.6",
-    "dompurify": "3.4.16",
-    "elkjs": "0.12.0",
-    "marked": "18.0.14",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
     "yaml": "2.9.1"
   },
   "devDependencies": {
@@ -27,13 +66,15 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.1",
+    "@xyflow/react": "12.11.6",
+    "dompurify": "3.4.16",
+    "elkjs": "0.12.0",
+    "marked": "18.0.14",
     "peggy": "5.1.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "typescript": "6.0.3",
     "vite": "8.3.3",
     "vitest": "5.0.1"
-  },
-  "bin": {
-    "portolan": "src/cli.ts",
-    "rhumb": "src/cli.ts"
   }
 }
