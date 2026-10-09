@@ -47,6 +47,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Hovered node or edge; falls back to the selected node so keyboard and touch users get the same focus.
   const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string } | null>(null);
   const [allLabels, setAllLabels] = useState(false);
+  // Last placed position of each label, so a label fades out where it was shown.
+  const lastLabelAt = useRef(new Map<string, { x: number; y: number }>());
   // Hovering a relation line focuses it. Hovering its label only shows the label's full text (CSS):
   // the label is rendered inside the edge, so its pointer events must not count as edge hover.
   const fromLabel = (e: { target: EventTarget | null }) => (e.target as Element | null)?.closest?.(".edge-label") != null;
@@ -336,8 +338,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         // Constant: xyflow renders each z-index in its own SVG layer, so changing it on focus would
         // remount the edge and its label, pulling the label out from under the pointer.
         zIndex: 100,
-        label: visible.has(e.id) ? e.label : undefined,
-        data: { ...e.data, labelAt: at.get(e.id), labelClass: `${e.className}${active ? " is-active" : ""}` },
+        // Labels stay mounted and fade in/out (CSS), so showing or hiding one can be animated.
+        label: e.label,
+        data: {
+          ...e.data,
+          labelAt: rememberAt(lastLabelAt.current, e.id, at.get(e.id)),
+          labelShown: visible.has(e.id),
+          labelClass: `${e.className}${active ? " is-active" : ""}`,
+        },
       };
     });
     // Nodes stay the same objects: giving them a new className makes xyflow re-measure them, and
@@ -500,4 +508,10 @@ function useOutsidePress(ref: RefObject<HTMLElement | null>, open: boolean, clos
     document.addEventListener("pointerdown", onDown, true);
     return () => document.removeEventListener("pointerdown", onDown, true);
   }, [ref, open, close]);
+}
+
+/** Records a label's new position, or returns the last one while it is hidden. */
+function rememberAt(last: Map<string, { x: number; y: number }>, id: string, at: { x: number; y: number } | undefined) {
+  if (at) last.set(id, at);
+  return at ?? last.get(id);
 }

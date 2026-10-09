@@ -312,6 +312,12 @@ a { color: var(--accent); }
 }
 /* A focused edge (hover or selection) shows its whole label; only unfocused labels are cut. */
 .edge-label.is-active { max-width: none; overflow: visible; text-overflow: clip; }
+.edge-label { transition: opacity 0.5s ease, visibility 0s linear 0s, border-color 0.5s ease, box-shadow 0.5s ease; }
+/* Fade out, then drop out of hit-testing and the accessibility tree once invisible. */
+.edge-label.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden { transition: none; }
+}
 /* Hovering a label itself also shows its whole text. It widens in place around its centre and
    rises above neighbouring labels; it does not move, so it cannot slip out from under the cursor. */
 .edge-label:hover { max-width: none; overflow: visible; text-overflow: clip; z-index: 1; box-shadow: 0 2px 8px rgb(0 0 0 / 0.18); }
@@ -327,11 +333,13 @@ a { color: var(--accent); }
 /* Focus: hovered/selected node or edge stands out, the rest steps back. */
 /* Only the visible path changes. The invisible hit stroke (.react-flow__edge-interaction) must keep
    its width: shrinking it on focus moved the pointer off it, which unfocused it again (flicker). */
-.react-flow__edge .react-flow__edge-path { transition: opacity 120ms, stroke-width 120ms; }
+.react-flow__edge .react-flow__edge-path { transition: stroke-width 0.5s ease; }
+/* Highlight changes ease in and out: dimming of lines and cards, line width, labels appearing. */
+.react-flow__edge { transition: opacity 0.5s ease; }
 /* Lines are always drawn; while something is focused the others step back but stay visible. */
 .react-flow__edge.is-dim { opacity: 0.3; }
 .react-flow__edge.is-active .react-flow__edge-path { stroke-width: 2.5; }
-.react-flow__node { transition: opacity 120ms; }
+.react-flow__node { transition: opacity 0.5s ease; }
 .toggle-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .mini.status-todo { fill: var(--st-todo); }
 .mini.status-doing { fill: var(--st-doing); }

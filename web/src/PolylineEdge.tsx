@@ -9,6 +9,8 @@ export interface PolylineData extends Record<string, unknown> {
   labelAt?: { x: number; y: number };
   /** Edge kind class and focus state, repeated on the label because it lives in another layer. */
   labelClass?: string;
+  /** Hidden labels stay mounted (faded out), so showing and hiding can be animated. */
+  labelShown?: boolean;
 }
 
 export type PolylineEdgeType = Edge<PolylineData, "polyline">;
@@ -26,7 +28,8 @@ export const PolylineEdge = memo(function PolylineEdge(props: EdgeProps<Polyline
         interactionWidth={props.interactionWidth} />
       {props.label !== undefined && props.label !== null && (
         <EdgeLabelRenderer>
-          <div className={`edge-label ${props.data?.labelClass ?? ""}`} data-edge={props.id}
+          <div className={`edge-label ${props.data?.labelClass ?? ""}${props.data?.labelShown === false ? " is-hidden" : ""}`}
+            data-edge={props.id} aria-hidden={props.data?.labelShown === false || undefined}
 
             style={{ transform: `translate(-50%, -50%) translate(${at.x}px, ${at.y}px)` }}>
             {props.label}
