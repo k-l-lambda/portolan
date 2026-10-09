@@ -257,11 +257,11 @@ a { color: var(--accent); }
 }
 .handle { opacity: 0; pointer-events: none; }
 
-.react-flow__edge.edge-needs path { stroke: var(--edge-needs); stroke-width: 1.5; }
-.react-flow__edge.edge-blocks path { stroke: var(--edge-blocks); stroke-width: 1.5; }
-.react-flow__edge.edge-relates path { stroke: var(--edge-relates); }
-.react-flow__edge.edge-replaces path { stroke: var(--edge-replaces); }
-.react-flow__edge.edge-from path { stroke: var(--edge-from); }
+.react-flow__edge.edge-needs .react-flow__edge-path { stroke: var(--edge-needs); stroke-width: 1.5; }
+.react-flow__edge.edge-blocks .react-flow__edge-path { stroke: var(--edge-blocks); stroke-width: 1.5; }
+.react-flow__edge.edge-relates .react-flow__edge-path { stroke: var(--edge-relates); }
+.react-flow__edge.edge-replaces .react-flow__edge-path { stroke: var(--edge-replaces); }
+.react-flow__edge.edge-from .react-flow__edge-path { stroke: var(--edge-from); }
 /* Edge labels live in xyflow's HTML label layer; lift it above edges and nodes so no line or
    card is painted over a label. The label background masks the lines underneath. */
 /* Above frames (0..99), lines (100) and cards (200..299, 350 while hovered); see DocView. */
@@ -287,10 +287,12 @@ a { color: var(--accent); }
    and the group stay inert). */
 .react-flow__edge.inactive .react-flow__edge-interaction { pointer-events: stroke; cursor: default; }
 /* Focus: hovered/selected node or edge stands out, the rest steps back. */
-.react-flow__edge path { transition: opacity 120ms, stroke-width 120ms; }
+/* Only the visible path changes. The invisible hit stroke (.react-flow__edge-interaction) must keep
+   its width: shrinking it on focus moved the pointer off it, which unfocused it again (flicker). */
+.react-flow__edge .react-flow__edge-path { transition: opacity 120ms, stroke-width 120ms; }
 /* Lines are always drawn; while something is focused the others step back but stay visible. */
 .react-flow__edge.is-dim { opacity: 0.3; }
-.react-flow__edge.is-active path { stroke-width: 2.5; }
+.react-flow__edge.is-active .react-flow__edge-path { stroke-width: 2.5; }
 .react-flow__node { transition: opacity 120ms; }
 .toggle-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .mini.status-todo { fill: var(--st-todo); }
