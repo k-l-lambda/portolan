@@ -1,0 +1,20 @@
+{
+  "links": {"diary": "../{path}.md"},
+  "nodes": [
+    {"id": "a", "anchors": [
+      {"text": "p", "fragment": "map-layout", "line_prefix": "* > [host]", "line_offset": null, "lines": null, "fragment_error": null},
+      {"text": "q", "fragment": "map-layout", "line_prefix": "* > [host] Make the", "line_offset": 2, "lines": null, "fragment_error": null},
+      {"text": "o", "fragment": "map-layout", "line_prefix": null, "line_offset": 3, "lines": null},
+      {"text": "m", "fragment": "map-layout", "line_offset": -1},
+      {"text": "r", "fragment": null, "lines": [120, 140], "line_prefix": null, "line_offset": null},
+      {"text": "l", "fragment": null, "lines": [42, 42]},
+      {"text": "f", "fragment": null, "line_prefix": "export function", "lines": null},
+      {"text": "t", "fragment": "map-layout", "text_fragment": "Make the+L2", "line_offset": null},
+      {"text": "bad1", "fragment_error": "empty ^= prefix"},
+      {"text": "bad2", "fragment_error": "unterminated ` in ^= prefix"},
+      {"text": "bad3", "fragment_error": "line range L9-L3 ends before it starts"},
+      {"text": "bad4", "fragment_error": "an absolute line L5 cannot take an offset"}
+    ]}
+  ],
+  "diagnostics": [["E005", 10], ["E005", 11], ["E005", 12], ["E005", 16], ["E005", 17]]
+}

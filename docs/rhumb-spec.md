@@ -153,7 +153,35 @@ The fragment (after `#`) is matched like this:
 - A unique prefix of the slug is enough: `#portolan` matches `## Portolan: agent-human shared mind map …`.
 - To point at a specific entry under a heading, append a Text Fragment: `#portolan:~:text=Backlog.md`. The resolver picks the first list entry under that heading that contains the text. If the text has spaces, wrap the whole target in angle brackets.
 
-`rhumb check` resolves anchors against the actual files. An undefined prefix is error `E005`. A missing file, a missing heading, an ambiguous prefix or a text fragment that is not found is warning `W003`. The diary lives in another repository and may not always be present, so these are warnings, not errors.
+### 4.1 Lines inside a target
+
+A fragment narrows left to right: a heading, then a line selector, then a line offset. An absolute line needs no heading and works in any text file.
+
+```
+fragment = slug [":~:text=" text]                    ; existing form, text runs to the end
+         | [slug] "^=" prefix [offset]               ; line that starts with prefix
+         | slug offset                               ; lines from the heading
+         | "L" n ["-L" m]                            ; absolute line or range
+prefix   = "`" chars "`" | chars                     ; backticks for spaces or + # : ~
+offset   = ("+" | "-") "L" n
+```
+
+| Form | Points at |
+| --- | --- |
+| `#heading^=foo` | first line in the heading's section that starts with `foo`, ignoring indentation |
+| ``#heading^=`* \> [host] Make` `` | same; backticks when the prefix has spaces or `+ # : ~` |
+| `#^=export function parse` | first such line in the whole file (any text file) |
+| `#heading+L3` / `#heading-L2` | 3 lines below / 2 lines above the heading line |
+| `#heading^=foo+L2` | 2 lines below the matched line |
+| `#L42`, `#L42-L50` | line 42, lines 42 to 50 (as on GitHub) |
+
+- These separators never clash with slugs: GitHub slugs are lowercase and drop `+ ^ = \` : ~`, so `L` is always uppercase in an offset or line.
+- Lines are counted as in an editor, blank lines included. The first match wins. An offset may not leave the heading's section (or the file).
+- Prefer a `^=` or text match to a bare offset: inserting a line above shifts an offset to another line, and `check` cannot notice.
+- Inside `<…>` a backslash escapes ASCII punctuation (CommonMark), so a diary entry line `* > [host] …` is written ``^=`* \> [host] …` ``. An unescaped `>` ends the target early; the link is then not recognized and the line gets warning `W011`.
+- The `:~:text=` form keeps its existing meaning and cannot take an offset (its text runs to the end of the fragment).
+
+`rhumb check` resolves anchors against the actual files. An undefined prefix is error `E005`. A missing file, a missing heading, an ambiguous prefix, a text fragment or `^=` prefix that is not found, an offset that leaves its section, a line past the end of the file, or a fragment that cannot be parsed (such as `#L9-L3` or an unterminated backtick) is warning `W003`. The diary lives in another repository and may not always be present, so these are warnings, not errors.
 
 ## 5. Edges
 

@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  applyEdit, createRhumbServer, derive, EditError, foldThreads, format, parse, resolveAnchor, ThreadStore,
+  applyEdit, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, parse, resolveAnchor, ThreadStore,
 } from "../src/index.ts";
 
 const SRC = `---
@@ -146,6 +146,89 @@ r needs gone
     expect(byId.r!.ready).toBe(true);
     expect(byId.b!.ready).toBe(true);
     expect(d.diagnostics.map((x) => [x.code, x.line])).toEqual([["W007", 1], ["I003", 5], ["W008", 8], ["W006", 12]]);
+  });
+});
+
+describe("resolveAnchor: line prefixes, offsets and line ranges", () => {
+  // Line numbers are what the assertions refer to.
+  const diary = [
+    "# 2026-10-09",                                      // 1
+    "",                                                  // 2
+    "## Map layout, labels and stars",                   // 3
+    "",                                                  // 4
+    "* > [host][portolan] Make the view less crowded.",  // 5
+    "\t<details>",                                       // 6
+    "\t<summary>Hover focus</summary>",                  // 7
+    "\t* First detail",                                  // 8
+    "\t</details>",                                      // 9
+    "",                                                  // 10
+    "* > [host][portolan] Lay out top to bottom.",       // 11
+    "\t* Second detail",                                 // 12
+    "",                                                  // 13
+    "## Other heading",                                  // 14
+    "* > [host] Unrelated",                              // 15
+  ].join("\n");
+  const code = ["import x;", "", "export function a() {}", "export function b() {}", "// end"].join("\n");
+  const files: Record<string, string> = { "/d/2026/1009.md": diary, "/r/src/edit.ts": code };
+  const ctx = {
+    baseDir: "/d/memo",
+    links: { diary: "../{path}.md", repo: "../../r/{path}" },
+    readFile: (p: string) => files[p] ?? null,
+  };
+  const at = (target: string) => {
+    const src = `---\nlinks:\n  diary: ../{path}.md\n  repo: ../../r/{path}\n---\n- [ ] N [x](<${target}>) ^n\n`;
+    return resolveAnchor(parse(src).nodes[0]!.anchors[0]!, ctx);
+  };
+  const codes = (target: string) => at(target).diagnostics.map((d) => d.code);
+
+  it("matches the first line in the section that starts with a prefix, ignoring indentation", () => {
+    expect(at("diary:2026/1009#map-layout^=* \\> [host][portolan] Lay")).toMatchObject({ line: 11, diagnostics: [] });
+    expect(at("diary:2026/1009#map-layout^=`\\<summary\\>`")).toMatchObject({ line: 7 });
+    // The prefix search stays inside the heading's section.
+    expect(codes("diary:2026/1009#map-layout^=`* \\> [host] Unrelated`")).toEqual(["W003"]);
+  });
+
+  it("applies line offsets from the matched line or from the heading", () => {
+    expect(at("diary:2026/1009#map-layout^=`* \\> [host][portolan] Make`+L2").line).toBe(7);
+    expect(at("diary:2026/1009#map-layout+L2").line).toBe(5);
+    expect(at("diary:2026/1009#map-layout^=`* \\> [host][portolan] Lay`-L1").line).toBe(10);
+    // Running past the section is a warning.
+    expect(codes("diary:2026/1009#map-layout+L20")).toEqual(["W003"]);
+    expect(codes("diary:2026/1009#map-layout-L5")).toEqual(["W003"]);
+  });
+
+  it("resolves absolute lines and ranges in any text file", () => {
+    expect(at("repo:src/edit.ts#L3")).toMatchObject({ line: 3, lineEnd: 3, diagnostics: [] });
+    expect(at("repo:src/edit.ts#L3-L4")).toMatchObject({ line: 3, lineEnd: 4 });
+    expect(at("repo:src/edit.ts#^=export function b").line).toBe(4);
+    expect(codes("repo:src/edit.ts#L9")).toEqual(["W003"]);
+    expect(codes("repo:src/edit.ts#L4-L9")).toEqual(["W003"]);
+    expect(codes("repo:src/edit.ts#^=class")).toEqual(["W003"]);
+  });
+
+  it("does not recognize a <…> target with an unescaped >, and warns", () => {
+    const src = (t: string) => `- [ ] N [x](<${t}>) ^n\n`;
+    const broken = parse(src("diary:2026/1009#map-layout^=`* > [host]`"));
+    expect(broken.nodes[0]!.anchors).toEqual([]);
+    expect(broken.diagnostics.map((d) => d.code)).toContain("W011");
+    expect(at("diary:2026/1009#map-layout^=`* \\> [host]`").line).toBe(5);
+    expect(parse(src("diary:2026/1009#map-layout^=`* \\> [host]`")).diagnostics.map((d) => d.code)).not.toContain("W011");
+  });
+
+  it("reports malformed fragments as W003", () => {
+    expect(codes("repo:src/edit.ts#L9-L3")).toEqual(["W003"]);
+    expect(codes("diary:2026/1009#map-layout^=")).toEqual(["W003"]);
+  });
+
+  it("starts the excerpt at the resolved line", () => {
+    const r = at("diary:2026/1009#map-layout^=`* \\> [host][portolan] Lay`");
+    expect(excerpt(diary, r)).toBe(["* > [host][portolan] Lay out top to bottom.", "\t* Second detail"].join("\n"));
+    expect(excerpt(code, at("repo:src/edit.ts#L3-L4"))).toBe("export function a() {}\nexport function b() {}");
+  });
+
+  it("surfaces failed matches through check", () => {
+    const src = "---\nlinks:\n  diary: ../{path}.md\n---\n- [ ] N ^n\n  - [x](<diary:2026/1009#map-layout^=`nothing here`>)\n";
+    expect(checkAnchors(parse(src), ctx).map((d) => [d.code, d.line])).toEqual([["W003", 6]]);
   });
 });
 

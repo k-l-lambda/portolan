@@ -294,7 +294,13 @@ function extractAnchors(
   links: Record<string, string>,
   report: (code: string, line: number, message: string) => void,
 ): Anchor[] {
-  const found = parseLine(text, { startRule: "Inline" }) as { text: string; target: string }[];
+  const found = parseLine(text, { startRule: "Inline" }) as { text: string; target: string; start: number }[];
+  // A `](<` that did not become a link is almost always an unescaped `>` inside the target.
+  const opened = [...text.matchAll(/\]\(</g)].length;
+  const parsed = found.filter((f) => text.startsWith("](<", f.start + f.text.length + 1)).length;
+  if (opened > parsed) {
+    report("W011", line, "A <…> link target was not recognized; escape > inside it as \\>");
+  }
   return found.map(({ text: label, target }) => {
     const anchor = classifyTarget(label, target, line);
     if (anchor.kind === "prefix" && !(anchor.prefix! in links)) {
@@ -304,28 +310,95 @@ function extractAnchors(
   });
 }
 
+export interface Fragment {
+  slug: string | null;
+  text_fragment: string | null;
+  line_prefix: string | null;
+  line_offset: number | null;
+  lines: [number, number] | null;
+  error: string | null;
+}
+
+/**
+ * Parses the part after `#`, narrowing left to right:
+ *   `slug`, then `:~:text=…` (rest of the fragment) or `^=prefix` / ``^=`prefix` ``, then `+L3` / `-L2`;
+ *   or an absolute `L42` / `L42-L50`.
+ * GitHub slugs are lowercase and never contain `+ ^ = \` : ~`, so these separators are unambiguous.
+ */
+export function parseFragment(raw: string): Fragment {
+  const f: Fragment = { slug: null, text_fragment: null, line_prefix: null, line_offset: null, lines: null, error: null };
+  const fail = (error: string) => ({ ...f, error });
+
+  const abs = /^L(\d+)(?:-L(\d+))?(.*)$/.exec(raw);
+  if (abs) {
+    const a = Number(abs[1]), b = abs[2] === undefined ? a : Number(abs[2]);
+    if (/^[+-]L\d+$/.test(abs[3]!)) return fail(`an absolute line L${a} cannot take an offset`);
+    if (abs[3] !== "") return fail(`unexpected "${abs[3]}" after line L${a}`);
+    if (a < 1) return fail("lines start at L1");
+    if (b < a) return fail(`line range L${a}-L${b} ends before it starts`);
+    return { ...f, lines: [a, b] };
+  }
+
+  const tf = raw.indexOf(":~:text=");
+  if (tf >= 0) {
+    // The text fragment runs to the end, so `+` inside it is text, not an offset.
+    return { ...f, slug: raw.slice(0, tf) || null, text_fragment: safeDecode(raw.slice(tf + ":~:text=".length)) };
+  }
+
+  let rest = raw;
+  const offset = /([+-])L(\d+)$/.exec(rest);
+  const sel = rest.indexOf("^=");
+  // An offset belongs to the fragment only if it is not inside the ^= prefix text.
+  const takeOffset = () => {
+    if (!offset) return;
+    f.line_offset = (offset[1] === "-" ? -1 : 1) * Number(offset[2]);
+    rest = rest.slice(0, offset.index);
+  };
+
+  if (sel < 0) {
+    takeOffset();
+    f.slug = rest || null;
+    if (f.line_offset !== null && f.slug === null) return fail("a line offset needs a heading or a ^= prefix");
+    return f;
+  }
+
+  f.slug = rest.slice(0, sel) || null;
+  let value = rest.slice(sel + 2);
+  if (value.startsWith("`")) {
+    const close = value.indexOf("`", 1);
+    if (close < 0) return fail("unterminated ` in ^= prefix");
+    const after = value.slice(close + 1);
+    value = value.slice(1, close);
+    const m = /^([+-])L(\d+)$/.exec(after);
+    if (m) f.line_offset = (m[1] === "-" ? -1 : 1) * Number(m[2]);
+    else if (after !== "") return fail(`unexpected "${after}" after the ^= prefix`);
+  } else {
+    const m = /^(.*?)([+-])L(\d+)$/.exec(value);
+    if (m && m[1] !== "") (value = m[1]!, (f.line_offset = (m[2] === "-" ? -1 : 1) * Number(m[3])));
+  }
+  value = safeDecode(value);
+  if (value.trim() === "") return fail("empty ^= prefix");
+  f.line_prefix = value;
+  return f;
+}
+
 function classifyTarget(text: string, target: string, line: number): Anchor {
   const hash = target.indexOf("#");
   const base = hash < 0 ? target : target.slice(0, hash);
-  let fragment: string | null = hash < 0 ? null : target.slice(hash + 1);
-  let textFragment: string | null = null;
-  if (fragment !== null) {
-    const tf = fragment.indexOf(":~:text=");
-    if (tf >= 0) {
-      textFragment = safeDecode(fragment.slice(tf + ":~:text=".length));
-      fragment = fragment.slice(0, tf);
-    }
-  }
+  const frag = hash < 0 ? null : parseFragment(target.slice(hash + 1));
 
   const anchor: Anchor = {
     text, target, line, kind: "relative", prefix: null, path: base,
-    fragment: fragment || null, text_fragment: textFragment,
+    fragment: frag?.slug ?? null, text_fragment: frag?.text_fragment ?? null,
+    line_prefix: frag?.line_prefix ?? null, line_offset: frag?.line_offset ?? null,
+    lines: frag?.lines ?? null, fragment_error: frag?.error ?? null,
   };
   const scheme = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(base);
   if (scheme) {
     const name = scheme[1]!;
     if (URL_SCHEMES.has(name.toLowerCase())) {
-      Object.assign(anchor, { kind: "url", path: null, fragment: null, text_fragment: null });
+      Object.assign(anchor, { kind: "url", path: null, fragment: null, text_fragment: null,
+        line_prefix: null, line_offset: null, lines: null, fragment_error: null });
     } else {
       Object.assign(anchor, { kind: "prefix", prefix: name, path: base.slice(name.length + 1) });
     }

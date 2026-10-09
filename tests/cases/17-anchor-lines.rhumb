@@ -1,0 +1,17 @@
+---
+links:
+  diary: ../{path}.md
+---
+- [ ] Anchors ^a
+  - [p](<diary:2026/1009#map-layout^=* \> [host]>)
+  - [q](<diary:2026/1009#map-layout^=`* \> [host] Make the`+L2>)
+  - [o](diary:2026/1009#map-layout+L3)
+  - [m](diary:2026/1009#map-layout-L1)
+  - [r](repo:src/edit.ts#L120-L140)
+  - [l](repo:src/edit.ts#L42)
+  - [f](<repo:src/edit.ts#^=export function>)
+  - [t](<diary:2026/1009#map-layout:~:text=Make the+L2>)
+  - [bad1](diary:2026/1009#x^=)
+  - [bad2](diary:2026/1009#x^=`open)
+  - [bad3](repo:src/edit.ts#L9-L3)
+  - [bad4](repo:src/edit.ts#L5+L2)

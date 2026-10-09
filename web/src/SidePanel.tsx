@@ -125,7 +125,9 @@ function AnchorView({ file, line, index }: { file: string; line: number; index: 
       {where && (
         <p className="muted anchor-where">
           {data.url ? <a href={data.url} target="_blank" rel="noopener noreferrer">{data.url}</a> : where}
-          {data.entryLine ? ` · line ${data.entryLine}` : data.heading ? ` · line ${data.heading.line}` : ""}
+          {data.line !== null
+            ? ` · line ${data.line}${data.lineEnd !== null && data.lineEnd > data.line ? `-${data.lineEnd}` : ""}`
+            : data.entryLine ? ` · line ${data.entryLine}` : data.heading ? ` · line ${data.heading.line}` : ""}
         </p>
       )}
       {data.diagnostics.map((d, i) => <p key={i} className="badge badge-warning">{d.code} {d.message}</p>)}

@@ -20,6 +20,10 @@ export interface Resolved {
   heading: { text: string; line: number } | null;
   /** 1-based line of the list entry matched by the text fragment. */
   entryLine: number | null;
+  /** 1-based line the anchor points at (after ^= prefix, offset or absolute line). */
+  line: number | null;
+  /** Last line of an absolute range (`#L42-L50`); equals `line` for a single line. */
+  lineEnd: number | null;
   /** Diagnostics are reported on the anchor's line in the .rhumb file. */
   diagnostics: Diagnostic[];
 }
@@ -27,7 +31,7 @@ export interface Resolved {
 const MARKDOWN = /\.(md|markdown|rhumb)$/i;
 
 export function resolveAnchor(anchor: Anchor, ctx: ResolveContext): Resolved {
-  const out: Resolved = { url: null, file: null, heading: null, entryLine: null, diagnostics: [] };
+  const out: Resolved = { url: null, file: null, heading: null, entryLine: null, line: null, lineEnd: null, diagnostics: [] };
   const warn = (msg: string) => out.diagnostics.push(diagnostic("W003", anchor.line, msg));
 
   if (anchor.kind === "url") {
@@ -53,29 +57,79 @@ export function resolveAnchor(anchor: Anchor, ctx: ResolveContext): Resolved {
     warn(`File not found: ${out.file}`);
     return out;
   }
-  if (!anchor.fragment || !MARKDOWN.test(out.file)) return out;
+  if (anchor.fragment_error) {
+    warn(`Bad link fragment in ${anchor.target}: ${anchor.fragment_error}`);
+    return out;
+  }
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  if (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
 
-  const headings = markdownHeadings(text);
-  const exact = headings.filter((h) => h.slug === anchor.fragment);
-  const matches = exact.length > 0 ? exact : headings.filter((h) => h.slug.startsWith(anchor.fragment!));
-  if (matches.length === 0) {
-    warn(`Heading #${anchor.fragment} not found in ${out.file}`);
+  // Absolute lines work in any text file.
+  if (anchor.lines) {
+    const [a, b] = anchor.lines;
+    if (b > lines.length) warn(`Line ${b > a ? `range L${a}-L${b}` : `L${a}`} is past the end of ${out.file} (${lines.length} lines)`);
+    else (out.line = a), (out.lineEnd = b);
     return out;
   }
-  if (matches.length > 1) {
-    warn(`Heading prefix #${anchor.fragment} is ambiguous in ${out.file}`);
-    return out;
+
+  // Section: the heading's lines (Markdown only), else the whole file.
+  let from = 1, to = lines.length;
+  if (anchor.fragment) {
+    if (!MARKDOWN.test(out.file)) {
+      warn(`Heading #${anchor.fragment} used on a non-Markdown file ${out.file}`);
+      return out;
+    }
+    const h = findHeading(text, anchor.fragment, out.file, warn);
+    if (!h) return out;
+    out.heading = { text: h.text, line: h.line };
+    from = h.line;
+    to = (h.end ?? lines.length + 1) - 1;
   }
-  const h = matches[0]!;
-  out.heading = { text: h.text, line: h.line };
 
   if (anchor.text_fragment) {
-    const lines = text.replace(/\r\n?/g, "\n").split("\n");
-    const end = headings.find((x) => x.line > h.line && x.depth <= h.depth)?.line ?? lines.length + 1;
-    out.entryLine = findEntry(lines, h.line, end, anchor.text_fragment);
-    if (out.entryLine === null) warn(`Text "${anchor.text_fragment}" not found under #${h.slug}`);
+    if (!out.heading) return out;
+    out.entryLine = findEntry(lines, from, to + 1, anchor.text_fragment);
+    if (out.entryLine === null) warn(`Text "${anchor.text_fragment}" not found under #${anchor.fragment}`);
+    return out;
   }
+
+  let base: number | null = out.heading?.line ?? null;
+  if (anchor.line_prefix !== null) {
+    base = null;
+    for (let i = from; i <= to; i++) {
+      if (lines[i - 1]!.replace(/^\s+/, "").startsWith(anchor.line_prefix)) { base = i; break; }
+    }
+    if (base === null) {
+      warn(`No line starting with "${anchor.line_prefix}" ${anchor.fragment ? `under #${anchor.fragment}` : `in ${out.file}`}`);
+      return out;
+    }
+  }
+  if (base === null) return out; // heading only
+  const target = base + (anchor.line_offset ?? 0);
+  if (target < from || target > to) {
+    const n = anchor.line_offset!;
+    warn(`Offset ${n > 0 ? "+" : "-"}L${Math.abs(n)} from line ${base} leaves ${anchor.fragment ? `#${anchor.fragment}` : out.file} (lines ${from}-${to})`);
+    return out;
+  }
+  if (anchor.line_prefix !== null || anchor.line_offset !== null) (out.line = target), (out.lineEnd = target);
   return out;
+}
+
+/** The heading a slug (or unique slug prefix) names, with the line where its section ends. */
+function findHeading(text: string, slug: string, file: string, warn: (msg: string) => void) {
+  const headings = markdownHeadings(text);
+  const exact = headings.filter((h) => h.slug === slug);
+  const matches = exact.length > 0 ? exact : headings.filter((h) => h.slug.startsWith(slug));
+  if (matches.length === 0) {
+    warn(`Heading #${slug} not found in ${file}`);
+    return null;
+  }
+  if (matches.length > 1) {
+    warn(`Heading prefix #${slug} is ambiguous in ${file}`);
+    return null;
+  }
+  const h = matches[0]!;
+  return { ...h, end: headings.find((x) => x.line > h.line && x.depth <= h.depth)?.line ?? null };
 }
 
 /** Resolves every anchor in the document and returns only the diagnostics. */
@@ -89,6 +143,22 @@ export function checkAnchors(doc: RhumbDocument, ctx: ResolveContext): Diagnosti
 /** The Markdown excerpt an anchor points at: the matched entry, else the heading section. */
 export function excerpt(text: string, r: Resolved, maxLines = 200): string | null {
   const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  if (r.line !== null) {
+    // A range is shown as is; a single line extends to the end of its list entry or paragraph.
+    let end = r.lineEnd !== null && r.lineEnd > r.line ? r.lineEnd : r.line;
+    if (end === r.line) {
+      const first = lines[r.line - 1] ?? "";
+      const indent = first.search(/\S/);
+      const listItem = /^\s*[*-]\s/.test(first);
+      while (end < lines.length && end - r.line < maxLines - 1) {
+        const next = lines[end]!;
+        if (listItem ? isEntryBoundary(next, indent) : next.trim() === "" || /^#{1,6}\s/.test(next)) break;
+        end++;
+      }
+      while (end > r.line && lines[end - 1]!.trim() === "") end--;
+    }
+    return lines.slice(r.line - 1, Math.min(end, r.line - 1 + maxLines)).join("\n");
+  }
   const start = r.entryLine ?? r.heading?.line;
   if (!start) return null;
   let end = start;

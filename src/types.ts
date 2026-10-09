@@ -17,8 +17,17 @@ export interface Anchor {
   kind: "prefix" | "relative" | "url";
   prefix: string | null;
   path: string | null;
+  /** Heading slug (or unique slug prefix) the fragment starts from. */
   fragment: string | null;
   text_fragment: string | null;
+  /** `^=prefix`: first line in the section (or file) that starts with this text, ignoring indentation. */
+  line_prefix: string | null;
+  /** `+L3` / `-L2`: lines below / above the matched line or the heading. */
+  line_offset: number | null;
+  /** `#L42` or `#L42-L50`: absolute 1-based line range. */
+  lines: [number, number] | null;
+  /** Why the fragment could not be parsed; the resolver reports it as W003. */
+  fragment_error: string | null;
 }
 
 export interface Note {

@@ -78,8 +78,13 @@ LinkText
   = ([^\]\\] / "\\" .)*
 
 Target
-  = "<" t:$[^>]* ">" { return t; }
+  = "<" t:TargetChar* ">" { return t.join(""); }
   / $[^ \t)]+
+
+// Inside <…>, a backslash escapes ASCII punctuation (CommonMark), e.g. `\>`.
+TargetChar
+  = "\\" c:[!-/:-@[-`{-~] { return c; }
+  / [^>\n]
 
 LinkTitle
   = "\"" [^"]* "\""
