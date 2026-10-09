@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { DocView } from "./DocView.tsx";
 import { IndexView } from "./IndexView.tsx";
+import { rememberRecent } from "./recent.ts";
+import { RecentMenu } from "./RecentMenu.tsx";
 
 /** Hash routing: `#/` lists documents, `#/doc/<relative path>[?node=<id>]` opens one. */
 function useRoute(): { file: string | null; node: string | null } {
@@ -19,13 +21,14 @@ function useRoute(): { file: string | null; node: string | null } {
 
 export function App() {
   const { file, node } = useRoute();
+  useEffect(() => { if (file) rememberRecent(file); }, [file]);
   return (
     <div className="app">
       <header className="topbar">
         <a className="brand" href="#/">Portolan</a>
         {file && (
           <nav aria-label="Breadcrumb" className="crumbs">
-            <span aria-hidden="true">/</span> <span>{file}</span>
+            <span aria-hidden="true">/</span> <RecentMenu file={file} />
           </nav>
         )}
       </header>

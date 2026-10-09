@@ -76,7 +76,39 @@ a { color: var(--accent); }
   padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--surface);
 }
 .brand { font-weight: 650; text-decoration: none; color: var(--text); letter-spacing: 0.02em; }
-.crumbs { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crumbs { display: flex; align-items: center; gap: 4px; min-width: 0; color: var(--muted); }
+.recent-wrap { position: relative; min-width: 0; }
+.crumb-btn {
+  display: inline-flex; align-items: center; gap: 4px; max-width: 60vw; padding: 2px 6px;
+  font: inherit; color: var(--muted); background: none; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+}
+.crumb-btn:hover, .crumb-btn[aria-expanded="true"] { color: var(--text); border-color: var(--border); background: var(--surface-2); }
+.crumb-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.popover {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 60; width: 360px; max-height: 60vh; overflow: auto;
+  padding: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+.popover ul { list-style: none; margin: 0; padding: 0; }
+.popover-head { margin: 2px 6px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.popover-item { display: flex; flex-direction: column; padding: 5px 8px; border-radius: 4px; color: var(--text); text-decoration: none; }
+.popover-item:hover, .popover-item:focus-visible { background: var(--surface-2); }
+.popover-item.current { box-shadow: inset 3px 0 0 var(--accent); }
+.popover-title { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.popover-sub { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.popover-foot { margin-top: 4px; border-top: 1px solid var(--border); border-radius: 0 0 4px 4px; font-size: 12px; color: var(--accent); }
+.copy-text {
+  position: relative; padding: 0 2px; font: inherit; color: inherit; background: none; border: 0; border-radius: 3px;
+  cursor: copy; text-decoration: underline dotted; text-underline-offset: 2px;
+}
+.copy-text:hover, .copy-text:focus-visible { background: var(--surface-2); color: var(--text); }
+.copy-text.node-id { font-family: ui-monospace, monospace; }
+.copy-flag:empty { display: none; }
+.copy-flag {
+  position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translateX(-50%); white-space: nowrap; pointer-events: none;
+  padding: 1px 6px; font: 600 11px/16px system-ui, sans-serif; border-radius: 4px; background: var(--text); color: var(--surface);
+}
+.copy-flag.failed { background: var(--error); }
 
 .page { padding: 24px 16px; max-width: 960px; margin: 0 auto; width: 100%; overflow: auto; }
 .page h1 { margin: 0 0 4px; font-size: 22px; }

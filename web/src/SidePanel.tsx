@@ -5,6 +5,7 @@ import { api, type AnchorResponse, type Freshness } from "./api.ts";
 import { absoluteTime, relativeTime } from "./time.ts";
 import { starred } from "./layout.ts";
 import { StarIcon } from "./NodeCard.tsx";
+import { CopyText } from "./CopyText.tsx";
 import { renderMarkdown } from "./markdown.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 
@@ -36,7 +37,7 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
       </div>
       <h2 className="panel-title" dangerouslySetInnerHTML={{ __html: renderMarkdown(node.title, true) }} />
       <p className="muted">
-        {node.id ? `^${node.id}` : "no id"} · line {node.line}
+        {node.id ? <CopyText value={node.id} label={`^${node.id}`} className="node-id" /> : "no id"} · line {node.line}
         {state?.ready && <span className="badge badge-ready">ready</span>}
       </p>
       <ProgressBar progress={state?.progress ?? null} />
@@ -150,7 +151,7 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
         <dd>
           {!freshness.repo ? "not in a git repository"
             : !freshness.tracked ? "not committed yet (untracked)"
-            : c ? <>{at(c.time)} · <span className="sha">{c.sha.slice(0, 8)}</span> {c.summary}</> : "none"}
+            : c ? <>{at(c.time)} · <CopyText value={c.sha} label={c.sha.slice(0, 8)} className="sha" /> {c.summary}</> : "none"}
         </dd>
         <dt>File modified</dt>
         <dd>
@@ -182,5 +183,5 @@ function DiagnosticList({ diagnostics, onSelectLine }: { diagnostics: Diagnostic
 }
 
 function CommitRef({ sha, freshness }: { sha: string; freshness: Freshness }) {
-  return <>commit <span className="sha">{sha.slice(0, 8)}</span> {freshness.commits[sha]?.summary}</>;
+  return <>commit <CopyText value={sha} label={sha.slice(0, 8)} className="sha" /> {freshness.commits[sha]?.summary}</>;
 }

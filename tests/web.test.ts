@@ -110,3 +110,12 @@ describe("directory server", () => {
     expect(escaped).not.toContain("nope");
   });
 });
+
+describe("recent maps", () => {
+  it("moves a file to the front, drops duplicates and caps the list", async () => {
+    const { pushRecent } = await import("../web/src/recent.ts");
+    expect(pushRecent(["a", "b", "c"], "b")).toEqual(["b", "a", "c"]);
+    expect(pushRecent([], "x")).toEqual(["x"]);
+    expect(pushRecent(["a", "b", "c"], "d", 3)).toEqual(["d", "a", "b"]);
+  });
+});
