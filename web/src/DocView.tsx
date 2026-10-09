@@ -1,7 +1,7 @@
 import {
   Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
@@ -11,6 +11,9 @@ import { NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
+import { IconButton } from "./IconButton.tsx";
+import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon } from "./Icons.tsx";
+import { Legend } from "./Legend.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
@@ -160,6 +163,12 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const starredList = useMemo(() => [...all.values()].filter(starred), [all]);
   const [highlightStars, setHighlightStars] = useState(false);
   const [starMenu, setStarMenu] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
+  const starWrap = useRef<HTMLDivElement>(null);
+  const legendWrap = useRef<HTMLDivElement>(null);
+  // Clicking the canvas does not move focus, so blur alone would leave a popover open.
+  useOutsidePress(starWrap, starMenu, () => setStarMenu(false));
+  useOutsidePress(legendWrap, legendOpen, () => setLegendOpen(false));
 
   // Reveal, select and center a node once the layout shows it.
   const [pendingCenter, setPendingCenter] = useState<string | null>(null);
@@ -363,17 +372,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         <span className="muted">{all.size} nodes · {data.doc.edges.length} edges</span>
         {counts.error > 0 && <span className="badge badge-error">{counts.error} errors</span>}
         {counts.warning > 0 && <span className="badge badge-warning">{counts.warning} warnings</span>}
-        <button type="button" className="btn" onClick={() => setOverrides(new Map([...all.keys()].map((k) => [k, false])))}
-          disabled={collapsed.size === 0}>
-          Expand all
-        </button>
-        <button type="button" className="btn" onClick={() => setOverrides(new Map())} disabled={overrides.size === 0}>
-          Reset view
-        </button>
-        <label className="toggle-label">
-          <input type="checkbox" checked={allLabels} onChange={(e) => setAllLabels(e.target.checked)} /> All edge labels
-        </label>
-        <div className="star-menu-wrap"
+        <div className="tool-group" role="group" aria-label="View">
+          <IconButton icon={<ExpandAllIcon />} label="Expand all groups"
+            onClick={() => setOverrides(new Map([...all.keys()].map((k) => [k, false])))} disabled={collapsed.size === 0} />
+          <IconButton icon={<ResetViewIcon />} label="Reset folding to the default"
+            onClick={() => setOverrides(new Map())} disabled={overrides.size === 0} />
+          <IconButton icon={<EdgeLabelsIcon />} label={allLabels ? "Hide edge labels" : "Show all edge labels"}
+            pressed={allLabels} onClick={() => setAllLabels((v) => !v)} />
+        </div>
+        <div className="star-menu-wrap" ref={starWrap}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setStarMenu(false); }}
           onKeyDown={(e) => { if (e.key === "Escape") setStarMenu(false); }}>
           <button type="button" className={`btn star-btn${starredList.length > 0 ? " has" : ""}`}
@@ -406,9 +413,19 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         </div>
         {notice && <span role="status" className="notice">{notice}</span>}
         {layoutError && <span role="status" className="notice">{layoutError}</span>}
-        <span className="fresh-legend muted" title="Left edge brightness shows how recently each node's line changed">
-          <span className="fresh-swatch" aria-hidden="true" /> older → newer
-        </span>
+        <div className="legend-wrap" ref={legendWrap}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setLegendOpen(false); }}
+          onKeyDown={(e) => { if (e.key === "Escape") setLegendOpen(false); }}>
+          <button type="button" className={`btn legend-btn${legendOpen ? " pressed" : ""}`} aria-haspopup="dialog"
+            aria-expanded={legendOpen} aria-controls="map-legend" onClick={() => setLegendOpen((v) => !v)}>
+            <LegendIcon /> Legend
+          </button>
+          {legendOpen && (
+            <div id="map-legend" className="popover legend-popover" role="dialog" aria-label="Legend" tabIndex={-1}>
+              <Legend />
+            </div>
+          )}
+        </div>
         {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
       </div>
       <div className="doc-body">
@@ -473,4 +490,14 @@ function cardTime(t: NodeTime | undefined, now: number) {
 function cardFocusCss(active: Set<string>): string {
   const keep = [...active].map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
   return `.canvas .react-flow__node{opacity:.35}${keep ? `${keep}{opacity:1}` : ""}`;
+}
+
+/** Calls `close` when the pointer is pressed outside `ref` while `open`. */
+function useOutsidePress(ref: RefObject<HTMLElement | null>, open: boolean, close: () => void) {
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => { if (!ref.current?.contains(e.target as Node)) close(); };
+    document.addEventListener("pointerdown", onDown, true);
+    return () => document.removeEventListener("pointerdown", onDown, true);
+  }, [ref, open, close]);
 }

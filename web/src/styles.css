@@ -142,6 +142,8 @@ a { color: var(--accent); }
 .doc-bar {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--surface);
+  /* Tooltips and popovers hang below the bar; keep them above the canvas that follows it. */
+  position: relative; z-index: 30;
 }
 .doc-title { font-size: 16px; margin: 0; }
 .notice { color: var(--warning); font-size: 12px; }
@@ -151,6 +153,8 @@ a { color: var(--accent); }
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer;
 }
 .btn:disabled { opacity: 0.5; cursor: default; }
+/* An icon button dims its icon, not itself: opacity on the button would also fade its tooltip. */
+.icon-btn:disabled { opacity: 1; color: color-mix(in srgb, var(--muted) 50%, transparent); }
 .doc-body { flex: 1; display: flex; min-height: 0; }
 .canvas { flex: 1; min-width: 0; }
 
@@ -169,8 +173,42 @@ a { color: var(--accent); }
 .card.status-dropped { --st: var(--st-dropped); opacity: 0.6; }
 /* Freshness: the left border fades from the full status color (just updated) toward the surface (stale). */
 .card { border-left-width: 5px; border-left-color: color-mix(in srgb, var(--st) var(--fresh, 100%), var(--surface)); }
-.fresh-legend { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
-.fresh-swatch { width: 48px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--st-doing) 20%, var(--surface)), var(--st-doing)); }
+/* Toolbar: icon buttons with a tooltip on hover and keyboard focus. */
+.tool-group { display: inline-flex; gap: 2px; }
+.icon { display: block; flex: none; }
+.icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-width: 28px; height: 26px; padding: 0 6px; color: var(--muted); }
+.icon-btn:hover:not(:disabled), .legend-btn:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.icon-btn.pressed, .legend-btn.pressed { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+.icon-btn[data-tip]::after {
+  content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translate(-50%, -2px); z-index: 70;
+  padding: 3px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none;
+  font: 500 12px/16px system-ui, sans-serif; color: var(--surface); background: var(--text);
+  opacity: 0; transition: opacity 120ms 300ms, transform 120ms 300ms;
+}
+.icon-btn[data-tip]:hover::after, .icon-btn[data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.legend-wrap { position: relative; }
+.legend-btn { display: inline-flex; align-items: center; gap: 5px; height: 26px; color: var(--muted); }
+/* Legend popover */
+.legend-popover { width: min(440px, calc(100vw - 32px)); max-height: 75vh; padding: 10px 12px; right: 0; left: auto; }
+.legend-popover:focus { outline: none; }
+.legend section + section { margin-top: 12px; }
+.legend h3 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.legend li { display: grid; grid-template-columns: 48px 64px 1fr; align-items: center; gap: 8px; font-size: 12px; }
+.legend-name { font-weight: 600; }
+.legend p { margin: 6px 0 0; font-size: 12px; }
+.legend-line path { fill: none; stroke-width: 1.8; }
+.legend-line .legend-arrow { stroke: none; }
+.legend-line.edge-needs { color: var(--edge-needs); } .legend-line.edge-blocks { color: var(--edge-blocks); }
+.legend-line.edge-relates { color: var(--edge-relates); } .legend-line.edge-replaces { color: var(--edge-replaces); }
+.legend-line.edge-from { color: var(--edge-from); }
+.legend-line path { stroke: currentColor; } .legend-line .legend-arrow { fill: currentColor; }
+.legend-chip { justify-self: start; grid-column: span 2; padding: 1px 6px; border-radius: 4px; font: 600 11px/14px system-ui, sans-serif; border: 1px solid color-mix(in srgb, var(--edge-needs) 55%, transparent); background: var(--surface); }
+.legend-card.card { display: block; width: 44px; height: 22px; padding: 0; cursor: default; }
+.legend-card.card.container { background: var(--card-bg); }
+.legend-fresh { display: flex; align-items: center; gap: 8px; }
+.legend-fresh-scale { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; font-size: 12px; color: var(--muted); }
+.legend-fresh-bar { width: 64px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, color-mix(in srgb, var(--st-doing) 20%, var(--surface)), var(--st-doing)); }
 .fresh-info { margin: 6px 0; font-size: 12px; }
 .fresh-info dt { color: var(--muted); }
 .fresh-info dd { margin: 0 0 4px; }
