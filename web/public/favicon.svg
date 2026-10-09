@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<title>Portolan</title>
+<rect width="64" height="64" rx="14" fill="#14233b"/>
+<circle cx="32" cy="32" r="23.5" fill="#1b2e4c"/>
+<circle cx="32" cy="32" r="20.5" fill="none" stroke="#c9b98f" stroke-opacity=".55" stroke-width="1"/>
+<path d="M40.27 12.04L40.65 11.12M47.27 16.73L48.55 15.45M51.96 23.73L52.88 23.35M51.96 40.27L52.88 40.65M47.27 47.27L48.55 48.55M40.27 51.96L40.65 52.88M23.73 51.96L23.35 52.88M16.73 47.27L15.45 48.55M12.04 40.27L11.12 40.65M12.04 23.73L11.12 23.35M16.73 16.73L15.45 15.45M23.73 12.04L23.35 11.12" stroke="#c9b98f" stroke-opacity=".5" stroke-width="1" stroke-linecap="round"/>
+<path d="M42.96 21.04L32 28.40L32 32Z" fill="#cdbf9c" stroke="#cdbf9c" stroke-width=".25" stroke-linejoin="round"/><path d="M42.96 21.04L32 32L35.60 32Z" fill="#97896a" stroke="#97896a" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M42.96 42.96L35.60 32L32 32Z" fill="#cdbf9c" stroke="#cdbf9c" stroke-width=".25" stroke-linejoin="round"/><path d="M42.96 42.96L32 32L32 35.60Z" fill="#97896a" stroke="#97896a" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M21.04 42.96L32 35.60L32 32Z" fill="#cdbf9c" stroke="#cdbf9c" stroke-width=".25" stroke-linejoin="round"/><path d="M21.04 42.96L32 32L28.40 32Z" fill="#97896a" stroke="#97896a" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M21.04 21.04L28.40 32L32 32Z" fill="#cdbf9c" stroke="#cdbf9c" stroke-width=".25" stroke-linejoin="round"/><path d="M21.04 21.04L32 32L32 28.40Z" fill="#97896a" stroke="#97896a" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M32 6L28.18 28.18L32 32Z" fill="#e0563b" stroke="#e0563b" stroke-width=".25" stroke-linejoin="round"/><path d="M32 6L32 32L35.82 28.18Z" fill="#a83a26" stroke="#a83a26" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M58 32L35.82 28.18L32 32Z" fill="#f3ead4" stroke="#f3ead4" stroke-width=".25" stroke-linejoin="round"/><path d="M58 32L32 32L35.82 35.82Z" fill="#bfae86" stroke="#bfae86" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M32 58L35.82 35.82L32 32Z" fill="#f3ead4" stroke="#f3ead4" stroke-width=".25" stroke-linejoin="round"/><path d="M32 58L32 32L28.18 35.82Z" fill="#bfae86" stroke="#bfae86" stroke-width=".25" stroke-linejoin="round"/>
+<path d="M6 32L28.18 35.82L32 32Z" fill="#f3ead4" stroke="#f3ead4" stroke-width=".25" stroke-linejoin="round"/><path d="M6 32L32 32L28.18 28.18Z" fill="#bfae86" stroke="#bfae86" stroke-width=".25" stroke-linejoin="round"/>
+<circle cx="32" cy="32" r="2.3" fill="#14233b" stroke="#f3ead4" stroke-width="1"/>
+</svg>

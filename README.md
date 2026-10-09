@@ -1,4 +1,8 @@
-# Portolan
+<p align="center">
+  <img src="web/public/favicon.svg" alt="Portolan logo: a compass rose with a red north point" width="96" height="96">
+</p>
+
+<h1 align="center">Portolan</h1>
 
 Portolan is a shared map of work for humans and AI agents. It is a mind map that is also a TODO list and a task log, showing the relations, progress and plans across an agent's whole workflow.
 
