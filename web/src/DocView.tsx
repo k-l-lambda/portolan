@@ -1,13 +1,14 @@
 import {
-  Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, type Edge as FlowEdge,
+  Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, nodeKey } from "./layout.ts";
-import { NodeCard, type CardNode } from "./NodeCard.tsx";
+import { defaultCollapsed, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
+import { NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
+import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { SidePanel } from "./SidePanel.tsx";
@@ -24,15 +25,16 @@ const EDGE_STYLE: Record<EdgeKind, { className: string; arrow: boolean; dashed?:
   from: { className: "edge-from", arrow: true, dashed: "2 4" },
 };
 
-export function DocView({ file }: { file: string }) {
+/** `focus`: a node ID from the URL (`#/doc/<file>?node=<id>`) to reveal and center once. */
+export function DocView({ file, focus }: { file: string; focus?: string | null }) {
   return (
     <ReactFlowProvider>
-      <DocViewInner file={file} />
+      <DocViewInner file={file} focus={focus ?? null} />
     </ReactFlowProvider>
   );
 }
 
-function DocViewInner({ file }: { file: string }) {
+function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const [data, setData] = useState<DocResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -107,13 +109,11 @@ function DocViewInner({ file }: { file: string }) {
     return out;
   }, [defaults, overrides]);
 
-  const onStatus = useCallback(async (node: RhumbNode, status: Status) => {
-    if (!data || !node.id) return;
+  const runEdit = useCallback(async (op: EditOp) => {
+    if (!data) return;
     try {
-      await api.edit(file, data.version, { op: "set-status", id: node.id, status });
+      await api.edit(file, data.version, op);
       setNotice(null);
-      load();
-      return;
     } catch (e) {
       setNotice(e instanceof ApiError && e.status === 409
         ? "The file changed on disk; reloaded the latest version. Try again."
@@ -121,6 +121,15 @@ function DocViewInner({ file }: { file: string }) {
     }
     load();
   }, [data, file, load]);
+
+  const onStatus = useCallback((node: RhumbNode, status: Status) => {
+    if (node.id) runEdit({ op: "set-status", id: node.id, status });
+  }, [runEdit]);
+
+  // Starring writes `{star: true}` into the shared map; unstarring removes the key.
+  const onStar = useCallback((node: RhumbNode) => {
+    if (node.id) runEdit({ op: "set-attr", id: node.id, key: "star", value: starred(node) ? null : true });
+  }, [runEdit]);
 
   const onToggle = useCallback((node: RhumbNode) => {
     const key = nodeKey(node);
@@ -135,6 +144,20 @@ function DocViewInner({ file }: { file: string }) {
       return next;
     });
   }, [parents]);
+
+  const stars = useMemo(() => (data ? starredInside(data.doc.nodes) : new Map<string, number>()), [data]);
+  const starredList = useMemo(() => [...all.values()].filter(starred), [all]);
+  const [highlightStars, setHighlightStars] = useState(false);
+  const [starMenu, setStarMenu] = useState(false);
+
+  // Reveal, select and center a node once the layout shows it.
+  const [pendingCenter, setPendingCenter] = useState<string | null>(null);
+  const flow = useReactFlow();
+  const goTo = useCallback((key: string) => {
+    reveal(key);
+    setSelected(key);
+    setPendingCenter(key);
+  }, [reveal]);
 
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
@@ -168,7 +191,8 @@ function DocViewInner({ file }: { file: string }) {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
         container: b.container,
         ...cardTime(times.get(b.node.line), now),
-        selected: b.key === selected, collapsed: collapsed.has(b.key), onStatus, onToggle,
+        selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
+        onStatus, onToggle, onStar,
       },
     }));
     const edges: FlowEdge[] = layout.routes.map((e) => {
@@ -191,22 +215,61 @@ function DocViewInner({ file }: { file: string }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, onStatus, onToggle]);
+  }, [data, layout, collapsed, parents, selected, now, stars, onStatus, onToggle, onStar]);
+
+  useEffect(() => {
+    if (!pendingCenter || !layout) return;
+    const box = layout.boxes.find((b) => b.key === pendingCenter);
+    if (!box) return; // ancestors are still expanding; the next layout will have it
+    const header = box.container ? 76 : box.height;
+    flow.setCenter(box.x + box.width / 2, box.y + header / 2, { zoom: Math.max(flow.getZoom(), 0.9), duration: 400 });
+    setPendingCenter(null);
+  }, [pendingCenter, layout, flow]);
+
+  // A node named in the URL is focused once its document has loaded.
+  const focused = useRef<string | null>(null);
+  useEffect(() => {
+    if (!focus || focused.current === focus || !all.has(focus)) return;
+    focused.current = focus;
+    goTo(focus);
+  }, [focus, all, goTo]);
+
+  // `s` stars or unstars the selected node.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "s" || e.ctrlKey || e.metaKey || e.altKey || !selected) return;
+      const t = e.target as HTMLElement;
+      if (t.closest("input, select, textarea, [contenteditable]")) return;
+      const n = all.get(selected);
+      if (n) (e.preventDefault(), onStar(n));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected, all, onStar]);
 
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
   const { nodes, edges } = useMemo(() => {
-    const focusNode = hover?.kind === "node" ? hover.id : hover ? null : selected;
+    // Focus set: the hovered node, else the selected one, else (with "Highlight starred") every
+    // starred node, shown through its nearest visible card when it sits in a collapsed subtree.
+    const visibleKeys = new Set(base.nodes.map((n) => n.id));
+    const shown = (key: string): string | null => {
+      for (let k: string | null = key; k; k = parents.get(k) ? nodeKey(parents.get(k)!) : null) if (visibleKeys.has(k)) return k;
+      return null;
+    };
+    const focusNodes = new Set<string>();
+    if (hover?.kind === "node") focusNodes.add(hover.id);
+    else if (!hover && selected) focusNodes.add(selected);
+    else if (!hover && highlightStars) for (const n of starredList) { const k = shown(nodeKey(n)); if (k) focusNodes.add(k); }
     const focusEdge = hover?.kind === "edge" ? hover.id : null;
     const activeEdges = new Set<string>();
-    const activeNodes = new Set<string>();
+    const activeNodes = new Set<string>(focusNodes);
     for (const e of base.edges) {
-      if (e.id === focusEdge || (focusNode && (e.source === focusNode || e.target === focusNode))) {
+      if (e.id === focusEdge || focusNodes.has(e.source) || focusNodes.has(e.target)) {
         activeEdges.add(e.id);
         activeNodes.add(e.source).add(e.target);
       }
     }
-    if (focusNode) activeNodes.add(focusNode);
     const focused = activeNodes.size > 0;
     // Containers of active cards stay undimmed, otherwise their opacity would fade the cards too.
     for (const key of [...activeNodes]) {
@@ -214,14 +277,14 @@ function DocViewInner({ file }: { file: string }) {
     }
     // One `a needs b, c: label` line becomes several edges with the same label; show it once
     // per source unless that exact edge is hovered.
-    const shown = new Set<string>();
+    const labelSeen = new Set<string>();
     const visible = new Set<string>();
     for (const e of base.edges) {
       const active = activeEdges.has(e.id);
       const labelKey = `${e.source}\0${String(e.label)}`;
-      const repeat = e.id !== focusEdge && shown.has(labelKey);
+      const repeat = e.id !== focusEdge && labelSeen.has(labelKey);
       if (e.label !== undefined && !repeat && (active || (allLabels && !focused))) {
-        shown.add(labelKey);
+        labelSeen.add(labelKey);
         visible.add(e.id);
       }
     }
@@ -256,7 +319,7 @@ function DocViewInner({ file }: { file: string }) {
       ? base.nodes.map((n) => ({ ...n, className: activeNodes.has(n.id) ? "is-active" : "is-dim" }))
       : base.nodes;
     return { nodes, edges };
-  }, [base, hover, selected, allLabels, parents]);
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -294,6 +357,37 @@ function DocViewInner({ file }: { file: string }) {
         <label className="toggle-label">
           <input type="checkbox" checked={allLabels} onChange={(e) => setAllLabels(e.target.checked)} /> All edge labels
         </label>
+        <div className="star-menu-wrap"
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setStarMenu(false); }}
+          onKeyDown={(e) => { if (e.key === "Escape") setStarMenu(false); }}>
+          <button type="button" className={`btn star-btn${starredList.length > 0 ? " has" : ""}`}
+            aria-haspopup="true" aria-expanded={starMenu} onClick={() => setStarMenu((v) => !v)}>
+            <StarIcon filled={starredList.length > 0} /> Starred {starredList.length}
+          </button>
+          {starMenu && (
+            <div className="star-menu" role="group" aria-label="Starred nodes">
+              <label className="toggle-label star-menu-row">
+                <input type="checkbox" checked={highlightStars} onChange={(e) => setHighlightStars(e.target.checked)} />
+                Highlight starred on the map
+              </label>
+              {starredList.length === 0
+                ? <p className="muted star-menu-empty">No starred nodes. Use the star on a card, or select a node and press s.</p>
+                : (
+                  <ul>
+                    {starredList.map((n) => (
+                      <li key={nodeKey(n)}>
+                        <button type="button" className={`star-menu-item status-${n.status ?? "todo"}`}
+                          onClick={() => (goTo(nodeKey(n)), setStarMenu(false))}>
+                          <span className="star-menu-status">{n.status ?? "?"}</span>
+                          <span className="star-menu-title">{plainTitle(n.title)}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+            </div>
+          )}
+        </div>
         {notice && <span role="status" className="notice">{notice}</span>}
         {layoutError && <span role="status" className="notice">{layoutError}</span>}
         <span className="fresh-legend muted" title="Left edge brightness shows how recently each node's line changed">
@@ -324,7 +418,10 @@ function DocViewInner({ file }: { file: string }) {
           >
             <Background gap={24} />
             <Controls showInteractive={false} />
-            <MiniMap pannable zoomable nodeClassName={(n) => `mini status-${(n.data as CardNode["data"]).node.status ?? "todo"}`} />
+            <MiniMap pannable zoomable nodeClassName={(n) => {
+              const d = n.data as CardNode["data"];
+              return `mini status-${d.node.status ?? "todo"}${starred(d.node) ? " mini-star" : ""}`;
+            }} />
           </ReactFlow>
         </div>
         <SidePanel
@@ -333,6 +430,7 @@ function DocViewInner({ file }: { file: string }) {
           node={node}
           state={node ? data.derived.find((s) => s.line === node.line) : undefined}
           diagnostics={data.doc.diagnostics}
+          onStar={onStar}
           freshness={data.freshness}
           now={now}
           onSelectLine={selectLine}

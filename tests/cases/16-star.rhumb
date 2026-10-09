@@ -1,0 +1,4 @@
+- [x] Starred and done {star: true} ^s1
+- [ ] Not starred {star: false} ^s2
+- [ ] Bad value {star: yes} ^s3
+- [/] With other attrs {owner: kl, star: true} ^s4

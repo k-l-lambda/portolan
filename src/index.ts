@@ -1,4 +1,4 @@
-export { parse, RHUMB_VERSION } from "./parse.ts";
+export { isStarred, parse, RHUMB_VERSION } from "./parse.ts";
 export { applyEdit, EditError, type EditOp, type EditResult } from "./edit.ts";
 export { format, type FormatResult } from "./format.ts";
 export { derive, type Derived, type NodeState } from "./derive.ts";

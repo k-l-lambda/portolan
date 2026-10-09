@@ -2,23 +2,23 @@ import { useEffect, useState } from "react";
 import { DocView } from "./DocView.tsx";
 import { IndexView } from "./IndexView.tsx";
 
-/** Hash routing: `#/` lists documents, `#/doc/<relative path>` opens one. */
-function useRoute(): string | null {
+/** Hash routing: `#/` lists documents, `#/doc/<relative path>[?node=<id>]` opens one. */
+function useRoute(): { file: string | null; node: string | null } {
   const read = () => {
-    const m = /^#\/doc\/(.+)$/.exec(window.location.hash);
-    return m ? decodeURIComponent(m[1]!) : null;
+    const m = /^#\/doc\/([^?]+)(?:\?node=(.+))?$/.exec(window.location.hash);
+    return m ? { file: decodeURIComponent(m[1]!), node: m[2] ? decodeURIComponent(m[2]) : null } : { file: null, node: null };
   };
-  const [file, setFile] = useState(read);
+  const [route, setRoute] = useState(read);
   useEffect(() => {
-    const onHash = () => setFile(read());
+    const onHash = () => setRoute(read());
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
-  return file;
+  return route;
 }
 
 export function App() {
-  const file = useRoute();
+  const { file, node } = useRoute();
   return (
     <div className="app">
       <header className="topbar">
@@ -29,7 +29,7 @@ export function App() {
           </nav>
         )}
       </header>
-      {file ? <DocView key={file} file={file} /> : <IndexView />}
+      {file ? <DocView key={file} file={file} focus={node} /> : <IndexView />}
     </div>
   );
 }

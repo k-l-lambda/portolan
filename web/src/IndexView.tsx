@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, onServerEvents, type FileSummary } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
+import { StarIcon } from "./NodeCard.tsx";
+import { plainTitle } from "./layout.ts";
 
 export function IndexView() {
   const [files, setFiles] = useState<FileSummary[] | null>(null);
@@ -25,7 +27,7 @@ export function IndexView() {
       <p className="muted">{root}</p>
       {files.length === 0 && <p className="muted">No .rhumb files found under this directory.</p>}
       <ul className="file-list">
-        {files.map((f) => (
+        {files.map(({ starred = [], ...f }) => (
           <li key={f.file}>
             <a className="file-card" href={`#/doc/${encodeURIComponent(f.file)}`}>
               <span className="file-title">{f.title ?? f.file}</span>
@@ -35,8 +37,20 @@ export function IndexView() {
                 {f.nodes} nodes
                 {f.errors > 0 && <span className="badge badge-error">{f.errors} errors</span>}
                 {f.warnings > 0 && <span className="badge badge-warning">{f.warnings} warnings</span>}
+                {starred.length > 0 && <span className="badge badge-star"><StarIcon filled /> {starred.length}</span>}
               </span>
             </a>
+            {starred.length > 0 && (
+              <ul className="file-stars" aria-label={`Starred in ${f.title ?? f.file}`}>
+                {starred.map((s) => (
+                  <li key={s.id}>
+                    <a href={`#/doc/${encodeURIComponent(f.file)}?node=${encodeURIComponent(s.id)}`}>
+                      <StarIcon filled /> <span className={`star-menu-status status-${s.status ?? "todo"}`}>{s.status ?? "?"}</span> {plainTitle(s.title)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>

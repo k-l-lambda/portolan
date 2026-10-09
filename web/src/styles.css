@@ -23,6 +23,7 @@
 
   --error: #b3261e;
   --warning: #9a5b00;
+  --star: #b7791f;
   color-scheme: light;
 }
 
@@ -52,6 +53,7 @@
 
     --error: #f08a82;
     --warning: #f0b85a;
+    --star: #f2c94c;
     color-scheme: dark;
   }
 }
@@ -142,6 +144,48 @@ a { color: var(--accent); }
 .fresh-info dd { margin: 0 0 4px; }
 .sha { font-family: ui-monospace, monospace; }
 .linkish { font: inherit; padding: 0; border: 0; background: none; color: var(--accent); cursor: pointer; text-decoration: underline; }
+/* Stars: a gold frame on the card (left edge stays the freshness color) and a toggle in the header. */
+.card.starred { border-top-color: var(--star); border-right-color: var(--star); border-bottom-color: var(--star);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--star) 55%, transparent); }
+.card.starred.selected { box-shadow: 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--star) 55%, transparent); }
+.star-toggle {
+  flex: none; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; padding: 1px 3px;
+  font: inherit; font-size: 12px; border: 0; border-radius: 4px; background: none; color: var(--muted); cursor: pointer; opacity: 0.45;
+}
+.star-toggle:hover, .star-toggle:focus-visible { opacity: 1; color: var(--star); }
+.star-toggle.on { opacity: 1; color: var(--star); }
+.star-toggle:disabled { cursor: default; opacity: 0.2; }
+.star-icon { display: block; flex: none; }
+.badge-star { display: inline-flex; align-items: center; gap: 2px; color: var(--star); }
+.panel-head { display: flex; align-items: center; justify-content: space-between; }
+.panel-star { opacity: 1; border: 1px solid var(--border); padding: 2px 8px; }
+.star-menu-wrap { position: relative; }
+.star-btn { display: inline-flex; align-items: center; gap: 4px; }
+.star-btn.has { color: var(--star); border-color: color-mix(in srgb, var(--star) 50%, var(--border)); }
+.star-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 50; width: 340px; max-height: 60vh; overflow: auto;
+  padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+.star-menu ul { list-style: none; margin: 6px 0 0; padding: 0; }
+.star-menu-row { padding: 2px 4px; }
+.star-menu-empty { margin: 6px 4px; font-size: 12px; }
+.star-menu-item {
+  display: flex; gap: 8px; align-items: baseline; width: 100%; text-align: left; padding: 5px 6px;
+  font: inherit; font-size: 13px; border: 0; border-radius: 4px; background: none; color: var(--text); cursor: pointer;
+}
+.star-menu-item:hover, .star-menu-item:focus-visible { background: var(--surface-2); }
+.star-menu-status { flex: none; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--st-todo); min-width: 46px; }
+.star-menu-status.status-doing, .status-doing > .star-menu-status { color: var(--st-doing); }
+.star-menu-status.status-done, .status-done > .star-menu-status { color: var(--st-done); }
+.star-menu-status.status-blocked, .status-blocked > .star-menu-status { color: var(--st-blocked); }
+.star-menu-status.status-idea, .status-idea > .star-menu-status { color: var(--st-idea); }
+.star-menu-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-stars { list-style: none; margin: 4px 0 0; padding: 0 0 0 4px; font-size: 12px; }
+.file-stars a { display: flex; align-items: center; gap: 4px; padding: 2px 4px; color: var(--text); text-decoration: none; border-radius: 4px; }
+.file-stars a:hover { background: var(--surface-2); }
+.file-stars .star-icon { color: var(--star); }
+.mini.mini-star { stroke: var(--star); stroke-width: 6; }
 .card .status-select, .card .toggle { background: color-mix(in srgb, var(--surface) 70%, transparent); }
 .card.status-dropped .card-title { text-decoration: line-through; }
 .card-header { height: 60px; display: flex; flex-direction: column; justify-content: space-between; flex: none; }

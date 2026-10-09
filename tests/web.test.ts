@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { defaultCollapsed, plainTitle, shortId } from "../web/src/layout.ts";
+import { defaultCollapsed, plainTitle, shortId, starredInside } from "../web/src/layout.ts";
 
 describe("view helpers", () => {
   it("collapses subtrees without doing work by default", () => {
@@ -19,6 +19,20 @@ describe("view helpers", () => {
   - [ ] Child ^child
 `);
     expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["done", "idle"]);
+  });
+
+  it("keeps starred nodes visible by default and counts stars inside", () => {
+    const d = parse(`- [x] Archive ^archive
+  - [x] Group ^group
+    - [x] Key result {star: true} ^key
+  - [x] Other ^other
+- [x] Plain ^plain
+  - [x] Leaf ^leaf
+`);
+    // archive and group stay open so the starred leaf shows; plain has no star and folds.
+    expect([...defaultCollapsed(d.nodes)]).toEqual(["plain"]);
+    const n = starredInside(d.nodes);
+    expect([n.get("archive"), n.get("group"), n.get("key"), n.get("plain")]).toEqual([1, 1, 0, 0]);
   });
 
   it("shortens ids that repeat the parent id", () => {
@@ -64,8 +78,10 @@ describe("directory server", () => {
     const port = (server.address() as AddressInfo).port;
     const base = `http://127.0.0.1:${port}`;
 
+    writeFileSync(join(dir, "sub", "b.rhumb"), "- [ ] B {star: true} ^b\n");
     const list = await (await fetch(`${base}/api/files`)).json();
     expect(list.files.map((f: any) => f.file)).toEqual(["a.rhumb", "sub/b.rhumb"]);
+    expect(list.files[1].starred).toEqual([{ id: "b", title: "B", status: "todo" }]);
     expect(list.files[0]).toMatchObject({ title: "Alpha", nodes: 2, progress: { done: 1, total: 2 }, errors: 0 });
 
     const b = await (await fetch(`${base}/api/doc?file=sub%2Fb.rhumb`)).json();

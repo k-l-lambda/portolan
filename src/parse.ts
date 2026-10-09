@@ -11,7 +11,7 @@ const STATUS: Record<string, Status> = {
 };
 export const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
 const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links"]);
-const ATTR_KEYS = new Set(["owner", "due", "tags", "priority"]);
+const ATTR_KEYS = new Set(["owner", "due", "tags", "priority", "star"]);
 const URL_SCHEMES = new Set(["http", "https", "mailto"]);
 export const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
 export const GEN_ID = /^_[a-z2-7]{6}$/;
@@ -127,6 +127,9 @@ export function parse(source: string, options: ParseOptions = {}): RhumbDocument
     if (title === "") report("E011", lineNo, "Node has an empty title");
     for (const key of Object.keys(attrs)) {
       if (!ATTR_KEYS.has(key)) report("I002", lineNo, `Unknown attribute key "${key}"`);
+    }
+    if ("star" in attrs && typeof attrs.star !== "boolean") {
+      report("W010", lineNo, "star must be true or false; this node is treated as not starred");
     }
     const node: RhumbNode = {
       id, generated_id: generated, status, title, attrs,
@@ -419,4 +422,9 @@ function resolveEdges(
       doc.edges.push({ kind, from: a.id!, to: b.id!, label: stmt.label, line: stmt.line });
     }
   }
+}
+
+/** A node is starred only with `{star: true}`; any other value (W010) counts as not starred. */
+export function isStarred(node: Pick<RhumbNode, "attrs">): boolean {
+  return node.attrs.star === true;
 }

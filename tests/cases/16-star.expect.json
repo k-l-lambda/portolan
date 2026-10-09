@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {"id": "s1", "status": "done", "attrs": {"star": true}},
+    {"id": "s2", "attrs": {"star": false}},
+    {"id": "s3", "attrs": {"star": "yes"}},
+    {"id": "s4", "attrs": {"owner": "kl", "star": true}}
+  ],
+  "diagnostics": [["W010", 3]]
+}

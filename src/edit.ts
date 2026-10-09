@@ -12,6 +12,8 @@ import type { EdgeKind, RhumbDocument, RhumbNode, Status } from "./types.ts";
 export type EditOp =
   | { op: "set-status"; id: string; status: Status }
   | { op: "set-title"; id: string; title: string }
+  /** Sets one attribute; `null` (and `false` for `star`) removes the key. */
+  | { op: "set-attr"; id: string; key: string; value: AttrValue | null }
   | { op: "add-node"; parent: string | null; title: string; status?: Status; id?: string }
   | { op: "remove-node"; id: string; recursive?: boolean }
   | { op: "rename-id"; id: string; to: string }
@@ -31,6 +33,10 @@ export interface EditResult {
 }
 
 export class EditError extends Error {}
+
+export type AttrValue = string | number | boolean | (string | number | boolean)[];
+
+const ATTR_KEY = /^[a-z][a-z0-9_-]{0,31}$/;
 
 const SYMBOL: Record<Status, string> = {
   todo: " ", doing: "/", done: "x", dropped: "-", blocked: "!", idea: "?",
@@ -77,8 +83,25 @@ function run(doc: RhumbDocument, lines: string[], edit: EditOp): Omit<EditResult
     case "set-title": {
       const node = find(edit.id);
       checkTitle(edit.title);
-      const { indent } = splitIndent(lines[node.line - 1]!);
-      lines[node.line - 1] = nodeLine(indent, SYMBOL[node.status ?? "todo"], edit.title, node.attrs, node.id);
+      lines[node.line - 1] = rewriteNode(lines[node.line - 1]!, edit.title, node.attrs, node.id);
+      return {};
+    }
+
+    case "set-attr": {
+      const node = find(edit.id);
+      if (!ATTR_KEY.test(edit.key)) throw new EditError(`Invalid attribute key "${edit.key}"`);
+      const scalar = (v: unknown) => typeof v === "string" || typeof v === "boolean" || (typeof v === "number" && Number.isFinite(v));
+      const v = edit.value;
+      if (v !== null && !scalar(v) && !(Array.isArray(v) && v.every(scalar))) {
+        throw new EditError("Attribute value must be a string, number, boolean or list of those");
+      }
+      if (typeof v === "string" && /[\r\n]/.test(v)) throw new EditError("Attribute value must be a single line");
+      if (edit.key === "star" && v !== null && typeof v !== "boolean") throw new EditError("star must be true or false");
+      // Key order is kept; a new key goes last. Unstarring removes the key instead of writing false.
+      const attrs = { ...node.attrs };
+      if (v === null || (edit.key === "star" && v === false)) delete attrs[edit.key];
+      else attrs[edit.key] = v;
+      lines[node.line - 1] = rewriteNode(lines[node.line - 1]!, node.title, attrs, node.id);
       return {};
     }
 
@@ -200,6 +223,16 @@ function countErrors(doc: RhumbDocument): number {
 function checkTitle(title: string): void {
   if (title.trim() === "") throw new EditError("Title must not be empty");
   if (/[\r\n]/.test(title)) throw new EditError("Title must be a single line");
+}
+
+/** Rebuilds a node line, keeping its indentation, list marker and status symbol as written. */
+function rewriteNode(line: string, title: string, attrs: Record<string, unknown>, id: string | null): string {
+  const prefix = /^(\s*[-*]\s+\[[^\]]\])/.exec(line)?.[1];
+  if (!prefix) throw new EditError("Not a node line");
+  let text = `${prefix} ${escapeTitle(title)}`;
+  if (Object.keys(attrs).length > 0) text += ` ${formatAttrs(attrs)}`;
+  if (id) text += ` ^${id}`;
+  return text;
 }
 
 function nodeLine(

@@ -87,6 +87,25 @@ describe("applyEdit", () => {
     expect(() => applyEdit(SRC, { op: "move-node", id: "a", parent: null })).toThrow(/not implemented/);
   });
 
+  it("stars and unstars a node through set-attr, keeping the line's own markers", () => {
+    const src = "* [~] Parser {owner: kl} ^p\n";
+    const on = applyEdit(src, { op: "set-attr", id: "p", key: "star", value: true }).source;
+    expect(on).toBe("* [~] Parser {owner: kl, star: true} ^p\n");
+    expect(applyEdit(on, { op: "set-attr", id: "p", key: "star", value: null }).source).toBe(src);
+    expect(applyEdit(on, { op: "set-attr", id: "p", key: "star", value: false }).source).toBe(src);
+    expect(applyEdit("- [ ] A ^a\n", { op: "set-attr", id: "a", key: "star", value: true }).source).toBe("- [ ] A {star: true} ^a\n");
+    expect(applyEdit("- [ ] A {star: true} ^a\n", { op: "set-attr", id: "a", key: "star", value: null }).source).toBe("- [ ] A ^a\n");
+  });
+
+  it("validates set-attr keys and values", () => {
+    const src = "- [ ] A ^a\n";
+    expect(() => applyEdit(src, { op: "set-attr", id: "a", key: "Bad Key", value: 1 })).toThrow(/Invalid attribute key/);
+    expect(() => applyEdit(src, { op: "set-attr", id: "a", key: "star", value: "yes" })).toThrow(/true or false/);
+    expect(() => applyEdit(src, { op: "set-attr", id: "a", key: "owner", value: { x: 1 } as never })).toThrow(/string, number, boolean/);
+    expect(() => applyEdit(src, { op: "set-attr", id: "a", key: "owner", value: "a\nb" })).toThrow(/single line/);
+    expect(applyEdit(src, { op: "set-attr", id: "a", key: "tags", value: ["ui", "star"] }).source).toBe("- [ ] A {tags: [ui, star]} ^a\n");
+  });
+
   it("preserves CRLF line endings", () => {
     const out = applyEdit("- [ ] A ^a\r\n", { op: "set-status", id: "a", status: "done" }).source;
     expect(out).toBe("- [x] A ^a\r\n");

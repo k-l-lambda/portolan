@@ -35,7 +35,8 @@ Keep the map structural. A note is one line: a blocked reason, a key decision, a
 
 - Always write a readable kebab-case ID matching `[a-z0-9][a-z0-9-]{0,47}`. Prefix child IDs with the parent's (`threads`, `threads-model`). Never write `^_xxxxxx`: the `_` prefix is reserved for IDs that `fmt` generates when a human omits one.
 - IDs are permanent. Edges and threads reference them; change one only with `rename-id` (section 7).
-- Attributes are optional: `owner`, `due` (ISO date), `tags` (list), `priority` (`high`/`normal`/`low`). Other keys are kept but reported as `I002`.
+- Attributes are optional: `owner`, `due` (ISO date), `tags` (list), `priority` (`high`/`normal`/`low`), `star` (boolean). Other keys are kept but reported as `I002`.
+- `{star: true}` is the project's shared favorite mark, shown with a dedicated star in the web view. Humans usually set it; add or remove a star only when the user asks. Unstar by removing the key, not by writing `false`. Any other value is `W010`.
 - Hierarchy is 2 spaces per level. A node's parent is the nearest preceding node with smaller indentation; siblings share one indentation.
 - Notes are list items without a checkbox. They belong to the node above them and are not children. Use them for blocked reasons, short context and links.
 - Titles are inline Markdown (code spans, links). A title that itself ends in `^word` or `{...}` must escape it as `\^` or `\{`.
@@ -173,6 +174,7 @@ curl -s -X POST http://127.0.0.1:4310/api/edit -H 'content-type: application/jso
 | --- | --- | --- |
 | `set-status` | `id`, `status` | rewrites the checkbox only |
 | `set-title` | `id`, `title` | rewrites the node line, keeps attrs and ID |
+| `set-attr` | `id`, `key`, `value` (string, number, boolean or list; `null` removes) | rewrites only that node line; for `star`, `false` also removes the key |
 | `add-node` | `parent` (ID or `null`), `title`, `status?`, `id?` | inserts after the parent's subtree; ID defaults to a slug of the title, so pass a readable `id` |
 | `remove-node` | `id`, `recursive?` | deletes the node, its notes and (with `recursive`) its subtree, plus edges touching them |
 | `rename-id` | `id`, `to` | renames the ID and every edge reference; threads are retargeted |
@@ -182,7 +184,7 @@ curl -s -X POST http://127.0.0.1:4310/api/edit -H 'content-type: application/jso
 - `status` values are words: `todo`, `doing`, `done`, `dropped`, `blocked`, `idea`.
 - `409` means the file changed since your `version`; re-fetch `/api/doc` and retry. `400` means the edit is invalid or would introduce a new error.
 - The response is `{version}` plus `id` (add-node), `renamed` or `removed` when relevant.
-- The API cannot add notes, attributes or anchors, and `move-node` is not implemented. Make those edits by hand. The server watches the file, so hand edits show up in the UI.
+- The API cannot add notes or anchors, and `move-node` is not implemented. Make those edits by hand. The server watches the file, so hand edits show up in the UI.
 - Prefer `set-status dropped` over `remove-node`.
 
 ### Threads

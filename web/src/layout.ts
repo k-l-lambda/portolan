@@ -10,16 +10,34 @@ export function nodeKey(node: RhumbNode): string {
   return node.id ?? `line:${node.line}`;
 }
 
+/** Same rule as the parser's isStarred: only `star: true` counts. */
+export function starred(node: RhumbNode): boolean {
+  return node.attrs.star === true;
+}
+
 /**
  * Default collapse state: a node with children starts collapsed unless its subtree
- * contains a `doing` node, so the map opens on the work in progress.
+ * contains a `doing` or starred node, so the map opens on the work in progress and on
+ * what the project starred.
  */
 export function defaultCollapsed(roots: RhumbNode[]): Set<string> {
   const out = new Set<string>();
   const visit = (n: RhumbNode): boolean => {
     const active = n.children.map(visit).some(Boolean);
     if (n.children.length > 0 && !active) out.add(nodeKey(n));
-    return active || n.status === "doing";
+    return active || n.status === "doing" || starred(n);
+  };
+  roots.forEach(visit);
+  return out;
+}
+
+/** Number of starred descendants of each node (the node itself not counted). */
+export function starredInside(roots: RhumbNode[]): Map<string, number> {
+  const out = new Map<string, number>();
+  const visit = (n: RhumbNode): number => {
+    const below = n.children.reduce((s, c) => s + visit(c) + (starred(c) ? 1 : 0), 0);
+    out.set(nodeKey(n), below);
+    return below;
   };
   roots.forEach(visit);
   return out;

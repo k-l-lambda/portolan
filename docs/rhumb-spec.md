@@ -106,7 +106,8 @@ The parser strips suffixes from the end of the line, in this order:
 3. The rest is the title, which is parsed as inline Markdown (links, code, emphasis).
 
 - `^` and `{` in the middle of a title need no escaping. Only a title that itself ends in `^word` or `{…}` must write `\^` or `\{`.
-- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list) and `priority` (`high` / `normal` / `low`). Unknown keys are kept and reported as `I002`.
+- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list), `priority` (`high` / `normal` / `low`) and `star` (boolean). Unknown keys are kept and reported as `I002`.
+- `star: true` marks a node as a favorite of the project; it is shared like any other attribute and is independent of status. To unstar, remove the key. Any value other than `true`/`false` is warning `W010` and the node counts as not starred.
 - Markdown links in a title are anchors, see section 4.
 
 ### 3.4 Hierarchy

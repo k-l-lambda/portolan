@@ -3,6 +3,8 @@ import type { NodeState } from "../../src/derive.ts";
 import type { Diagnostic, RhumbNode } from "../../src/types.ts";
 import { api, type AnchorResponse, type Freshness } from "./api.ts";
 import { absoluteTime, relativeTime } from "./time.ts";
+import { starred } from "./layout.ts";
+import { StarIcon } from "./NodeCard.tsx";
 import { renderMarkdown } from "./markdown.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 
@@ -14,15 +16,24 @@ interface Props {
   freshness: Freshness;
   now: number;
   onSelectLine: (line: number) => void;
+  onStar: (node: RhumbNode) => void;
 }
 
-export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine }: Props) {
+export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onStar }: Props) {
   if (!node) return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onSelectLine={onSelectLine} />;
   const updated = freshness.nodes.find((t) => t.line === node.line);
   const own = diagnostics.filter((d) => d.line === node.line || node.notes.some((n) => n.line === d.line));
   return (
     <aside className="panel" aria-label="Node details">
-      <p className={`status-pill status-${node.status ?? "todo"}`}>{node.status ?? "unknown"}</p>
+      <div className="panel-head">
+        <p className={`status-pill status-${node.status ?? "todo"}`}>{node.status ?? "unknown"}</p>
+        <button type="button" className={`star-toggle panel-star${starred(node) ? " on" : ""}`}
+          aria-pressed={starred(node)} disabled={!node.id}
+          title={node.id ? "Star or unstar (s)" : "Needs an ID to be starred"}
+          onClick={() => onStar(node)}>
+          <StarIcon filled={starred(node)} /> {starred(node) ? "Starred" : "Star"}
+        </button>
+      </div>
       <h2 className="panel-title" dangerouslySetInnerHTML={{ __html: renderMarkdown(node.title, true) }} />
       <p className="muted">
         {node.id ? `^${node.id}` : "no id"} · line {node.line}

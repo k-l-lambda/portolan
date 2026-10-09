@@ -11,6 +11,7 @@ export interface FileSummary {
   progress: { done: number; total: number };
   errors: number;
   warnings: number;
+  starred: { id: string; title: string; status: string | null }[];
 }
 
 export interface Freshness {

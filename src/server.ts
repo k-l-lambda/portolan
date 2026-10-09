@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
 import { HistoryTracker, nodeTimes } from "./history.ts";
-import { parse } from "./parse.ts";
+import { isStarred, parse } from "./parse.ts";
 import { checkAnchors, contextFor, excerpt, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
 import type { RhumbNode } from "./types.ts";
@@ -218,8 +218,14 @@ export function createRhumbServer(options: ServerOptions): Server {
         const progress = { done: 0, total: 0 };
         for (const p of roots) if (p) (progress.done += p.done, progress.total += p.total);
         const levels = [...doc.diagnostics, ...derived.diagnostics].map((d) => d.level);
+        const starred: { id: string; title: string; status: string | null }[] = [];
+        const walk = (ns: RhumbNode[]) => ns.forEach((n) => {
+          if (n.id && isStarred(n)) starred.push({ id: n.id, title: n.title, status: n.status });
+          walk(n.children);
+        });
+        walk(doc.nodes);
         return {
-          file: rel, title: doc.title, nodes: derived.nodes.length, progress,
+          file: rel, title: doc.title, nodes: derived.nodes.length, progress, starred,
           errors: levels.filter((l) => l === "error").length,
           warnings: levels.filter((l) => l === "warning").length,
         };
