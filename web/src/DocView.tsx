@@ -7,7 +7,7 @@ import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
-import { NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
+import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
@@ -17,7 +17,10 @@ import { Legend } from "./Legend.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
-const nodeTypes = { card: NodeCard };
+const nodeTypes = { card: NodeCard, fill: FrameFill };
+
+/** ID of the fill layer drawn behind a frame (see the stacking note in `base`). */
+export const fillId = (key: string) => `${key}::fill`;
 const edgeTypes = { polyline: PolylineEdge };
 
 const EDGE_STYLE: Record<EdgeKind, { className: string; arrow: boolean; dashed?: string }> = {
@@ -207,9 +210,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       position: { x: b.x, y: b.y },
       width: b.width,
       height: b.height,
-      // Stacking: frames at 0..99 by depth, relation lines at 100, cards at 200..299, edge labels at 400.
-      // Lines must sit above frames (whose fill would hide them) and below cards (which they route around).
-      zIndex: b.container ? b.depth : 200 + b.depth,
+      // Stacking, bottom to top:
+      //   0..99    frame fills (FrameFill), by depth
+      //   100      relation lines
+      //   150..199 frames themselves: border, title and controls (body transparent), by depth
+      //   200..299 cards (350 while hovered)
+      //   360      focused lines, drawn over everything except labels
+      //   400      edge labels
+      // So lines pass behind every title and control, yet stay visible inside frames.
+      zIndex: b.container ? 150 + b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
@@ -219,6 +228,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         onStatus, onToggle, onStar,
       },
     }));
+    const fills: CardNode[] = boxes.filter((b) => b.container).map((b) => {
+      const frame = nodes.find((n) => n.id === b.key)!;
+      return { ...frame, id: fillId(b.key), type: "fill", zIndex: b.depth, selectable: false, focusable: false };
+    });
+    nodes.unshift(...fills);
     const edges: FlowEdge[] = layout.routes.map((e) => {
       const style = EDGE_STYLE[e.kind];
       // A labeled relates is directed (spec 5.1).
@@ -324,7 +338,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         w: measureLabel(String(e.label), 11, activeEdges.has(e.id)) + 14,
         h: 18,
       }));
-    const cards = base.nodes.filter((n) => !n.data.container).map((n) => ({ x: n.position.x, y: n.position.y, w: n.width!, h: n.height! }));
+    const cards = base.nodes.filter((n) => !n.data.container && n.type === "card").map((n) => ({ x: n.position.x, y: n.position.y, w: n.width!, h: n.height! }));
     // Lines that are drawn prominently: the focused ones, or all of them when nothing is focused.
     const lines = base.edges
       .filter((e) => !focused || activeEdges.has(e.id))
@@ -337,7 +351,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         className: `${e.className}${active ? " is-active" : focused ? " is-dim" : ""}`,
         // Constant: xyflow renders each z-index in its own SVG layer, so changing it on focus would
         // remount the edge and its label, pulling the label out from under the pointer.
-        zIndex: 100,
+        // Focused lines rise above cards and titles. Changing an edge's z-index remounts it in another
+        // SVG layer; that is fine for the line, and its label fades in rather than jumping.
+        zIndex: active ? 360 : 100,
         // Labels stay mounted and fade in/out (CSS), so showing or hiding one can be animated.
         label: e.label,
         data: {
@@ -464,6 +480,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             <Background gap={24} />
             <Controls showInteractive={false} />
             <MiniMap pannable zoomable nodeClassName={(n) => {
+              if (n.type === "fill") return "mini-hidden";
               const d = n.data as CardNode["data"];
               return `mini status-${d.node.status ?? "todo"}${starred(d.node) ? " mini-star" : ""}`;
             }} />
@@ -496,7 +513,8 @@ function cardTime(t: NodeTime | undefined, now: number) {
 
 /** Dims every card except the focused ones and their frames, without touching node objects. */
 function cardFocusCss(active: Set<string>): string {
-  const keep = [...active].map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
+  // A frame's fill layer dims and brightens with the frame.
+  const keep = [...active].flatMap((id) => [id, fillId(id)]).map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
   return `.canvas .react-flow__node{opacity:.35}${keep ? `${keep}{opacity:1}` : ""}`;
 }
 

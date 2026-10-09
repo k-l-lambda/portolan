@@ -35,7 +35,8 @@ export interface CardData extends Record<string, unknown> {
   onStar: (node: RhumbNode) => void;
 }
 
-export type CardNode = Node<CardData, "card">;
+/** "card" is an item or a frame; "fill" is a frame's background layer drawn below the lines. */
+export type CardNode = Node<CardData, "card" | "fill">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
   const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, starsInside, onStatus, onToggle, onStar } = data;
@@ -98,6 +99,11 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
       </div>
     </div>
   );
+});
+
+/** A frame's fill, drawn as its own node below the relation lines; the frame itself is transparent. */
+export const FrameFill = memo(function FrameFill({ data }: NodeProps<CardNode>) {
+  return <div className={`card container frame-fill status-${data.node.status ?? "todo"}`} aria-hidden="true" />;
 });
 
 export function StarIcon({ filled }: { filled: boolean }) {

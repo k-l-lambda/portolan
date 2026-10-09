@@ -262,6 +262,19 @@ a { color: var(--accent); }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }
 /* A container frames its children: faint fill, header on top, children laid out inside by ELK. */
 .card.container { --card-bg: color-mix(in srgb, var(--st) 5%, var(--surface)); background: var(--card-bg); border-style: solid; box-shadow: none; }
+/* A frame is two layers: its fill (below the lines) and the frame itself (above them), whose body is
+   transparent so the lines inside show, while its header keeps the fill colour so lines pass behind
+   the title and controls. The 8px padding is covered by the header's shadow. */
+.card.container:not(.frame-fill) { background: transparent; }
+/* 60% opaque: lines behind the header stay faintly visible, the title and controls stay fully opaque.
+   Only the backdrop colour is translucent; opacity on the header would also fade its text. */
+.card.container:not(.frame-fill) .card-header {
+  --header-bg: color-mix(in srgb, var(--card-bg) 60%, transparent);
+  background: var(--header-bg); box-shadow: 0 0 0 8px var(--header-bg); border-radius: 2px;
+}
+.card.frame-fill { border-color: transparent; pointer-events: none; }
+.react-flow__node-fill { pointer-events: none !important; }
+.mini-hidden { display: none; }
 .card.container .card-header { width: 216px; }
 /* xyflow sets pointer-events inline on nodes; !important lets a frame's interior pass the mouse
    through to cards and the pane (pan, zoom, hover), while its header stays clickable. */
