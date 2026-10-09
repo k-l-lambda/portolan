@@ -242,7 +242,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         source: e.source,
         target: e.target,
         type: "polyline",
-        data: { points: e.points },
+        data: { points: e.points, arrow },
         className: style.className,
         style: style.dashed ? { strokeDasharray: style.dashed } : undefined,
         markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,

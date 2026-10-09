@@ -21,8 +21,9 @@ const STATUSES: { status: string; meaning: string }[] = [
 function LineSample({ kind, arrow, dashed }: { kind: EdgeKind; arrow: boolean; dashed?: string }) {
   return (
     <svg className={`legend-line edge-${kind}`} viewBox="0 0 44 12" width="44" height="12" aria-hidden="true">
-      <path d={arrow ? "M2 6h33" : "M2 6h40"} strokeDasharray={dashed} />
-      {arrow && <path className="legend-arrow" d="M35 2.5 42 6l-7 3.5z" />}
+      <path d={arrow ? "M2.5 6h32.5" : "M2.5 6h38.5"} strokeDasharray={dashed} />
+      <rect className="legend-tab" x="1" y="3.9" width="1.5" height="4.2" rx="0.4" />
+      {arrow ? <path className="legend-arrow" d="M35 2.5 42 6l-7 3.5z" /> : <rect className="legend-tab" x="41" y="3.9" width="1.5" height="4.2" rx="0.4" />}
     </svg>
   );
 }
@@ -33,6 +34,7 @@ export function Legend() {
     <div className="legend">
       <section>
         <h3>Lines between items</h3>
+        <p className="muted legend-hint">The small bar marks where a line leaves an item; the arrow marks where it points.</p>
         <ul>
           {LINES.map((l) => (
             <li key={l.kind}>

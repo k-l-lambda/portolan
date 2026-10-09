@@ -1,6 +1,6 @@
 import { BaseEdge, EdgeLabelRenderer, type Edge, type EdgeProps } from "@xyflow/react";
 import { memo } from "react";
-import { labelPoint, roundedPath } from "./geometry.ts";
+import { endTab, labelPoint, roundedPath, type Tab } from "./geometry.ts";
 
 export interface PolylineData extends Record<string, unknown> {
   /** Absolute points computed by the ELK layout, source to target. */
@@ -11,6 +11,15 @@ export interface PolylineData extends Record<string, unknown> {
   labelClass?: string;
   /** Hidden labels stay mounted (faded out), so showing and hiding can be animated. */
   labelShown?: boolean;
+  /** The line ends in an arrow at its target; otherwise both ends get a tab. */
+  arrow?: boolean;
+}
+
+function TabRect({ tab }: { tab: Tab }) {
+  return (
+    <rect className="edge-tab" x={-tab.w / 2} y={-tab.h / 2} width={tab.w} height={tab.h} rx={0.5}
+      transform={`translate(${tab.x} ${tab.y}) rotate(${tab.angle})`} />
+  );
 }
 
 export type PolylineEdgeType = Edge<PolylineData, "polyline">;
@@ -22,10 +31,15 @@ export type PolylineEdgeType = Edge<PolylineData, "polyline">;
 export const PolylineEdge = memo(function PolylineEdge(props: EdgeProps<PolylineEdgeType>) {
   const points = props.data?.points ?? [];
   const at = props.data?.labelAt ?? labelPoint(points);
+  // A small tab marks where the line meets a node: at the tail, or at both ends of an arrowless line.
+  const tail = endTab(points, true);
+  const head = props.data?.arrow ? null : endTab(points, false);
   return (
     <>
       <BaseEdge id={props.id} path={roundedPath(points)} markerEnd={props.markerEnd} style={props.style}
         interactionWidth={props.interactionWidth} />
+      {tail && <TabRect tab={tail} />}
+      {head && <TabRect tab={head} />}
       {props.label !== undefined && props.label !== null && (
         <EdgeLabelRenderer>
           <div className={`edge-label ${props.data?.labelClass ?? ""}${props.data?.labelShown === false ? " is-hidden" : ""}`}

@@ -171,3 +171,24 @@ function rawWidth(text: string, fontSize: number): number {
   for (const ch of text) w += /[⺀-鿿가-힯＀-￯]/.test(ch) ? fontSize : fontSize * 0.6;
   return w;
 }
+
+/** A line's attachment tab: centre, size and rotation (degrees) of a small rectangle. */
+export interface Tab { x: number; y: number; w: number; h: number; angle: number }
+
+/**
+ * The tab where a polyline meets a node: a short bar across the line, centred just outside the
+ * node border (`start` = the first point, else the last). `len` runs across the line, `depth` along it.
+ */
+export function endTab(points: { x: number; y: number }[], start: boolean, len = 4.8, depth = 1.8): Tab | null {
+  if (points.length < 2) return null;
+  const a = start ? points[0]! : points[points.length - 1]!;
+  const b = start ? points[1]! : points[points.length - 2]!;
+  const d = Math.hypot(b.x - a.x, b.y - a.y);
+  if (d === 0) return null;
+  const ux = (b.x - a.x) / d, uy = (b.y - a.y) / d; // pointing away from the node
+  return {
+    x: a.x + (ux * depth) / 2, y: a.y + (uy * depth) / 2,
+    w: depth, h: len,
+    angle: (Math.atan2(uy, ux) * 180) / Math.PI,
+  };
+}

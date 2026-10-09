@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "../src/index.ts";
 import { layoutElk } from "../web/src/elkLayout.ts";
-import { labelPoint, placeLabels, roundedPath } from "../web/src/geometry.ts";
+import { endTab, labelPoint, placeLabels, roundedPath } from "../web/src/geometry.ts";
 
 const SRC = `- [/] Root ^root
   - [x] Spec ^spec
@@ -171,5 +171,27 @@ describe("placeLabels", () => {
     const at = placeLabels([parallel[0]!], [{ x: -80, y: 120, w: 160, h: 60 }]);
     const p = at.get("e0")!;
     expect(p.y < 120 - 7 || p.y > 180 + 7).toBe(true);
+  });
+});
+
+describe("endTab", () => {
+  // A line leaving a node downward, turning right, then arriving at another node from the left.
+  const pts = [{ x: 10, y: 0 }, { x: 10, y: 40 }, { x: 80, y: 40 }];
+
+  it("defaults to a small tab", () => {
+    expect(endTab(pts, true)).toMatchObject({ w: 1.8, h: 4.8 });
+  });
+
+  it("puts the tail tab just outside the source, across the line", () => {
+    expect(endTab(pts, true, 8, 3)).toEqual({ x: 10, y: 1.5, w: 3, h: 8, angle: 90 });
+  });
+
+  it("puts the head tab just outside the target, facing back along the line", () => {
+    expect(endTab(pts, false, 8, 3)).toEqual({ x: 78.5, y: 40, w: 3, h: 8, angle: 180 });
+  });
+
+  it("returns null for degenerate lines", () => {
+    expect(endTab([{ x: 0, y: 0 }], true)).toBeNull();
+    expect(endTab([{ x: 0, y: 0 }, { x: 0, y: 0 }], true)).toBeNull();
   });
 });

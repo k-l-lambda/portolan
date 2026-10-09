@@ -202,7 +202,8 @@ a { color: var(--accent); }
 .legend-line.edge-needs { color: var(--edge-needs); } .legend-line.edge-blocks { color: var(--edge-blocks); }
 .legend-line.edge-relates { color: var(--edge-relates); } .legend-line.edge-replaces { color: var(--edge-replaces); }
 .legend-line.edge-from { color: var(--edge-from); }
-.legend-line path { stroke: currentColor; } .legend-line .legend-arrow { fill: currentColor; }
+.legend-line path { stroke: currentColor; } .legend-line .legend-arrow, .legend-line .legend-tab { fill: currentColor; stroke: none; }
+.legend .legend-hint { margin: 0 0 6px; }
 .legend-chip { justify-self: start; grid-column: span 2; padding: 1px 6px; border-radius: 4px; font: 600 11px/14px system-ui, sans-serif; border: 1px solid color-mix(in srgb, var(--edge-needs) 55%, transparent); background: var(--surface); }
 .legend-card.card { display: block; width: 44px; height: 22px; padding: 0; cursor: default; }
 .legend-card.card.container { background: var(--card-bg); }
@@ -313,6 +314,12 @@ a { color: var(--accent); }
 .react-flow__edge.edge-relates .react-flow__edge-path { stroke: var(--edge-relates); }
 .react-flow__edge.edge-replaces .react-flow__edge-path { stroke: var(--edge-replaces); }
 .react-flow__edge.edge-from .react-flow__edge-path { stroke: var(--edge-from); }
+/* Attachment tab at the end of a line, in the line's colour; it dims and fades with the line. */
+.edge-tab { fill: var(--edge-needs); stroke: none; }
+.react-flow__edge.edge-blocks .edge-tab { fill: var(--edge-blocks); }
+.react-flow__edge.edge-relates .edge-tab { fill: var(--edge-relates); }
+.react-flow__edge.edge-replaces .edge-tab { fill: var(--edge-replaces); }
+.react-flow__edge.edge-from .edge-tab { fill: var(--edge-from); }
 /* Edge labels live in xyflow's HTML label layer; lift it above edges and nodes so no line or
    card is painted over a label. The label background masks the lines underneath. */
 /* Above frames (0..99), lines (100) and cards (200..299, 350 while hovered); see DocView. */
