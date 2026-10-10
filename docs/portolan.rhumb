@@ -1,0 +1,32 @@
+---
+rhumb: 0.1
+title: Portolan
+---
+
+- [/] Portolan ^portolan
+  - [x] Prior-art survey ^survey
+    - Why: reuse what exists; only build the shared map that nothing else provides.
+    - Closest pieces: [Backlog.md](https://github.com/MrLesk/Backlog.md), Beads, Plannotator
+  - [/] Rhumb DSL {owner: claude} ^rhumb
+    - [x] Spec 0.1 ^rhumb-spec
+      - [spec](https://github.com/k-l-lambda/portolan/blob/main/docs/rhumb-spec.md)
+    - [x] Parser ^rhumb-parser
+    - [/] Formatter ^rhumb-fmt
+  - [/] Web view {star: true} ^ui
+    - [x] Map layout ^ui-layout
+    - [ ] Status editing ^ui-edit
+    - [!] Annotation panel ^ui-threads
+      - Blocked: the thread format is not settled
+  - [?] Agent loop for threads ^threads-agent
+  - [-] JSON map format ^json-format
+    - Dropped: hard for people and agents to write by hand
+
+%% relations
+rhumb-parser needs rhumb-spec
+rhumb-fmt needs rhumb-parser
+ui-layout needs rhumb-parser: needs a stable AST
+ui-edit needs ui-layout
+threads-agent needs ui-threads
+threads-agent relates ui-edit: shares the edit API
+rhumb replaces json-format
+ui-threads from survey: idea from Plannotator

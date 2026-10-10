@@ -25,6 +25,8 @@ A portolan chart was a nautical map drawn from sailors' logbooks, with rhumb lin
 
 ## What a map looks like
 
+[`docs/portolan.rhumb`](docs/portolan.rhumb):
+
 ```rhumb
 ---
 rhumb: 0.1
@@ -33,20 +35,40 @@ title: Portolan
 
 - [/] Portolan ^portolan
   - [x] Prior-art survey ^survey
+    - Why: reuse what exists; only build the shared map that nothing else provides.
     - Closest pieces: [Backlog.md](https://github.com/MrLesk/Backlog.md), Beads, Plannotator
   - [/] Rhumb DSL {owner: claude} ^rhumb
     - [x] Spec 0.1 ^rhumb-spec
+      - [spec](https://github.com/k-l-lambda/portolan/blob/main/docs/rhumb-spec.md)
     - [x] Parser ^rhumb-parser
-  - [ ] Visual frontend ^ui
+    - [/] Formatter ^rhumb-fmt
+  - [/] Web view {star: true} ^ui
+    - [x] Map layout ^ui-layout
+    - [ ] Status editing ^ui-edit
+    - [!] Annotation panel ^ui-threads
+      - Blocked: the thread format is not settled
   - [?] Agent loop for threads ^threads-agent
+  - [-] JSON map format ^json-format
+    - Dropped: hard for people and agents to write by hand
 
 %% relations
 rhumb-parser needs rhumb-spec
-ui needs rhumb-parser: needs a stable AST
-threads-agent relates ui
+rhumb-fmt needs rhumb-parser
+ui-layout needs rhumb-parser: needs a stable AST
+ui-edit needs ui-layout
+threads-agent needs ui-threads
+threads-agent relates ui-edit: shares the edit API
+rhumb replaces json-format
+ui-threads from survey: idea from Plannotator
 ```
 
-Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. Lines like `a needs b` are edges. Progress and readiness are derived by the tools, never stored in the file.
+The same map in the web view:
+
+<p align="center">
+  <img src="docs/example.svg" alt="The example map in the Portolan web view: a Portolan frame holding the Rhumb DSL and Web view frames and their items, colored by status and joined by needs, relates, replaces and from lines" width="560">
+</p>
+
+Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
 
 ## Status
 
@@ -86,8 +108,8 @@ pnpm install
 pnpm test
 pnpm build:web
 
-node src/cli.ts check examples/portolan.rhumb
-node src/cli.ts serve examples
+node src/cli.ts check docs/portolan.rhumb
+node src/cli.ts serve docs
 ```
 
 Then open http://127.0.0.1:4310.
@@ -96,6 +118,7 @@ Then open http://127.0.0.1:4310.
 
 - [docs/rhumb-spec.md](docs/rhumb-spec.md): the Rhumb 0.1 syntax specification
 - [docs/skill.md](docs/skill.md): guide for agents that maintain a Rhumb map
+- [docs/portolan.rhumb](docs/portolan.rhumb): the example map; `pnpm example:svg` redraws [docs/example.svg](docs/example.svg) from it
 
 ## Releasing
 

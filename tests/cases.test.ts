@@ -54,10 +54,10 @@ describe("parse", () => {
   });
 
   it("parses the repository example without diagnostics", () => {
-    const source = readFileSync(join(import.meta.dirname, "../examples/portolan.rhumb"), "utf8");
+    const source = readFileSync(join(import.meta.dirname, "../docs/portolan.rhumb"), "utf8");
     const doc = parse(source);
     expect(doc.diagnostics).toEqual([]);
     expect(doc.title).toBe("Portolan");
-    expect(doc.edges).toHaveLength(5);
+    expect(doc.edges).toHaveLength(8);
   });
 });

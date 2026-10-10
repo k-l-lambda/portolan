@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="1165" viewBox="-24 -24 780 1165" font-family="system-ui, -apple-system, 'Segoe UI', 'Noto Sans', 'PingFang SC', sans-serif" role="img" aria-labelledby="t">
+<title id="t">Portolan: portolan.rhumb in the Portolan web view</title>
+<defs>
+<pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d4d4cf"/></pattern>
+<marker id="arrow-needs" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#2f5f8a" stroke="#2f5f8a" stroke-width="1" stroke-linejoin="round"/></marker>
+<marker id="arrow-blocks" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#b3261e" stroke="#b3261e" stroke-width="1" stroke-linejoin="round"/></marker>
+<marker id="arrow-relates" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#6a4fb3" stroke="#6a4fb3" stroke-width="1" stroke-linejoin="round"/></marker>
+<marker id="arrow-replaces" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#8a8a84" stroke="#8a8a84" stroke-width="1" stroke-linejoin="round"/></marker>
+<marker id="arrow-from" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#2e7d4f" stroke="#2e7d4f" stroke-width="1" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="-24" y="-24" width="780" height="1165" fill="#f7f7f5"/>
+<rect x="-24" y="-24" width="780" height="1165" fill="url(#dots)"/>
+<rect x="12.5" y="12.5" width="707" height="1092" rx="8" fill="#fbf8f2" stroke="#d9d9d3"/>
+<rect x="424.5" y="206.5" width="283" height="367" rx="8" fill="#fbf8f2" stroke="#d9d9d3"/>
+<rect x="24.5" y="614.5" width="354" height="367" rx="8" fill="#fbf8f2" stroke="#d9d9d3"/>
+<path d="M 536 390 L 536 370" fill="none" stroke="#2f5f8a" stroke-width="1.5" marker-end="url(#arrow-needs)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2f5f8a" transform="translate(536 389.1) rotate(-90)"/>
+<path d="M 516 486 L 516 466" fill="none" stroke="#2f5f8a" stroke-width="1.5" marker-end="url(#arrow-needs)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2f5f8a" transform="translate(516 485.1) rotate(-90)"/>
+<path d="M 247 702 L 247 597 Q 247 589 255 589 L 678 589 Q 686 589 686 581 L 686 484 Q 686 476 678 476 L 641 476 Q 636 476 636 471 L 636 466" fill="none" stroke="#2f5f8a" stroke-width="1.5" marker-end="url(#arrow-needs)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2f5f8a" transform="translate(247 701.1) rotate(-90)"/>
+<path d="M 287 894 L 287 778" fill="none" stroke="#2f5f8a" stroke-width="1.5" marker-end="url(#arrow-needs)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2f5f8a" transform="translate(287 893.1) rotate(-90)"/>
+<path d="M 127 1017 L 127 1012 Q 127 1007 122 1007 L 121.5 1007 Q 116 1007 116 1001.5 L 116 874" fill="none" stroke="#2f5f8a" stroke-width="1.5" marker-end="url(#arrow-needs)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2f5f8a" transform="translate(127 1016.1) rotate(-90)"/>
+<path d="M 247 1017 L 247 970" fill="none" stroke="#6a4fb3" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrow-relates)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#6a4fb3" transform="translate(247 1016.1) rotate(-90)"/>
+<path d="M 456 206 L 456 176" fill="none" stroke="#8a8a84" stroke-width="1" stroke-dasharray="8 4" marker-end="url(#arrow-replaces)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#8a8a84" transform="translate(456 205.1) rotate(-90)"/>
+<path d="M 116 798 L 116 176" fill="none" stroke="#2e7d4f" stroke-width="1" stroke-dasharray="2 4" marker-end="url(#arrow-from)"/>
+<rect x="-0.9" y="-2.4" width="1.8" height="4.8" rx="0.5" fill="#2e7d4f" transform="translate(116 797.1) rotate(-90)"/>
+<g>
+<rect x="17" y="13" width="232" height="76" rx="2" fill="#fbf8f2" fill-opacity="0.6"/>
+<path d="M 20 12 H 17 V 1105 H 20 A 8 8 0 0 1 12 1097 V 20 A 8 8 0 0 1 20 12 Z" fill="#b46a00"/>
+<rect x="27" y="21" width="43" height="17" rx="4" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="32" y="33.5" font-size="11" fill="#b46a00">doing</text>
+<text x="76" y="34" font-size="14" font-weight="550" fill="#1d1d1b">Portolan</text>
+<path transform="translate(217 22) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="27" y="76" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^portolan</text>
+<rect x="94.38" y="66" width="112.62" height="14" rx="7" fill="#f0f0ec"/>
+<clipPath id="p-portolan"><rect x="94.38" y="66" width="112.62" height="14" rx="7"/></clipPath>
+<rect x="94.38" y="66" width="64.35428571428572" height="14" fill="#acc8b5" clip-path="url(#p-portolan)"/>
+<text x="150.69" y="76.5" font-size="10" text-anchor="middle" fill="#1d1d1b">4/7</text>
+<rect x="212" y="64" width="20" height="18" rx="6" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="222" y="77" font-size="12" text-anchor="middle" fill="#6b6b66">−</text>
+</g>
+<g>
+<rect x="429" y="207" width="232" height="76" rx="2" fill="#fbf8f2" fill-opacity="0.6"/>
+<path d="M 432 206 H 429 V 574 H 432 A 8 8 0 0 1 424 566 V 214 A 8 8 0 0 1 432 206 Z" fill="#b46a00"/>
+<rect x="439" y="215" width="43" height="17" rx="4" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="444" y="227.5" font-size="11" fill="#b46a00">doing</text>
+<text x="488" y="228" font-size="14" font-weight="550" fill="#1d1d1b">Rhumb DSL</text>
+<path transform="translate(629 216) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="439" y="270" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^rhumb</text>
+<rect x="485.92" y="260" width="133.07999999999998" height="14" rx="7" fill="#f0f0ec"/>
+<clipPath id="p-rhumb"><rect x="485.92" y="260" width="133.07999999999998" height="14" rx="7"/></clipPath>
+<rect x="485.92" y="260" width="88.71999999999998" height="14" fill="#acc8b5" clip-path="url(#p-rhumb)"/>
+<text x="552.46" y="270.5" font-size="10" text-anchor="middle" fill="#1d1d1b">2/3</text>
+<rect x="624" y="258" width="20" height="18" rx="6" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="634" y="271" font-size="12" text-anchor="middle" fill="#6b6b66">−</text>
+</g>
+<g>
+<rect x="29" y="615" width="232" height="76" rx="2" fill="#fbf8f2" fill-opacity="0.6"/>
+<path d="M 32 614 H 29 V 982 H 32 A 8 8 0 0 1 24 974 V 622 A 8 8 0 0 1 32 614 Z" fill="#b46a00"/>
+<rect x="39" y="623" width="43" height="17" rx="4" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="44" y="635.5" font-size="11" fill="#b46a00">doing</text>
+<text x="88" y="636" font-size="14" font-weight="550" fill="#1d1d1b">Web view</text>
+<path transform="translate(229 624) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="#b7791f" stroke="#b7791f" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="39" y="678" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^ui</text>
+<rect x="65.46000000000001" y="668" width="153.54" height="14" rx="7" fill="#f0f0ec"/>
+<clipPath id="p-ui"><rect x="65.46000000000001" y="668" width="153.54" height="14" rx="7"/></clipPath>
+<rect x="65.46000000000001" y="668" width="51.18" height="14" fill="#acc8b5" clip-path="url(#p-ui)"/>
+<text x="142.23000000000002" y="678.5" font-size="10" text-anchor="middle" fill="#1d1d1b">1/3</text>
+<rect x="224" y="666" width="20" height="18" rx="6" fill="#fefdfb" stroke="#d9d9d3"/>
+<text x="234" y="679" font-size="12" text-anchor="middle" fill="#6b6b66">−</text>
+</g>
+<g>
+<rect x="36.5" y="100.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
+<path d="M 44 100 H 41 V 176 H 44 A 8 8 0 0 1 36 168 V 108 A 8 8 0 0 1 44 100 Z" fill="#2e7d4f"/>
+<rect x="51" y="109" width="41" height="17" rx="4" fill="#f5f9f7" stroke="#d9d9d3"/>
+<text x="56" y="121.5" font-size="11" fill="#2e7d4f">done</text>
+<text x="98" y="122" font-size="14" font-weight="550" fill="#1d1d1b">Prior-art survey</text>
+<path transform="translate(251 110) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="51" y="164" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^survey</text>
+<rect x="104.74000000000001" y="152" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
+<text x="110.74000000000001" y="164.5" font-size="11" fill="#6b6b66">1 link</text>
+</g>
+<g opacity="0.6">
+<rect x="296.5" y="100.5" width="239" height="75" rx="8" fill="#f3f3f3" stroke="#d9d9d3"/>
+<path d="M 304 100 H 301 V 176 H 304 A 8 8 0 0 1 296 168 V 108 A 8 8 0 0 1 304 100 Z" fill="#8a8a84"/>
+<rect x="311" y="109" width="60" height="17" rx="4" fill="#fbfbfb" stroke="#d9d9d3"/>
+<text x="316" y="121.5" font-size="11" fill="#8a8a84">dropped</text>
+<text x="377" y="122" font-size="14" font-weight="550" fill="#1d1d1b" text-decoration="line-through">JSON map</text>
+<text x="377" y="139.5" font-size="14" font-weight="550" fill="#1d1d1b" text-decoration="line-through">format</text>
+<path transform="translate(511 110) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="311" y="164" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^json-format</text>
+</g>
+<g>
+<rect x="67.5" y="1017.5" width="239" height="75" rx="8" fill="#f0edf7" stroke="#d9d9d3" stroke-dasharray="5 3"/>
+<path d="M 75 1017 H 72 V 1093 H 75 A 8 8 0 0 1 67 1085 V 1025 A 8 8 0 0 1 75 1017 Z" fill="#6a4fb3"/>
+<rect x="82" y="1026" width="37" height="17" rx="4" fill="#fbfafd" stroke="#d9d9d3"/>
+<text x="87" y="1038.5" font-size="11" fill="#6a4fb3">idea</text>
+<text x="125" y="1039" font-size="14" font-weight="550" fill="#1d1d1b">Agent loop for</text>
+<text x="125" y="1056.5" font-size="14" font-weight="550" fill="#1d1d1b">threads</text>
+<path transform="translate(282 1027) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="82" y="1081" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^threads-agent</text>
+</g>
+<g>
+<rect x="456.5" y="294.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
+<path d="M 464 294 H 461 V 370 H 464 A 8 8 0 0 1 456 362 V 302 A 8 8 0 0 1 464 294 Z" fill="#2e7d4f"/>
+<rect x="471" y="303" width="41" height="17" rx="4" fill="#f5f9f7" stroke="#d9d9d3"/>
+<text x="476" y="315.5" font-size="11" fill="#2e7d4f">done</text>
+<text x="518" y="316" font-size="14" font-weight="550" fill="#1d1d1b">Spec 0.1</text>
+<path transform="translate(671 304) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="471" y="358" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-spec</text>
+<rect x="524.74" y="346" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
+<text x="530.74" y="358.5" font-size="11" fill="#6b6b66">1 link</text>
+</g>
+<g>
+<rect x="456.5" y="390.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
+<path d="M 464 390 H 461 V 466 H 464 A 8 8 0 0 1 456 458 V 398 A 8 8 0 0 1 464 390 Z" fill="#2e7d4f"/>
+<rect x="471" y="399" width="41" height="17" rx="4" fill="#f5f9f7" stroke="#d9d9d3"/>
+<text x="476" y="411.5" font-size="11" fill="#2e7d4f">done</text>
+<text x="518" y="412" font-size="14" font-weight="550" fill="#1d1d1b">Parser</text>
+<path transform="translate(671 400) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="471" y="454" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-parser</text>
+</g>
+<g>
+<rect x="436.5" y="486.5" width="239" height="75" rx="8" fill="#f2e4d1" stroke="#d9d9d3"/>
+<path d="M 444 486 H 441 V 562 H 444 A 8 8 0 0 1 436 554 V 494 A 8 8 0 0 1 444 486 Z" fill="#b46a00"/>
+<rect x="451" y="495" width="43" height="17" rx="4" fill="#fbf7f1" stroke="#d9d9d3"/>
+<text x="456" y="507.5" font-size="11" fill="#b46a00">doing</text>
+<text x="500" y="508" font-size="14" font-weight="550" fill="#1d1d1b">Formatter</text>
+<path transform="translate(651 496) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="451" y="550" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-fmt</text>
+</g>
+<g>
+<rect x="127.5" y="702.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
+<path d="M 135 702 H 132 V 778 H 135 A 8 8 0 0 1 127 770 V 710 A 8 8 0 0 1 135 702 Z" fill="#2e7d4f"/>
+<rect x="142" y="711" width="41" height="17" rx="4" fill="#f5f9f7" stroke="#d9d9d3"/>
+<text x="147" y="723.5" font-size="11" fill="#2e7d4f">done</text>
+<text x="189" y="724" font-size="14" font-weight="550" fill="#1d1d1b">Map layout</text>
+<path transform="translate(342 712) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="142" y="766" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-layout</text>
+</g>
+<g>
+<rect x="36.5" y="798.5" width="239" height="75" rx="8" fill="#f1d8d7" stroke="#d9d9d3"/>
+<path d="M 44 798 H 41 V 874 H 44 A 8 8 0 0 1 36 866 V 806 A 8 8 0 0 1 44 798 Z" fill="#b3261e"/>
+<rect x="51" y="807" width="58" height="17" rx="4" fill="#fbf3f3" stroke="#d9d9d3"/>
+<text x="56" y="819.5" font-size="11" fill="#b3261e">blocked</text>
+<text x="115" y="820" font-size="14" font-weight="550" fill="#1d1d1b">Annotation</text>
+<text x="115" y="837.5" font-size="14" font-weight="550" fill="#1d1d1b">panel</text>
+<path transform="translate(251 808) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="51" y="862" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-threads</text>
+</g>
+<g>
+<rect x="127.5" y="894.5" width="239" height="75" rx="8" fill="#f0f0f0" stroke="#d9d9d3"/>
+<path d="M 135 894 H 132 V 970 H 135 A 8 8 0 0 1 127 962 V 902 A 8 8 0 0 1 135 894 Z" fill="#6b6b66"/>
+<rect x="142" y="903" width="38" height="17" rx="4" fill="#fbfbfb" stroke="#d9d9d3"/>
+<text x="147" y="915.5" font-size="11" fill="#6b6b66">todo</text>
+<text x="186" y="916" font-size="14" font-weight="550" fill="#1d1d1b">Status editing</text>
+<path transform="translate(342 904) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="142" y="958" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-edit</text>
+<rect x="195.74" y="946" width="46.0076" height="18" rx="9" fill="#f0f0ec"/>
+<text x="201.74" y="958.5" font-size="11" fill="#2e7d4f">ready</text>
+</g>
+<rect x="510.5684" y="371" width="50.8632" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
+<text x="536" y="384" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs</text>
+<rect x="490.5684" y="467" width="50.8632" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
+<text x="516" y="480" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs</text>
+<rect x="376.428" y="580" width="180.144" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
+<text x="466.5" y="593" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs: needs a stable AST</text>
+<rect x="261.5684" y="867" width="50.8632" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
+<text x="287" y="880" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs</text>
+<rect x="90.5684" y="974" width="50.8632" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
+<text x="116" y="987" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs</text>
+<rect x="179.3834" y="984.5" width="135.2332" height="18" rx="4" fill="#ffffff" stroke="#ad9ed5"/>
+<text x="247" y="997.5" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">shares the edit API</text>
+<rect x="423.04" y="182" width="65.91999999999999" height="18" rx="4" fill="#ffffff" stroke="#bfbfbb"/>
+<text x="456" y="195" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">replaces</text>
+<rect x="23.46180000000001" y="478" width="185.07639999999998" height="18" rx="4" fill="#ffffff" stroke="#8cb89e"/>
+<text x="116" y="491" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">from: idea from Plannotator</text>
+</svg>
