@@ -10,7 +10,7 @@ import { layoutElk, type Box, type Route } from "../web/src/elkLayout.ts";
 import { endTab, placeLabels, roundedPath, type LabelRequest } from "../web/src/geometry.ts";
 import { plainTitle, shortId } from "../web/src/layout.ts";
 
-const [input = "docs/portolan.rhumb", output = "docs/example.svg"] = process.argv.slice(2);
+const [input = "docs/example.rhumb", output = "docs/example.svg"] = process.argv.slice(2);
 
 // Light theme tokens from web/src/styles.css.
 const C = {

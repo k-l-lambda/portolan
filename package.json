@@ -37,7 +37,7 @@
     "build:grammar": "peggy --format es --dts --allowed-start-rules Line,Inline -o src/generated/line-parser.js src/grammar.peggy",
     "pretest": "npm run build:grammar",
     "test": "vitest run",
-    "example:svg": "node scripts/example-svg.ts docs/portolan.rhumb docs/example.svg",
+    "example:svg": "node scripts/example-svg.ts docs/example.rhumb docs/example.svg",
     "typecheck": "npm run build:grammar && tsc --noEmit && tsc --noEmit -p web",
     "portolan": "node src/cli.ts",
     "build:lib": "npm run build:grammar && tsc -p tsconfig.build.json && mkdir -p dist/generated && cp src/generated/line-parser.js src/generated/line-parser.d.ts dist/generated/",

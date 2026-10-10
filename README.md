@@ -25,7 +25,7 @@ A portolan chart was a nautical map drawn from sailors' logbooks, with rhumb lin
 
 ## What a map looks like
 
-[`docs/portolan.rhumb`](docs/portolan.rhumb):
+[`docs/example.rhumb`](docs/example.rhumb):
 
 ```rhumb
 ---
@@ -108,7 +108,7 @@ pnpm install
 pnpm test
 pnpm build:web
 
-node src/cli.ts check docs/portolan.rhumb
+node src/cli.ts check docs/portolan.rhumb   # the project's own map
 node src/cli.ts serve docs
 ```
 
@@ -118,7 +118,9 @@ Then open http://127.0.0.1:4310.
 
 - [docs/rhumb-spec.md](docs/rhumb-spec.md): the Rhumb 0.1 syntax specification
 - [docs/skill.md](docs/skill.md): guide for agents that maintain a Rhumb map
-- [docs/portolan.rhumb](docs/portolan.rhumb): the example map; `pnpm example:svg` redraws [docs/example.svg](docs/example.svg) from it
+- [docs/portolan.rhumb](docs/portolan.rhumb): the map Portolan itself is developed with
+- [docs/changelog.md](docs/changelog.md): how Portolan was built, entry by entry; the project map links into it
+- [docs/example.rhumb](docs/example.rhumb): the example above; `pnpm example:svg` redraws [docs/example.svg](docs/example.svg) from it
 
 ## Releasing
 

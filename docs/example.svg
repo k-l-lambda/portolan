@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="780" height="1165" viewBox="-24 -24 780 1165" font-family="system-ui, -apple-system, 'Segoe UI', 'Noto Sans', 'PingFang SC', sans-serif" role="img" aria-labelledby="t">
-<title id="t">Portolan: portolan.rhumb in the Portolan web view</title>
+<title id="t">Portolan: example.rhumb in the Portolan web view</title>
 <defs>
 <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d4d4cf"/></pattern>
 <marker id="arrow-needs" viewBox="-10 -10 20 20" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse" refX="0" refY="0"><polyline points="-5,-4 0,0 -5,4 -5,-4" fill="#2f5f8a" stroke="#2f5f8a" stroke-width="1" stroke-linejoin="round"/></marker>
