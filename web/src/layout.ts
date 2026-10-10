@@ -2,6 +2,9 @@
 
 import type { RhumbNode } from "../../src/types.ts";
 
+/** The project's home page. */
+export const REPO_URL = "https://github.com/k-l-lambda/portolan";
+
 export const CARD_W = 240;
 export const CARD_H = 76;
 

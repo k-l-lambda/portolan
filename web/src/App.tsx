@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DEFAULT_FILE } from "./api.ts";
 import { DocView } from "./DocView.tsx";
 import { GitHubIcon } from "./Icons.tsx";
+import { REPO_URL } from "./layout.ts";
 import { IndexView } from "./IndexView.tsx";
 import { rememberRecent } from "./recent.ts";
 import { RecentMenu } from "./RecentMenu.tsx";
@@ -20,9 +21,6 @@ function useRoute(): { file: string | null; node: string | null } {
   }, []);
   return route;
 }
-
-/** The project's home page, linked from the top bar. */
-const REPO_URL = "https://github.com/k-l-lambda/portolan";
 
 export function App() {
   const route = useRoute();

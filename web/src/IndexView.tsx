@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, onServerEvents, type FileSummary } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 import { StarIcon } from "./NodeCard.tsx";
-import { plainTitle } from "./layout.ts";
+import { plainTitle, REPO_URL } from "./layout.ts";
 
 export function IndexView() {
   const [files, setFiles] = useState<FileSummary[] | null>(null);
@@ -54,6 +54,10 @@ export function IndexView() {
           </li>
         ))}
       </ul>
+      <footer className="index-about">
+        Portolan is a shared map of work for humans and AI agents: a mind map, TODO list and task log visualization in one.{" "}
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">github.com/k-l-lambda/portolan</a>
+      </footer>
     </main>
   );
 }
