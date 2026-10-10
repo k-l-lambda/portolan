@@ -210,6 +210,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       position: { x: b.x, y: b.y },
       width: b.width,
       height: b.height,
+      // Every rebuild (reload, new layout, the freshness tick) creates new node objects. Without
+      // `measured`, xyflow drops their handle bounds and hides every edge until the cards are
+      // measured again, so lines blinked out for a few frames. The size is known, so pass it.
+      measured: { width: b.width, height: b.height },
       // Stacking, bottom to top:
       //   0..99    frame fills (FrameFill), by depth
       //   100      relation lines
