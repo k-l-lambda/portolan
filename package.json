@@ -1,6 +1,6 @@
 {
   "name": "@k-l-lambda/portolan",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A shared map of work for humans and AI agents: a mind map that is also a TODO list and task log, written in the Rhumb DSL.",
   "type": "module",
   "keywords": [
