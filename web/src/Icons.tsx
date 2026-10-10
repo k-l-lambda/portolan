@@ -11,6 +11,15 @@ function Icon({ children }: { children: ReactNode }) {
   );
 }
 
+/** A page with lines of text and a folded corner: the map's source file. */
+export const SourceIcon = () => (
+  <Icon>
+    <path d="M4 1.8h5.2L12.4 5v9.2H4z" />
+    <path d="M9.2 1.8V5h3.2" />
+    <path d="M6 8h4.4M6 10.5h4.4M6 13h2.6" opacity=".7" />
+  </Icon>
+);
+
 /** Two chevrons pulling apart: unfold every group. */
 export const ExpandAllIcon = () => (
   <Icon>

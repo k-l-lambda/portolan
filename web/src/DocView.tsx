@@ -4,7 +4,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
-import { api, ApiError, onServerEvents, READ_ONLY, type DocResponse } from "./api.ts";
+import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -12,7 +12,7 @@ import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { IconButton } from "./IconButton.tsx";
-import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon } from "./Icons.tsx";
+import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
@@ -458,6 +458,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             </div>
           )}
         </div>
+        <a className="btn source-link" href={sourceUrl(file)} target="_blank" rel="noopener noreferrer"
+          title={`Open ${file} as plain text in a new tab`}>
+          <SourceIcon /> Source: <span className="source-file">{file.split("/").pop()}</span>
+        </a>
         {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
       </div>
       <div className="doc-body">

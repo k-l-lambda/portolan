@@ -59,11 +59,16 @@ export const READ_ONLY = STATIC !== null;
 export const DEFAULT_FILE = STATIC || null;
 
 /** Static file for an API call; mirrors what scripts/build-pages.ts writes. */
-export function staticPath(kind: "files" | "doc" | "anchor", file?: string, line?: number, index?: number): string {
+export function staticPath(kind: "files" | "doc" | "anchor" | "source", file?: string, line?: number, index?: number): string {
   if (kind === "files") return "api/files.json";
   const f = encodeURIComponent(file!);
+  // Source is saved as .txt, so a static host serves it as text instead of a download.
+  if (kind === "source") return `api/source/${f}.txt`;
   return kind === "doc" ? `api/doc/${f}.json` : `api/anchor/${f}/${line}-${index}.json`;
 }
+
+/** URL of a map's raw .rhumb text, to open in a new tab. */
+export const sourceUrl = (file: string) => (STATIC !== null ? staticPath("source", file) : `/api/source?${q(file)}`);
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);

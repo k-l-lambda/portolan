@@ -39,6 +39,10 @@ let anchors = 0;
 for (const { file } of files) {
   const q = `file=${encodeURIComponent(file)}`;
   await save(`/api/doc?${q}`, staticPath("doc", file));
+  // The source as is: no path scrubbing, it is the user's own text.
+  const source = join(out, staticPath("source", file));
+  mkdirSync(dirname(source), { recursive: true });
+  writeFileSync(source, await (await fetch(`${base}/api/source?${q}`)).text());
   const { doc } = (await (await fetch(`${base}/api/doc?${q}`)).json()) as { doc: { nodes: RhumbNode[] } };
   const walk = async (nodes: RhumbNode[]) => {
     for (const n of nodes) {

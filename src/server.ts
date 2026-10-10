@@ -249,6 +249,14 @@ export function createRhumbServer(options: ServerOptions): Server {
       return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness });
     }
 
+    if (key === "GET /api/source") {
+      // The raw .rhumb text, for reading in a browser tab.
+      const { abs } = fileFor(param);
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-cache" });
+      res.end(readFileSync(abs, "utf8"));
+      return;
+    }
+
     if (key === "POST /api/edit") {
       // Optimistic concurrency: the client sends the version it edited against.
       const { abs } = fileFor(param);

@@ -383,6 +383,14 @@ describe("server", () => {
     expect(threads.threads).toMatchObject([{ target: "beta", orphan: false }]);
     expect(new ThreadStore(file).load().threads[0]!.target).toBe("beta");
 
+    // The raw source, as plain text for a browser tab; only .rhumb files inside the root.
+    const source = await fetch(`${base}/api/source?file=plan.rhumb`);
+    expect(source.status).toBe(200);
+    expect(source.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+    expect(await source.text()).toBe(readFileSync(file, "utf8"));
+    expect((await fetch(`${base}/api/source?file=../plan.rhumb`)).status).toBe(400);
+    expect((await fetch(`${base}/api/source?file=plan.threads.jsonl`)).status).toBe(400);
+
     // fetch() drops a custom Host header, so use node:http for the DNS-rebinding check.
     const port = (server.address() as AddressInfo).port;
     const status = await new Promise<number>((r) =>

@@ -177,7 +177,7 @@ a { color: var(--accent); }
 .tool-group { display: inline-flex; gap: 2px; }
 .icon { display: block; flex: none; }
 .icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-width: 28px; height: 26px; padding: 0 6px; color: var(--muted); }
-.icon-btn:hover:not(:disabled), .legend-btn:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.icon-btn:hover:not(:disabled), .legend-btn:hover, .source-link:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 .icon-btn.pressed, .legend-btn.pressed { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
 .icon-btn[data-tip]::after {
   content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translate(-50%, -2px); z-index: 70;
@@ -188,6 +188,8 @@ a { color: var(--accent); }
 .icon-btn[data-tip]:hover::after, .icon-btn[data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
 .legend-wrap { position: relative; }
 .legend-btn { display: inline-flex; align-items: center; gap: 5px; height: 26px; color: var(--muted); }
+.source-link { display: inline-flex; align-items: center; gap: 5px; height: 26px; box-sizing: border-box; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.source-file { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
 /* Legend popover */
 .legend-popover { width: min(440px, calc(100vw - 32px)); max-height: 75vh; padding: 10px 12px; right: 0; left: auto; }
 .legend-popover:focus { outline: none; }
