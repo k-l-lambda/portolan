@@ -5,14 +5,14 @@ links:
   chronicle: "{path}.md"
 ---
 
-- [/] 构建 II 型文明 ^type-ii
-  - Why: 在已有历史基础上，建立可持续利用恒星尺度能量的能力；最终以长期审计的净可用功率衡量成果。
+- [/] 构建一个 II 型文明 ^type-ii
+  - Why: 为黑洞纪到来储备可用能源，试验跑通技术文明初始化流程。
   - 目标口径：长期稳定利用恒星功率量级的净能量；[太阳光度约 3.83 × 10²⁶ W](https://science.nasa.gov/universe/glossary/)。
 
   - [x] 有机生命培养 ^history-life
     - Why: 从分子复制逐步形成复杂动物和智人，为能够组织恒星级工程的主体提供生物学基础。
     - [x] 喷口 RNA ^history-life-rna
-      - Why: 热液喷口附近出现可复制的 RNA 分子，开启信息的分子传递；可复制的信息是后来技术文明的生物学起点。
+      - Why: 碱性热液喷口附近出现可复制的 RNA 分子，开启信息的分子传递；可复制的信息是后来技术文明的生物学起点。
       - [文明构建日志](chronicle:civilization-log#-4350000000-he)
     - [x] 遗传体系 ^history-life-luca
       - Why: RNA、蛋白质与 DNA 分工稳定，形成后来生命共享的基本遗传体系；稳定遗传使复杂生命与长期演化成为可能。
@@ -106,10 +106,10 @@ links:
     - [x] 万维网 ^history-information-web
       - Why: 可互联的知识记录扩大技术传播范围，缩短跨机构工程的协作周期。
       - [文明构建日志](chronicle:civilization-log#11989-03-he)
-    - [x] AI Agent 工具链 ^history-information-agent
+    - [/] AI Agent 工具链 ^history-information-agent
       - Why: 可审计的工具调用把部分数字任务从人手扩展到智能体，为未来太空设施自治提供方法起点。
       - [文明构建日志](chronicle:civilization-log#12025-03-11-he)
-    - [ ] 自治安全边界 ^agents-safety
+    - [/] 自治安全边界 ^agents-safety
       - Why: 明确智能体能操作哪些设备、能消耗多少资源，以及何时必须交还控制权；受控权限使大规模自治操作不危及人员、轨道与能源网络。
       - 完成判据：任务权限、可验证执行记录、隔离测试与人工接管机制在真实设备上通过故障演练。
     - [ ] 深空通信底网 ^agents-communications
@@ -124,49 +124,6 @@ links:
     - [ ] 跨站资源调度 ^agents-coordination
       - Why: 各生产和能源节点要共享物料、功率、轨道窗口与维修能力；跨站调度让戴森群的材料流和能量流保持连续。
       - 完成判据：多个离地站点在部分失联和资源短缺时仍能按公开优先级完成调度并恢复一致账目。
-
-  - [/] 能源与戴森群 ^stellar
-    - Why: 从蒸汽、核能和硅太阳电池延续到戴森群，实现恒星量级净可用功率。
-    - [x] 能源与工业 ^history-industry
-      - Why: 能源转换提高人均产出并扩大产业规模，为离地制造与后来的恒星能源利用铺路。
-    - [x] 蒸汽动力 ^history-industry-steam
-      - Why: 连续机械动力提高生产和运输能力，让技术设备进入大规模复制的工业网络。
-      - [文明构建日志](chronicle:civilization-log#11712-he)
-    - [x] 受控核裂变 ^history-industry-fission
-      - Why: 受控核能增加高密度能源选项，为日后远离太阳的制造和运输系统保留供能路径。
-      - [文明构建日志](chronicle:civilization-log#11942-12-02-he)
-    - [x] 硅太阳电池 ^history-material-solar
-      - Why: 硅器件把日光直接转为电力，是戴森群收集器可复制的技术起点。
-      - [文明构建日志](chronicle:civilization-log#11954-he)
-    - [x] 文明尺度构想 ^history-concept
-      - Why: 将能源利用率表述为文明尺度，让人口和技术网络扩张有可衡量的长远目标。
-    - [x] 文明能级尺度 ^history-concept-kardashev
-      - Why: 恒星级能源利用成为文明能力的参照，给戴森群的净可用功率设定最终量级。
-      - [文明构建日志](chronicle:civilization-log#11964-he)
-    - [x] 先进裂变堆 ^history-industry-htr
-      - Why: 稳定供热和供电扩大低碳工业能力，为离地设施所需材料的持续生产提供选项。
-      - [文明构建日志](chronicle:civilization-log#12023-12-06-he)
-    - [x] 可再生能源扩张 ^history-industry-renewables
-      - Why: 风光装机扩大清洁供能网络，使未来离地建设增加用能时仍可约束地球环境负担。
-      - [文明构建日志](chronicle:civilization-log#12025-he)
-    - [/] 地球能源转型 ^foundation-energy
-      - Why: 低排放且稳定的供能和制造能力是持续扩大离地工程的起点；它为材料生产和初期离地建设提供稳定能源。
-      - 历史进展：[2025 年可再生能源新增装机](chronicle:civilization-log#12025-he)；下一步需解决电网、储能与材料约束。
-    - [ ] 辐射散热试验 ^stellar-thermal
-      - Why: 被收集却未转为可用功的能量必须排入太空，散热能力决定设备寿命与规模上限；废热排出能力决定收集器可持续工作的功率密度。
-      - 完成判据：散热器在真实辐照、微陨石和热循环条件下维持功率与可维修性。
-    - [ ] 定向输能试验 ^stellar-transfer
-      - Why: 将收集器的功率送达离地制造和居住节点，同时限制误照与传输损耗；可控输能使收集到的功率真正进入文明的可用能源账。
-      - 完成判据：光束或其他输能链路完成端到端效率、自动断束和故障隔离测试。
-    - [ ] 首批太阳收集器 ^stellar-pilot
-      - Why: 集成采光、转换、散热、输能与机器人维护，检验完整装置的净收益；实测净收益为大规模复制提供工程依据。
-      - 完成判据：示范编队连续交付经计量的净可用功率，且运行与维修成本可核算。
-    - [ ] 可控扩张网络 ^stellar-network
-      - Why: 在持续维修和补给下复制收集器编队，并使输能、调度与轨道管理同步扩容；稳定扩容使净可用功率逐级接近恒星量级。
-      - 完成判据：多批次新增装置投入运行后，净可用功率持续增长，碰撞规避、故障隔离和退役回收保持有效。
-    - [ ] 恒星尺度利用 ^stellar-scale
-      - Why: 在长期稳定与生态约束下，达到 10²⁶ W 量级的可核算净可用功率；这是 II 型文明目标的最终验收条件。
-      - 完成判据：长期审计能源收集、输送、利用和废热排放，确认净可用功率已达目标量级且地球日照保持在约定边界内。
 
   - [/] 空间与运输 ^foundation
     - Why: 从火箭与空间站延续到轨道组装、太空电梯和多地点运输，形成戴森群的空间物流基础。
@@ -227,6 +184,49 @@ links:
       - Why: 为收集器、工厂、运输船和自然天体划定长期稳定且可避碰的运行区域；轨道容量和安全边界决定收集器群能否长期扩张。
       - 完成判据：轨道配置通过长期扰动、碰撞级联和地球日照影响评估，具有扩张及退役路径。
 
+  - [/] 能源与戴森群 ^stellar
+    - Why: 从蒸汽、核能和硅太阳电池延续到戴森群，实现恒星量级净可用功率。
+    - [x] 能源与工业 ^history-industry
+      - Why: 能源转换提高人均产出并扩大产业规模，为离地制造与后来的恒星能源利用铺路。
+    - [x] 蒸汽动力 ^history-industry-steam
+      - Why: 连续机械动力提高生产和运输能力，让技术设备进入大规模复制的工业网络。
+      - [文明构建日志](chronicle:civilization-log#11712-he)
+    - [x] 受控核裂变 ^history-industry-fission
+      - Why: 受控核能增加高密度能源选项，为日后远离太阳的制造和运输系统保留供能路径。
+      - [文明构建日志](chronicle:civilization-log#11942-12-02-he)
+    - [x] 硅太阳电池 ^history-material-solar
+      - Why: 硅器件把日光直接转为电力，是戴森群收集器可复制的技术起点。
+      - [文明构建日志](chronicle:civilization-log#11954-he)
+    - [x] 文明尺度构想 ^history-concept
+      - Why: 将能源利用率表述为文明尺度，让人口和技术网络扩张有可衡量的长远目标。
+    - [x] 文明能级尺度 ^history-concept-kardashev
+      - Why: 恒星级能源利用成为文明能力的参照，给戴森群的净可用功率设定最终量级。
+      - [文明构建日志](chronicle:civilization-log#11964-he)
+    - [x] 先进裂变堆 ^history-industry-htr
+      - Why: 稳定供热和供电扩大低碳工业能力，为离地设施所需材料的持续生产提供选项。
+      - [文明构建日志](chronicle:civilization-log#12023-12-06-he)
+    - [x] 可再生能源扩张 ^history-industry-renewables
+      - Why: 风光装机扩大清洁供能网络，使未来离地建设增加用能时仍可约束地球环境负担。
+      - [文明构建日志](chronicle:civilization-log#12025-he)
+    - [/] 地球能源转型 ^foundation-energy
+      - Why: 低排放且稳定的供能和制造能力是持续扩大离地工程的起点；它为材料生产和初期离地建设提供稳定能源。
+      - 历史进展：[2025 年可再生能源新增装机](chronicle:civilization-log#12025-he)；下一步需解决电网、储能与材料约束。
+    - [ ] 辐射散热试验 ^stellar-thermal
+      - Why: 被收集却未转为可用功的能量必须排入太空，散热能力决定设备寿命与规模上限；废热排出能力决定收集器可持续工作的功率密度。
+      - 完成判据：散热器在真实辐照、微陨石和热循环条件下维持功率与可维修性。
+    - [ ] 定向输能试验 ^stellar-transfer
+      - Why: 将收集器的功率送达离地制造和居住节点，同时限制误照与传输损耗；可控输能使收集到的功率真正进入文明的可用能源账。
+      - 完成判据：光束或其他输能链路完成端到端效率、自动断束和故障隔离测试。
+    - [ ] 首批太阳收集器 ^stellar-pilot
+      - Why: 集成采光、转换、散热、输能与机器人维护，检验完整装置的净收益；实测净收益为大规模复制提供工程依据。
+      - 完成判据：示范编队连续交付经计量的净可用功率，且运行与维修成本可核算。
+    - [ ] 可控扩张网络 ^stellar-network
+      - Why: 在持续维修和补给下复制收集器编队，并使输能、调度与轨道管理同步扩容；稳定扩容使净可用功率逐级接近恒星量级。
+      - 完成判据：多批次新增装置投入运行后，净可用功率持续增长，碰撞规避、故障隔离和退役回收保持有效。
+    - [ ] 恒星尺度利用 ^stellar-scale
+      - Why: 在长期稳定与生态约束下，达到 10²⁶ W 量级的可核算净可用功率；这是 II 型文明目标的最终验收条件。
+      - 完成判据：长期审计能源收集、输送、利用和废热排放，确认净可用功率已达目标量级且地球日照保持在约定边界内。
+
 %% 生命演化的阶段关系
 history-life-luca needs history-life-rna
 history-life-microbes needs history-life-luca
@@ -235,11 +235,14 @@ history-life-eukaryotes needs history-life-luca
 history-life-animals needs history-life-eukaryotes
 history-life-neocortex needs history-life-animals
 history-life-chicxulub relates history-life-neocortex: 重排其后代的生态位
+history-life-primates needs history-life-neocortex
 
 %% 人类文明的历史关联
 history-life-primates relates history-life-chicxulub: 在撞击后的生态位中扩张
 history-life-hominins needs history-life-primates
 history-life-sapiens needs history-life-hominins
+history-society relates history-society-farming: 由粮食剩余支撑人口与分工扩大
+history-society relates history-society-writing: 借记录把协作扩展到更多地点和世代
 history-society-farming needs history-life-sapiens
 history-society-writing needs history-society-farming
 history-industry-steam relates history-society-farming: 借助定居人口和专业分工形成产业规模
@@ -305,6 +308,9 @@ stellar-network needs stellar-pilot, stellar-production, stellar-orbits, agents-
 stellar-scale needs stellar-network, governance-audit
 
 %% 长期环境与能源核算
+history relates stellar-scale: 提供跨代维持恒星级设施的社会能力
+governance relates history-society: 继承人口扩张后形成的协作机制
+governance relates stellar-network: 约束收集器网络的持续扩张
 governance-ecology needs foundation-governance
 governance-audit needs foundation-governance, agents-safety
 stellar-orbits needs governance-ecology
