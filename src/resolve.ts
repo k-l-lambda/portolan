@@ -2,6 +2,7 @@
 // File access goes through `readFile` so the same code can run against a server or tests.
 
 import { dirname, isAbsolute, resolve as resolvePath } from "node:path";
+import { dateIn } from "./history.ts";
 import { diagnostic } from "./parse.ts";
 import type { Anchor, Diagnostic, RhumbDocument, RhumbNode } from "./types.ts";
 
@@ -133,6 +134,27 @@ function findHeading(text: string, slug: string, file: string, warn: (msg: strin
   }
   const h = matches[0]!;
   return { ...h, end: headings.find((x) => x.line > h.line && x.depth <= h.depth)?.line ?? null };
+}
+
+/**
+ * Date of the dated heading an anchor lands under: the target line's nearest heading, then
+ * its ancestors (each a level shallower), first one that starts with a date (`## 2026-10-08`,
+ * `## 2026-10-08 Notes`). For links whose path carries no date, such as into a changelog.
+ */
+export function headingDate(r: Resolved, readFile: ResolveContext["readFile"]): { date: string; time: number } | null {
+  const target = r.entryLine ?? r.line ?? r.heading?.line ?? null;
+  if (!r.file || target === null) return null;
+  const text = readFile(r.file);
+  if (text === null) return null;
+  let depth = Infinity;
+  const above = markdownHeadings(text).filter((h) => h.line <= target).reverse();
+  for (const h of above) {
+    if (h.depth >= depth) continue; // a sibling or a deeper heading, not an ancestor
+    depth = h.depth;
+    const d = dateIn(h.text.trim(), true);
+    if (d) return d;
+  }
+  return null;
 }
 
 /** Resolves every anchor in the document and returns only the diagnostics. */

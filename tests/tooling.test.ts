@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  applyEdit, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, parse, resolveAnchor, ThreadStore,
+  applyEdit, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, headingDate, parse, resolveAnchor, ThreadStore,
 } from "../src/index.ts";
 
 const SRC = `---
@@ -146,6 +146,58 @@ r needs gone
     expect(byId.r!.ready).toBe(true);
     expect(byId.b!.ready).toBe(true);
     expect(d.diagnostics.map((x) => [x.code, x.line])).toEqual([["W007", 1], ["I003", 5], ["W008", 8], ["W006", 12]]);
+  });
+});
+
+describe("headingDate", () => {
+  const log = [
+    "# Changelog",          // 1
+    "",                     // 2
+    "## 2026-10-08",        // 3
+    "",                     // 4
+    "### Parser",           // 5
+    "* entry one",          // 6
+    "#### Detail",          // 7
+    "* deep entry",         // 8
+    "## 2026-10-09 Notes",  // 9
+    "### Layout",           // 10
+    "* entry two",          // 11
+    "## Release 2026-10-10 retro", // 12
+    "### Wrap-up",          // 13
+    "* entry three",        // 14
+  ].join("\n");
+  const notes = "# Notes\n\n## Setup\n\n* no date anywhere\n";
+  const files: Record<string, string> = { "/r/docs/changelog.md": log, "/r/docs/notes.md": notes };
+  const read = (p: string) => files[p] ?? null;
+  const ctx = { baseDir: "/r/docs", links: {}, readFile: read };
+  const date = (target: string) => {
+    const a = parse(`- [ ] N [x](<${target}>) ^n\n`).nodes[0]!.anchors[0]!;
+    return headingDate(resolveAnchor(a, ctx), read)?.date ?? null;
+  };
+
+  it("takes the date from the nearest dated ancestor heading", () => {
+    expect(date("changelog.md#parser")).toBe("2026-10-08");
+    expect(date("changelog.md#detail")).toBe("2026-10-08");
+    expect(date("changelog.md#layout")).toBe("2026-10-09");
+  });
+
+  it("uses the heading itself, and lines and text fragments inside a section", () => {
+    expect(date("changelog.md#2026-10-08")).toBe("2026-10-08");
+    expect(date("changelog.md#L11")).toBe("2026-10-09");
+    expect(date("changelog.md#:~:text=deep entry")).toBe("2026-10-08");
+    expect(date("changelog.md#layout^=* entry")).toBe("2026-10-09");
+  });
+
+  it("only counts a date at the start of a heading", () => {
+    // "Release 2026-10-10 retro" is not a dated heading, so Wrap-up has no date.
+    expect(date("changelog.md#wrap-up")).toBeNull();
+  });
+
+  it("returns null without a dated heading, a target line or a file", () => {
+    expect(date("notes.md#setup")).toBeNull();
+    expect(date("changelog.md#missing")).toBeNull();
+    expect(date("missing.md#x")).toBeNull();
+    expect(date("https://example.com/2026-10-08")).toBeNull();
   });
 });
 

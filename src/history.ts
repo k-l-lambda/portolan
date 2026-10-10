@@ -7,7 +7,7 @@
 import { execFile } from "node:child_process";
 import { statSync } from "node:fs";
 import { basename, dirname } from "node:path";
-import type { RhumbDocument, RhumbNode } from "./types.ts";
+import type { Anchor, RhumbDocument, RhumbNode } from "./types.ts";
 
 const ZERO_SHA = "0".repeat(40);
 
@@ -183,13 +183,22 @@ export class HistoryTracker {
  * of that local day in unix seconds, or null.
  */
 export function linkDate(target: string): { date: string; time: number } | null {
-  const path = target.split("#")[0]!;
-  const re = /(?:^|[^0-9])(20\d\d|19\d\d)[-/](\d\d)[-/]?(\d\d)(?![0-9])/g;
-  for (let m; (m = re.exec(path)); ) {
-    const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  return dateIn(target.split("#")[0]!);
+}
+
+/**
+ * The first valid date in `text` (same forms as `linkDate`), or null; with `atStart`, only a
+ * date at the very start counts, as in a `## 2026-10-08` heading.
+ */
+export function dateIn(text: string, atStart = false): { date: string; time: number } | null {
+  const date = String.raw`(?<y>20\d\d|19\d\d)[-/](?<m>\d\d)[-/]?(?<d>\d\d)(?![0-9])`;
+  const re = new RegExp(atStart ? `^${date}` : `(?:^|[^0-9])${date}`, "g");
+  for (let m; (m = re.exec(text)); ) {
+    const { y: ys, m: ms, d: ds } = m.groups!;
+    const [y, mo, d] = [Number(ys), Number(ms), Number(ds)];
     const day = new Date(y, mo - 1, d, 23, 59, 59);
     if (day.getFullYear() === y && day.getMonth() === mo - 1 && day.getDate() === d) {
-      return { date: `${m[1]}-${m[2]}-${m[3]}`, time: Math.floor(day.getTime() / 1000) };
+      return { date: `${ys}-${ms}-${ds}`, time: Math.floor(day.getTime() / 1000) };
     }
   }
   return null;
@@ -206,8 +215,16 @@ function localDay(time: number): string {
  * dated entry whose day is before the day of the line's own time (its commit, or the file
  * mtime for an uncommitted line); then the latest such linked date wins (end of that day).
  * A link dated the same day does not count as earlier.
+ *
+ * A link is dated by its path (`diary:2026/1008`). When the path has no date, the optional
+ * `dateOf` can date it another way; the server passes `headingDate`, so a link into a
+ * changelog with `## 2026-10-08` sections takes the date of the section it lands in.
  */
-export function nodeTimes(doc: RhumbDocument, history: FileHistory): NodeTime[] {
+export function nodeTimes(
+  doc: RhumbDocument,
+  history: FileHistory,
+  dateOf?: (anchor: Anchor) => { date: string; time: number } | null,
+): NodeTime[] {
   const out: NodeTime[] = [];
   // Returns the node's time after its children are computed, so parents can use them.
   const visit = (n: RhumbNode): NodeTime => {
@@ -226,7 +243,7 @@ export function nodeTimes(doc: RhumbDocument, history: FileHistory): NodeTime[] 
     } else {
       let link: { date: string; time: number; target: string } | null = null;
       for (const a of n.anchors) {
-        const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target);
+        const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target) ?? (a.kind === "url" ? null : dateOf?.(a) ?? null);
         if (d && (!link || d.time > link.time)) link = { ...d, target: a.target };
       }
       t = link !== null && link.date < localDay(lineTime.time)

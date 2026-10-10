@@ -1,10 +1,10 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { createRhumbServer, HistoryTracker, linkDate, nodeTimes, parse, versionOf } from "../src/index.ts";
+import { contextFor, createRhumbServer, headingDate, HistoryTracker, linkDate, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
 import { freshness, relativeTime } from "../web/src/time.ts";
 
 const T1 = 1767225600; // 2026-01-01T00:00:00Z
@@ -128,6 +128,31 @@ links:
     expect(by[5]).toMatchObject({ source: "link", link: { date: "2025-11-01" } });
     // A leaf without links keeps its line time.
     expect(by[7]).toMatchObject({ source: "commit", time: T2 });
+  });
+
+  it("dates a link with no date in its path by the dated heading above its target", async () => {
+    dir = repo();
+    const file = join(dir, "map.rhumb");
+    writeFileSync(join(dir, "changelog.md"), [
+      "# Changelog", "", "## 2025-12-01", "", "### Parser", "", "* body", "", "## 2025-12-15", "", "### Layout", "", "* body",
+    ].join("\n"));
+    const src = `- [x] Parser [x](changelog.md#parser) ^parser
+- [x] Layout [x](changelog.md#layout) ^layout
+- [x] Both [x](changelog.md#parser) [y](diary:2025/1210#z) ^both
+`;
+    writeFileSync(file, src);
+    commit(dir, "map", T2);
+    const doc = parse(src, { fileName: file });
+    const read = (p: string) => { try { return readFileSync(p, "utf8"); } catch { return null; } };
+    const dateOf = (a: (typeof doc.nodes)[number]["anchors"][number]) => headingDate(resolveAnchor(a, contextFor(file, doc, read)), read);
+    const [parser, layout, both] = nodeTimes(doc, await new HistoryTracker().file(file, versionOf(src)), dateOf);
+    expect(parser).toMatchObject({ source: "link", link: { date: "2025-12-01", target: "changelog.md#parser" } });
+    expect(layout).toMatchObject({ source: "link", link: { date: "2025-12-15" } });
+    // The latest dated link wins, whichever way it is dated.
+    expect(both).toMatchObject({ source: "link", link: { date: "2025-12-10" } });
+    // Without a resolver only path dates count, as before.
+    const plain = nodeTimes(doc, await new HistoryTracker().file(file, versionOf(src)));
+    expect(plain[0]).toMatchObject({ source: "commit" });
   });
 
   it("recognizes dates in link paths", () => {

@@ -15,7 +15,7 @@ import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
 import { HistoryTracker, nodeTimes } from "./history.ts";
 import { isStarred, parse } from "./parse.ts";
-import { checkAnchors, contextFor, excerpt, resolveAnchor } from "./resolve.ts";
+import { checkAnchors, contextFor, excerpt, headingDate, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
 import type { RhumbNode } from "./types.ts";
 
@@ -238,12 +238,13 @@ export function createRhumbServer(options: ServerOptions): Server {
       const { rel, abs } = fileFor(param);
       const { version, doc } = load(abs);
       const derived = derive(doc);
-      const anchors = checkAnchors(doc, contextFor(abs, doc, readLinked));
+      const ctx = contextFor(abs, doc, readLinked);
+      const anchors = checkAnchors(doc, ctx);
       const diagnostics = [...doc.diagnostics, ...derived.diagnostics, ...anchors].sort((a, b) => a.line - b.line);
       const h = await history.file(abs, version);
       const freshness = {
         repo: h.repo, head: h.head, tracked: h.tracked, mtime: h.mtime, dirtyLines: h.dirtyLines,
-        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h), commits: h.commits,
+        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h, (a) => headingDate(resolveAnchor(a, ctx), readLinked)), commits: h.commits,
       };
       return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness });
     }
