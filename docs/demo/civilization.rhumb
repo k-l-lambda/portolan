@@ -14,7 +14,7 @@ links:
     - Why: 从分子复制逐步形成复杂动物和智人，为能够组织恒星级工程的主体提供生物学基础。
     - [智人形成时的阶段记录](chronicle:civilization-log#-287463-he)
     - [x] 喷口 RNA {star: true} ^history-life-rna
-      - Why: 碱性热液喷口附近出现可复制的 RNA 分子，开启信息的分子传递；可复制的信息是后来技术文明的生物学起点。
+      - Why: 碱性热液喷口附近的 RNA 分子开启信息传递，矿物孔壁两侧的氢离子梯度提供能量转换的雏形；两者为后来细胞生命及技术文明奠定基础。
       - [文明构建日志](chronicle:civilization-log#-4352814673-he)
     - [x] 遗传体系 {star: true} ^history-life-luca
       - Why: RNA、蛋白质与 DNA 分工稳定，形成后来生命共享的基本遗传体系；稳定遗传使复杂生命与长期演化成为可能。
@@ -287,6 +287,7 @@ history-space-sputnik needs history-space-rocket
 history-space-gagarin needs history-space-sputnik
 history-space-apollo needs history-space-rocket, history-information-ic
 history-space-salyut needs history-space-rocket
+history-space-salyut relates history-space-gagarin: 将短期载人飞行延展为在轨驻留
 history-space-shuttle relates history-space-salyut: 扩展在轨服务与运输
 history-space-zarya relates history-space-shuttle: 接续模块化在轨组装
 history-space-iss needs history-space-zarya
@@ -298,6 +299,7 @@ foundation-orbit needs history-space-iss
 foundation-orbit relates history-information-agent: 可用于自主维护调度
 foundation-governance needs history-society-writing
 foundation-life-support needs history-space-iss
+foundation-life-support relates history-space-gagarin: 延续载人入轨的生命保障经验
 foundation-assembly needs foundation-orbit, foundation-energy
 foundation-elevator-design needs foundation-orbit, foundation-governance, industry-nanofibers
 foundation-elevator-test needs foundation-elevator-design, foundation-assembly
@@ -342,3 +344,14 @@ governance relates stellar-network: 约束收集器网络的持续扩张
 governance-ecology needs foundation-governance
 governance-audit needs foundation-governance, agents-safety
 stellar-orbits needs governance-ecology
+
+%% 总目标与领域间的衔接
+type-ii relates stellar-scale: 以恒星量级净可用功率作为最终验收目标
+history-life relates history-society: 提供形成长期协作文明的人类主体
+history-material relates foundation-assembly: 提供大型结构的批量制造经验
+industry relates foundation-assembly: 供给在轨组装所需的材料与部件
+history-information relates agents-communications: 为跨站任务网络提供计算与通信基础
+agents relates industry-manufacturing: 控制离地生产与设备维护
+history-space relates industry-resources: 提供离地勘测和采样的任务经验
+foundation relates industry-network: 支撑多地点供应链的轨道物流
+stellar relates industry-network: 为离地制造和运输供给功率
