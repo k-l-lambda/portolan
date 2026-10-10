@@ -148,11 +148,20 @@ describe("placeLabels", () => {
     parallel.forEach((r) => expect(at.get(r.id)!.x).toBe(r.points[0]!.x));
   });
 
-  it("moves labels beside a short edge when there is no room along it", () => {
-    const short = [0, 10].map((x, i) => ({ id: `s${i}`, points: [{ x, y: 0 }, { x, y: 40 }], w: 100, h: 15 }));
+  it("staggers labels of short edges in y, keeping them on their own line", () => {
+    const short = [0, 10, 20].map((x, i) => ({ id: `s${i}`, points: [{ x, y: 0 }, { x, y: 40 }], w: 100, h: 15 }));
     const at = placeLabels(short);
-    const [a, b] = short.map((r) => rect(at.get(r.id)!, r.w, r.h));
+    const boxes = short.map((r) => rect(at.get(r.id)!, r.w, r.h));
+    for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) expect(hits(boxes[i]!, boxes[j]!)).toBe(false);
+    short.forEach((r) => expect(at.get(r.id)!.x).toBe(r.points[0]!.x));
+  });
+
+  it("staggers labels of parallel horizontal edges in y, keeping x over the line", () => {
+    const flat = [0, 6].map((y, i) => ({ id: `h${i}`, points: [{ x: 0, y }, { x: 30, y }], w: 120, h: 15 }));
+    const at = placeLabels(flat);
+    const [a, b] = flat.map((r) => rect(at.get(r.id)!, r.w, r.h));
     expect(hits(a!, b!)).toBe(false);
+    flat.forEach((r) => { const x = at.get(r.id)!.x; expect(x).toBeGreaterThanOrEqual(0); expect(x).toBeLessThanOrEqual(30); });
   });
 
   it("keeps a label off another edge's line", () => {

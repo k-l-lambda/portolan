@@ -69,8 +69,8 @@ function overlap(a: Rect, b: Rect): number {
  * one card share the same midpoints, so each label slides along its own edge to the
  * candidate closest to its preferred point (middle of the longest segment) that is clear of
  * labels already placed and, where possible, of `obstacles` (cards). When the edge is too
- * short for that, the label moves beside the line (left/right of a vertical segment, above/
- * below a horizontal one). Requests are placed in order, so put the hovered edge first.
+ * short for that, the label stays centred on the line's x and moves up or down by whole rows.
+ * Requests are placed in order, so put the hovered edge first.
  */
 export interface Line { id: string; points: { x: number; y: number }[] }
 
@@ -123,8 +123,9 @@ export function placeLabels(
       const onLabels = placed.reduce((s, q) => s + overlap(b, q), 0);
       const onCards = obstacles.reduce((s, q) => s + overlap(b, q), 0);
       const onLines = others.reduce((s, l) => s + (l.points.slice(1).some((q, i) => crosses(l.points[i]!, q, b)) ? 1 : 0), 0);
-      // Never cover a label; avoid sitting on another line; covering a card is a tie-breaker.
-      const cost = onLabels * 1000 + onLines * 200 + onCards + penalty;
+      // Never cover a label; then stay near the own line (penalty) over avoiding other lines
+      // and cards. Card cover counts as the covered fraction, so wide labels are not pushed far.
+      const cost = onLabels * 1000 + onLines * 40 + (onCards / (b.w * b.h)) * 60 + penalty;
       if (!best || cost < best.cost) best = { p, cost, onLabels: onLabels + onLines };
       return onLabels === 0 && onLines === 0 && onCards === 0;
     };
@@ -132,13 +133,17 @@ export function placeLabels(
     for (const d of candidates) {
       if ((clear = consider(pointAt(r.points, d), Math.abs(d - preferred) * 0.01))) break;
     }
-    // Still covering a label or sitting on another line: try beside the line, one and two label sizes out.
+    // Still covering a label or sitting on another line: labels are wide, flat strips, so
+    // stagger them up or down. x stays on the line (a sideways shift of a wide
+    // label would detach it from its edge), and nearer rows win.
     if (!clear && best!.onLabels > 0) {
-      outer: for (const k of [1, -1, 2, -2]) {
-        for (const d of candidates) {
-          const p = pointAt(r.points, d);
-          const off = p.vertical ? { x: k * (r.w / 2 + gap + 2), y: 0 } : { x: 0, y: k * (r.h + gap) };
-          if (consider({ x: p.x + off.x, y: p.y + off.y }, 50 * Math.abs(k) + Math.abs(d - preferred) * 0.01)) break outer;
+      // Half-row steps, so a label can tuck between two others instead of a full row out.
+      outer: for (let i = 1; i <= 8; i++) {
+        for (const k of [i / 2, -i / 2]) {
+          for (const d of candidates) {
+            const p = pointAt(r.points, d);
+            if (consider({ x: p.x, y: p.y + k * (r.h + gap) }, 30 * Math.abs(k) + Math.abs(d - preferred) * 0.01)) break outer;
+          }
         }
       }
     }
