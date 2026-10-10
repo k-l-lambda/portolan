@@ -7,6 +7,7 @@ links:
 
 - [/] 构建一个 II 型文明 ^type-ii
   - Why: 为黑洞纪到来储备可用能源，试验跑通技术文明初始化流程。
+  - 当前阶段：生命与社会起点已有记录；地面能源、材料研究、自治规则和轨道服务并行推进，戴森群收集器尚未建设。
   - 目标口径：长期稳定利用恒星功率量级的净能量；[太阳光度约 3.83 × 10²⁶ W](https://science.nasa.gov/universe/glossary/)。
 
   - [x] 有机生命培养 ^history-life
@@ -47,6 +48,7 @@ links:
 
   - [/] 智慧文明培养 ^history
     - Why: 农业提高人口承载量，文字记录扩大社会协作和跨代知识传递；长期治理让文明能持续承担 II 型工程。
+    - 当前阶段：农业、文字和跨代记录已经形成；资源权利与环境规则正在梳理，统一审计尚未建立。
     - [x] 人类协作文明 ^history-society
       - Why: 人口增长与跨代记录扩大分工和协作半径，为持续数世纪的离地建设形成组织基础。
     - [x] 农业定居 {star: true} ^history-society-farming
@@ -57,8 +59,10 @@ links:
       - [文明构建日志](chronicle:civilization-log#6800-he)
     - [/] 社会治理与生态 ^governance
       - Why: 资源权利、环境预算和长期审计为戴森群扩张划定可执行的边界。
+      - 当前阶段：跨代治理开始界定责任与资源规则；地球生态边界和全网能源物料审计仍待制定。
     - [/] 跨代治理 ^foundation-governance
       - Why: 清楚界定地球生态、资源权利和空间安全的边界，才有条件扩大工程规模；这为戴森群扩张划定可执行的安全与生态约束。
+      - 当前阶段：正在把既有组织协作转为资源权利、生态预算与空间安全条款；跨机构审计机制尚未成形。
       - 完成判据：公开环境预算、资源规则、责任机制及可审计的跨机构协调。
     - [ ] 地球生态边界 ^governance-ecology
       - Why: 规定地球日照、轨道环境和排热约束，防止能源扩张损害文明赖以生存的生态系统。
@@ -68,12 +72,25 @@ links:
       - 完成判据：各站点公开可追溯的能源与物料账，并能核对全网净可用功率。
 
   - [/] 材料与制造 ^industry
-    - Why: 从规模炼钢到天体资源精炼和收集器批量生产，逐步建立戴森群所需的材料供应链。
+    - Why: 从规模炼钢、纳米材料和增材制造延续到天体资源精炼与收集器批量生产，逐步建立戴森群所需的材料供应链。
+    - 当前阶段：纳米纤维、空间光伏和增材制造处于材料样件与工艺验证阶段；天体精炼和收集器量产尚未启动。
     - [x] 材料规模制造 ^history-material
       - Why: 规模炼钢与结构材料产业为大型离地设施提供可复制的制造起点。
     - [x] 规模炼钢 ^history-material-steel
       - Why: 廉价钢材扩展铁路、机械和建筑网络，也建立后来轨道大型结构所需的批量制造经验。
       - [文明构建日志](chronicle:civilization-log#11856-he)
+    - [/] 纳米纤维复材 ^industry-nanofibers
+      - Why: 提高宏观纤维的比强度与缺陷容限，为太空电梯系缆和轻质轨道结构提供候选材料。
+      - 当前阶段：[NASA 正推进碳纳米管纱线放大制造与复材样件验证](https://www.nasa.gov/superlightweight-aerospace-composites/)；系缆级长尺强度与可靠性尚未证明。
+      - 完成判据：长尺样带经过强度、疲劳、辐照和缺陷统计试验，批次性能及制造成本可复现。
+    - [/] 轻质空间光伏 ^industry-space-pv
+      - Why: 研究轻质高效率电池与耐辐照封装，降低戴森群每单位净功率的材料和运输需求。
+      - 当前阶段：[空间用叠层电池已有研究器件和辐照试验](https://pmc.ncbi.nlm.nih.gov/articles/PMC13418752/)；大面积组件及长期在轨寿命尚未验证。
+      - 完成判据：大面积组件在空间辐照、热循环与微陨石条件下保持可计量的寿命和功率。
+    - [/] 增材制造工艺 ^industry-additive
+      - Why: 发展可重复的数字制造与再生原料工艺，为离地工厂生产复杂备件和收集器结构做准备。
+      - 当前阶段：[地面工艺](https://technology.nasa.gov/blog-nasa-additive-manufacturing-technology)和[空间站打印试验](https://science.nasa.gov/3d-resources/international-space-station-tools/)已有记录；离地原料闭环与批量质量控制仍待验证。
+      - 完成判据：标准件跨批次质量一致，缺陷可无损检测，废件可回收为合格原料。
     - [ ] 天体资源试采 ^industry-resources
       - Why: 核实月球或小天体材料的可用性、环境代价及完整物料账；可用储量决定收集器群可扩建的物料上限。
       - 完成判据：提取、精炼与运输试验给出可信的物料和环境账。
@@ -92,6 +109,7 @@ links:
 
   - [/] 信息与自治 ^agents
     - Why: 从晶体管、计算机网络到受约束的太空智能体，扩大离地设施的通信、控制和自治能力。
+    - 当前阶段：数字工具调用已进入应用，自治安全边界正在设计；深空多智能体网络和机器人编队尚未部署。
     - [x] 信息技术网络 ^history-information
       - Why: 固态电子器件、计算和通信把技术协作扩展成可连接大量设施的网络。
     - [x] 晶体管 ^history-material-transistor
@@ -108,9 +126,11 @@ links:
       - [文明构建日志](chronicle:civilization-log#11989-03-he)
     - [/] AI Agent 工具链 ^history-information-agent
       - Why: 可审计的工具调用把部分数字任务从人手扩展到智能体，为未来太空设施自治提供方法起点。
+      - 当前阶段：已具备工具调用、状态管理与执行追踪；长期自治的可靠性和物理设备权限仍在验证。
       - [文明构建日志](chronicle:civilization-log#12025-03-11-he)
     - [/] 自治安全边界 ^agents-safety
       - Why: 明确智能体能操作哪些设备、能消耗多少资源，以及何时必须交还控制权；受控权限使大规模自治操作不危及人员、轨道与能源网络。
+      - 当前阶段：正在把数字任务的守卫与追踪扩展为设备权限、资源上限和人工接管规则；真实设备故障演练未完成。
       - 完成判据：任务权限、可验证执行记录、隔离测试与人工接管机制在真实设备上通过故障演练。
     - [ ] 深空通信底网 ^agents-communications
       - Why: 多地点机器需要容忍长时延与中断的授时、身份、数据同步和任务交接；可靠任务交接使分散的收集器与工厂可以协同运行。
@@ -127,6 +147,7 @@ links:
 
   - [/] 空间与运输 ^foundation
     - Why: 从火箭与空间站延续到轨道组装、太空电梯和多地点运输，形成戴森群的空间物流基础。
+    - 当前阶段：长期在轨驻留和深空采样已有经验；轨道运输维护正在推进，电梯与大规模组装仍待工程验证。
     - [x] 进入太空 ^history-space
       - Why: 运载、驻留和深空采样把技术网络延伸到地外，为戴森群建设提供操作基础。
     - [x] 动力飞行 ^history-space-flight
@@ -161,6 +182,7 @@ links:
       - [文明构建日志](chronicle:civilization-log#12023-09-24-he)
     - [/] 轨道运输与维护 ^foundation-orbit
       - Why: 可重复使用的运输、机器人装配与维修能把零散任务变成长期服务；它使收集器原型和离地工厂可以反复部署与维护。
+      - 当前阶段：国际空间站提供持续驻留和维修经验；高频货运、自主巡检与按需修复尚未形成长期服务。
       - 历史起点：[长期在轨驻留](chronicle:civilization-log#12000-11-02-he)；下一步需验证高频运输与自主维护。
     - [ ] 闭环生存系统 ^foundation-life-support
       - Why: 长期离地工作需要可维修、低补给的生命保障与自治系统；它支撑离地工厂和维修站的长期人员驻留。
@@ -184,8 +206,9 @@ links:
       - Why: 为收集器、工厂、运输船和自然天体划定长期稳定且可避碰的运行区域；轨道容量和安全边界决定收集器群能否长期扩张。
       - 完成判据：轨道配置通过长期扰动、碰撞级联和地球日照影响评估，具有扩张及退役路径。
 
-  - [/] 能源与戴森群 ^stellar
+  - [/] 能源采集 ^stellar
     - Why: 从蒸汽、核能和硅太阳电池延续到戴森群，实现恒星量级净可用功率。
+    - 当前阶段：地面低排放供能仍在扩张；轨道输能、首批收集器与戴森群复制尚未进入实施阶段。
     - [x] 能源与工业 ^history-industry
       - Why: 能源转换提高人均产出并扩大产业规模，为离地制造与后来的恒星能源利用铺路。
     - [x] 蒸汽动力 ^history-industry-steam
@@ -210,6 +233,7 @@ links:
       - [文明构建日志](chronicle:civilization-log#12025-he)
     - [/] 地球能源转型 ^foundation-energy
       - Why: 低排放且稳定的供能和制造能力是持续扩大离地工程的起点；它为材料生产和初期离地建设提供稳定能源。
+      - 当前阶段：[2025 年可再生能源新增装机](chronicle:civilization-log#12025-he)和先进裂变堆已有记录；电网、储能与材料约束仍待解决。
       - 历史进展：[2025 年可再生能源新增装机](chronicle:civilization-log#12025-he)；下一步需解决电网、储能与材料约束。
     - [ ] 辐射散热试验 ^stellar-thermal
       - Why: 被收集却未转为可用功的能量必须排入太空，散热能力决定设备寿命与规模上限；废热排出能力决定收集器可持续工作的功率密度。
@@ -278,7 +302,7 @@ foundation-orbit relates history-information-agent: 可用于自主维护调度
 foundation-governance needs history-society-writing
 foundation-life-support needs history-space-iss
 foundation-assembly needs foundation-orbit, foundation-energy
-foundation-elevator-design needs foundation-orbit, foundation-governance
+foundation-elevator-design needs foundation-orbit, foundation-governance, industry-nanofibers
 foundation-elevator-test needs foundation-elevator-design, foundation-assembly
 foundation-elevator needs foundation-elevator-test, foundation-governance
 foundation-elevator relates industry-transport: 提供地表至同步轨道的货运通道
@@ -297,13 +321,17 @@ industry-resources needs foundation-assembly, foundation-governance, foundation-
 industry-resources relates history-space-bennu: 借鉴小天体采样与材料分析
 industry-refining needs industry-resources, foundation-energy
 industry-refining relates history-material-steel: 将规模冶炼经验延伸至离地原料
-industry-manufacturing needs industry-refining, foundation-assembly, agents-fleet
+industry-nanofibers relates history-material-steel: 将规模结构材料推进到高比强度纤维
+industry-space-pv relates history-material-solar: 将硅太阳电池推进到轻质耐辐照组件
+industry-space-pv relates stellar-thermal: 共同确定光电转换和废热排放设计
+industry-additive relates agents-fleet: 将数字制造接入自治装配与质量检测
+industry-manufacturing needs industry-refining, industry-additive, foundation-assembly, agents-fleet
 industry-transport needs industry-resources, foundation-orbit
 industry-network needs industry-manufacturing, industry-transport, foundation-governance
 stellar-orbits needs foundation-governance, agents-communications
 stellar-thermal needs industry-manufacturing
 stellar-transfer needs foundation-orbit, foundation-elevator, agents-safety, foundation-energy
-stellar-pilot needs stellar-orbits, stellar-thermal, stellar-transfer, industry-manufacturing
+stellar-pilot needs stellar-orbits, stellar-thermal, stellar-transfer, industry-manufacturing, industry-space-pv
 stellar-pilot relates history-material-solar, history-concept-kardashev: 继承太阳能转换与文明能级构想
 stellar-production needs stellar-pilot, foundation-elevator, industry-network, agents-repair
 stellar-production relates history-material-solar: 将太阳电池扩展为离地批量收集器
