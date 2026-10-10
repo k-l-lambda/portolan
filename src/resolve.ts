@@ -87,9 +87,12 @@ export function resolveAnchor(anchor: Anchor, ctx: ResolveContext): Resolved {
   }
 
   if (anchor.text_fragment) {
-    if (!out.heading) return out;
-    out.entryLine = findEntry(lines, from, to + 1, anchor.text_fragment);
-    if (out.entryLine === null) warn(`Text "${anchor.text_fragment}" not found under #${anchor.fragment}`);
+    // Without a heading the whole file is searched, like `^=`. findEntry takes 0-based start
+    // indexes, so "after the heading line" is `from`, and "the whole file" is 0.
+    out.entryLine = findEntry(lines, out.heading ? from : 0, to + 1, anchor.text_fragment);
+    if (out.entryLine === null) {
+      warn(`Text "${anchor.text_fragment}" not found ${anchor.fragment ? `under #${anchor.fragment}` : `in ${out.file}`}`);
+    }
     return out;
   }
 

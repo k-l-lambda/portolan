@@ -27,7 +27,8 @@
   "files": [
     "dist",
     "web/dist",
-    "docs"
+    "docs",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=22.12"

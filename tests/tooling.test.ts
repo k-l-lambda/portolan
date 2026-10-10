@@ -215,6 +215,13 @@ describe("resolveAnchor: line prefixes, offsets and line ranges", () => {
     expect(parse(src("diary:2026/1009#map-layout^=`* \\> [host]`")).diagnostics.map((d) => d.code)).not.toContain("W011");
   });
 
+  it("searches the whole file for a text fragment without a heading, and warns when it misses", () => {
+    // Line 11 is the first top-level entry containing the text; no heading narrows the search.
+    expect(at("diary:2026/1009#:~:text=Lay out top to bottom")).toMatchObject({ entryLine: 11, diagnostics: [] });
+    expect(at("diary:2026/1009#:~:text=Unrelated").entryLine).toBe(15);
+    expect(codes("diary:2026/1009#:~:text=no such text anywhere")).toEqual(["W003"]);
+  });
+
   it("reports malformed fragments as W003", () => {
     expect(codes("repo:src/edit.ts#L9-L3")).toEqual(["W003"]);
     expect(codes("diary:2026/1009#map-layout^=")).toEqual(["W003"]);
