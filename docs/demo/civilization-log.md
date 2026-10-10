@@ -16,7 +16,7 @@
 
 ## -2,400,000,000 HE · 夏至后第 7 日（年代推定）
 
-产氧光合作用长期累积，使大气含氧量显著上升。夏至后浅海受光充足，产氧群落的当季通量便于测量；年度变化须由跨季节记录确认。[微生物群落](#-3450000000-he--春分后第-12-日年代推定)已能持续改造环境，后来的[复杂细胞](#-1800000000-he--秋分后第-23-日年代推定)也在变化中的化学条件下演化。[NASA：大氧化事件](https://assets.science.nasa.gov/content/dam/science/psd/astrobiology/for-researchers/strategy/nasa_astrobiology_strategy_2015_final_041216.pdf)。
+产氧光合作用长期累积，使大气含氧量显著上升。夏至后浅海受光充足，产氧群落的当季通量便于测量；年度变化须由跨季节记录确认。[微生物群落](#-3450000000-he--春分后第-12-日年代推定)已能持续改造环境。含氧区域为高能的有氧代谢提供空间，后来[真核细胞](#-1800000000-he--秋分后第-23-日年代推定)的扩张和[多细胞动物](#-650000000-he--冬至后第-5-日年代推定)的生态发展都与长期氧化环境变化有关；这些谱系的出现并非一次增氧事件的直接结果。[NASA：大氧化事件](https://assets.science.nasa.gov/content/dam/science/psd/astrobiology/for-researchers/strategy/nasa_astrobiology_strategy_2015_final_041216.pdf)、[地球氧循环与动物演化](https://pmc.ncbi.nlm.nih.gov/articles/PMC4987840/)。
 
 ## -1,800,000,000 HE · 秋分后第 23 日（年代推定）
 
@@ -24,7 +24,7 @@
 
 ## -650,000,000 HE · 冬至后第 5 日（年代推定）
 
-多细胞动物谱系已在海洋中出现。冬至后的短日照给浅海群落带来较低的当季能量输入，记录员据此比较个体组织与单细胞群落的存续差异。细胞分工把个体构造带入新的尺度。这一结果以[真核细胞体系](#-1800000000-he--秋分后第-23-日年代推定)为基础。[NASA：前寒武纪复杂生命证据](https://assets.science.nasa.gov/content/dam/science/psd/astrobiology/nai-annual-reports/nai_2018_annual_report_full_sm.pdf)。
+多细胞动物谱系已在海洋中出现。冬至后的短日照给浅海群落带来较低的当季能量输入，记录员据此比较个体组织与单细胞群落的存续差异。细胞分工把个体构造带入新的尺度。这一结果以[真核细胞体系](#-1800000000-he--秋分后第-23-日年代推定)为基础；此前的[大气增氧](#-2400000000-he--夏至后第-7-日年代推定)改变了有氧代谢条件，但细胞黏附、信号传递和发育调控同样参与动物体制形成。[NASA：前寒武纪复杂生命证据](https://assets.science.nasa.gov/content/dam/science/psd/astrobiology/nai-annual-reports/nai_2018_annual_report_full_sm.pdf)、[早期动物的氧需求研究](https://pmc.ncbi.nlm.nih.gov/articles/PMC3964089/)。
 
 ## -200,000,000 HE（年代推定）
 
