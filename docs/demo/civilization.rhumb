@@ -238,7 +238,6 @@ history-life-animals relates history-life-oxygen: 借助含氧环境扩大代谢
 history-life-neocortex needs history-life-animals
 history-life-chicxulub relates history-life-neocortex: 重排其后代的生态位
 history-life-primates needs history-life-neocortex
-history-life-primates needs history-life-neocortex
 
 %% 人类文明的历史关联
 history-life-primates relates history-life-chicxulub: 在撞击后的生态位中扩张
