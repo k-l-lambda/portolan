@@ -242,7 +242,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         source: e.source,
         target: e.target,
         type: "polyline",
-        data: { points: e.points, arrow },
+        // The label written in the Rhumb line, if this route draws one edge; only these repeat.
+        data: { points: e.points, arrow, written: e.count === 1 ? e.label : null },
         className: style.className,
         style: style.dashed ? { strokeDasharray: style.dashed } : undefined,
         markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
@@ -313,16 +314,18 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     for (const key of [...activeNodes]) {
       for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) activeNodes.add(nodeKey(p));
     }
-    // One `a needs b, c: label` line becomes several edges with the same label; show it once
-    // per source unless that exact edge is hovered.
+    // One `a needs b, c: label` line becomes several edges with the same written label; show it
+    // once per source unless that exact edge is hovered. Edges without a written label show
+    // their kind ("needs", "from ×2"), which is not a repeat, so each of them keeps its label.
     const labelSeen = new Set<string>();
     const visible = new Set<string>();
     for (const e of base.edges) {
       const active = activeEdges.has(e.id);
-      const labelKey = `${e.source}\0${String(e.label)}`;
-      const repeat = e.id !== focusEdge && labelSeen.has(labelKey);
+      const written = (e.data as { written: string | null }).written;
+      const labelKey = written === null ? null : `${e.source}\0${written}`;
+      const repeat = labelKey !== null && e.id !== focusEdge && labelSeen.has(labelKey);
       if (e.label !== undefined && !repeat && (active || (allLabels && !focused))) {
-        labelSeen.add(labelKey);
+        if (labelKey !== null) labelSeen.add(labelKey);
         visible.add(e.id);
       }
     }
