@@ -3,7 +3,7 @@
 How Portolan was built, entry by entry, copied from the development diary. Each entry is one
 piece of work: its outcome as the heading, then what was done, the decisions, the problems and
 how they were checked. Commit hashes refer to this repository. The project map
-[portolan.rhumb](portolan.rhumb) links into this file.
+[demo/portolan.rhumb](demo/portolan.rhumb) links into this file.
 
 ## 2026-10-08
 

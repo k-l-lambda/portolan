@@ -55,13 +55,14 @@ const STATIC = typeof document === "undefined" ? null
   : document.querySelector<HTMLMetaElement>('meta[name="portolan-static"]')?.content ?? null;
 /** True on a static export: the map can be read but not changed. */
 export const READ_ONLY = STATIC !== null;
-/** The map a static export opens by default. */
+/** The map a static export opens by default; none (the index) when it holds several. */
 export const DEFAULT_FILE = STATIC || null;
 
 /** Static file for an API call; mirrors what scripts/build-pages.ts writes. */
 export function staticPath(kind: "files" | "doc" | "anchor" | "source", file?: string, line?: number, index?: number): string {
   if (kind === "files") return "api/files.json";
-  const f = encodeURIComponent(file!);
+  // Each path segment is encoded on its own, so `sub/a.rhumb` maps to real folders on the host.
+  const f = file!.split("/").map(encodeURIComponent).join("/");
   // Source is saved as .txt, so a static host serves it as text instead of a download.
   if (kind === "source") return `api/source/${f}.txt`;
   return kind === "doc" ? `api/doc/${f}.json` : `api/anchor/${f}/${line}-${index}.json`;

@@ -1,8 +1,8 @@
 name: Deploy demo to GitHub Pages
 
-# Builds a static, read-only copy of the web view showing docs/portolan.rhumb (the project's
-# own map) and deploys it to GitHub Pages. One-time setup: repository Settings -> Pages ->
-# Build and deployment -> Source: GitHub Actions.
+# Builds a static, read-only copy of the web view showing every map in docs/demo (starting with
+# portolan.rhumb, the project's own map) and deploys it to GitHub Pages. One-time setup:
+# repository Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
 
 on:
   push:

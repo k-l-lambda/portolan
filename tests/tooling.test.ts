@@ -4,6 +4,7 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { staticPath } from "../web/src/api.ts";
 import {
   applyEdit, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, headingDate, parse, resolveAnchor, ThreadStore,
 } from "../src/index.ts";
@@ -146,6 +147,15 @@ r needs gone
     expect(byId.r!.ready).toBe(true);
     expect(byId.b!.ready).toBe(true);
     expect(d.diagnostics.map((x) => [x.code, x.line])).toEqual([["W007", 1], ["I003", 5], ["W008", 8], ["W006", 12]]);
+  });
+});
+
+describe("staticPath", () => {
+  it("encodes each segment, so nested maps become folders on a static host", () => {
+    expect(staticPath("doc", "portolan.rhumb")).toBe("api/doc/portolan.rhumb.json");
+    expect(staticPath("doc", "team plans/q4 #1.rhumb")).toBe("api/doc/team%20plans/q4%20%231.rhumb.json");
+    expect(staticPath("anchor", "a/b.rhumb", 12, 0)).toBe("api/anchor/a/b.rhumb/12-0.json");
+    expect(staticPath("source", "a/b.rhumb")).toBe("api/source/a/b.rhumb.txt");
   });
 });
 

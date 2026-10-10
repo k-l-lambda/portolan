@@ -62,7 +62,7 @@ describe("parse", () => {
   });
 
   it("parses the project map without diagnostics", () => {
-    const doc = parse(readFileSync(join(import.meta.dirname, "../docs/portolan.rhumb"), "utf8"));
+    const doc = parse(readFileSync(join(import.meta.dirname, "../docs/demo/portolan.rhumb"), "utf8"));
     expect(doc.diagnostics).toEqual([]);
     expect(doc.title).toBe("Portolan");
   });
