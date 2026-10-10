@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { Diagnostic, RhumbNode } from "../../src/types.ts";
 import { api, READ_ONLY, type AnchorResponse, type Freshness } from "./api.ts";
-import { absoluteTime, relativeTime } from "./time.ts";
+import { absoluteTime, relativeTime, isoTime } from "./time.ts";
 import { starred } from "./layout.ts";
 import { StarIcon } from "./NodeCard.tsx";
 import { CopyText } from "./CopyText.tsx";
@@ -45,7 +45,7 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
         <dl className="fresh-info">
           <dt>Updated</dt>
           <dd>
-            <time dateTime={new Date(updated.time * 1000).toISOString()} title={absoluteTime(updated.time)}>
+            <time dateTime={isoTime(updated.time)} title={absoluteTime(updated.time)}>
               {relativeTime(updated.time, now)}
             </time>
             {" · "}
@@ -64,7 +64,7 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
             <>
               <dt>{updated.lineTime.source === "local" ? "Line edited" : "Line committed"}</dt>
               <dd>
-                <time title={absoluteTime(updated.lineTime.time)}>{relativeTime(updated.lineTime.time, now)}</time>
+                <time dateTime={isoTime(updated.lineTime.time)} title={absoluteTime(updated.lineTime.time)}>{relativeTime(updated.lineTime.time, now)}</time>
                 {" · "}
                 {updated.lineTime.source === "local"
                   ? "uncommitted change (file modified time)"
@@ -142,7 +142,7 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
   diagnostics: Diagnostic[]; freshness: Freshness; now: number; onSelectLine: (line: number) => void;
 }) {
   const at = (t: number) => (
-    <time dateTime={new Date(t * 1000).toISOString()} title={absoluteTime(t)}>{relativeTime(t, now)}</time>
+    <time dateTime={isoTime(t)} title={absoluteTime(t)}>{relativeTime(t, now)}</time>
   );
   const c = freshness.lastCommit;
   return (

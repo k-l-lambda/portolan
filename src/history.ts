@@ -186,11 +186,46 @@ export function linkDate(target: string): { date: string; time: number } | null 
   return dateIn(target.split("#")[0]!);
 }
 
+/** Earliest time a JS Date can hold (about 271,800 years before 1970), in unix seconds. */
+export const LONG_AGO = -8.64e12;
+
+// Holocene Era: HE year = CE year + 10000, so 12026 HE is 2026 CE and 10000 HE is 1 BCE
+// (astronomical year 0); earlier years are negative. `12026 HE`, `12026-10 HE`,
+// `12026-10-08 HE`, `-290,000 HE` (grouping and a U+2212 minus allowed).
+const HE = /^(?<y>[-−]?\d{1,3}(?:,\d{3})+|[-−]?\d+)(?:-(?<m>\d\d)(?:-(?<d>\d\d))?)?\s*HE(?![A-Za-z])/;
+
+const leap = (y: number) => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+const monthDays = (y: number, m: number) => [31, leap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1]!;
+
+/** A Holocene Era date at the start of `text`, dated to the end of its year, month or day. */
+function heDate(text: string): { date: string; time: number } | null | undefined {
+  const m = HE.exec(text);
+  if (!m) return undefined; // not an HE date: the caller tries CE
+  const { y: ys, m: ms, d: ds } = m.groups!;
+  const year = Number(ys!.replace(/,/g, "").replace("−", "-")) - 10000; // astronomical year
+  const month = ms ? Number(ms) : 12;
+  if (month < 1 || month > 12) return null;
+  const day = ds ? Number(ds) : monthDays(year, month);
+  if (day < 1 || day > monthDays(year, month)) return null;
+  const date = `${ys}${ms ? `-${ms}` : ""}${ds ? `-${ds}` : ""} HE`;
+  // setFullYear keeps years 0..99 as written; beyond what a Date can hold, it is only "long ago".
+  const end = new Date(2000, 0, 1, 23, 59, 59);
+  end.setFullYear(year, month - 1, day);
+  const ms_ = end.getTime();
+  if (Number.isNaN(ms_)) return year < 0 ? { date, time: LONG_AGO } : null;
+  return { date, time: Math.max(LONG_AGO, Math.floor(ms_ / 1000)) };
+}
+
 /**
  * The first valid date in `text` (same forms as `linkDate`), or null; with `atStart`, only a
- * date at the very start counts, as in a `## 2026-10-08` heading.
+ * date at the very start counts, as in a `## 2026-10-08` heading, and a Holocene Era date
+ * (`## 11969-07-20 HE`) is read too. Link paths stay CE-only.
  */
 export function dateIn(text: string, atStart = false): { date: string; time: number } | null {
+  if (atStart) {
+    const he = heDate(text);
+    if (he !== undefined) return he;
+  }
   const date = String.raw`(?<y>20\d\d|19\d\d)[-/](?<m>\d\d)[-/]?(?<d>\d\d)(?![0-9])`;
   const re = new RegExp(atStart ? `^${date}` : `(?:^|[^0-9])${date}`, "g");
   for (let m; (m = re.exec(text)); ) {
@@ -204,10 +239,11 @@ export function dateIn(text: string, atStart = false): { date: string; time: num
   return null;
 }
 
-/** Local calendar day of a unix time, as `YYYY-MM-DD`. */
-function localDay(time: number): string {
+/** Start of the local calendar day of a unix time. */
+function dayStart(time: number): number {
   const d = new Date(time * 1000);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  d.setHours(0, 0, 0, 0);
+  return d.getTime() / 1000;
 }
 
 /**
@@ -246,7 +282,8 @@ export function nodeTimes(
         const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target) ?? (a.kind === "url" ? null : dateOf?.(a) ?? null);
         if (d && (!link || d.time > link.time)) link = { ...d, target: a.target };
       }
-      t = link !== null && link.date < localDay(lineTime.time)
+      // A link's time is the end of its day, so "an earlier day" is "ends before this day starts".
+      t = link !== null && link.time < dayStart(lineTime.time)
         ? { ...base, time: link.time, source: "link", link: { date: link.date, target: link.target } }
         : { ...base, time: lineTime.time, source: lineTime.source };
     }

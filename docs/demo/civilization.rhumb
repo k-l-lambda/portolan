@@ -1,0 +1,310 @@
+---
+rhumb: 0.1
+title: II 型文明培养计划
+links:
+  chronicle: "{path}.md"
+---
+
+- [/] 构建 II 型文明 ^type-ii
+  - Why: 在已有历史基础上，建立可持续利用恒星尺度能量的能力；最终以长期审计的净可用功率衡量成果。
+  - 目标口径：长期稳定利用恒星功率量级的净能量；[太阳光度约 3.83 × 10²⁶ W](https://science.nasa.gov/universe/glossary/)。
+
+  - [x] 有机生命培养 ^history-life
+    - Why: 从分子复制逐步形成复杂动物和智人，为能够组织恒星级工程的主体提供生物学基础。
+    - [x] 喷口 RNA ^history-life-rna
+      - Why: 热液喷口附近出现可复制的 RNA 分子，开启信息的分子传递；可复制的信息是后来技术文明的生物学起点。
+      - [文明构建日志](chronicle:civilization-log#-4350000000-he)
+    - [x] 遗传体系 ^history-life-luca
+      - Why: RNA、蛋白质与 DNA 分工稳定，形成后来生命共享的基本遗传体系；稳定遗传使复杂生命与长期演化成为可能。
+      - [文明构建日志](chronicle:civilization-log#-4200000000-he)
+    - [x] 微生物群落 ^history-life-microbes
+      - Why: 光合作用微生物群落开始长期改造海洋环境；早期能量获取和生态循环为复杂生命铺路。
+      - [文明构建日志](chronicle:civilization-log#-3450000000-he)
+    - [x] 大气增氧 ^history-life-oxygen
+      - Why: 产氧光合作用改变地球氧化条件，扩大高能代谢的生态空间；富氧环境支持后来大型动物的高能代谢。
+      - [文明构建日志](chronicle:civilization-log#-2400000000-he)
+    - [x] 真核细胞 ^history-life-eukaryotes
+      - Why: 内共生带来线粒体与更复杂的细胞组织；真核细胞为复杂动物和人类谱系提供细胞基础。
+      - [文明构建日志](chronicle:civilization-log#-1800000000-he)
+    - [x] 多细胞动物 ^history-life-animals
+      - Why: 细胞分工和发育调控形成复杂动物体制；动物体制为后来的感觉、行动和认知能力提供基础。
+      - [文明构建日志](chronicle:civilization-log#-650000000-he)
+    - [x] 哺乳动物新皮质 ^history-life-neocortex
+      - Why: 哺乳动物脑结构演化出处理多模态信息的新皮质；复杂信息处理能力是后来工程认知的演化前提。
+      - [文明构建日志](chronicle:civilization-log#-200000000-he)
+    - [x] 尤卡坦撞击 ^history-life-chicxulub
+      - Why: 撞击引起的灭绝重排生态位，影响后来哺乳动物的扩张；生态位重排间接改变了人类谱系出现的条件。
+      - [文明构建日志](chronicle:civilization-log#-66000000-he)
+    - [x] 早期灵长类 ^history-life-primates
+      - Why: 哺乳动物生态位扩张后，灵长类谱系逐渐分化；灵长类谱系为后来的人类协作能力提供演化背景。
+      - [文明构建日志](chronicle:civilization-log#-55000000-he)
+    - [x] 非洲人族分化 ^history-life-hominins
+      - Why: 人族与黑猩猩谱系分开，为后来的人类演化提供谱系起点；人族谱系连接生物演化与后来的人类文明史。
+      - [文明构建日志](chronicle:civilization-log#-6000000-he)
+    - [x] 智人出现 ^history-life-sapiens
+      - Why: 智人具备高度复杂的语言、学习与社会协作能力；人类的累积文化使跨代规划恒星级工程成为可能。
+      - [文明构建日志](chronicle:civilization-log#-290000-he)
+
+  - [/] 智慧文明培养 ^history
+    - Why: 农业提高人口承载量，文字记录扩大社会协作和跨代知识传递；长期治理让文明能持续承担 II 型工程。
+    - [x] 人类协作文明 ^history-society
+      - Why: 人口增长与跨代记录扩大分工和协作半径，为持续数世纪的离地建设形成组织基础。
+    - [x] 农业定居 ^history-society-farming
+      - Why: 稳定粮食供给提高人口承载量，定居和专业分工开始积累大型工程所需的人力与知识。
+      - [文明构建日志](chronicle:civilization-log#0-he)
+    - [x] 文字记录 ^history-society-writing
+      - Why: 可复制的记录把技术经验传给更多地点和后代，使协作网络能超出单一社群并持续扩大。
+      - [文明构建日志](chronicle:civilization-log#6800-he)
+    - [ ] 社会治理与生态 ^governance
+      - Why: 资源权利、环境预算和长期审计为戴森群扩张划定可执行的边界。
+    - [ ] 跨代治理 ^foundation-governance
+      - Why: 清楚界定地球生态、资源权利和空间安全的边界，才有条件扩大工程规模；这为戴森群扩张划定可执行的安全与生态约束。
+      - 完成判据：公开环境预算、资源规则、责任机制及可审计的跨机构协调。
+    - [ ] 地球生态边界 ^governance-ecology
+      - Why: 规定地球日照、轨道环境和排热约束，防止能源扩张损害文明赖以生存的生态系统。
+      - 完成判据：持续监测环境指标，超限时可暂停新增收集器并执行退役方案。
+    - [ ] 能源物料审计 ^governance-audit
+      - Why: 统一核算收集、传输、使用、废热和物料损耗，使 II 型文明目标可以独立验收。
+      - 完成判据：各站点公开可追溯的能源与物料账，并能核对全网净可用功率。
+
+  - [/] 材料与制造 ^industry
+    - Why: 从规模炼钢到天体资源精炼和收集器批量生产，逐步建立戴森群所需的材料供应链。
+    - [x] 材料规模制造 ^history-material
+      - Why: 规模炼钢与结构材料产业为大型离地设施提供可复制的制造起点。
+    - [x] 规模炼钢 ^history-material-steel
+      - Why: 廉价钢材扩展铁路、机械和建筑网络，也建立后来轨道大型结构所需的批量制造经验。
+      - [文明构建日志](chronicle:civilization-log#11856-he)
+    - [ ] 天体资源试采 ^industry-resources
+      - Why: 核实月球或小天体材料的可用性、环境代价及完整物料账；可用储量决定收集器群可扩建的物料上限。
+      - 完成判据：提取、精炼与运输试验给出可信的物料和环境账。
+    - [ ] 天体原料精炼 ^industry-refining
+      - Why: 直接利用离地矿物、水和挥发物，减少从地球运送基础原料的需求；本地原料转换使收集器生产摆脱地球散装物资供应。
+      - 完成判据：示范厂连续生产结构材料、推进剂与工业原料，并结清能耗、损耗和废弃物账。
+    - [ ] 自主空间制造 ^industry-manufacturing
+      - Why: 让设备和备件主要在太空生产，使扩建不受地球运力约束；本地制造把资源供给转化为可复制的收集器和维修部件。
+      - 完成判据：关键设备与备件可用离地材料制造，并由机器人维护。
+    - [ ] 多地点供应链 ^industry-network
+      - Why: 分散材料、制造和维修节点，减少单点故障并支持持续扩建；冗余供应链降低单站故障对恒星级能源网络的影响。
+      - 完成判据：多个离地节点可互供材料和备件，并承受单点中断。
+    - [ ] 收集器批量生产 ^stellar-production
+      - Why: 通过离地材料和标准接口持续复制收集器，而不是逐件从地球发射；批量生产把示范装置推进为可持续扩张的收集器群。
+      - 完成判据：离地工厂稳定产出收集器、散热器与备件，回收旧件并核算单位功率的物料需求。
+
+  - [/] 信息与自治 ^agents
+    - Why: 从晶体管、计算机网络到受约束的太空智能体，扩大离地设施的通信、控制和自治能力。
+    - [x] 信息技术网络 ^history-information
+      - Why: 固态电子器件、计算和通信把技术协作扩展成可连接大量设施的网络。
+    - [x] 晶体管 ^history-material-transistor
+      - Why: 可量产的固态开关扩大电子设备网络，为自治设备和大规模输能控制奠基。
+      - [文明构建日志](chronicle:civilization-log#11947-12-23-he)
+    - [x] 集成电路 ^history-information-ic
+      - Why: 小型高密度计算扩展控制设备数量，为航天导航与大规模收集器的现场控制提供基础。
+      - [文明构建日志](chronicle:civilization-log#11958-09-12-he)
+    - [x] 分组通信网络 ^history-information-arpanet
+      - Why: 分组通信把分散计算机接成技术网络，为未来离地站点间的任务与数据交换提供前身。
+      - [文明构建日志](chronicle:civilization-log#11969-10-29-he)
+    - [x] 万维网 ^history-information-web
+      - Why: 可互联的知识记录扩大技术传播范围，缩短跨机构工程的协作周期。
+      - [文明构建日志](chronicle:civilization-log#11989-03-he)
+    - [x] AI Agent 工具链 ^history-information-agent
+      - Why: 可审计的工具调用把部分数字任务从人手扩展到智能体，为未来太空设施自治提供方法起点。
+      - [文明构建日志](chronicle:civilization-log#12025-03-11-he)
+    - [ ] 自治安全边界 ^agents-safety
+      - Why: 明确智能体能操作哪些设备、能消耗多少资源，以及何时必须交还控制权；受控权限使大规模自治操作不危及人员、轨道与能源网络。
+      - 完成判据：任务权限、可验证执行记录、隔离测试与人工接管机制在真实设备上通过故障演练。
+    - [ ] 深空通信底网 ^agents-communications
+      - Why: 多地点机器需要容忍长时延与中断的授时、身份、数据同步和任务交接；可靠任务交接使分散的收集器与工厂可以协同运行。
+      - 完成判据：地月与更远节点在断链后可恢复一致的任务状态，关键指令可追溯来源。
+    - [ ] 机器人协作编队 ^agents-fleet
+      - Why: 将勘测、搬运、装配和巡检分给可互相交接任务的机器人群；协作编队把单点施工扩展为并行建设能力。
+      - 完成判据：编队在通信中断或单机故障时重新分配工作，并遵守轨道和设备安全约束。
+    - [ ] 自主维修闭环 ^agents-repair
+      - Why: 收集器与制造站的大规模复制依赖持续巡检、备件调度和现场修复；维修闭环阻止收集器数量增长时故障同步累积。
+      - 完成判据：智能体从发现故障到隔离、备件更换和复测形成可审计闭环，必要时可由人员接管。
+    - [ ] 跨站资源调度 ^agents-coordination
+      - Why: 各生产和能源节点要共享物料、功率、轨道窗口与维修能力；跨站调度让戴森群的材料流和能量流保持连续。
+      - 完成判据：多个离地站点在部分失联和资源短缺时仍能按公开优先级完成调度并恢复一致账目。
+
+  - [/] 能源与戴森群 ^stellar
+    - Why: 从蒸汽、核能和硅太阳电池延续到戴森群，实现恒星量级净可用功率。
+    - [x] 能源与工业 ^history-industry
+      - Why: 能源转换提高人均产出并扩大产业规模，为离地制造与后来的恒星能源利用铺路。
+    - [x] 蒸汽动力 ^history-industry-steam
+      - Why: 连续机械动力提高生产和运输能力，让技术设备进入大规模复制的工业网络。
+      - [文明构建日志](chronicle:civilization-log#11712-he)
+    - [x] 受控核裂变 ^history-industry-fission
+      - Why: 受控核能增加高密度能源选项，为日后远离太阳的制造和运输系统保留供能路径。
+      - [文明构建日志](chronicle:civilization-log#11942-12-02-he)
+    - [x] 硅太阳电池 ^history-material-solar
+      - Why: 硅器件把日光直接转为电力，是戴森群收集器可复制的技术起点。
+      - [文明构建日志](chronicle:civilization-log#11954-he)
+    - [x] 文明尺度构想 ^history-concept
+      - Why: 将能源利用率表述为文明尺度，让人口和技术网络扩张有可衡量的长远目标。
+    - [x] 文明能级尺度 ^history-concept-kardashev
+      - Why: 恒星级能源利用成为文明能力的参照，给戴森群的净可用功率设定最终量级。
+      - [文明构建日志](chronicle:civilization-log#11964-he)
+    - [x] 先进裂变堆 ^history-industry-htr
+      - Why: 稳定供热和供电扩大低碳工业能力，为离地设施所需材料的持续生产提供选项。
+      - [文明构建日志](chronicle:civilization-log#12023-12-06-he)
+    - [x] 可再生能源扩张 ^history-industry-renewables
+      - Why: 风光装机扩大清洁供能网络，使未来离地建设增加用能时仍可约束地球环境负担。
+      - [文明构建日志](chronicle:civilization-log#12025-he)
+    - [/] 地球能源转型 ^foundation-energy
+      - Why: 低排放且稳定的供能和制造能力是持续扩大离地工程的起点；它为材料生产和初期离地建设提供稳定能源。
+      - 历史进展：[2025 年可再生能源新增装机](chronicle:civilization-log#12025-he)；下一步需解决电网、储能与材料约束。
+    - [ ] 辐射散热试验 ^stellar-thermal
+      - Why: 被收集却未转为可用功的能量必须排入太空，散热能力决定设备寿命与规模上限；废热排出能力决定收集器可持续工作的功率密度。
+      - 完成判据：散热器在真实辐照、微陨石和热循环条件下维持功率与可维修性。
+    - [ ] 定向输能试验 ^stellar-transfer
+      - Why: 将收集器的功率送达离地制造和居住节点，同时限制误照与传输损耗；可控输能使收集到的功率真正进入文明的可用能源账。
+      - 完成判据：光束或其他输能链路完成端到端效率、自动断束和故障隔离测试。
+    - [ ] 首批太阳收集器 ^stellar-pilot
+      - Why: 集成采光、转换、散热、输能与机器人维护，检验完整装置的净收益；实测净收益为大规模复制提供工程依据。
+      - 完成判据：示范编队连续交付经计量的净可用功率，且运行与维修成本可核算。
+    - [ ] 可控扩张网络 ^stellar-network
+      - Why: 在持续维修和补给下复制收集器编队，并使输能、调度与轨道管理同步扩容；稳定扩容使净可用功率逐级接近恒星量级。
+      - 完成判据：多批次新增装置投入运行后，净可用功率持续增长，碰撞规避、故障隔离和退役回收保持有效。
+    - [ ] 恒星尺度利用 ^stellar-scale
+      - Why: 在长期稳定与生态约束下，达到 10²⁶ W 量级的可核算净可用功率；这是 II 型文明目标的最终验收条件。
+      - 完成判据：长期审计能源收集、输送、利用和废热排放，确认净可用功率已达目标量级且地球日照保持在约定边界内。
+
+  - [/] 空间与运输 ^foundation
+    - Why: 从火箭与空间站延续到轨道组装、太空电梯和多地点运输，形成戴森群的空间物流基础。
+    - [x] 进入太空 ^history-space
+      - Why: 运载、驻留和深空采样把技术网络延伸到地外，为戴森群建设提供操作基础。
+    - [x] 动力飞行 ^history-space-flight
+      - Why: 受控飞行积累结构与控制经验，使后来运送离地设备的航天技术有工程起点。
+      - [文明构建日志](chronicle:civilization-log#11903-12-17-he)
+    - [x] 液体火箭 ^history-space-rocket
+      - Why: 液体推进开启把设备送离地表的路径，为轨道工厂和收集器部署提供运载前提。
+      - [文明构建日志](chronicle:civilization-log#11926-03-16-he)
+    - [x] 首颗人造卫星 ^history-space-sputnik
+      - Why: 首个持续运行的轨道装置把技术网络扩展出地球表面，为后来分布式收集器提供先例。
+      - [文明构建日志](chronicle:civilization-log#11957-10-04-he)
+    - [x] 首次载人入轨 ^history-space-gagarin
+      - Why: 载人入轨积累生命保障与操作经验，为离地建造和维护所需的人类活动打基础。
+      - [文明构建日志](chronicle:civilization-log#11961-04-12-he)
+    - [x] 载人登月 ^history-space-apollo
+      - Why: 地月往返把运输与导航网络扩展到另一颗天体，为太阳系资源链铺路。
+      - [文明构建日志](chronicle:civilization-log#11969-07-20-he)
+    - [x] 首座空间站 ^history-space-salyut
+      - Why: 长期驻留把轨道飞行推进为固定工作场所，为未来离地工厂与维修站提供先例。
+      - [文明构建日志](chronicle:civilization-log#11971-04-19-he)
+    - [x] 航天飞机首飞 ^history-space-shuttle
+      - Why: 可重复使用运输扩大在轨服务与大型载荷组装能力，降低后续空间基础设施扩建门槛。
+      - [文明构建日志](chronicle:civilization-log#11981-04-12-he)
+    - [x] 空间站首舱 ^history-space-zarya
+      - Why: 多国模块化组装把工业与协作网络延伸至轨道，为大型离地设施提供组织先例。
+      - [文明构建日志](chronicle:civilization-log#11998-11-20-he)
+    - [x] 空间站连续驻留 ^history-space-iss
+      - Why: 持续有人值守积累补给和维修网络经验，为未来多个生产及能源站点的运营铺路。
+      - [文明构建日志](chronicle:civilization-log#12000-11-02-he)
+    - [x] 小行星样本回收 ^history-space-bennu
+      - Why: 小天体样本返回把勘测网络延伸到深空，为收集器群所需离地原料的评估提供起点。
+      - [文明构建日志](chronicle:civilization-log#12023-09-24-he)
+    - [/] 轨道运输与维护 ^foundation-orbit
+      - Why: 可重复使用的运输、机器人装配与维修能把零散任务变成长期服务；它使收集器原型和离地工厂可以反复部署与维护。
+      - 历史起点：[长期在轨驻留](chronicle:civilization-log#12000-11-02-he)；下一步需验证高频运输与自主维护。
+    - [ ] 闭环生存系统 ^foundation-life-support
+      - Why: 长期离地工作需要可维修、低补给的生命保障与自治系统；它支撑离地工厂和维修站的长期人员驻留。
+      - 完成判据：连续运行的水、空气与物料循环，经故障恢复和低补给验证。
+    - [ ] 规模化轨道组装 ^foundation-assembly
+      - Why: 大型结构必须能够持续组装、验证并修复，才可支撑后续离地制造；它把分批运入轨道的设备组成可扩建的收集器和工厂。
+      - 完成判据：大型结构可在轨组装、检测、修复并连续运营。
+    - [ ] 电梯材料与选址 ^foundation-elevator-design
+      - Why: 地球太空电梯需要可量产的超高比强度系缆，以及避开航路和轨道碎片的赤道站址；材料与动力学可行性决定太空电梯能否成为大宗上行运力。
+      - 完成判据：代表性系缆样段的强度、缺陷率和寿命通过试验；地面站、同步轨道端与配重的动力学及失效边界公开复核。
+    - [ ] 轨道系缆试验 ^foundation-elevator-test
+      - Why: 先在较短系缆上检验部署、爬升、供电、姿态控制与主动避碰；试验结果决定能否安全放大地表至轨道的运输规模。
+      - 完成判据：多次载荷往返后仍可定位损伤并安全处置断缆、停电和碎片撞击。
+    - [ ] 太空电梯运营 ^foundation-elevator
+      - Why: 把地表与同步轨道之间的货运转为可检修、可调度的连续服务；连续大宗货运可降低戴森群早期建设对火箭发射频次的依赖。
+      - 完成判据：地面锚点、系缆、配重和爬升器完成全尺寸联调，长期运力及事故处置经独立审计。
+    - [ ] 轨道运输网络 ^industry-transport
+      - Why: 连接采矿点、精炼厂、制造站和收集器轨道，形成可重复使用的货物流；稳定货物流让多地点工厂能够持续供给戴森群。
+      - 完成判据：多条航线可按计划交付标准货柜，并记录推进剂、时间、损耗和避碰成本。
+    - [ ] 太阳系轨道规划 ^stellar-orbits
+      - Why: 为收集器、工厂、运输船和自然天体划定长期稳定且可避碰的运行区域；轨道容量和安全边界决定收集器群能否长期扩张。
+      - 完成判据：轨道配置通过长期扰动、碰撞级联和地球日照影响评估，具有扩张及退役路径。
+
+%% 生命演化的阶段关系
+history-life-luca needs history-life-rna
+history-life-microbes needs history-life-luca
+history-life-oxygen needs history-life-microbes
+history-life-eukaryotes needs history-life-luca
+history-life-animals needs history-life-eukaryotes
+history-life-neocortex needs history-life-animals
+history-life-chicxulub relates history-life-neocortex: 重排其后代的生态位
+
+%% 人类文明的历史关联
+history-life-primates relates history-life-chicxulub: 在撞击后的生态位中扩张
+history-life-hominins needs history-life-primates
+history-life-sapiens needs history-life-hominins
+history-society-farming needs history-life-sapiens
+history-society-writing needs history-society-farming
+history-industry-steam relates history-society-farming: 借助定居人口和专业分工形成产业规模
+history-industry-steam relates history-society-writing: 依托记录与组织的长期积累
+history-material-steel needs history-industry-steam
+history-industry-fission relates history-industry-steam: 扩大可控能源的来源
+history-industry-htr needs history-industry-fission
+history-material-transistor relates history-material-steel: 扩展工业加工的精度
+history-material-solar relates history-material-transistor: 共用半导体加工基础
+history-industry-renewables needs history-material-solar
+history-information-ic needs history-material-transistor
+history-information-arpanet relates history-information-ic: 利用电子计算能力联网
+history-information-arpanet relates history-society-writing: 将跨代记录扩展为跨地点的数据交换
+history-information-web needs history-information-arpanet
+history-information-agent relates history-information-web: 借助网络知识与工具接口
+history-concept-kardashev relates history-industry-fission: 将能源利用规模作为比较尺度
+history-space-rocket relates history-space-flight: 延续受控飞行研究
+history-space-sputnik needs history-space-rocket
+history-space-gagarin needs history-space-sputnik
+history-space-apollo needs history-space-rocket, history-information-ic
+history-space-salyut needs history-space-rocket
+history-space-shuttle relates history-space-salyut: 扩展在轨服务与运输
+history-space-zarya relates history-space-shuttle: 接续模块化在轨组装
+history-space-iss needs history-space-zarya
+history-space-bennu needs history-space-rocket
+
+%% 进行中的地球与轨道建设
+foundation-energy needs history-industry-htr, history-industry-renewables
+foundation-orbit needs history-space-iss
+foundation-orbit relates history-information-agent: 可用于自主维护调度
+foundation-governance needs history-society-writing
+foundation-life-support needs history-space-iss
+foundation-assembly needs foundation-orbit, foundation-energy
+foundation-elevator-design needs foundation-orbit, foundation-governance
+foundation-elevator-test needs foundation-elevator-design, foundation-assembly
+foundation-elevator needs foundation-elevator-test, foundation-governance
+foundation-elevator relates industry-transport: 提供地表至同步轨道的货运通道
+
+%% 自治太空智能体网络
+agents-safety needs history-information-agent, foundation-governance
+agents-communications needs foundation-orbit
+agents-communications relates history-information-arpanet: 将分组通信扩展为容忍深空长时延的任务网络
+agents-fleet needs agents-safety, agents-communications, foundation-assembly
+agents-repair needs agents-fleet, industry-manufacturing
+agents-coordination needs agents-repair, industry-network
+
+%% 离地产业与恒星能量的执行依赖
+industry-resources needs foundation-assembly, foundation-governance, foundation-life-support, agents-fleet
+industry-resources relates history-space-bennu: 借鉴小天体采样与材料分析
+industry-refining needs industry-resources, foundation-energy
+industry-refining relates history-material-steel: 将规模冶炼经验延伸至离地原料
+industry-manufacturing needs industry-refining, foundation-assembly, agents-fleet
+industry-transport needs industry-resources, foundation-orbit
+industry-network needs industry-manufacturing, industry-transport, foundation-governance
+stellar-orbits needs foundation-governance, agents-communications
+stellar-thermal needs industry-manufacturing
+stellar-transfer needs foundation-orbit, agents-safety, foundation-energy
+stellar-pilot needs stellar-orbits, stellar-thermal, stellar-transfer, industry-manufacturing
+stellar-pilot relates history-material-solar, history-concept-kardashev: 继承太阳能转换与文明能级构想
+stellar-production needs stellar-pilot, industry-network, agents-repair
+stellar-production relates history-material-solar: 将太阳电池扩展为离地批量收集器
+stellar-network needs stellar-pilot, stellar-production, stellar-orbits, agents-coordination
+stellar-scale needs stellar-network, governance-audit
+
+%% 长期环境与能源核算
+governance-ecology needs foundation-governance
+governance-audit needs foundation-governance, agents-safety
+stellar-orbits needs governance-ecology

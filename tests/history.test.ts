@@ -4,8 +4,8 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { contextFor, createRhumbServer, headingDate, HistoryTracker, linkDate, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
-import { freshness, relativeTime } from "../web/src/time.ts";
+import { contextFor, createRhumbServer, dateIn, headingDate, HistoryTracker, linkDate, LONG_AGO, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
+import { absoluteTime, freshness, isoTime, relativeTime } from "../web/src/time.ts";
 
 const T1 = 1767225600; // 2026-01-01T00:00:00Z
 const T2 = 1769904000; // 2026-02-01T00:00:00Z
@@ -27,7 +27,7 @@ function commit(dir: string, message: string, time: number) {
 
 describe("HistoryTracker", () => {
   let dir: string;
-  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+  afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
 
   it("dates committed lines by blame and changed lines by file mtime", async () => {
     dir = repo();
@@ -153,6 +153,76 @@ links:
     // Without a resolver only path dates count, as before.
     const plain = nodeTimes(doc, await new HistoryTracker().file(file, versionOf(src)));
     expect(plain[0]).toMatchObject({ source: "commit" });
+  });
+
+  it("reads Holocene Era years (CE + 10000, may be negative) at the start of a heading", () => {
+    // End of a local CE day in unix seconds (setFullYear keeps any year as written).
+    const ce = (date: string) => {
+      const [y, m, d] = date.split("-").map(Number);
+      const t = new Date(2000, 0, 1, 23, 59, 59);
+      t.setFullYear(y!, m! - 1, d!);
+      return t.getTime() / 1000;
+    };
+    expect(dateIn("11969-07-20 HE", true)).toEqual({ date: "11969-07-20 HE", time: ce("1969-07-20") });
+    // A year or a month stands for its last day.
+    expect(dateIn("12025 HE", true)!.time).toBe(ce("2025-12-31"));
+    expect(dateIn("12000-11 HE", true)!.time).toBe(ce("2000-11-30"));
+    // Only the leading date counts; the rest of the heading is text.
+    expect(dateIn("11701 HE — 11900 HE（18—19 世纪）", true)).toMatchObject({ date: "11701 HE", time: ce("1701-12-31") });
+    // HE 10000 is 1 BCE (astronomical year 0); earlier years go below zero, with optional grouping.
+    expect(new Date(dateIn("10000 HE", true)!.time * 1000).getFullYear()).toBe(0);
+    const order = ["-250,000 HE", "-100 HE", "0 HE", "9999 HE", "10000 HE"].map((h) => dateIn(h, true)!.time);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    // Beyond what a JS Date can hold (about 271,800 years before 1970) a date is only "long ago":
+    // it keeps its label but takes the earliest time a Date can hold, so such entries tie.
+    for (const h of ["-3,450,000,000 HE（距今约 34.5 亿年）", "−290,000 HE"]) expect(dateIn(h, true)!.time).toBe(LONG_AGO);
+    expect(dateIn("-290,000 HE", true)!.date).toBe("-290,000 HE");
+    expect(dateIn("-250,000 HE", true)!.time).toBeGreaterThan(LONG_AGO);
+  });
+
+  it("does not misread other text as a Holocene Era date", () => {
+    // An invalid HE date is no date, not a CE date.
+    expect(dateIn("12026-13 HE", true)).toBeNull();
+    expect(dateIn("11900-02-29 HE", true)).toBeNull(); // 1900 was not a leap year
+    expect(dateIn("12000-02-29 HE", true)).not.toBeNull();
+    expect(dateIn("2026-10-08 HEAVY rain", true)!.date).toBe("2026-10-08");
+    expect(dateIn("2026-10-08 Heat", true)!.date).toBe("2026-10-08");
+    expect(dateIn("1964 年", true)).toBeNull();
+    expect(dateIn("Release 12026 HE", true)).toBeNull();
+    // Link paths keep the CE-only rule.
+    expect(linkDate("notes/12026 HE.md")).toBeNull();
+  });
+
+  it("shows a time too far back for a Date as long ago", () => {
+    const deep = dateIn("-3,450,000,000 HE", true)!.time;
+    expect(relativeTime(deep, T1)).toBe("long time ago");
+    expect(absoluteTime(deep)).toBe("long time ago");
+    expect(absoluteTime(deep - 1)).toBe("long time ago"); // outside the Date range: no RangeError
+    expect(isoTime(deep - 1)).toBeUndefined();
+    expect(isoTime(T1)).toBe("2026-01-01T00:00:00.000Z");
+    expect(freshness(deep, T1)).toBe(0);
+    // Before 1 CE the era is named, so 1 BCE does not read as 1 CE.
+    expect(absoluteTime(dateIn("0 HE", true)!.time)).toMatch(/BC/);
+    expect(absoluteTime(T1)).not.toMatch(/BC|AD/);
+    // A date that fits is still shown as years.
+    expect(relativeTime(dateIn("-250,000 HE", true)!.time, T1)).toMatch(/^\d+ y ago$/);
+  });
+
+  it("dates nodes by Holocene Era headings in a chronicle", async () => {
+    dir = repo();
+    const file = join(dir, "civ.rhumb");
+    writeFileSync(join(dir, "log.md"), ["# Log", "", "## -3,450,000,000 HE（距今约 34.5 亿年）", "", "Life.", "",
+      "## 11969-07-20 HE", "", "Moon.", ""].join("\n"));
+    const src = "- [x] Early life [x](log.md#-3450000000-he距今约-345-亿年) ^life\n- [x] Moon [x](log.md#11969-07-20-he) ^moon\n";
+    writeFileSync(file, src);
+    commit(dir, "civ", T2);
+    const doc = parse(src, { fileName: file });
+    const read = (p: string) => { try { return readFileSync(p, "utf8"); } catch { return null; } };
+    const [life, moon] = nodeTimes(doc, await new HistoryTracker().file(file, versionOf(src)),
+      (a) => headingDate(resolveAnchor(a, contextFor(file, doc, read)), read));
+    expect(life).toMatchObject({ source: "link", time: LONG_AGO, link: { date: "-3,450,000,000 HE" } });
+    expect(moon).toMatchObject({ source: "link", time: linkDate("1969-07-20")!.time, link: { date: "11969-07-20 HE" } });
+    expect(life!.time).toBeLessThan(moon!.time);
   });
 
   it("recognizes dates in link paths", () => {
