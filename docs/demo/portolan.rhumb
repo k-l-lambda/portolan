@@ -132,7 +132,7 @@ title: Portolan
       - [missing needs labels](../changelog.md#label-dedupe-treated-every-unlabeled-edges-needs-as-a-repeat-portolan-95386d4)
     - [x] Star UI ^ui-star
       - Why: a star is only useful if starred items stand out and can be reached from anywhere.
-      - Starred items are framed in gold, never folded away, listed in a menu, and linked from the start page.
+      - Starred items are framed in gold, listed in a menu, and linked from the start page; a folded group shows how many it holds.
       - [star UI](../changelog.md#shared-reserved-attribute-star-true-a-general-set-attr-edit-op-and-a-dedicated-star-ui-portolan-e39fff9)
     - [x] Status editing ^ui-edit
       - Why: people should update progress where they read it, through the same path agents use, without overwriting someone else's change.

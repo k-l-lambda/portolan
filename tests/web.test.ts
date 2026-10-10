@@ -21,7 +21,7 @@ describe("view helpers", () => {
     expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["done", "idle"]);
   });
 
-  it("keeps starred nodes visible by default and counts stars inside", () => {
+  it("folds starred nodes like any other and counts stars inside", () => {
     const d = parse(`- [x] Archive ^archive
   - [x] Group ^group
     - [x] Key result {star: true} ^key
@@ -29,8 +29,8 @@ describe("view helpers", () => {
 - [x] Plain ^plain
   - [x] Leaf ^leaf
 `);
-    // archive and group stay open so the starred leaf shows; plain has no star and folds.
-    expect([...defaultCollapsed(d.nodes)]).toEqual(["plain"]);
+    // A star does not keep its branch open: only doing work does.
+    expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["archive", "group", "plain"]);
     const n = starredInside(d.nodes);
     expect([n.get("archive"), n.get("group"), n.get("key"), n.get("plain")]).toEqual([1, 1, 0, 0]);
   });

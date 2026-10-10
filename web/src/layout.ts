@@ -17,15 +17,15 @@ export function starred(node: RhumbNode): boolean {
 
 /**
  * Default collapse state: a node with children starts collapsed unless its subtree
- * contains a `doing` or starred node, so the map opens on the work in progress and on
- * what the project starred.
+ * contains a `doing` node, so the map opens on the work in progress. Stars do not open
+ * branches; a folded card shows how many stars it holds, and the star menu reveals them.
  */
 export function defaultCollapsed(roots: RhumbNode[]): Set<string> {
   const out = new Set<string>();
   const visit = (n: RhumbNode): boolean => {
     const active = n.children.map(visit).some(Boolean);
     if (n.children.length > 0 && !active) out.add(nodeKey(n));
-    return active || n.status === "doing" || starred(n);
+    return active || n.status === "doing";
   };
   roots.forEach(visit);
   return out;
