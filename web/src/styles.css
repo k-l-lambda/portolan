@@ -76,6 +76,11 @@ a { color: var(--accent); }
   padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--surface);
 }
 .brand { font-weight: 650; text-decoration: none; color: var(--text); letter-spacing: 0.02em; }
+/* Pushed to the right end of the top bar. */
+.repo-link { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;
+  border-radius: 6px; color: var(--muted); flex: none; }
+.repo-link:hover { color: var(--text); background: var(--surface-2); }
+.repo-link .icon { width: 18px; height: 18px; }
 .crumbs { display: flex; align-items: center; gap: 4px; min-width: 0; color: var(--muted); }
 .recent-wrap { position: relative; min-width: 0; }
 .crumb-btn {

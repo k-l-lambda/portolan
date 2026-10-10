@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_FILE } from "./api.ts";
 import { DocView } from "./DocView.tsx";
+import { GitHubIcon } from "./Icons.tsx";
 import { IndexView } from "./IndexView.tsx";
 import { rememberRecent } from "./recent.ts";
 import { RecentMenu } from "./RecentMenu.tsx";
@@ -20,6 +21,9 @@ function useRoute(): { file: string | null; node: string | null } {
   return route;
 }
 
+/** The project's home page, linked from the top bar. */
+const REPO_URL = "https://github.com/k-l-lambda/portolan";
+
 export function App() {
   const route = useRoute();
   // A static export opens its map directly instead of a one-item index.
@@ -34,6 +38,10 @@ export function App() {
             <span aria-hidden="true">/</span> <RecentMenu file={file} />
           </nav>
         )}
+        <a className="repo-link" href={REPO_URL} target="_blank" rel="noopener noreferrer"
+          title="Portolan on GitHub" aria-label="Portolan on GitHub">
+          <GitHubIcon />
+        </a>
       </header>
       {file ? <DocView key={file} file={file} focus={node} /> : <IndexView />}
     </div>
