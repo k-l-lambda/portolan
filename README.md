@@ -6,6 +6,8 @@
 
 Portolan is a shared map of work for humans and AI agents. It is a mind map that is also a TODO list and a task log, showing the relations, progress and plans across an agent's whole workflow.
 
+**[Live demo](https://k-l-lambda.github.io/portolan/)**: Portolan's own development map in the web view (read-only), with every link opening its entry in the [changelog](docs/changelog.md).
+
 ## Why
 
 Agents now do long, branching work: surveys, experiments, refactors that split into sub-tasks and depend on each other. Logs and diaries record what happened, but not the shape of the work. Chat history is linear. It is hard to see what is done, what is blocked and what comes next.

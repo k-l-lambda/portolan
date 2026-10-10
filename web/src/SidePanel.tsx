@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { Diagnostic, RhumbNode } from "../../src/types.ts";
-import { api, type AnchorResponse, type Freshness } from "./api.ts";
+import { api, READ_ONLY, type AnchorResponse, type Freshness } from "./api.ts";
 import { absoluteTime, relativeTime } from "./time.ts";
 import { starred } from "./layout.ts";
 import { StarIcon } from "./NodeCard.tsx";
@@ -29,7 +29,7 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
       <div className="panel-head">
         <p className={`status-pill status-${node.status ?? "todo"}`}>{node.status ?? "unknown"}</p>
         <button type="button" className={`star-toggle panel-star${starred(node) ? " on" : ""}`}
-          aria-pressed={starred(node)} disabled={!node.id}
+          aria-pressed={starred(node)} disabled={!node.id || READ_ONLY}
           title={node.id ? "Star or unstar (s)" : "Needs an ID to be starred"}
           onClick={() => onStar(node)}>
           <StarIcon filled={starred(node)} /> {starred(node) ? "Starred" : "Star"}

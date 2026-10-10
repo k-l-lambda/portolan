@@ -3,6 +3,7 @@ import { memo, type CSSProperties } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { RhumbNode, Status } from "../../src/types.ts";
 import { plainTitle, shortId, starred } from "./layout.ts";
+import { READ_ONLY } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 import type { NodeTime } from "../../src/history.ts";
 
@@ -55,7 +56,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
           className={`status-select nodrag status-${status}`}
           aria-label={`Status of ${title}`}
           value={status}
-          disabled={!node.id}
+          disabled={!node.id || READ_ONLY}
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => onStatus(node, e.target.value as Status)}
         >
@@ -67,8 +68,8 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
           className={`star-toggle nodrag${isStar ? " on" : ""}`}
           aria-pressed={isStar}
           aria-label={isStar ? `Unstar ${title}` : `Star ${title}`}
-          title={node.id ? (isStar ? "Unstar (s)" : "Star (s)") : "Needs an ID to be starred"}
-          disabled={!node.id}
+          title={READ_ONLY ? (isStar ? "Starred" : "Not starred") : node.id ? (isStar ? "Unstar (s)" : "Star (s)") : "Needs an ID to be starred"}
+          disabled={!node.id || READ_ONLY}
           onClick={(e) => (e.stopPropagation(), onStar(node))}
         >
           <StarIcon filled={isStar} />

@@ -4,7 +4,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
-import { api, ApiError, onServerEvents, type DocResponse } from "./api.ts";
+import { api, ApiError, onServerEvents, READ_ONLY, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -280,7 +280,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // `s` stars or unstars the selected node.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "s" || e.ctrlKey || e.metaKey || e.altKey || !selected) return;
+      if (READ_ONLY || e.key !== "s" || e.ctrlKey || e.metaKey || e.altKey || !selected) return;
       const t = e.target as HTMLElement;
       if (t.closest("input, select, textarea, [contenteditable]")) return;
       const n = all.get(selected);
@@ -401,6 +401,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       <div className="doc-bar">
         <h1 className="doc-title">{data.doc.title ?? file}</h1>
         <span className="muted">{all.size} nodes · {data.doc.edges.length} edges</span>
+        {READ_ONLY && <span className="badge" title="A static copy: browse freely; editing needs `portolan serve`">read-only demo</span>}
         {counts.error > 0 && <span className="badge badge-error">{counts.error} errors</span>}
         {counts.warning > 0 && <span className="badge badge-warning">{counts.warning} warnings</span>}
         <div className="tool-group" role="group" aria-label="View">

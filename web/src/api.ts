@@ -46,6 +46,25 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * A static export (`pnpm build:pages`, the GitHub Pages demo) has no server: the page carries
+ * `<meta name="portolan-static" content="<default file>">` and reads JSON files written at
+ * build time from `api/`, relative to the page. Edits and live updates are off there.
+ */
+const STATIC = typeof document === "undefined" ? null
+  : document.querySelector<HTMLMetaElement>('meta[name="portolan-static"]')?.content ?? null;
+/** True on a static export: the map can be read but not changed. */
+export const READ_ONLY = STATIC !== null;
+/** The map a static export opens by default. */
+export const DEFAULT_FILE = STATIC || null;
+
+/** Static file for an API call; mirrors what scripts/build-pages.ts writes. */
+export function staticPath(kind: "files" | "doc" | "anchor", file?: string, line?: number, index?: number): string {
+  if (kind === "files") return "api/files.json";
+  const f = encodeURIComponent(file!);
+  return kind === "doc" ? `api/doc/${f}.json` : `api/anchor/${f}/${line}-${index}.json`;
+}
+
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
   const body = await res.json().catch(() => ({}));
@@ -56,16 +75,17 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 const q = (file: string) => `file=${encodeURIComponent(file)}`;
 
 export const api = {
-  files: () => call<{ root: string; files: FileSummary[] }>("/api/files"),
-  doc: (file: string) => call<DocResponse>(`/api/doc?${q(file)}`),
+  files: () => call<{ root: string; files: FileSummary[] }>(STATIC !== null ? staticPath("files") : "/api/files"),
+  doc: (file: string) => call<DocResponse>(STATIC !== null ? staticPath("doc", file) : `/api/doc?${q(file)}`),
   edit: (file: string, version: string, edit: EditOp) =>
+    STATIC !== null ? Promise.reject(new ApiError(405, "This is a read-only demo")) :
     call<{ version: string; id?: string }>(`/api/edit?${q(file)}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ version, edit }),
     }),
   anchor: (file: string, line: number, index: number) =>
-    call<AnchorResponse>(`/api/anchor?${q(file)}&node=${line}&index=${index}`),
+    call<AnchorResponse>(STATIC !== null ? staticPath("anchor", file, line, index) : `/api/anchor?${q(file)}&node=${line}&index=${index}`),
 };
 
 /**
@@ -80,6 +100,7 @@ export function onServerEvents(handlers: {
   history?: () => void;
   reconnect?: () => void;
 }): () => void {
+  if (STATIC !== null) return () => {}; // a static export never changes
   const source = new EventSource("/api/events");
   let connected = false;
   source.addEventListener("hello", () => {

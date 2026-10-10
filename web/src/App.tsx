@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DEFAULT_FILE } from "./api.ts";
 import { DocView } from "./DocView.tsx";
 import { IndexView } from "./IndexView.tsx";
 import { rememberRecent } from "./recent.ts";
@@ -20,7 +21,9 @@ function useRoute(): { file: string | null; node: string | null } {
 }
 
 export function App() {
-  const { file, node } = useRoute();
+  const route = useRoute();
+  // A static export opens its map directly instead of a one-item index.
+  const { file, node } = route.file ? route : { ...route, file: DEFAULT_FILE };
   useEffect(() => { if (file) rememberRecent(file); }, [file]);
   return (
     <div className="app">

@@ -5,3 +5,4 @@ src/generated/
 web/dist/
 dist/
 *.tgz
+_site/
