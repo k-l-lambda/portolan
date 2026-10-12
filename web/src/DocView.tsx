@@ -1,7 +1,7 @@
 import {
   Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
@@ -11,13 +11,17 @@ import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
+import { searchNodes } from "./search.ts";
 import { IconButton } from "./IconButton.tsx";
-import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SourceIcon } from "./Icons.tsx";
+import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard, fill: FrameFill };
+
+/** Candidates listed under the search box. */
+const SEARCH_LIST = 10;
 
 /** ID of the fill layer drawn behind a frame (see the stacking note in `base`). */
 export const fillId = (key: string) => `${key}::fill`;
@@ -184,6 +188,53 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     setPendingCenter(key);
   }, [reveal]);
 
+  // Search: an exact ID is revealed and centered as soon as it is typed. Below the box, the
+  // best SEARCH_LIST matches are listed; arrows move through them, Enter or a click goes to one.
+  // With the list closed, Enter steps through every match best first (Shift+Enter backwards).
+  // Escape closes the list, then clears the query.
+  const [query, setQuery] = useState("");
+  const search = useMemo(() => searchNodes(all.values(), query), [all, query]);
+  const [hit, setHit] = useState(-1);
+  const [listOpen, setListOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const searchBox = useRef<HTMLInputElement>(null);
+  const searchWrap = useRef<HTMLDivElement>(null);
+  useOutsidePress(searchWrap, listOpen, () => setListOpen(false));
+  useEffect(() => (setHit(-1), setActive(-1)), [search]);
+  useEffect(() => {
+    if (!search.exact) return;
+    reveal(search.keys[0]!);
+    setPendingCenter(search.keys[0]!);
+  }, [search, reveal]);
+  const candidates = search.ranked.slice(0, SEARCH_LIST);
+  const pick = (i: number) => {
+    setHit(i);
+    setListOpen(false);
+    goTo(search.ranked[i]!);
+  };
+  const step = (back: boolean) => {
+    const n = search.ranked.length;
+    if (n > 0) pick(hit < 0 ? (back ? n - 1 : 0) : (hit + (back ? n - 1 : 1)) % n);
+  };
+  const onSearchKey = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    const shown = listOpen && candidates.length > 0;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (candidates.length === 0) return;
+      e.preventDefault();
+      const n = candidates.length;
+      if (!shown) return (setListOpen(true), setActive(e.key === "ArrowDown" ? 0 : n - 1));
+      setActive((i) => (e.key === "ArrowDown" ? (i + 1) % n : (i <= 0 ? n - 1 : i - 1)));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (shown && active >= 0) pick(active);
+      else step(e.shiftKey);
+    } else if (e.key === "Escape") {
+      e.preventDefault(); // the browser would also clear a search input
+      if (shown) setListOpen(false);
+      else (setQuery(""), e.currentTarget.blur());
+    }
+  };
+
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
   const [layoutError, setLayoutError] = useState<string | null>(null);
@@ -277,12 +328,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     goTo(focus);
   }, [focus, all, goTo]);
 
-  // `s` stars or unstars the selected node.
+  // `s` stars or unstars the selected node; `/` focuses the search box.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (READ_ONLY || e.key !== "s" || e.ctrlKey || e.metaKey || e.altKey || !selected) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
       const t = e.target as HTMLElement;
       if (t.closest("input, select, textarea, [contenteditable]")) return;
+      if (e.key === "/") return (e.preventDefault(), searchBox.current?.focus());
+      if (READ_ONLY || e.key !== "s" || !selected) return;
       const n = all.get(selected);
       if (n) (e.preventDefault(), onStar(n));
     };
@@ -293,27 +346,35 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
   const { nodes, edges, focusCss } = useMemo(() => {
-    // Focus set: the hovered node, else the selected one, else (with "Highlight starred") every
-    // starred node, shown through its nearest visible card when it sits in a collapsed subtree.
+    // Focus set: the hovered node, else the search matches (only they and the edges between
+    // them light up), else the selected node, else (with "Highlight starred") every starred
+    // node. A node in a collapsed subtree is shown through its nearest visible card.
     const visibleKeys = new Set(base.nodes.map((n) => n.id));
     const shown = (key: string): string | null => {
       for (let k: string | null = key; k; k = parents.get(k) ? nodeKey(parents.get(k)!) : null) if (visibleKeys.has(k)) return k;
       return null;
     };
     const focusNodes = new Set<string>();
+    const matches = new Set(search.keys.map(shown).filter((k): k is string => k !== null));
+    const searching = !hover && query.trim() !== "";
     if (hover?.kind === "node") focusNodes.add(hover.id);
+    else if (searching) matches.forEach((k) => focusNodes.add(k));
     else if (!hover && selected) focusNodes.add(selected);
     else if (!hover && highlightStars) for (const n of starredList) { const k = shown(nodeKey(n)); if (k) focusNodes.add(k); }
     const focusEdge = hover?.kind === "edge" ? hover.id : null;
     const activeEdges = new Set<string>();
     const activeNodes = new Set<string>(focusNodes);
     for (const e of base.edges) {
-      if (e.id === focusEdge || focusNodes.has(e.source) || focusNodes.has(e.target)) {
+      const touches = searching
+        ? focusNodes.has(e.source) && focusNodes.has(e.target)
+        : focusNodes.has(e.source) || focusNodes.has(e.target);
+      if (e.id === focusEdge || touches) {
         activeEdges.add(e.id);
         activeNodes.add(e.source).add(e.target);
       }
     }
-    const focused = activeNodes.size > 0;
+    // A search with no match still dims the map, so "nothing found" is visible.
+    const focused = activeNodes.size > 0 || searching;
     // Containers of active cards stay undimmed, otherwise their opacity would fade the cards too.
     for (const key of [...activeNodes]) {
       for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) activeNodes.add(nodeKey(p));
@@ -374,8 +435,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     // Nodes stay the same objects: giving them a new className makes xyflow re-measure them, and
     // edges briefly unmount meanwhile, which dropped a hovered label from under the pointer.
     // Dimming is a stylesheet keyed by node ID instead (see focusCss).
-    return { nodes: base.nodes, edges, focusCss: focused ? cardFocusCss(activeNodes) : "" };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList]);
+    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) };
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -411,6 +472,54 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onClick={() => setOverrides(new Map())} disabled={overrides.size === 0} />
           <IconButton icon={<EdgeLabelsIcon />} label={allLabels ? "Hide edge labels" : "Show all edge labels"}
             pressed={allLabels} onClick={() => setAllLabels((v) => !v)} />
+        </div>
+        <div className="search" role="search" ref={searchWrap}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setListOpen(false); }}>
+          <SearchIcon />
+          <input ref={searchBox} type="search" className="search-input" value={query} placeholder="Find node (/)"
+            role="combobox" aria-autocomplete="list" aria-controls="search-list"
+            aria-expanded={listOpen && candidates.length > 0}
+            aria-activedescendant={listOpen && active >= 0 ? `search-opt-${active}` : undefined}
+            aria-label="Find nodes by ID or title" aria-describedby="search-count" spellCheck={false}
+            onChange={(e) => (setQuery(e.target.value), setListOpen(true))}
+            onFocus={() => setListOpen(true)}
+            onClick={() => setListOpen(true)}
+            onKeyDown={onSearchKey} />
+          {query.trim() && (
+            <span id="search-count" className={`search-count${search.keys.length === 0 ? " none" : ""}`} aria-live="polite">
+              {search.exact ? "ID" : search.keys.length === 0 ? "no match"
+                : hit >= 0 ? `${hit + 1}/${search.keys.length}` : `${search.keys.length} found`}
+            </span>
+          )}
+          {listOpen && candidates.length > 0 && (
+            <ul id="search-list" className="search-list" role="listbox" aria-label="Best matches">
+              {candidates.map((key, i) => {
+                const n = all.get(key)!;
+                const parent = parents.get(key);
+                return (
+                  <li key={key} id={`search-opt-${i}`} role="option" aria-selected={i === active}
+                    className={`search-option status-${n.status ?? "todo"}${i === active ? " active" : ""}`}
+                    // Keep focus in the box, so the list stays open until the click lands.
+                    onPointerDown={(e) => e.preventDefault()}
+                    onPointerEnter={() => setActive(i)}
+                    onClick={() => pick(i)}>
+                    <span className="star-menu-status">{n.status ?? "?"}</span>
+                    <span className="search-option-text">
+                      <span className="search-option-title">{plainTitle(n.title)}</span>
+                      <span className="search-option-sub muted">
+                        {n.id ? `^${n.id}` : `line ${n.line}`}{parent ? ` · ${plainTitle(parent.title)}` : ""}
+                      </span>
+                    </span>
+                  </li>
+                );
+              })}
+              {search.ranked.length > SEARCH_LIST && (
+                <li className="search-more muted" role="presentation">
+                  {search.ranked.length - SEARCH_LIST} more; Enter steps through all
+                </li>
+              )}
+            </ul>
+          )}
         </div>
         <div className="star-menu-wrap" ref={starWrap}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setStarMenu(false); }}
@@ -528,6 +637,13 @@ function cardFocusCss(active: Set<string>): string {
   // A frame's fill layer dims and brightens with the frame.
   const keep = [...active].flatMap((id) => [id, fillId(id)]).map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
   return `.canvas .react-flow__node{opacity:.35}${keep ? `${keep}{opacity:1}` : ""}`;
+}
+
+/** Outlines search matches, whatever else is focused (hover, selection). */
+function matchCss(keys: Set<string>): string {
+  if (keys.size === 0) return "";
+  const sel = [...keys].map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"] .card`).join(",");
+  return `${sel}{outline:2px solid var(--match);outline-offset:2px}`;
 }
 
 /** Calls `close` when the pointer is pressed outside `ref` while `open`. */

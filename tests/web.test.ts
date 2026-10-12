@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
 import { defaultCollapsed, plainTitle, shortId, starredInside } from "../web/src/layout.ts";
+import { searchNodes } from "../web/src/search.ts";
 
 describe("view helpers", () => {
   it("collapses subtrees without doing work by default", () => {
@@ -117,5 +118,52 @@ describe("recent maps", () => {
     expect(pushRecent(["a", "b", "c"], "b")).toEqual(["b", "a", "c"]);
     expect(pushRecent([], "x")).toEqual(["x"]);
     expect(pushRecent(["a", "b", "c"], "d", 3)).toEqual(["d", "a", "b"]);
+  });
+});
+
+describe("searchNodes", () => {
+  const d = parse(`- [/] History of life ^history-life
+  - [x] Homo sapiens appears ^history-life-sapiens
+  - [-] Dragon program ^history-life-dragons
+- [ ] Untitled-id node
+- [?] Life support ^life
+`);
+  const all = () => {
+    const out: (typeof d.nodes)[number][] = [];
+    const walk = (ns: typeof d.nodes) => ns.forEach((n) => (out.push(n), walk(n.children)));
+    walk(d.nodes);
+    return out;
+  };
+
+  it("returns only the node whose ID matches exactly, with or without ^", () => {
+    expect(searchNodes(all(), "life")).toEqual({ keys: ["life"], ranked: ["life"], exact: true });
+    expect(searchNodes(all(), " ^history-life ")).toMatchObject({ keys: ["history-life"], exact: true });
+  });
+
+  it("matches titles and IDs by case-insensitive words, in document order", () => {
+    expect(searchNodes(all(), "LIFE").keys).toEqual(["history-life", "history-life-sapiens", "history-life-dragons", "life"]);
+    expect(searchNodes(all(), "dragon life").keys).toEqual(["history-life-dragons"]);
+    expect(searchNodes(all(), "untitled").keys).toEqual(["line:4"]);
+  });
+
+  it("ranks whole, prefix and word-start matches first, earlier positions higher", () => {
+    const d2 = parse(`- [ ] Field notes ^notes
+- [ ] Lifeboat drill ^drill
+- [ ] Life ^x1
+- [ ] History of life ^x2
+- [ ] Support systems for life ^x3
+`);
+    const r = searchNodes(d2.nodes, "life");
+    expect(r.keys).toEqual(["drill", "x1", "x2", "x3"]); // the map keeps document order
+    expect(r.ranked).toEqual(["x1", "drill", "x2", "x3"]);
+    // Fuzzy: the tighter subsequence wins.
+    const d3 = parse("- [ ] alpha-b-c-d-e ^wide\n- [ ] abc-de ^tight\n");
+    expect(searchNodes(d3.nodes, "abde").ranked).toEqual(["tight", "wide"]);
+  });
+
+  it("falls back to in-order subsequences when no word matches directly", () => {
+    expect(searchNodes(all(), "hlsap")).toMatchObject({ keys: ["history-life-sapiens"], exact: false });
+    expect(searchNodes(all(), "zzz").keys).toEqual([]);
+    expect(searchNodes(all(), "   ").keys).toEqual([]);
   });
 });
