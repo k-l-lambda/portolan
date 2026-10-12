@@ -276,3 +276,103 @@ Concrete examples: A1 is a controlled comparison against A0, not merely work der
 * `docs/portolan.rhumb` is a copy of `memo/portolan.rhumb`. Each `diary:` link was resolved with the project's own `resolveAnchor` to the diary line it lands on, then pointed at the changelog heading of the entry containing that line: 38 links, none unresolved. `repo:` links became relative to `docs/`, and the `links:` front matter was dropped. `check` is clean. The memo map stays the working copy and keeps its diary links; the docs copy is a snapshot to refresh by rerunning the conversion.
 * The README's small example moved to `docs/example.rhumb` (the SVG script and `pnpm example:svg` read it); a new test checks that the project map parses without diagnostics. 80 tests pass.
 * Heading anchors are GitHub's full slugs, so links work both on GitHub and in the Portolan diary panel; long summaries make long anchors.
+
+### Read-only demo at https://k-l-lambda.github.io/portolan/, deployed by `.github/workflows/pages.yml`; portolan `5eea371`
+
+* Pages serves static files only, so `pnpm build:pages` (`scripts/build-pages.ts`) starts the existing server on an ephemeral loopback port and saves its API answers as files next to the built web app: `api/files.json`, `api/doc/<file>.json` and one `api/anchor/<file>/<line>-<index>.json` per link (44). The build machine's absolute paths are rewritten to repository-relative ones. A `.nojekyll` file stops Jekyll from dropping paths with `_`.
+* The export injects `<meta name="portolan-static" content="portolan.rhumb">`. `web/src/api.ts` sees it and reads those files instead of `/api/…`, rejects edits, and opens no `EventSource`. Status selects, stars and the `s` shortcut are disabled, the bar shows a "read-only demo" badge, and `#/` opens the map directly. Vite `base: "./"` makes asset URLs relative, so the same build works at `/` and under `/portolan/` (routing is by hash).
+* The workflow checks out with `fetch-depth: 0` so freshness comes from real blame, builds with pnpm/Node 24, and deploys with `configure-pages@v6.0.0`, `upload-pages-artifact@v5.0.0`, `deploy-pages@v5.0.1` (each release over two weeks old). It runs on pushes touching `docs/`, `web/`, `src/`, the build script, package files or itself, and by hand.
+* Checked locally under a `/portolan/` subpath in headless Chrome: 31 cards and 29 lines, all edit controls disabled, the side panel shows changelog excerpts, no failed requests or console errors, and no request to `/api/events`. The normal server still lists files and allows edits. First run `38039641890`: build and deploy succeeded. Over HTTP the page, `api/files.json`, the map JSON (52 nodes, 51 edges, every node timed), an anchor file, the bundle and the favicon all returned 200. The same push ran the npm workflow, which skipped because 0.1.2 is already published.
+
+### No: one `#` names one heading at any depth; narrowing below it uses `:~:text=` or `^=`
+
+* Tested with a temporary file: `notes.md#day-two#setup` reads the fragment as the slug `day-two#setup` and reports W003. `#setup` with two Setup headings is not ambiguous: duplicate slugs are numbered as on GitHub (`setup`, `setup-1`), so it lands on the first.
+* Existing ways to narrow: `#day-two^=## Setup` or `#day-two:~:text=second setup`. A `#a#b` syntax would be a Rhumb-only extension that GitHub and browsers ignore (and `#` may appear only once in a URL); if wanted, `#day-two/setup` is a cleaner separator. Not implemented.
+
+### Links without a path date take the date of the nearest dated heading above their target; portolan `dcdae36`
+
+* Path dates (`diary:2026/1008`) still come first. Otherwise `headingDate` (`src/resolve.ts`) starts at the line the link resolves to (the matched entry, the matched line or the heading), walks up through ancestor headings, each a level shallower, and takes the first one that starts with a date (`## 2026-10-08`, `## 2026-10-08 Notes`). A date in the middle ("Release 2026-10-10 retro") does not count. URLs, missing files and unresolved links give no date.
+* `dateIn` in `src/history.ts` holds the date rule shared with `linkDate` (named groups, validated calendar day). `nodeTimes` takes an optional `dateOf(anchor)` and calls it only when the path has no date, so other callers are unchanged. `src/server.ts` passes `headingDate(resolveAnchor(a, ctx), readLinked)`, and the static export goes through the server, so the demo gets it too.
+* Tests written first and seen failing: nested headings, the dated heading itself, `#L11`, `:~:text=`, `^=`, a mid-heading date ignored, no-date cases, a node whose diary link is later than its changelog link, and `nodeTimes` without a resolver. 85 tests pass.
+* Effect: `docs/portolan.rhumb` went from `{children: 5, commit: 47}` to `{children: 5, link: 26, commit: 21}` (16 on 10-08, 10 on 10-09); before, every item was dated by the commit that added the file today. `memo/portolan.rhumb` is unchanged (its diary paths carry dates). `/api/doc` takes about 200 ms on the docs map.
+
+### "Source: <u>portolan.rhumb</u>" opens the raw `.rhumb` as text in a new tab; portolan `93ea6e1`
+
+* `GET /api/source?file=…` returns the file as `text/plain; charset=utf-8`, with the same checks as the other endpoints (inside the root, `.rhumb` only); a test covers `../plan.rhumb` and `plan.threads.jsonl` being rejected. The static export saves it as `api/source/<file>.txt` so Pages serves text instead of a download. The link sits after Legend, same 26 px height; only the file name is shown, in the text colour with the underline.
+* Checked in headless Chrome: live and static (under `/portolan/`) both return the 19,078-byte file, and a click opened a new tab at `…/api/source/portolan.rhumb.txt` while the page stayed put.
+* Trouble: the `{"error":"Not found"}` came from the long-running `portolan serve` on port 4310, started 10-09 21:25, before the endpoint existed. The page loads the rebuilt bundle on refresh, but the Node process keeps its old code, so the new link hit a server without the route. Restarting it fixed it; `portolan.rhumb` and `camelot-training.rhumb` both return 200 text. After server-side changes, restart that server.
+
+### The project map is now `docs/demo/portolan.rhumb`; Pages exports every map under `docs/demo`; portolan `d59ccdd`
+
+* Links in the map were rewritten one level up (`../changelog.md`, `../rhumb-spec.md`, `../skill.md`, `../../README.md`); `pnpm build:pages` now defaults to `docs/demo _site`.
+* With one map the `portolan-static` meta names it and the page opens it directly; with several the meta is empty and `#/` shows the index. `staticPath` encodes each path segment separately, so a nested map becomes folders on disk instead of one `%2F` name.
+* Tests for the encoded static paths were added; the project-map test points at the new location.
+
+### No BCE before; headings may now start with `<year>[-MM[-DD]] HE`, and dates beyond the JS range show "long time ago"; portolan `caae1df`
+
+* Answer to the first question: dates were read as four-digit CE `YYYY[-MM[-DD]]` only, so a BCE year could not be written.
+* Format, fixed before the code: `<year>[-MM[-DD]] HE` at the start of a heading, HE = CE + 10000. The year may be negative, grouped with commas (`-4,352,814,673 HE`) and use U+2212 for the minus. Link paths stay CE-only, and an invalid HE date (bad month or day) is no date. `docs/demo/civilization-log.md` was converted first, e.g. `## 11,942-12-02 HE`.
+* A JS `Date` reaches only ±8.64e15 ms (about 271,821 BCE). Earlier dates are clamped to `LONG_AGO = -8.64e12` s, and the view shows "long time ago" for anything at or below it. `-Infinity` was rejected: `JSON.stringify` turns it into `null`, and `Infinity - Infinity` gives `NaN` in sort comparators. Years before 1 CE are shown with the BC era.
+* `nodeTimes` now compares `link.time < dayStart(lineTime.time)` instead of date strings, which HE labels would have broken.
+* Trouble: the side panel threw `RangeError: Invalid time value` from `toISOString()` on these times; `isoTime()` in `web/src/time.ts` guards the three `<time dateTime>` uses. Test helper trouble: `linkDate` only reads 19xx/20xx paths, so a 1701 case needed its own CE helper; an `afterEach` `rmSync` on an undefined temp dir needed a guard.
+* Tests cover HE parsing (negative, grouped, U+2212, invalid days), the long-ago clamp and `nodeTimes` with HE headings.
+
+### `history-life-primates needs history-life-neocortex`; stars no longer keep a branch open; portolan `5e0aa8b`, `869c143`
+
+* `defaultCollapsed` (`web/src/layout.ts`) now opens a branch only when it contains `doing` work. A folded card still shows how many stars it holds, and the star menu reveals them.
+* Trouble: another session had committed the same primates edge in parallel, so the map had it twice (W004); `869c143` removed the duplicate.
+
+### GitHub mark at the right end of the top bar, and a one-line intro under the map index; portolan `caab2ea`, `49b96ed`
+
+* The mark is Primer Octicons 19.38.0 `mark-github-16` (MIT, attributed in `Icons.tsx`); the latest Octicons release was under two weeks old, so the older pinned one was used.
+* The index footer reads "Portolan is a shared map of work for humans and AI agents: a mind map, TODO list and task log in one." followed by the repository link; a first, multi-line version was cut to one line. `REPO_URL` lives in `layout.ts` for both uses.
+
+## 2026-10-12
+
+### 15 branch nodes with reasons, designer-voice notes for the life stages, 11 new HE log entries; committed by the user as portolan `c8483af`
+
+* Life (all `[-]` under the done group): snowball-period multicellular pilot (frozen by the Sturtian glaciation; `history-life-animals replaces` it), octopus civilization (mothers die around hatching, no cross-generation transfer; kept as the control "individual intelligence is not civilization"), dragon breeding plan (brain-to-body ratio stalled for 160 Myr, ended by the impact; the neocortex `replaces` it, corvids are `from` it), Neanderthal parallel lineage (`history-life-sapiens replaces` it).
+* Other candidates: `[!]` cetacean ocean civilization (no fire underwater), `[?]` corvid backup lineage. Technology (real projects): airships `[-]`, Orion `[-]`, NERVA `[!]` (`needs foundation-governance` for orbital nuclear rules), Buran `[-]`, MSRE `[!]`, cold fusion `[-]`, Fifth Generation Computer `[-]` (`history-information-agent replaces` it). Future: `[?]` Mercury dismantling as a backup material source.
+* Statuses respect W007 (only `[-]`/`[?]` under `[x]` groups) and no `needs` points at a dropped node (W006). The eukaryote note now reads as an endosymbiosis experiment; the impact note says the asteroid was not intercepted after the dragon plan failed review.
+* Log: one intro sentence states the designer voice and that "（虚构方案）" headings are invented; those four cite only the scientific background. The seven technology entries cite pages fetched through the :1091 proxy (Henry Ford museum, Physics Today, NASA, OSTI, NASM, Berkeley, Nature, ICOT). The MSRE source is a 1969 progress report, so the heading says only `11,969-12 HE`.
+* Checks: `check` clean, every in-log `#` link resolves to a heading slug, headings stay chronological, 90 tests pass. A `web_search` call failed once with "All search engines failed"; other queries worked.
+
+### Groups are placed by the weighted mean of their leaves' times (done/doing ×10, others ×1); portolan `64d40b7`
+
+* Cause: a node without its own link takes its newest child's time. The new undated children (cetaceans, corvids) are dated by today's commit, so the whole group counted as "today".
+* `layoutTime` in `web/src/elkLayout.ts` feeds sibling ordering only; a group without timed leaves falls back to its own time, and the time shown on the card is unchanged. Dependencies still win over time.
+* Measured with the real map through `layoutElk`: 智慧文明培养 y 4783 → 1396, directly below 有机生命培养; the doing groups now run 智慧文明, 能源, 材料, 空间, 信息. A test checks the centroid value and the sibling order; 91 tests pass.
+
+### Search box with a ranked candidate list; matches are outlined on the map; portolan `b8f68ba`
+
+* `web/src/search.ts`: an exact ID (a leading `^` is ignored) matches only that node, which is revealed and centered. Otherwise every word must occur in the title or ID, case-insensitively; with no such node, words are tried as in-order subsequences (`hlsap` finds `history-life-sapiens`, and also `history-life-snowball-pilot`).
+* Ranking: whole text 100, prefix 80, word start 70, inside a word 50, minus up to 10 for later positions; subsequences up to 30 by tightness. Scores add over words; ties go to shorter titles, then document order. The map keeps document order, the list shows the best 10 and "N more".
+* View: matches get an orange outline (`--match`, light and dark), the rest dims, and only lines between matches light up; matches in folded groups are shown on the nearest visible card; no match dims everything. `/` focuses the box, arrows move through the list, Enter or a click goes to a node (select, expand, center), Enter with the list closed steps through all matches (Shift+Enter backwards), Escape closes the list and then clears. The input is an ARIA combobox with `aria-activedescendant`.
+* Checked in headless Chrome on the civilization map: "核" ranks 核热火箭, 核脉冲推进, 真核细胞, 受控核裂变, 室温核聚变; `history-` gives 10 of 52 with "42 more"; arrows wrap, Enter and click select and center; no JS errors. Found while testing: clicking the already focused box did not reopen the list after a pick; an `onClick` fixed it. 95 tests pass.
+
+### Both were `[?]` ideas: optional node types from the 10-08 expressiveness review, and editing the map's structure in the view; `ui-struct-edit` got its Why
+
+* `rhumb-kinds`: an optional `kind` attribute (task / experiment / artifact / hypothesis / finding) so tools can tell work from claims; the rule set first was that finishing an investigation must not read as proving its hypothesis. The same review proposed `compares`/`uses`/`tests` relations, still written as labeled `relates`.
+* `ui-struct-edit`: add, remove, rename and move items and relations from the view. `src/edit.ts` already has every operation except `move-node` (reserved: a moved subtree needs its notes and children re-indented); the first version left the controls out by the user's choice on 10-08.
+* Added to `memo/portolan.rhumb`: a Why, the missing-move note and a link to the 10-08 scope line (`#rhumb-tooling:~:text=no structural editing`). No UI idea for kinds existed anywhere; I proposed kind marks on cards, a separate claim state, legend entries and a search filter.
+
+### 11 preset kinds and 8 claim icons on the 16 px toolbar grid; claim states became boolean attributes like `star`
+
+* Kinds: task (default, no mark), milestone, experiment, hypothesis, finding, question, decision, risk, artifact, reference, event. Claims: verdicts supported / partial / refuted / inconclusive (one at most) drawn as circles, qualifiers replicated / contested / retracted drawn as non-circles, and an implied dashed-circle untested for a hypothesis without a verdict.
+* Prefix rule: compared only among custom kinds, case-insensitive, by character; a name that prefixes another keeps its whole name (`data`/`dataset` → `Data`/`Datas`).
+* Built as a single HTML page with a live prefix playground and mock cards; headless check: 19 icons inside the 16×16 box, no script errors, no horizontal scroll at 420 px.
+* Trouble: publishing it as an artifact was refused: `Artifacts need a claude.ai login, and this session is authenticating with ANTHROPIC_AUTH_TOKEN`. The page stayed a local file; it was deleted after the implementation.
+
+### `{kind: …}` and claim flags in the parser, spec, cards, legend and search; portolan `976233a`
+
+* Core: `src/kinds.ts` (`PRESET_KINDS`, `VERDICTS`, `QUALIFIERS`, `nodeKind`, `claimOf`). `kind` and the 7 flags are reserved keys. New diagnostics: `W012` kind not a non-empty string or flag not boolean, `W013` more than one verdict (none shown), `I004` a flag on anything but hypothesis/finding. Spec gets section 3.4 (Hierarchy and Notes become 3.5/3.6). Case `tests/cases/18-kinds` written first and seen failing.
+* View: `kindLetters` computes custom-kind letters for the whole map (sorted by code point, longest common prefix with a neighbour + 1); `claimMarks` gives the verdict or untested, then qualifiers. Cards show the kind (muted) between the status select and the title and claim icons after the ID; the legend adds Kinds (with this map's custom letters) and Claims; search accepts `kind:<kind>` and `is:<claim>` filters, alone or with words.
+* Trouble: `tsc --noEmit` on the root project failed with `TS6142: Module './KindIcons.tsx' was resolved … but '--jsx' is not set`, because `web/src/layout.ts` (also type-checked by the root project) imported a type from a `.tsx` file. Moving `ClaimMark` into `src/kinds.ts` fixed it.
+* Civilization demo: 17 nodes got kinds, including a custom `lineage` (dragons, sapiens, Neanderthals, cetaceans → `L`) and cold fusion as a refuted hypothesis. Headless Chrome: marks sit between select and title with no overlap; `kind:lineage` 4 found, `is:refuted` → 室温核聚变, `is:untested` → 鸦科备份谱系; no JS errors. `skill.md` and the README describe the attributes; 99 tests pass.
+* Open: the legend popover is now 685 px tall and scrolls; kinds and flags are not editable from the view yet.
+
+### The README example shows 7 preset kinds, two custom ones (`Su`, `Sp`), every verdict style and two qualifiers; same commit `976233a`
+
+* Added: decision, question, a three-hypothesis Readability study with an experiment and a finding, a risk and a milestone, plus `tags`, `priority` and `due`. Edges 8 → 17 (`trial relates frames-help: tests`, `labels-overlap from trial`, …). The test asserts 17 edges and that each mark appears; the README copy is diffed against the file.
+* The README image is drawn by `scripts/example-svg.ts` under plain Node, which cannot import JSX. The icon geometry moved to `web/src/markShapes.ts` as data; `KindIcons.tsx` renders it with React and the script with `shapesToSvg`, so the image matches the app.
+* `docs/example.svg` is 1369×1265 (23 boxes, 17 lines). A first overlap check reported every claim icon "OUTSIDE": it compared `getBoundingClientRect` with `getBBox`, which differ by the viewBox offset. With screen boxes for both, every mark is inside its card, before the title or after the ID, with no overlap.

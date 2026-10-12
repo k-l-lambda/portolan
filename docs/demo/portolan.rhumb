@@ -8,25 +8,25 @@ title: Portolan
 
 - [/] Portolan ^portolan
   - Why: agents do long, branching work that logs and linear chat cannot show; people need one map of what is done, blocked and next.
-  - [x] Prior-art survey ^survey
+  - [x] Prior-art survey {tags: [research]} ^survey
     - Why: before building anything, find out whether an open-source project already offers a shared mind map with tasks, comments and diary links.
     - Nothing covers it all; a few projects each cover one piece, so Portolan assembles its own.
     - [survey](../changelog.md#no-single-project-covers-the-whole-scope-closest-pieces-are-beadsbacklogmd-agent-task-graph-plannotator-annotateagent-feedback-simple-mind-mapmind-elixirmarkmap-mind-map-ui-tldraw-agent-kit-canvasagent-chat)
-  - [x] Backlog.md analysis ^backlog-analysis
+  - [x] Backlog.md analysis {tags: [research]} ^backlog-analysis
     - Why: Backlog.md came closest to keeping work as Markdown next to a diary, so its design deserved a closer look.
     - Its idea of human checkpoints is worth borrowing; its one-file-per-task format does not fit a daily diary.
     - [analysis](../changelog.md#yes-one-task-per-file-with-yaml-front-matter--fixed--sections-wrapped-in-html-comment-markers-cli-is-the-canonical-writer-hand-edits-discouraged)
-  - [x] Naming: Portolan + Rhumb ^naming
+  - [x] Naming: Portolan + Rhumb {kind: decision} ^naming
     - Why: a portolan chart was drawn from sailors' logbooks, with rhumb lines between ports: a map grown from logs.
     - The plain names were taken on npm, so the package is published under the author's scope.
     - [naming](../changelog.md#tentatively-named-portolan-project--rhumb-graph-dsl-rhumb)
   - [/] Rhumb DSL ^rhumb
     - Why: existing diagram languages have no notion of task status, dependencies or links into a diary, so the map needs its own language.
-    - [x] Design decisions ^rhumb-decisions
+    - [x] Design decisions {kind: decision} ^rhumb-decisions
       - Why: agents write most of the map, so the language should reuse notations they already know and keep every item's identity stable.
       - Every item gets a short readable ID; links into the diary are written in the map, not in the diary.
       - [decisions](../changelog.md#rhumb-01-spec-written-peggy-based-parser-passes-17-tests-committed-as-portolan-ebeb107)
-    - [x] Spec 0.1 ^rhumb-spec
+    - [x] Spec 0.1 {kind: artifact} ^rhumb-spec
       - Why: tools, tests and agents all need the same source of truth for what a map may contain.
       - [specification](../rhumb-spec.md)
     - [x] Test cases ^rhumb-tests
@@ -39,7 +39,7 @@ title: Portolan
       - Why: people may leave out IDs or type status marks loosely; links and comments need stable IDs, so a formatter fills them in.
       - Missing IDs and loose status marks are fixed today; full layout tidying is still open.
       - [formatter scope](../changelog.md#edit-api-derive-anchor-resolver-threads-store-local-server-and-cli-landed-as-portolan-5a0a5d5-agent-guide-and-readme-written-by-subagents)
-    - [x] Edit operations ^rhumb-edit
+    - [x] Edit operations {tags: [agents]} ^rhumb-edit
       - Why: people, agents and the web view all edit the same file, and each change should stay a small, reviewable diff.
       - Every writer goes through the same operations, which refuse an edit that would break the map.
       - [edit operations](../changelog.md#edit-api-derive-anchor-resolver-threads-store-local-server-and-cli-landed-as-portolan-5a0a5d5-agent-guide-and-readme-written-by-subagents)
@@ -47,17 +47,17 @@ title: Portolan
       - Why: agents run the checker after each change, so broken structure, inconsistent status and dead diary links show up at once.
       - [x] Progress and readiness ^rhumb-derive
         - Why: progress and readiness are calculated when reading, never stored, so the file only holds the structure people write.
-      - [x] Link resolver ^rhumb-resolve
+      - [x] Link resolver {tags: [links]} ^rhumb-resolve
         - Why: details live in the diary, so a link must land on the right entry, not just the right day.
-    - [x] Expressiveness review ^rhumb-review
+    - [x] Expressiveness review {kind: finding, partial: true, tags: [research]} ^rhumb-review
       - Why: an experiment map needed to show controls, shared inputs and hypotheses, which raised whether the language was enough.
       - Hierarchy, status and the five kinds of relation cover most work; experiments stretched them.
       - [review](../changelog.md#keep-the-current-task-graph-foundation-prioritize-cross-file-references-and-a-small-set-of-semantic-node-and-relation-types-as-real-usage-exposes-gaps)
-    - [x] Relation labels ^rhumb-labels
+    - [x] Relation labels {kind: decision} ^rhumb-labels
       - Why: relations such as "compared against" only appear in some kinds of work, so they are written as short descriptions rather than new keywords.
       - "Needs" now only means "must happen first".
       - [relation labels](../changelog.md#keep-the-five-general-edge-kinds-domain-relations-are-verb-phrase-labels-on-a-directed-relates-portolan-7a2ade5)
-    - [x] Line anchors ^rhumb-line-anchors
+    - [x] Line anchors {tags: [links]} ^rhumb-line-anchors
       - Why: a reader should land on the sentence or code that backs a claim, not on a whole day's notes.
       - Links can pick a line by how it starts, a few lines below it, or a line number; every link that misses is reported.
       - A text link without a heading searches the whole file; the guide says when to use which form.
@@ -69,9 +69,10 @@ title: Portolan
     - [x] Node kinds ^rhumb-kinds
       - Why: experiment maps mix tasks with claims, and tools cannot tell them apart from free text.
       - Finishing an investigation must not read as proving its hypothesis; that rule comes before any fixed list of kinds.
-      - `{kind: …}` names eleven preset kinds with their own icons; any other kind is shown by its shortest distinct letters.
-      - A claim records its verdict with a flag such as `{refuted: true}`, kept apart from the item's status.
-    - [?] Cross-map references ^rhumb-xref
+      - Eleven preset kinds have their own icons; any other kind shows its shortest distinct letters in the map.
+      - A claim's verdict is a flag such as `{refuted: true}`, kept apart from the item's status; at most one verdict holds.
+      - [icon design](../changelog.md#11-preset-kinds-and-8-claim-icons-on-the-16-px-toolbar-grid-claim-states-became-boolean-attributes-like-star); [implementation](../changelog.md#kind--and-claim-flags-in-the-parser-spec-cards-legend-and-search-portolan-976233a)
+    - [?] Cross-map references {tags: [links]} ^rhumb-xref
       - Why: training, data and evaluation maps should share one model or dataset item instead of copying it.
       - Waiting until a second map really shares items with this one.
   - [?] Annotations and threads ^threads
@@ -88,7 +89,7 @@ title: Portolan
     - [x] Thread store ^threads-store
       - Why: the server, the comment view and the agent should all read and write the same conversations.
       - There is no command-line way to comment yet.
-    - [ ] Agent loop ^threads-agent
+    - [ ] Agent loop {tags: [agents]} ^threads-agent
       - Why: talking with the agent in a comment only works if a person's comment reaches the agent and the reply comes back.
       - Open: how the agent learns about new comments.
     - [?] Comments on edges and links ^threads-targets
@@ -99,32 +100,38 @@ title: Portolan
     - [edit API and server](../changelog.md#edit-api-derive-anchor-resolver-threads-store-local-server-and-cli-landed-as-portolan-5a0a5d5-agent-guide-and-readme-written-by-subagents)
   - [/] Web view ^ui
     - Why: the user asked for a visual, interactive page that shows relations, progress and plans across the agent's work.
-    - [x] Renderer choice ^ui-spike
+    - [x] Renderer choice {kind: decision} ^ui-spike
       - Why: the view must draw nested items and the relations between them, so the toolkit had to handle both.
       - [renderer choice](../changelog.md#react--vite--xyflow-map-view-with-status-editing-and-a-diary-panel-directory-mode-server-portolan-d2ce447)
     - [x] Map index ^ui-index
       - Why: serving a folder should show all its maps with their progress at a glance.
       - [index page](../changelog.md#react--vite--xyflow-map-view-with-status-editing-and-a-diary-panel-directory-mode-server-portolan-d2ce447)
+      - The start page says in one line what Portolan is; it and the top bar link to the code on GitHub.
+      - [GitHub links](../changelog.md#github-mark-at-the-right-end-of-the-top-bar-and-a-one-line-intro-under-the-map-index-portolan-caab2ea-49b96ed)
     - [x] Mind map view ^ui-tree
       - Why: the first view the user chose: status, progress and relations, so done, blocked and next work stand out.
       - Branches with no work in progress start folded; the card layout was later replaced by nested frames.
       - [web map view](../changelog.md#react--vite--xyflow-map-view-with-status-editing-and-a-diary-panel-directory-mode-server-portolan-d2ce447); [view tweaks](../changelog.md#status-tinted-cards-default-collapse--suffix-ids-portolan-fb6b7b6)
       - Pointing at a card shows its whole title without moving or resizing the card.
-    - [x] Hover focus ^ui-hover
+      - Only branches with work in progress open by default; starred items no longer keep a branch open.
+      - [default folding](../changelog.md#history-life-primates-needs-history-life-neocortex-stars-no-longer-keep-a-branch-open-portolan-5e0aa8b-869c143)
+    - [x] Hover focus {tags: [lines]} ^ui-hover
       - Why: with every relation drawn at once, lines and their text piled up; pointing at an item should pick out just its connections.
       - [hover focus](../changelog.md#hover-focus-portolan-c3c86c2-10-08-evening-then-nested-containers-laid-out-by-elk-3b74937)
       - Lines are always drawn; pointing at a line or an item highlights it, pointing at a label only shows its full text.
       - [always-visible lines and steady hover](../changelog.md#lines-above-frames-labels-above-all-full-text-on-hover-stable-hover-portolan-0a05378-64ad5e9)
       - Highlighting and labels fade in and out instead of switching at once.
       - [smooth transitions](../changelog.md#dimming-line-width-and-labels-now-ease-over-05-s-portolan-1d2ede6)
-    - [x] Timeline layout ^ui-layout
+    - [x] Timeline layout {tags: [lines, time]} ^ui-layout
       - Why: the view was crowded and its reading order arbitrary; it should read like a timeline that respects what depends on what.
       - Groups are drawn as frames around their items, and lines are routed around cards.
       - Two groups that depend on each other cannot both sit above the other; a few lines there still point upward.
       - [container layout](../changelog.md#hover-focus-portolan-c3c86c2-10-08-evening-then-nested-containers-laid-out-by-elk-3b74937); [vertical order](../changelog.md#top-to-bottom-layout-prerequisites-above-dependents-siblings-stack-done-work-by-day-then-doing-todo-ideas)
       - Lines pass behind titles and controls unless highlighted; a small bar marks where each line leaves an item.
       - [lines behind titles, attachment tabs](../changelog.md#frames-are-split-into-a-fill-layer-below-the-lines-and-a-header-layer-above-them-portolan-faa0eaa)
-    - [x] Readable labels ^ui-labels
+      - A group sits where most of its finished and current work happened, so a few new ideas do not pull it down.
+      - [group placement](../changelog.md#groups-are-placed-by-the-weighted-mean-of-their-leaves-times-donedoing-10-others-1-portolan-64d40b7)
+    - [x] Readable labels {tags: [lines]} ^ui-labels
       - Why: labels on parallel lines covered each other, and later lines were drawn across them.
       - [label overlap](../changelog.md#labels-are-placed-along-their-own-edge-and-drawn-in-an-html-layer-above-all-edges-portolan-1089f0f)
       - Labels sit in front of everything and show their full text when their line is in focus or under the pointer.
@@ -138,7 +145,7 @@ title: Portolan
       - [star UI](../changelog.md#shared-reserved-attribute-star-true-a-general-set-attr-edit-op-and-a-dedicated-star-ui-portolan-e39fff9)
     - [x] Status editing ^ui-edit
       - Why: people should update progress where they read it, through the same path agents use, without overwriting someone else's change.
-    - [x] Diary panel ^ui-diary
+    - [x] Diary panel {tags: [links]} ^ui-diary
       - Why: the map only links to details, so the view shows the linked entry next to the selected item.
       - Editing only the diary does not refresh an open entry yet.
     - [x] Hot reload ^hot-reload
@@ -146,10 +153,14 @@ title: Portolan
       - [hot reload](../changelog.md#per-directory-watchers-plus-a-2-s-rescan-recreated-files-no-longer-go-silent-portolan-05b336e)
       - Lines stay on screen while the map reloads; they used to blink out for a moment.
       - [lines blinking on reload](../changelog.md#every-line-blinked-out-for-about-200-ms-twice-per-reload-nodes-now-carry-their-measured-size-portolan-ad106cf)
-    - [x] Freshness view ^ui-freshness
+    - [x] Freshness view {tags: [time]} ^ui-freshness
       - Why: on a large map, people need to spot active and neglected areas without reading dates.
       - A card's left edge is brighter the more recently its line or its dated diary entry changed.
       - [freshness](../changelog.md#freshness-view-from-git-blame-dated-links-and-child-nodes-portolan-7981b47-4a5bdc1)
+      - Links into a changelog take the date of the dated section they land in.
+      - [heading dates](../changelog.md#links-without-a-path-date-take-the-date-of-the-nearest-dated-heading-above-their-target-portolan-dcdae36)
+      - Deep-past dates can be written in the Holocene calendar; anything older than a browser can show reads "long time ago".
+      - [Holocene dates](../changelog.md#no-bce-before-headings-may-now-start-with--mm-dd-he-and-dates-beyond-the-js-range-show-long-time-ago-portolan-caae1df)
     - [x] Recent maps ^ui-recent
       - Why: switching maps meant going back to the start page every time.
       - [recent maps](../changelog.md#recent-maps-menu-and-click-to-copy-ids-and-commit-hashes-portolan-9dad94b)
@@ -160,6 +171,14 @@ title: Portolan
       - Why: colors, dash patterns and the bright left edge only help if a newcomer can look up what they mean.
       - View controls are compact icon buttons that name themselves on hover.
       - [legend and icons](../changelog.md#legend-popover-and-an-icon-toolbar-with-tooltips-portolan-f446de3)
+      - A Source link in the bar opens the map's plain text in a new tab.
+      - [source link](../changelog.md#source-portolanrhumb-opens-the-raw-rhumb-as-text-in-a-new-tab-portolan-93ea6e1)
+      - The legend also explains kind icons, claim icons and the map's custom kind letters.
+    - [x] Node search ^ui-search
+      - Why: on a large map people look for an item by name or ID rather than scanning frames.
+      - An exact ID jumps to its item; otherwise every match is outlined and the best ten are listed under the box.
+      - [node search](../changelog.md#search-box-with-a-ranked-candidate-list-matches-are-outlined-on-the-map-portolan-b8f68ba)
+      - `kind:hypothesis` and `is:refuted` narrow the search to one kind or claim state.
     - [x] Compass-rose icon ^ui-favicon
       - Why: the app had no icon; a portolan compass rose ties the browser tab and the README to the project's name.
       - [favicon](../changelog.md#16-point-portolan-compass-rose-on-a-navy-tile-also-the-readme-logo-portolan-2dfaf35)
@@ -169,6 +188,9 @@ title: Portolan
     - [ ] Annotation panel ^ui-threads
       - Why: people should annotate items and talk with the agent where they read the map; the first version left this out.
     - [?] Structural editing ^ui-struct-edit
+      - Why: adding, removing or moving items and relations still means editing the text file; people should reshape the map where they read it, through the same edits agents use.
+      - The edits behind it exist except moving a subtree; the first version left the controls out on purpose.
+      - [first version scope](../changelog.md#react--vite--xyflow-map-view-with-status-editing-and-a-diary-panel-directory-mode-server-portolan-d2ce447)
     - [-] Dependency graph view ^ui-dag
       - Dropped: the timeline layout already shows what depends on what.
   - [x] Docs ^docs
@@ -178,10 +200,12 @@ title: Portolan
     - [writing principle](../changelog.md#new-write-for-a-human-reading-the-big-picture-rule-in-skillmd-the-project-map-rewritten-by-it-portolan-2ad807f-diary-job-55234853)
     - The repository ships this map and a changelog copied from the diary, so readers there can follow every link.
     - [changelog and shipped map](../changelog.md#docschangelogmd-holds-the-35-portolan-diary-entries-docsportolanrhumb-is-now-the-project-map-linked-into-it)
-  - [?] Agent interface ^agent-api
+    - The README example shows every kind of mark, and its image is drawn with the app's own icons.
+    - [example marks](../changelog.md#the-readme-example-shows-7-preset-kinds-two-custom-ones-su-sp-every-verdict-style-and-two-qualifiers-same-commit-976233a)
+  - [?] Agent interface {tags: [agents]} ^agent-api
     - Why: agents should read and change maps and comments through a proper tool interface, not only by editing text.
     - Command-line checks and the server exist; there are no agent tools yet.
-  - [x] Publishing ^publish
+  - [x] Publishing {kind: milestone} ^publish
     - Why: the code lived on one machine, and others can only use it once it is public and installable.
     - The code is public on GitHub; releases are set up to go to npm whenever the version number changes.
     - Released on npm (0.1.0, then 0.1.1 through the automatic workflow); the package carries its license and the bundled libraries' notices.
@@ -189,6 +213,10 @@ title: Portolan
     - The first manual release failed because the npm login on this machine had expired.
     - [publish error](../changelog.md#not-a-package-or-scope-problem-npm-did-not-recognize-the-login-both-available-tokens-return-401)
     - [license files](../changelog.md#license-bundled-third-party-notices-and-text-links-without-a-heading-portolan-65d90e1)
+    - A read-only demo of this map runs on GitHub Pages and is rebuilt on every push.
+    - [live demo](../changelog.md#read-only-demo-at-httpsk-l-lambdagithubioportolan-deployed-by-githubworkflowspagesyml-portolan-5eea371)
+    - The demo now shows a folder of maps, including a fictional civilization-building map with deep-past dates and abandoned branches.
+    - [demo folder](../changelog.md#the-project-map-is-now-docsdemoportolanrhumb-pages-exports-every-map-under-docsdemo-portolan-d59ccdd); [civilization branches](../changelog.md#15-branch-nodes-with-reasons-designer-voice-notes-for-the-life-stages-11-new-he-log-entries-committed-by-the-user-as-portolan-c8483af)
 
 %% Rhumb tooling
 rhumb-spec needs rhumb-decisions
@@ -223,6 +251,7 @@ ui-hover needs ui-tree
 ui-layout needs ui-tree, ui-freshness: items are ordered by when they changed
 ui-labels needs ui-layout
 ui-star needs rhumb-star, ui-edit
+ui-search needs ui-tree
 ui-recent needs ui-index
 ui-copy needs ui-diary
 ui-legend needs ui-tree, ui-freshness
