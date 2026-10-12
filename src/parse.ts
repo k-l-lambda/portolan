@@ -1,6 +1,7 @@
 import { basename, extname } from "node:path";
 import { isMap, isScalar, parseDocument } from "yaml";
 import { parse as parseLine } from "./generated/line-parser.js";
+import { CLAIM_FLAGS, CLAIM_KINDS, nodeKind, VERDICTS } from "./kinds.ts";
 import type { Anchor, Diagnostic, Edge, EdgeKind, Level, RhumbDocument, RhumbNode, Status } from "./types.ts";
 
 export const RHUMB_VERSION = "0.1";
@@ -11,7 +12,7 @@ const STATUS: Record<string, Status> = {
 };
 export const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
 const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links"]);
-const ATTR_KEYS = new Set(["owner", "due", "tags", "priority", "star"]);
+const ATTR_KEYS = new Set<string>(["owner", "due", "tags", "priority", "star", "kind", ...CLAIM_FLAGS]);
 const URL_SCHEMES = new Set(["http", "https", "mailto"]);
 export const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
 export const GEN_ID = /^_[a-z2-7]{6}$/;
@@ -131,6 +132,7 @@ export function parse(source: string, options: ParseOptions = {}): RhumbDocument
     if ("star" in attrs && typeof attrs.star !== "boolean") {
       report("W010", lineNo, "star must be true or false; this node is treated as not starred");
     }
+    checkClaim(attrs, lineNo, report);
     const node: RhumbNode = {
       id, generated_id: generated, status, title, attrs,
       notes: [], anchors: extractAnchors(title, lineNo, doc.links, report),
@@ -494,6 +496,23 @@ function resolveEdges(
       }
       doc.edges.push({ kind, from: a.id!, to: b.id!, label: stmt.label, line: stmt.line });
     }
+  }
+}
+
+/** Kind and claim flags (spec 3.4): value types, conflicting verdicts, flags on a non-claim kind. */
+function checkClaim(attrs: Record<string, unknown>, line: number, report: (code: string, line: number, message: string) => void) {
+  if ("kind" in attrs && (typeof attrs.kind !== "string" || attrs.kind.trim() === "")) {
+    report("W012", line, "kind must be a non-empty string; this node is treated as having no kind");
+  }
+  for (const f of CLAIM_FLAGS) {
+    if (f in attrs && typeof attrs[f] !== "boolean") report("W012", line, `${f} must be true or false; it is treated as unset`);
+  }
+  const verdicts = VERDICTS.filter((f) => attrs[f] === true);
+  if (verdicts.length > 1) report("W013", line, `Only one verdict can hold; ${verdicts.join(" and ")} conflict, so none is shown`);
+  const flags = CLAIM_FLAGS.filter((f) => attrs[f] === true);
+  const kind = nodeKind({ attrs });
+  if (flags.length > 0 && !(kind && CLAIM_KINDS.includes(kind))) {
+    report("I004", line, `${flags.join(", ")} marks a claim; consider kind: hypothesis or kind: finding`);
   }
 }
 

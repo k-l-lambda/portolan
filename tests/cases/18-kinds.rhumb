@@ -1,0 +1,9 @@
+- [x] Hypothesis refuted {kind: hypothesis, refuted: true} ^h1
+- [x] Finding replicated {kind: Finding, supported: true, replicated: true} ^f1
+- [ ] Custom kind {kind: dataset} ^d1
+- [ ] Kind not a string {kind: 3} ^k3
+- [ ] Flag not boolean {refuted: yes} ^b1
+- [x] Two verdicts {kind: hypothesis, supported: true, refuted: true} ^v2
+- [x] Verdict on a task {inconclusive: true} ^t1
+- [ ] Untested hypothesis {kind: hypothesis} ^h2
+- [x] False flag kept quiet {kind: finding, refuted: false} ^f2

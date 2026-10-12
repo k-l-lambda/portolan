@@ -6,12 +6,13 @@ import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
+import { defaultCollapsed, kindLetters, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { searchNodes } from "./search.ts";
+import { nodeKind } from "../../src/kinds.ts";
 import { IconButton } from "./IconButton.tsx";
 import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
@@ -169,6 +170,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   }, [parents]);
 
   const stars = useMemo(() => (data ? starredInside(data.doc.nodes) : new Map<string, number>()), [data]);
+  const letters = useMemo(() => kindLetters(data?.doc.nodes ?? []), [data]);
   const starredList = useMemo(() => [...all.values()].filter(starred), [all]);
   const [highlightStars, setHighlightStars] = useState(false);
   const [starMenu, setStarMenu] = useState(false);
@@ -280,6 +282,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         container: b.container,
         ...cardTime(times.get(b.node.line), now),
         selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
+        kindLetters: letters.get(nodeKind(b.node) ?? ""),
         onStatus, onToggle, onStar,
       },
     }));
@@ -309,7 +312,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, stars, onStatus, onToggle, onStar]);
+  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar]);
 
   useEffect(() => {
     if (!pendingCenter || !layout) return;
@@ -480,7 +483,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             role="combobox" aria-autocomplete="list" aria-controls="search-list"
             aria-expanded={listOpen && candidates.length > 0}
             aria-activedescendant={listOpen && active >= 0 ? `search-opt-${active}` : undefined}
-            aria-label="Find nodes by ID or title" aria-describedby="search-count" spellCheck={false}
+            aria-label="Find nodes by ID or title; filter with kind:hypothesis or is:refuted" title="ID or title; filters: kind:<kind>, is:<claim>"
+            aria-describedby="search-count" spellCheck={false}
             onChange={(e) => (setQuery(e.target.value), setListOpen(true))}
             onFocus={() => setListOpen(true)}
             onClick={() => setListOpen(true)}
@@ -563,7 +567,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           </button>
           {legendOpen && (
             <div id="map-legend" className="popover legend-popover" role="dialog" aria-label="Legend" tabIndex={-1}>
-              <Legend />
+              <Legend letters={letters} />
             </div>
           )}
         </div>

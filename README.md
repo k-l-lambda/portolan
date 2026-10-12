@@ -36,19 +36,31 @@ title: Portolan
 ---
 
 - [/] Portolan ^portolan
-  - [x] Prior-art survey ^survey
+  - [x] Prior-art survey {kind: survey} ^survey
     - Why: reuse what exists; only build the shared map that nothing else provides.
     - Closest pieces: [Backlog.md](https://github.com/MrLesk/Backlog.md), Beads, Plannotator
+  - [x] Plain text over JSON {kind: decision} ^text-format
+    - Why: people and agents both edit the map by hand, and diffs must stay readable.
   - [/] Rhumb DSL {owner: claude} ^rhumb
     - [x] Spec 0.1 ^rhumb-spec
       - [spec](https://github.com/k-l-lambda/portolan/blob/main/docs/rhumb-spec.md)
-    - [x] Parser ^rhumb-parser
+    - [x] Parser {tags: [peggy, typescript]} ^rhumb-parser
     - [/] Formatter ^rhumb-fmt
+    - [ ] Can edges carry notes? {kind: question} ^edge-notes
   - [/] Web view {star: true} ^ui
+    - [x] Renderer spike {kind: spike} ^ui-spike
     - [x] Map layout ^ui-layout
-    - [ ] Status editing ^ui-edit
+    - [ ] Status editing {priority: high} ^ui-edit
     - [!] Annotation panel ^ui-threads
       - Blocked: the thread format is not settled
+  - [/] Readability study ^study
+    - [x] Frames read faster than tree lines {kind: hypothesis, supported: true, replicated: true} ^frames-help
+    - [x] Curved lines read better {kind: hypothesis, refuted: true} ^curves
+    - [ ] Agents keep the map current unprompted {kind: hypothesis} ^agents-unprompted
+    - [x] Ten-reader trial {kind: experiment} ^trial
+    - [x] Labels overlap past 30 edges {kind: finding, partial: true, contested: true} ^labels-overlap
+  - [ ] Merge conflicts in shared maps {kind: risk} ^conflicts
+  - [ ] Release 0.1 {kind: milestone, due: 2026-11-01} ^release
   - [?] Agent loop for threads ^threads-agent
   - [-] JSON map format ^json-format
     - Dropped: hard for people and agents to write by hand
@@ -57,20 +69,28 @@ title: Portolan
 rhumb-parser needs rhumb-spec
 rhumb-fmt needs rhumb-parser
 ui-layout needs rhumb-parser: needs a stable AST
+ui-layout needs ui-spike
 ui-edit needs ui-layout
 threads-agent needs ui-threads
 threads-agent relates ui-edit: shares the edit API
 rhumb replaces json-format
+rhumb from text-format
 ui-threads from survey: idea from Plannotator
+trial relates frames-help: tests
+trial relates curves: tests
+labels-overlap from trial
+ui-layout relates labels-overlap: spreads labels apart
+release needs rhumb-fmt, ui-edit
+conflicts relates release: could delay
 ```
 
 The same map in the web view:
 
 <p align="center">
-  <img src="docs/example.svg" alt="The example map in the Portolan web view: a Portolan frame holding the Rhumb DSL and Web view frames and their items, colored by status and joined by needs, relates, replaces and from lines" width="560">
+  <img src="docs/example.svg" alt="The example map in the Portolan web view: a Portolan frame holding the Rhumb DSL, Web view and Readability study frames and their items, colored by status, marked with kind icons and claim verdicts, and joined by needs, relates, replaces and from lines" width="560">
 </p>
 
-Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
+Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite; `{kind: hypothesis, refuted: true}` says what an item is and how the evidence for a claim stands. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
 
 ## Status
 

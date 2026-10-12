@@ -7,3 +7,4 @@ export { foldThreads, ThreadStore, type Message, type Thread, type ThreadAction,
 export { createRhumbServer, versionOf, type ServerOptions } from "./server.ts";
 export { dateIn, HistoryTracker, linkDate, LONG_AGO, nodeTimes, parseBlame, type Commit, type FileHistory, type LineTime, type NodeTime } from "./history.ts";
 export type * from "./types.ts";
+export { CLAIM_FLAGS, CLAIM_KINDS, claimOf, isPresetKind, nodeKind, PRESET_KINDS, QUALIFIERS, VERDICTS, type Claim, type ClaimFlag, type ClaimMark, type PresetKind, type Qualifier, type Verdict } from "./kinds.ts";

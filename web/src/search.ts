@@ -2,7 +2,8 @@
 // loosely and ranked by how well they match. Pure, so it can be tested without the view.
 
 import type { RhumbNode } from "../../src/types.ts";
-import { nodeKey, plainTitle } from "./layout.ts";
+import { nodeKind } from "../../src/kinds.ts";
+import { claimMarks, nodeKey, plainTitle } from "./layout.ts";
 
 export interface SearchResult {
   /** Matching node keys in document order (what the map highlights). */
@@ -45,6 +46,8 @@ function fuzzyScore(text: string, w: string): number {
  * every whitespace-separated word must occur in the title or ID, case-insensitively; when no
  * node has them all, the words are tried as in-order subsequences of the ID or title instead.
  * Matches are ranked by the sum of each word's best score, then shorter titles, then document order.
+ * `kind:<kind>` and `is:<claim>` (a verdict, qualifier or `untested`) are filters; a query made
+ * only of filters lists every node that passes them, in document order.
  */
 export function searchNodes(nodes: Iterable<RhumbNode>, query: string): SearchResult {
   const q = query.trim().replace(/^\^/, "");
@@ -53,8 +56,20 @@ export function searchNodes(nodes: Iterable<RhumbNode>, query: string): SearchRe
   const exact = list.find((n) => n.id === q);
   if (exact) return { keys: [nodeKey(exact)], ranked: [nodeKey(exact)], exact: true };
 
-  const words = q.toLowerCase().split(/\s+/);
-  const texts = list.map((n, i) => ({ i, key: nodeKey(n), id: (n.id ?? "").toLowerCase(), title: plainTitle(n.title).toLowerCase() }));
+  const filters: ((n: RhumbNode) => boolean)[] = [];
+  const words: string[] = [];
+  for (const w of q.toLowerCase().split(/\s+/)) {
+    const f = /^(kind|is):(.+)$/.exec(w);
+    if (f?.[1] === "kind") filters.push((n) => nodeKind(n) === f[2]);
+    else if (f?.[1] === "is") filters.push((n) => (claimMarks(n) as string[]).includes(f[2]!));
+    else words.push(w);
+  }
+  const passing = list.filter((n) => filters.every((f) => f(n)));
+  if (words.length === 0) {
+    const keys = passing.map(nodeKey);
+    return { keys, ranked: keys, exact: false };
+  }
+  const texts = passing.map((n, i) => ({ i, key: nodeKey(n), id: (n.id ?? "").toLowerCase(), title: plainTitle(n.title).toLowerCase() }));
   const scoreBy = (f: (text: string, w: string) => number) => texts
     .map((t) => {
       const per = words.map((w) => Math.max(f(t.id, w), f(t.title, w)));

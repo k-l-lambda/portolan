@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { defaultCollapsed, plainTitle, shortId, starredInside } from "../web/src/layout.ts";
+import { claimMarks, defaultCollapsed, kindLetters, plainTitle, shortId, starredInside } from "../web/src/layout.ts";
 import { searchNodes } from "../web/src/search.ts";
 
 describe("view helpers", () => {
@@ -165,5 +165,48 @@ describe("searchNodes", () => {
     expect(searchNodes(all(), "hlsap")).toMatchObject({ keys: ["history-life-sapiens"], exact: false });
     expect(searchNodes(all(), "zzz").keys).toEqual([]);
     expect(searchNodes(all(), "   ").keys).toEqual([]);
+  });
+});
+
+describe("kinds and claims", () => {
+  it("gives custom kinds the shortest prefix no other custom kind shares", () => {
+    const d = parse(`- [ ] A {kind: dataset} ^a
+- [ ] B {kind: Deploy} ^b
+  - [ ] C {kind: data} ^c
+- [ ] D {kind: model} ^d
+- [ ] E {kind: hypothesis} ^e
+- [ ] F {kind: 复盘} ^f
+- [ ] G {kind: 复现} ^g
+- [ ] H {kind: review} ^h
+- [ ] I {kind: retrospective} ^i
+`);
+    expect(Object.fromEntries(kindLetters(d.nodes))).toEqual({
+      data: "Data", dataset: "Datas", deploy: "De", model: "M", 复盘: "复盘", 复现: "复现", retrospective: "Ret", review: "Rev",
+    });
+    // Alone, one letter is enough; preset kinds take no letters.
+    expect(Object.fromEntries(kindLetters(parse("- [ ] A {kind: dataset} ^a\n- [ ] B {kind: event} ^b\n").nodes))).toEqual({ dataset: "D" });
+  });
+
+  it("shows one verdict (or untested for a bare hypothesis), then qualifiers", () => {
+    const d = parse(`- [x] A {kind: hypothesis, refuted: true, contested: true} ^a
+- [ ] B {kind: hypothesis} ^b
+- [x] C {kind: hypothesis, supported: true, refuted: true} ^c
+- [x] D {kind: finding, replicated: true} ^d
+- [ ] E {kind: finding} ^e
+`);
+    expect(d.nodes.map(claimMarks)).toEqual([["refuted", "contested"], ["untested"], [], ["replicated"], []]);
+  });
+
+  it("filters search by kind: and is:", () => {
+    const d = parse(`- [x] LR mismatch {kind: hypothesis, refuted: true} ^lr
+- [ ] Final teacher {kind: hypothesis} ^teacher
+- [x] Row weights help {kind: finding, supported: true} ^rw
+- [ ] LR sweep {kind: experiment} ^sweep
+`);
+    expect(searchNodes(d.nodes, "kind:hypothesis").keys).toEqual(["lr", "teacher"]);
+    expect(searchNodes(d.nodes, "is:untested").keys).toEqual(["teacher"]);
+    expect(searchNodes(d.nodes, "lr kind:HYPOTHESIS").keys).toEqual(["lr"]);
+    expect(searchNodes(d.nodes, "is:refuted is:supported").keys).toEqual([]);
+    expect(searchNodes(d.nodes, "kind:nothing").keys).toEqual([]);
   });
 });

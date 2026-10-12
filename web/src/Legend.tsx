@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 import type { EdgeKind } from "../../src/types.ts";
+import { PRESET_KINDS, QUALIFIERS, VERDICTS, type ClaimMark } from "../../src/kinds.ts";
+import { CLAIM_MEANING, ClaimIcon, KIND_MEANING, KindMark } from "./KindIcons.tsx";
 
 const LINES: { kind: EdgeKind; arrow: boolean; dashed?: string; name: string; meaning: string }[] = [
   { kind: "needs", arrow: true, name: "needs", meaning: "the arrow points to what must happen first" },
@@ -28,8 +30,10 @@ function LineSample({ kind, arrow, dashed }: { kind: EdgeKind; arrow: boolean; d
   );
 }
 
-/** What the lines, card colors and the card's left edge mean. */
-export function Legend() {
+const CLAIMS: ClaimMark[] = ["untested", ...VERDICTS, ...QUALIFIERS];
+
+/** What the lines, card colors, kind icons and the card's left edge mean; `letters` maps this map's custom kinds. */
+export function Legend({ letters = new Map() }: { letters?: Map<string, string> }) {
   return (
     <div className="legend">
       <section>
@@ -73,6 +77,42 @@ export function Legend() {
             <span className="badge badge-ready">ready</span>
             <span className="muted">to do, and everything it needs is done</span>
           </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Kinds</h3>
+        <p className="muted legend-hint">Set with <code>{"{kind: …}"}</code>; an item without one is a task.</p>
+        <ul className="legend-grid legend-marks">
+          {PRESET_KINDS.map((k) => (
+            <li key={k}>
+              <KindMark kind={k} />
+              <span className="legend-name">{k}</span>
+              <span className="muted">{KIND_MEANING[k]}</span>
+            </li>
+          ))}
+          {[...letters].map(([k, l]) => (
+            <li key={`custom:${k}`}>
+              <KindMark kind={k} letters={l} />
+              <span className="legend-name">{k}</span>
+              <span className="muted">custom kind in this map</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <h3>Claims</h3>
+        <p className="muted legend-hint">
+          Flags such as <code>{"{refuted: true}"}</code> on a hypothesis or finding, independent of its status.
+          One verdict at most; replicated, contested and retracted combine with it.
+        </p>
+        <ul className="legend-grid legend-marks">
+          {CLAIMS.map((m) => (
+            <li key={m}>
+              <ClaimIcon mark={m} />
+              <span className="legend-name">{m}</span>
+              <span className="muted">{CLAIM_MEANING[m]}</span>
+            </li>
+          ))}
         </ul>
       </section>
       <section>

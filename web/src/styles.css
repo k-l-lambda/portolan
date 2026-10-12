@@ -236,6 +236,9 @@ a { color: var(--accent); }
 .legend-line.edge-from { color: var(--edge-from); }
 .legend-line path { stroke: currentColor; } .legend-line .legend-arrow, .legend-line .legend-tab { fill: currentColor; stroke: none; }
 .legend .legend-hint { margin: 0 0 6px; }
+.legend-marks li { grid-template-columns: 22px 88px 1fr; }
+.legend-marks .kind-mark, .legend-marks .claim-mark { justify-self: center; }
+.legend-hint code { font-size: 11px; }
 .legend-chip { justify-self: start; grid-column: span 2; padding: 1px 6px; border-radius: 4px; font: 600 11px/14px system-ui, sans-serif; border: 1px solid color-mix(in srgb, var(--edge-needs) 55%, transparent); background: var(--surface); }
 .legend-card.card { display: block; width: 44px; height: 22px; padding: 0; cursor: default; }
 .legend-card.card.container { background: var(--card-bg); }
@@ -326,6 +329,15 @@ a { color: var(--accent); }
 .react-flow__node:hover .card-title-text { padding-right: 6px; border-radius: 0 4px 4px 0; background: var(--card-bg); }
 .card-foot { display: flex; gap: 5px; align-items: center; font-size: 11px; min-width: 0; }
 .card-id { flex: none; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
+/* Kind (spec 3.4): a muted icon or a custom kind's letters before the title; claim icons in the foot. */
+.kind-mark { flex: none; display: inline-flex; align-items: center; height: 16px; color: var(--muted); }
+.kind-letters {
+  display: inline-flex; align-items: center; justify-content: center; height: 14px; min-width: 14px; padding: 0 2px;
+  border: 1.3px solid currentColor; border-radius: 3.5px; font: 700 8.5px/1 ui-monospace, monospace; letter-spacing: .02em; white-space: nowrap;
+}
+.claim-marks { flex: none; display: inline-flex; gap: 2px; color: var(--text); }
+.claim-mark { display: inline-flex; }
+.claim-mark.claim-untested { color: var(--muted); }
 .status-select {
   flex: none; font: inherit; font-size: 11px; padding: 0 2px; border-radius: 4px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--st-todo); cursor: pointer;

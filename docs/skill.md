@@ -62,8 +62,10 @@ links:
 
 - Always write a readable kebab-case ID matching `[a-z0-9][a-z0-9-]{0,47}`. Prefix child IDs with the parent's (`threads`, `threads-model`). Never write `^_xxxxxx`: the `_` prefix is reserved for IDs that `fmt` generates when a human omits one.
 - IDs are permanent. Edges and threads reference them; change one only with `rename-id` (section 7).
-- Attributes are optional: `owner`, `due` (ISO date), `tags` (list), `priority` (`high`/`normal`/`low`), `star` (boolean). Other keys are kept but reported as `I002`.
+- Attributes are optional: `owner`, `due` (ISO date), `tags` (list), `priority` (`high`/`normal`/`low`), `star` (boolean), `kind` and the claim flags below. Other keys are kept but reported as `I002`.
 - `{star: true}` is the project's shared favorite mark, shown with a dedicated star in the web view. Humans usually set it; add or remove a star only when the user asks. Unstar by removing the key, not by writing `false`. Any other value is `W010`.
+- `{kind: …}` says what an item is when it is not plain work: `milestone`, `experiment`, `hypothesis`, `finding`, `question`, `decision`, `risk`, `artifact`, `reference`, `event` (no kind means `task`). Any other word is a custom kind, shown by its first letters. Add a kind only where it helps a reader; most items need none.
+- A `hypothesis` or `finding` records how its evidence stands with one verdict flag, written like `star`: `{kind: hypothesis, refuted: true}`. Verdicts are `supported`, `partial`, `refuted`, `inconclusive`; at most one (`W013`). `replicated`, `contested`, `retracted` may be added to a verdict. Status and verdict are separate: when an investigation finishes, mark it `[x]` and set the verdict the evidence supports; finishing never implies `supported`. Leave a hypothesis without a verdict until it has been tested.
 - Hierarchy is 2 spaces per level. A node's parent is the nearest preceding node with smaller indentation; siblings share one indentation.
 - Notes are list items without a checkbox. They belong to the node above them and are not children. Use them for blocked reasons, short context and links.
 - Titles are inline Markdown (code spans, links). A title that itself ends in `^word` or `{...}` must escape it as `\^` or `\{`.
@@ -302,6 +304,9 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | `[x]` parent with open children | `W007` | close or drop the children first |
 | `[/]`/`[x]` node whose `needs` target is not done | `W008` | fix the status or the edge |
 | `^Upper_Case` or `^_handmade` ID | `W009` | lowercase kebab-case, no leading `_` |
+| `kind: 3`, `refuted: yes` | `W012` | `kind` is a word; claim flags are `true` (remove the key instead of `false`) |
+| `supported: true` and `refuted: true` together | `W013` | keep the one verdict the evidence supports |
+| Claim flag on an item that is not a hypothesis or finding | `I004` | add `kind: hypothesis` or `kind: finding`, or drop the flag |
 | `[ ]` parent with started children | `I003` | set the parent to `[/]` |
 
 This file triggers `W005`, `W006`, `W007`, `W008` and `I003`:

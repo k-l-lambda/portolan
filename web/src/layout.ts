@@ -1,5 +1,6 @@
 // Shared view helpers: card size, node keys, default collapse, compact IDs and titles.
 
+import { claimOf, isPresetKind, nodeKind, type ClaimMark } from "../../src/kinds.ts";
 import type { RhumbNode } from "../../src/types.ts";
 
 /** The project's home page. */
@@ -73,4 +74,40 @@ export function plainTitle(title: string): string {
     .replace(/<(https?:[^>]+)>/g, "$1")
     .replace(/`([^`]*)`/g, "$1")
     .replace(/\\([\^{])/g, "$1");
+}
+
+/**
+ * Letters for each custom kind among `nodes` (preset kinds have icons): the shortest prefix no
+ * other custom kind in the map shares, counted in characters, first letter upper-cased. A kind
+ * that is a prefix of another keeps its whole name ("data" next to "dataset" stays "Data").
+ */
+export function kindLetters(nodes: Iterable<RhumbNode>): Map<string, string> {
+  const names = new Set<string>();
+  const walk = (ns: Iterable<RhumbNode>) => {
+    for (const n of ns) {
+      const k = nodeKind(n);
+      if (k && !isPresetKind(k)) names.add(k);
+      walk(n.children);
+    }
+  };
+  walk(nodes);
+  // Sorted by code point, a name shares its longest prefix with one of its neighbours.
+  const sorted = [...names].map((n) => [...n]).sort((a, b) => (a.join("") < b.join("") ? -1 : 1));
+  const common = (a: string[], b: string[] | undefined) => {
+    let i = 0;
+    while (b && i < a.length && i < b.length && a[i] === b[i]) i++;
+    return i;
+  };
+  const out = new Map<string, string>();
+  sorted.forEach((n, i) => {
+    const take = Math.min(n.length, Math.max(common(n, sorted[i - 1]), common(n, sorted[i + 1])) + 1);
+    out.set(n.join(""), n[0]!.toUpperCase() + n.slice(1, take).join(""));
+  });
+  return out;
+}
+
+/** Claim icons to show on a card: the verdict (or untested), then the qualifiers. */
+export function claimMarks(node: RhumbNode): ClaimMark[] {
+  const c = claimOf(node);
+  return [...(c.verdict ? [c.verdict] : c.untested ? ["untested" as const] : []), ...c.qualifiers];
 }

@@ -66,9 +66,11 @@ title: Portolan
       - Why: people want to flag the items that matter most, and the whole project, agents included, should see the same stars.
       - Stars live in the map like any other property; agents add or remove them only when asked.
       - [star syntax](../changelog.md#shared-reserved-attribute-star-true-a-general-set-attr-edit-op-and-a-dedicated-star-ui-portolan-e39fff9)
-    - [?] Node kinds ^rhumb-kinds
+    - [x] Node kinds ^rhumb-kinds
       - Why: experiment maps mix tasks with claims, and tools cannot tell them apart from free text.
       - Finishing an investigation must not read as proving its hypothesis; that rule comes before any fixed list of kinds.
+      - `{kind: …}` names eleven preset kinds with their own icons; any other kind is shown by its shortest distinct letters.
+      - A claim records its verdict with a flag such as `{refuted: true}`, kept apart from the item's status.
     - [?] Cross-map references ^rhumb-xref
       - Why: training, data and evaluation maps should share one model or dataset item instead of copying it.
       - Waiting until a second map really shares items with this one.

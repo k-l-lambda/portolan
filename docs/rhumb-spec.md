@@ -106,11 +106,48 @@ The parser strips suffixes from the end of the line, in this order:
 3. The rest is the title, which is parsed as inline Markdown (links, code, emphasis).
 
 - `^` and `{` in the middle of a title need no escaping. Only a title that itself ends in `^word` or `{…}` must write `\^` or `\{`.
-- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list), `priority` (`high` / `normal` / `low`) and `star` (boolean). Unknown keys are kept and reported as `I002`.
+- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list), `priority` (`high` / `normal` / `low`), `star` (boolean), and `kind` with the claim flags of section 3.4. Unknown keys are kept and reported as `I002`.
 - `star: true` marks a node as a favorite of the project; it is shared like any other attribute and is independent of status. To unstar, remove the key. Any value other than `true`/`false` is warning `W010` and the node counts as not starred.
 - Markdown links in a title are anchors, see section 4.
 
-### 3.4 Hierarchy
+### 3.4 Kinds and claim flags
+
+`kind` says what sort of thing a node is. It is optional; a node without it is a task. Tools compare kinds case-insensitively.
+
+| kind | For |
+| --- | --- |
+| `task` | work to do (the default) |
+| `milestone` | a stage or delivery point |
+| `experiment` | a bounded trial with a control or budget |
+| `hypothesis` | a claim waiting to be tested |
+| `finding` | a conclusion drawn from results |
+| `question` | an open question to investigate |
+| `decision` | a choice made between options |
+| `risk` | something that may go wrong and needs watching |
+| `artifact` | a reusable thing produced: dataset, model, checkpoint, build |
+| `reference` | a paper, spec or outside source the work relies on |
+| `event` | something that happened and is not work |
+
+Any other string is a custom kind. The web view shows a preset kind as an icon and a custom kind as its first letters: the shortest prefix that no other custom kind in the same map shares (`dataset` and `deploy` become `Da` and `De`; `data` next to `dataset` stays `Data`).
+
+Claim flags record how the evidence stands for a claim, written like `star`: `{kind: hypothesis, refuted: true}`. They are independent of status: a finished investigation (`[x]`) can still have refuted its hypothesis.
+
+| Flag | Group | Meaning |
+| --- | --- | --- |
+| `supported` | verdict | the evidence supports the claim |
+| `partial` | verdict | it holds only under some conditions or metrics |
+| `refuted` | verdict | the evidence contradicts it |
+| `inconclusive` | verdict | tested, but the evidence does not decide it |
+| `replicated` | qualifier | reproduced by an independent run or seed |
+| `contested` | qualifier | conflicting evidence or opinions exist |
+| `retracted` | qualifier | withdrawn after an error was found |
+
+- At most one verdict can be true; two or more are warning `W013` and none is shown. Qualifiers combine with a verdict.
+- A `hypothesis` with no verdict is shown as untested; do not write a flag for it.
+- A flag set to `false` counts as unset; remove the key instead. A non-boolean flag, or a `kind` that is not a non-empty string, is warning `W012` and counts as unset.
+- Claim flags are meant for `hypothesis` and `finding`. On any other kind (or none) they are info `I004`, since an experiment node sometimes records its own result.
+
+### 3.5 Hierarchy
 
 Nesting follows Markdown nested lists:
 
@@ -118,7 +155,7 @@ Nesting follows Markdown nested lists:
 - Siblings must have the same indentation. A dedent must return to an existing level, otherwise it is error `E004`.
 - A tab counts as 4 columns, as in CommonMark. `fmt` always writes 2 spaces per level.
 
-### 3.5 Notes
+### 3.6 Notes
 
 A list item without a checkbox is a note that belongs to its parent node. A note is not a child node: the UI shows it as part of the node's description, not as a new branch.
 

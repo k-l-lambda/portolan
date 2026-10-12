@@ -2,7 +2,9 @@ import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import { memo, type CSSProperties } from "react";
 import type { NodeState } from "../../src/derive.ts";
 import type { RhumbNode, Status } from "../../src/types.ts";
-import { plainTitle, shortId, starred } from "./layout.ts";
+import { claimMarks, plainTitle, shortId, starred } from "./layout.ts";
+import { ClaimIcon, KindMark } from "./KindIcons.tsx";
+import { nodeKind } from "../../src/kinds.ts";
 import { READ_ONLY } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 import type { NodeTime } from "../../src/history.ts";
@@ -31,6 +33,8 @@ export interface CardData extends Record<string, unknown> {
   collapsed: boolean;
   /** Starred descendants hidden while this card is collapsed. */
   starsInside: number;
+  /** Letters of a custom kind (see `kindLetters`); unused for preset kinds. */
+  kindLetters: string | undefined;
   onStatus: (node: RhumbNode, status: Status) => void;
   onToggle: (node: RhumbNode) => void;
   onStar: (node: RhumbNode) => void;
@@ -40,10 +44,13 @@ export interface CardData extends Record<string, unknown> {
 export type CardNode = Node<CardData, "card" | "fill">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
-  const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, starsInside, onStatus, onToggle, onStar } = data;
+  const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, starsInside, kindLetters, onStatus, onToggle, onStar } = data;
   const status = node.status ?? "todo";
   const title = plainTitle(node.title) || "(untitled)";
   const isStar = starred(node);
+  // A task is the default kind, so it carries no mark.
+  const kind = nodeKind(node);
+  const claims = claimMarks(node);
   return (
     <div className={`card status-${status}${container ? " container" : ""}${selected ? " selected" : ""}${isStar ? " starred" : ""}`}
       style={{ "--fresh": `${Math.round(20 + fresh * 80)}%` } as CSSProperties}
@@ -62,6 +69,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
         >
           {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
+        {kind && kind !== "task" && <KindMark kind={kind} letters={kindLetters} />}
         <span className="card-title"><span className="card-title-text">{title}</span></span>
         <button
           type="button"
@@ -77,6 +85,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
       </div>
       <div className="card-foot">
         <span className="card-id" title={node.id ? `^${node.id}` : undefined}>{shortId(node.id, parentId)}</span>
+        {claims.length > 0 && <span className="claim-marks">{claims.map((m) => <ClaimIcon key={m} mark={m} />)}</span>}
         {state?.ready && <span className="badge badge-ready">ready</span>}
         {node.anchors.length > 0 && <span className="badge">{node.anchors.length} link{node.anchors.length > 1 ? "s" : ""}</span>}
         {collapsed && starsInside > 0 && (

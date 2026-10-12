@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {"id": "h1", "attrs": {"kind": "hypothesis", "refuted": true}},
+    {"id": "f1", "attrs": {"kind": "Finding", "supported": true, "replicated": true}},
+    {"id": "d1", "attrs": {"kind": "dataset"}},
+    {"id": "k3", "attrs": {"kind": 3}},
+    {"id": "b1", "attrs": {"refuted": "yes"}},
+    {"id": "v2", "attrs": {"kind": "hypothesis", "supported": true, "refuted": true}},
+    {"id": "t1", "attrs": {"inconclusive": true}},
+    {"id": "h2", "attrs": {"kind": "hypothesis"}},
+    {"id": "f2", "attrs": {"kind": "finding", "refuted": false}}
+  ],
+  "diagnostics": [["W012", 4], ["W012", 5], ["W013", 6], ["I004", 7]]
+}

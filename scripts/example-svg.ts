@@ -8,7 +8,9 @@ import { parse } from "../src/parse.ts";
 import type { EdgeKind, RhumbNode, Status } from "../src/types.ts";
 import { layoutElk, type Box, type Route } from "../web/src/elkLayout.ts";
 import { endTab, placeLabels, roundedPath, type LabelRequest } from "../web/src/geometry.ts";
-import { plainTitle, shortId } from "../web/src/layout.ts";
+import { claimMarks, kindLetters, plainTitle, shortId } from "../web/src/layout.ts";
+import { CLAIM_SHAPES, KIND_SHAPES, shapesToSvg, type Shape } from "../web/src/markShapes.ts";
+import { isPresetKind, nodeKind } from "../src/kinds.ts";
 
 const [input = "docs/example.rhumb", output = "docs/example.svg"] = process.argv.slice(2);
 
@@ -86,7 +88,26 @@ const index = (nodes: RhumbNode[], parent: string | null) =>
   nodes.forEach((n) => (n.id && parents.set(n.id, parent), index(n.children, n.id)));
 index(doc.nodes, null);
 
+const letters = kindLetters(doc.nodes);
 const layout = await layoutElk(doc.nodes, doc.edges, new Set());
+
+/** A 16-grid icon drawn at 14px, as on the cards. */
+const mark = (shapes: Shape[], x: number, y: number, color: string) =>
+  `<g transform="translate(${x} ${y}) scale(${14 / 16})" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">`
+  + `${shapesToSvg(shapes).replaceAll("currentColor", color)}</g>`;
+/** A kind before the title: its icon, or a custom kind's letters in a box. Returns the markup and width. */
+function kindMark(n: RhumbNode, x: number, y: number): { svg: string; w: number } {
+  const kind = nodeKind(n);
+  if (!kind || kind === "task") return { svg: "", w: 0 };
+  if (isPresetKind(kind)) return { svg: mark(KIND_SHAPES[kind], x, y, C.muted), w: 14 };
+  const text = letters.get(kind) ?? kind.slice(0, 1).toUpperCase();
+  const w = Math.max(14, text.length * 8.5 * 0.62 + 5);
+  return {
+    svg: `<rect x="${x + 0.65}" y="${y + 0.65}" width="${w - 1.3}" height="12.7" rx="3" fill="none" stroke="${C.muted}" stroke-width="1.3"/>`
+      + `<text x="${x + w / 2}" y="${y + 10}" font-size="8.5" font-weight="700" font-family="${MONO}" text-anchor="middle" fill="${C.muted}">${esc(text)}</text>`,
+    w,
+  };
+}
 const boxes = [...layout.boxes].sort((a, b) => a.depth - b.depth);
 
 /** One card or frame header; frames draw only their header here, their fill comes earlier. */
@@ -116,7 +137,9 @@ function card(b: Box): string {
   const pillW = Math.ceil(textW(status, 11)) + 10;
   out.push(`<rect x="${cx}" y="${cy}" width="${pillW}" height="17" rx="4" fill="${mix(C.surface, 70, bg)}" stroke="${C.border}"/>`);
   out.push(`<text x="${cx + 5}" y="${cy + 12.5}" font-size="11" fill="${st}">${status}</text>`);
-  const titleX = cx + pillW + 6;
+  const km = kindMark(n, cx + pillW + 6, cy + 1.5);
+  out.push(km.svg);
+  const titleX = cx + pillW + 6 + (km.w ? km.w + 6 : 0);
   const titleMax = x + (b.container ? 230 : w) - 30 - titleX;
   const lines = wrap(plainTitle(n.title) || "(untitled)", 14, titleMax);
   lines.forEach((l, i) => {
@@ -131,6 +154,10 @@ function card(b: Box): string {
   const id = shortId(n.id, n.id ? parents.get(n.id) ?? null : null);
   out.push(`<text x="${fx}" y="${fy + 12}" font-size="11" font-family="${MONO}" fill="${C.muted}">${esc(id)}</text>`);
   fx += id.length * 11 * 0.62 + 6; // monospace
+  // Claim icons after the ID: the verdict (or untested), then qualifiers.
+  const claims = claimMarks(n);
+  claims.forEach((m, i) => out.push(mark(CLAIM_SHAPES[m], fx + i * 16, fy + 2, m === "untested" ? C.muted : C.text)));
+  if (claims.length > 0) fx += claims.length * 16 + 3;
   const state = states.get(n.line);
   const badges = [
     ...(state?.ready ? [{ text: "ready", color: ST.done }] : []),
