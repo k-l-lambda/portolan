@@ -25,6 +25,9 @@
   --warning: #9a5b00;
   --star: #b7791f;
   --match: #c2410c;
+  /* Hover lift: the card under the pointer, and the cards its highlight reaches. */
+  --lift-hover: 0 6px 14px rgb(0 0 0 / 0.16);
+  --lift-near: 0 3px 8px rgb(0 0 0 / 0.1);
   color-scheme: light;
 }
 
@@ -56,6 +59,8 @@
     --warning: #f0b85a;
     --star: #f2c94c;
     --match: #fb923c;
+    --lift-hover: 0 6px 16px rgb(0 0 0 / 0.55);
+    --lift-near: 0 3px 10px rgb(0 0 0 / 0.4);
     color-scheme: dark;
   }
 }
@@ -173,6 +178,11 @@ a { color: var(--accent); }
   background: var(--surface); color: var(--text); cursor: pointer;
 }
 .card.selected { box-shadow: 0 0 0 2px var(--accent); }
+/* Hover lift. A drop-shadow filter follows the card and any ring it already has (selection, star),
+   so those box-shadows stay untouched. Frames never lift; the cards linked to the hovered item get
+   a lighter lift from the focus stylesheet (see `liftCss`). */
+.card:not(.container) { transition: filter 0.5s ease; }
+.react-flow__node:hover .card:not(.container) { filter: drop-shadow(var(--lift-hover)); }
 /* Status color tints the whole card; the left border carries the full color. */
 .card { --st: var(--st-todo); --card-bg: color-mix(in srgb, var(--st) 10%, var(--surface)); border-left-color: var(--st); background: var(--card-bg); }
 .card.status-doing { --st: var(--st-doing); --card-bg: color-mix(in srgb, var(--st) 18%, var(--surface)); }
@@ -380,7 +390,7 @@ a { color: var(--accent); }
 /* Fade out, then drop out of hit-testing and the accessibility tree once invisible. */
 .edge-label.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
 @media (prefers-reduced-motion: reduce) {
-  .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden { transition: none; }
+  .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden, .card { transition: none; }
 }
 /* Hovering a label itself also shows its whole text. It widens in place around its centre and
    rises above neighbouring labels; it does not move, so it cannot slip out from under the cursor. */

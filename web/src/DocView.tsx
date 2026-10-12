@@ -438,7 +438,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     // Nodes stay the same objects: giving them a new className makes xyflow re-measure them, and
     // edges briefly unmount meanwhile, which dropped a hovered label from under the pointer.
     // Dimming is a stylesheet keyed by node ID instead (see focusCss).
-    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) };
+    // While hovering, the cards the highlight reaches lift a little; the hovered card itself lifts
+    // more through plain :hover CSS, so it is left out here.
+    const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id))) : new Set<string>();
+    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near) };
   }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query]);
 
   const selectLine = useCallback((line: number) => {
@@ -641,6 +644,13 @@ function cardFocusCss(active: Set<string>): string {
   // A frame's fill layer dims and brightens with the frame.
   const keep = [...active].flatMap((id) => [id, fillId(id)]).map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"]`).join(",");
   return `.canvas .react-flow__node{opacity:.35}${keep ? `${keep}{opacity:1}` : ""}`;
+}
+
+/** A lighter hover lift for the cards a hovered item or line highlights; frames never lift. */
+function liftCss(keys: Set<string>): string {
+  if (keys.size === 0) return "";
+  const sel = [...keys].map((id) => `.react-flow__node[data-id="${CSS.escape(id)}"] .card:not(.container)`).join(",");
+  return `${sel}{filter:drop-shadow(var(--lift-near))}`;
 }
 
 /** Outlines search matches, whatever else is focused (hover, selection). */
