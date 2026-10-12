@@ -9,43 +9,61 @@ links:
   - Why: 为黑洞纪到来储备可用能源，试验跑通技术文明初始化流程。
   - 当前阶段：生命与社会起点已有记录；地面能源、材料研究、自治规则和轨道服务并行推进，戴森群收集器尚未建设。
   - 目标口径：长期稳定利用恒星功率量级的净能量；[太阳光度约 3.83 × 10²⁶ W](https://science.nasa.gov/universe/glossary/)。
+  - 设计备注：主线之外的中断、搁置、废弃与备选方案保留在各阶段内，并注明原因；搁置项在条件满足后可重启。
 
   - [x] 有机生命培养 ^history-life
-    - Why: 从分子复制逐步形成复杂动物和智人，为能够组织恒星级工程的主体提供生物学基础。
+    - Why: 从分子复制逐步培育复杂动物和智人，为能够组织恒星级工程的主体提供生物学基础。
+    - 设计备注：本阶段并行试过多条智慧候选谱系；雪球期试点、章鱼文明、龙族计划与尼安德特平行谱系均已终止，数据保留，供下一轮初始化参考。
     - [智人形成时的阶段记录](chronicle:civilization-log#-287463-he)
     - [x] 喷口 RNA {star: true} ^history-life-rna
-      - Why: 碱性热液喷口附近的 RNA 分子开启信息传递，矿物孔壁两侧的氢离子梯度提供能量转换的雏形；两者为后来细胞生命及技术文明奠定基础。
+      - Why: 在碱性热液喷口的矿物孔隙中投放核苷酸前体，借孔壁两侧的氢离子梯度供能，培养出可延伸、可催化的 RNA 短链；信息复制与能量转换首次在同一环境中耦合。
       - [文明构建日志](chronicle:civilization-log#-4352814673-he)
     - [x] 遗传体系 {star: true} ^history-life-luca
-      - Why: RNA、蛋白质与 DNA 分工稳定，形成后来生命共享的基本遗传体系；稳定遗传使复杂生命与长期演化成为可能。
+      - Why: 把 RNA、蛋白质与 DNA 的分工固定为 DNA→RNA→蛋白质的信息流，并以 LUCA 谱系作为后代共享的底座；稳定遗传使复杂生命与长期演化可以持续。
       - [文明构建日志](chronicle:civilization-log#-4197438521-he)
     - [x] 微生物群落 ^history-life-microbes
-      - Why: 光合作用微生物群落开始长期改造海洋环境；早期能量获取和生态循环为复杂生命铺路。
+      - Why: 在浅水带部署光合微生物群落，让它们长期改造海洋化学；早期能量获取和生态循环为复杂生命铺路。
       - [文明构建日志](chronicle:civilization-log#-3447216389-he)
     - [x] 大气增氧 {star: true} ^history-life-oxygen
-      - Why: 产氧光合作用改变地球氧化条件，扩大高能代谢的生态空间；富氧环境支持后来大型动物的高能代谢。
+      - Why: 放任产氧光合作用长期累积，把大气调整为氧化态，为高能有氧代谢腾出生态空间；大批厌氧谱系因此退守缺氧环境，评估后记为可接受的代价。
       - [文明构建日志](chronicle:civilization-log#-2401782643-he)
     - [x] 真核细胞 ^history-life-eukaryotes
-      - Why: 内共生带来线粒体与更复杂的细胞组织；真核细胞为复杂动物和人类谱系提供细胞基础。
+      - Why: 开展内共生实验：把细菌共生体导入古菌宿主，经多批失败后实现稳定、可遗传的共存，共生体成为线粒体；能量预算的跃升为复杂动物和人类谱系提供细胞基础。
       - [文明构建日志](chronicle:civilization-log#-1803425917-he)
+    - [-] 雪球期多细胞试点 ^history-life-snowball-pilot
+      - Why: 在成冰纪前夕提前投放多细胞试点群落，试图缩短复杂生命的等待期。
+      - 中断原因：斯图尔特冰期使海洋长期封冻，光照与营养供给中断，试点群落未能存续；多细胞计划改到冰期结束后重新播种。
+      - [文明构建日志](chronicle:civilization-log#-716893524-he)
     - [x] 多细胞动物 ^history-life-animals
-      - Why: 细胞分工和发育调控形成复杂动物体制；长期含氧环境支持其代谢和生态扩张，为后来的感觉、行动和认知能力提供基础。
+      - Why: 冰期结束后重新播种多细胞谱系，以细胞黏附、信号传递和发育调控建立复杂动物体制；长期含氧环境支持其代谢和生态扩张，为感觉、行动和认知能力提供基础。
       - [文明构建日志](chronicle:civilization-log#-648932761-he)
+    - [-] 章鱼文明实验 ^history-life-octopus
+      - Why: 在软体动物分支上测试与脊椎动物无关的智慧路径：分布式神经系统、灵巧腕足和体色通讯。
+      - 中止原因：雌体护卵期停食并在孵化前后死亡，寿命多为一至两年，幼体从未见过上一代，经验无法跨代传递，累积文化始终无法起步；记为“个体智力不等于文明”的对照实验。
+      - [文明构建日志](chronicle:civilization-log#-296417302-he)
+    - [-] 龙族培养计划 ^history-life-dragons
+      - Why: 以恐龙谱系为首选智慧候选，持续投入温度调节、群居和育幼能力。
+      - 终止原因：一亿六千余万年间体型与生态覆盖持续扩张，脑容量与体型之比却长期停滞，评估为投入回报递减；尤卡坦撞击后非鸟恐龙灭绝，计划终止，仅鸟类分支作为余脉保留。
+      - [文明构建日志](chronicle:civilization-log#-231406815-he)
     - [x] 哺乳动物新皮质 ^history-life-neocortex
-      - Why: 哺乳动物脑结构演化出处理多模态信息的新皮质；复杂信息处理能力是后来工程认知的演化前提。
+      - Why: 为夜行的小型哺乳动物加装分层处理多模态信息的新皮质，作为龙族计划的备份谱系；复杂信息处理能力是后来工程认知的演化前提。
       - [文明构建日志](chronicle:civilization-log#-201647309-he)
     - [x] 尤卡坦撞击 ^history-life-chicxulub
-      - Why: 撞击引起的灭绝重排生态位，影响后来哺乳动物的扩张；生态位重排间接改变了人类谱系出现的条件。
+      - Why: 龙族计划评估未达标后，决定不拦截这颗小行星；撞击清空大型陆地生态位，由备份的哺乳动物谱系接手。
       - [文明构建日志](chronicle:civilization-log#-66052317-he)
     - [x] 早期灵长类 ^history-life-primates
-      - Why: 哺乳动物生态位扩张后，灵长类谱系逐渐分化；灵长类谱系为后来的人类协作能力提供演化背景。
+      - Why: 从撞击后扩张的哺乳动物中选定灵长类，强化立体视觉、抓握和社会行为；这些能力为后来的工具使用和人类协作提供演化背景。
       - [文明构建日志](chronicle:civilization-log#-55143287-he)
     - [x] 非洲人族分化 ^history-life-hominins
-      - Why: 人族与黑猩猩谱系分开，为后来的人类演化提供谱系起点；人族谱系连接生物演化与后来的人类文明史。
+      - Why: 让人族谱系与黑猩猩谱系分开，转向双足行走和开阔地带生活；人族谱系连接生物演化与后来的人类文明史。
       - [文明构建日志](chronicle:civilization-log#-6124853-he)
     - [x] 智人出现 ^history-life-sapiens
-      - Why: 智人具备高度复杂的语言、学习与社会协作能力；人类的累积文化使跨代规划恒星级工程成为可能。
+      - Why: 选定智人为主谱系：高度复杂的语言、学习与社会协作使累积文化成为可能，跨代规划恒星级工程从此有了执行者。
       - [文明构建日志](chronicle:civilization-log#-287463-he)
+    - [-] 尼安德特平行谱系 ^history-life-neanderthals
+      - Why: 在欧亚大陆保留一条耐寒的平行人族谱系，作为智人在冰期气候下的冗余。
+      - 结束原因：种群小、遗传多样性低，在冰期波动与智人扩张的叠加压力下没有恢复；部分基因经杂交并入智人，冗余以基因形式保留。
+      - [文明构建日志](chronicle:civilization-log#-28147-he)
 
   - [/] 智慧文明培养 ^history
     - Why: 农业提高人口承载量，文字记录扩大社会协作和跨代知识传递；长期治理让文明能持续承担 II 型工程。
@@ -59,6 +77,12 @@ links:
     - [x] 文字记录 ^history-society-writing
       - Why: 可复制的记录把技术经验传给更多地点和后代，使协作网络能超出单一社群并持续扩大。
       - [文明构建日志](chronicle:civilization-log#6783-he)
+    - [!] 鲸类海洋文明 ^history-cetaceans
+      - Why: 鲸类具有大脑、长寿命和以歌声跨代传递的群体知识，保留为海洋中的备份智慧谱系。
+      - 搁置原因：水下无法用火，冶炼、陶器和电力无从起步，技术链停在工具之前；待找到不依赖火的材料加工路径再评估。
+    - [?] 鸦科备份谱系 ^history-corvids
+      - Why: 龙族计划留下的鸟类分支中，鸦科已能制作、传授工具；若灵长类路径失败，可作为低成本备选。
+      - 待评估：小体型对脑容量和手部操作的上限，以及在人类文明并存时的生态位。
     - [/] 社会治理与生态 ^governance
       - Why: 资源权利、环境预算和长期审计为戴森群扩张划定可执行的边界。
       - 当前阶段：跨代治理开始界定责任与资源规则；地球生态边界和全网能源物料审计仍待制定。
@@ -97,6 +121,9 @@ links:
     - [ ] 天体资源试采 ^industry-resources
       - Why: 核实月球或小天体材料的可用性、环境代价及完整物料账；可用储量决定收集器群可扩建的物料上限。
       - 完成判据：提取、精炼与运输试验给出可信的物料和环境账。
+    - [?] 水星拆解备选 ^industry-mercury
+      - Why: 若月球与小天体储量不足，水星可作为收集器群的大宗料源；它离太阳近，开采和发射的能源充足。
+      - 待评估：拆解会永久改变内太阳系的质量分布，须先通过生态边界与长期轨道规划评审。
     - [ ] 天体原料精炼 ^industry-refining
       - Why: 直接利用离地矿物、水和挥发物，减少从地球运送基础原料的需求；本地原料转换使收集器生产摆脱地球散装物资供应。
       - 完成判据：示范厂连续生产结构材料、推进剂与工业原料，并结清能耗、损耗和废弃物账。
@@ -125,6 +152,10 @@ links:
     - [x] 分组通信网络 ^history-information-arpanet
       - Why: 分组通信把分散计算机接成技术网络，为未来离地站点间的任务与数据交换提供前身。
       - [文明构建日志](chronicle:civilization-log#11969-10-29-he)
+    - [-] 第五代计算机 ^history-information-fgcs
+      - Why: 以逻辑编程和并行推理机直通知识信息处理，试图跳过通用计算的渐进路线。
+      - 废弃原因：专用推理硬件未能超过快速进步的通用处理器，知识仍须人工逐条编码；十年期满收尾，自动推理目标改由统计学习与工具调用重启。
+      - [文明构建日志](chronicle:civilization-log#11992-he)
     - [x] 万维网 ^history-information-web
       - Why: 可互联的知识记录扩大技术传播范围，缩短跨机构工程的协作周期。
       - [文明构建日志](chronicle:civilization-log#11989-03-he)
@@ -161,21 +192,37 @@ links:
     - [x] 液体火箭 ^history-space-rocket
       - Why: 液体推进开启把设备送离地表的路径，为轨道工厂和收集器部署提供运载前提。
       - [文明构建日志](chronicle:civilization-log#11926-03-16-he)
+    - [-] 硬式飞艇航线 ^history-space-airship
+      - Why: 以轻于空气的硬式飞艇承担洲际客货运，作为动力飞行之外的另一条航空路线。
+      - 废弃原因：兴登堡号在莱克赫斯特起火焚毁；氢气浮升、低速和对天气的敏感使安全与成本难以压低，航空主线转向重于空气的飞行器。
+      - [文明构建日志](chronicle:civilization-log#11937-05-06-he)
     - [x] 首颗人造卫星 ^history-space-sputnik
       - Why: 首个持续运行的轨道装置把技术网络扩展出地球表面，为后来分布式收集器提供先例。
       - [文明构建日志](chronicle:civilization-log#11957-10-04-he)
     - [x] 首次载人入轨 ^history-space-gagarin
       - Why: 载人入轨积累生命保障与操作经验，为离地建造和维护所需的人类活动打基础。
       - [文明构建日志](chronicle:civilization-log#11961-04-12-he)
+    - [-] 核脉冲推进 ^history-space-orion
+      - Why: 以连续小型核爆推动重型飞船，绕过化学火箭的载荷上限。
+      - 废弃原因：《部分禁止核试验条约》禁止大气层与外层空间核爆，每次发射的放射性沉降代价也无法接受；1965 年终止。
+      - [文明构建日志](chronicle:civilization-log#11965-he)
     - [x] 载人登月 ^history-space-apollo
       - Why: 地月往返把运输与导航网络扩展到另一颗天体，为太阳系资源链铺路。
       - [文明构建日志](chronicle:civilization-log#11969-07-20-he)
     - [x] 首座空间站 ^history-space-salyut
       - Why: 长期驻留把轨道飞行推进为固定工作场所，为未来离地工厂与维修站提供先例。
       - [文明构建日志](chronicle:civilization-log#11971-04-19-he)
+    - [!] 核热火箭 ^history-space-nerva
+      - Why: 以反应堆加热氢工质，比冲约为化学推进的两倍，用于载人火星任务和重型轨道运输。
+      - 搁置原因：地面试车已验证反应堆与发动机，但优先级与预算变化使项目在 1972 年底中止；重启前需先有轨道核安全规则。
+      - [文明构建日志](chronicle:civilization-log#11972-he)
     - [x] 航天飞机首飞 ^history-space-shuttle
       - Why: 可重复使用运输扩大在轨服务与大型载荷组装能力，降低后续空间基础设施扩建门槛。
       - [文明构建日志](chronicle:civilization-log#11981-04-12-he)
+    - [-] 暴风雪号轨道器 ^history-space-buran
+      - Why: 与航天飞机并行验证另一套可复用轨道器和重型运载组合，保留运输冗余。
+      - 废弃原因：唯一一次无人飞行自动着陆成功，但苏联解体后经费断绝，计划于 1993 年终止。
+      - [文明构建日志](chronicle:civilization-log#11988-11-15-he)
     - [x] 空间站首舱 ^history-space-zarya
       - Why: 多国模块化组装把工业与协作网络延伸至轨道，为大型离地设施提供组织先例。
       - [文明构建日志](chronicle:civilization-log#11998-11-20-he)
@@ -220,6 +267,14 @@ links:
     - [x] 受控核裂变 ^history-industry-fission
       - Why: 受控核能增加高密度能源选项，为日后远离太阳的制造和运输系统保留供能路径。
       - [文明构建日志](chronicle:civilization-log#11942-12-02-he)
+    - [!] 熔盐堆实验 ^history-industry-msr
+      - Why: 以熔融氟盐同时承载燃料与冷却，验证高温、低压运行的另一条先进堆路线。
+      - 搁置原因：实验堆运行四年后停堆，资源转向其他堆型；重启需要耐熔盐腐蚀的结构材料和在线燃料处理工艺。
+      - [文明构建日志](chronicle:civilization-log#11969-12-he)
+    - [-] 室温核聚变 ^history-industry-cold-fusion
+      - Why: 评估电解装置中室温核聚变的报告，若成立可绕开反应堆获得核能。
+      - 废弃原因：各地实验室无法复现过量热及相应核产物，结论被否定；资源退回受控裂变与可再生能源。
+      - [文明构建日志](chronicle:civilization-log#11989-03-23-he)
     - [x] 硅太阳电池 ^history-material-solar
       - Why: 硅器件把日光直接转为电力，是戴森群收集器可复制的技术起点。
       - [文明构建日志](chronicle:civilization-log#11954-he)
@@ -260,11 +315,23 @@ history-life-animals relates history-life-oxygen: 借助含氧环境扩大代谢
 history-life-neocortex needs history-life-animals
 history-life-chicxulub relates history-life-neocortex: 重排其后代的生态位
 history-life-primates needs history-life-neocortex
+history-life-snowball-pilot needs history-life-eukaryotes
+history-life-animals replaces history-life-snowball-pilot: 冰期结束后重新播种多细胞谱系
+history-life-octopus needs history-life-animals
+history-life-octopus relates history-life-neocortex: 与脊椎动物脑并行的独立神经方案
+history-life-dragons needs history-life-animals
+history-life-chicxulub relates history-life-dragons: 撞击终止龙族计划
+history-life-neocortex replaces history-life-dragons: 由备份的哺乳动物谱系接手智慧候选
 
 %% 人类文明的历史关联
 history-life-primates relates history-life-chicxulub: 在撞击后的生态位中扩张
 history-life-hominins needs history-life-primates
 history-life-sapiens needs history-life-hominins
+history-life-neanderthals from history-life-hominins: 在欧亚大陆分出的耐寒平行谱系
+history-life-sapiens replaces history-life-neanderthals: 吸收部分基因后成为唯一的人族主谱系
+history-cetaceans relates history-life-neocortex: 在海洋中复用哺乳动物大脑
+history-corvids from history-life-dragons: 龙族计划留下的鸟类余脉
+history-corvids relates history-life-primates: 灵长类路径失败时的备选
 history-society relates history-society-farming: 由粮食剩余支撑人口与分工扩大
 history-society relates history-society-writing: 借记录把协作扩展到更多地点和世代
 history-society-farming needs history-life-sapiens
@@ -292,6 +359,18 @@ history-space-shuttle relates history-space-salyut: 扩展在轨服务与运输
 history-space-zarya relates history-space-shuttle: 接续模块化在轨组装
 history-space-iss needs history-space-zarya
 history-space-bennu needs history-space-rocket
+history-space-flight replaces history-space-airship: 重于空气的飞行器成为航空主线
+history-space-orion relates history-industry-fission: 以核爆替代化学燃烧作推进
+history-space-orion relates history-space-rocket: 尝试突破化学火箭的载荷上限
+history-space-nerva relates history-industry-fission: 以反应堆加热推进工质
+history-space-nerva relates history-space-orion: 接续非化学推进的探索
+history-space-nerva needs foundation-governance: 重启前须有轨道核安全规则
+history-space-buran relates history-space-shuttle: 并行验证可复用轨道器
+history-industry-msr relates history-industry-fission: 延续受控裂变的另一种堆型
+history-industry-msr relates history-industry-htr: 同为高温先进堆路线
+history-industry-cold-fusion relates history-industry-fission: 试图绕开反应堆获得核能
+history-information-fgcs relates history-information-ic: 以专用推理硬件替代通用计算路线
+history-information-agent replaces history-information-fgcs: 以统计学习与工具调用重启自动推理
 
 %% 进行中的地球与轨道建设
 foundation-energy needs history-industry-htr, history-industry-renewables
@@ -318,6 +397,9 @@ agents-coordination needs agents-repair, industry-network
 %% 离地产业与恒星能量的执行依赖
 industry-resources needs foundation-assembly, foundation-governance, foundation-life-support, agents-fleet
 industry-resources relates history-space-bennu: 借鉴小天体采样与材料分析
+industry-mercury relates industry-resources: 月球与小天体储量不足时的备选料源
+industry-mercury relates stellar-orbits: 拆解前须通过长期轨道规划评审
+industry-mercury relates governance-ecology: 拆解前须通过生态边界评审
 industry-refining needs industry-resources, foundation-energy
 industry-refining relates history-material-steel: 将规模冶炼经验延伸至离地原料
 industry-nanofibers relates history-material-steel: 将规模结构材料推进到高比强度纤维
