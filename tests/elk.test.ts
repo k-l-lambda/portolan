@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "../src/index.ts";
-import { layoutElk } from "../web/src/elkLayout.ts";
+import { layoutElk, layoutTime } from "../web/src/elkLayout.ts";
 import { endTab, labelPoint, placeLabels, roundedPath } from "../web/src/geometry.ts";
 
 const SRC = `- [/] Root ^root
@@ -109,6 +109,28 @@ x relates a1: revisits
     const rel = r.routes.find((e) => e.kind === "relates")!;
     // Drawn from x (Rhumb source) to a1.
     expect(rel.points[0]!.y).toBeGreaterThan(rel.points.at(-1)!.y);
+  });
+
+  it("places a group by the weighted centroid of its leaves, done and doing weighted high", async () => {
+    // Both groups are in progress (same band). "old" is mostly early history plus a fresh idea;
+    // its newest child is the newest item overall, yet its centroid is early, so it goes first.
+    const doc = parse(`- [/] Recent work ^recent
+  - [/] R1 ^r1
+  - [x] R2 ^r2
+- [/] Mostly history ^old
+  - [x] O1 ^o1
+  - [x] O2 ^o2
+  - [?] Fresh idea ^idea
+`);
+    const day = 86_400;
+    const t: Record<string, number> = { r1: 50 * day, r2: 40 * day, o1: 1 * day, o2: 2 * day, idea: 60 * day, recent: 50 * day, old: 60 * day };
+    const timeOf = (n: { id: string | null }) => t[n.id!];
+    // (10·1 + 10·2 + 1·60) / 21 days
+    expect(layoutTime(doc.nodes[1]!, timeOf)).toBeCloseTo(((10 * 1 + 10 * 2 + 60) / 21) * day);
+    expect(layoutTime(doc.nodes[0]!.children[0]!, timeOf)).toBe(50 * day);
+    const r = await layoutElk(doc.nodes, doc.edges, new Set(), timeOf);
+    const at = Object.fromEntries(r.boxes.map((b) => [b.key, b]));
+    expect(at.old!.x).toBeLessThan(at.recent!.x);
   });
 
   it("lets dependencies win over the time order", async () => {

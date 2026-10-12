@@ -10,6 +10,7 @@
 // by day, oldest on top, then doing and blocked work, then todo, then ideas. Dependencies win:
 // before adding ordering edges, each sibling's row is pushed below every sibling it depends
 // on (directly or through descendants), so ordering edges never contradict a real edge.
+// A group is timed by the weighted centroid of its leaves (see `layoutTime`), not its newest child.
 // ELK treats every edge as directed, including `relates`, so each edge is handed to ELK
 // oriented along one global order (rows from the root down); the drawn route is flipped back
 // to the Rhumb direction. With every ELK edge agreeing on that order there are no cycles for
@@ -128,6 +129,30 @@ export function band(node: RhumbNode, time: number | undefined): number {
   }
 }
 
+/** Weight of a leaf in its container's time centroid: settled and current work dominate. */
+const CENTROID_WEIGHT: Partial<Record<NonNullable<RhumbNode["status"]>, number>> = { done: 10, doing: 10 };
+
+/**
+ * Time that places a node among its siblings. A leaf uses its own time; a node with children
+ * uses the weighted mean of its leaf descendants' times, done and doing weighted 10, the rest 1,
+ * so a few fresh ideas or plans do not pull a mostly historical group down to the present.
+ * Falls back to the node's own time when no leaf has one.
+ */
+export function layoutTime(node: RhumbNode, timeOf: (node: RhumbNode) => number | undefined): number | undefined {
+  if (node.children.length === 0) return timeOf(node);
+  let sum = 0, weight = 0;
+  const visit = (n: RhumbNode) => {
+    if (n.children.length > 0) return n.children.forEach(visit);
+    const t = timeOf(n);
+    if (t === undefined) return;
+    const w = (n.status && CENTROID_WEIGHT[n.status]) || 1;
+    sum += w * t;
+    weight += w;
+  };
+  visit(node);
+  return weight > 0 ? sum / weight : timeOf(node);
+}
+
 interface ElkEngine { layout(graph: unknown): Promise<unknown> }
 // elk.bundled is CommonJS: the default import is the constructor in Vite, `.default` under Node typing.
 const ELK = ((ELKModule as unknown as { default?: unknown }).default ?? ELKModule) as new () => ElkEngine;
@@ -149,7 +174,8 @@ export async function layoutElk(
   // Visible siblings per parent ("__root" for the top level) in band order, with their band.
   const siblings = new Map<string, { key: string; band: number }[]>();
   const order = (nodes: RhumbNode[], parent: string | null) => {
-    const sorted = nodes.map((n, i) => ({ n, i, t: timeOf(n), b: band(n, timeOf(n)) }))
+    const sorted = nodes.map((n, i) => ({ n, i, t: layoutTime(n, timeOf) }))
+      .map((x) => ({ ...x, b: band(x.n, x.t) }))
       .sort((a, b) => a.b - b.b || (a.t ?? Infinity) - (b.t ?? Infinity) || a.i - b.i);
     siblings.set(parent ?? "__root", sorted.map((x) => ({ key: nodeKey(x.n), band: x.b })));
     return sorted.map((x) => x.n);
