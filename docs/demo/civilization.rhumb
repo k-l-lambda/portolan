@@ -18,13 +18,13 @@ links:
     - [x] 喷口 RNA {kind: experiment, star: true} ^history-life-rna
       - Why: 在碱性热液喷口的矿物孔隙中投放核苷酸前体，借孔壁两侧的氢离子梯度供能，培养出可延伸、可催化的 RNA 短链；信息复制与能量转换首次在同一环境中耦合。
       - [文明构建日志](chronicle:civilization-log#-4352814673-he)
-    - [x] 遗传体系 {star: true} ^history-life-luca
+    - [x] 遗传体系 {kind: milestone, star: true} ^history-life-luca
       - Why: 把 RNA、蛋白质与 DNA 的分工固定为 DNA→RNA→蛋白质的信息流，并以 LUCA 谱系作为后代共享的底座；稳定遗传使复杂生命与长期演化可以持续。
       - [文明构建日志](chronicle:civilization-log#-4197438521-he)
     - [x] 微生物群落 ^history-life-microbes
       - Why: 在浅水带部署光合微生物群落，让它们长期改造海洋化学；早期能量获取和生态循环为复杂生命铺路。
       - [文明构建日志](chronicle:civilization-log#-3447216389-he)
-    - [x] 大气增氧 {star: true} ^history-life-oxygen
+    - [x] 大气增氧 {kind: decision, star: true} ^history-life-oxygen
       - Why: 放任产氧光合作用长期累积，把大气调整为氧化态，为高能有氧代谢腾出生态空间；大批厌氧谱系因此退守缺氧环境，评估后记为可接受的代价。
       - [文明构建日志](chronicle:civilization-log#-2401782643-he)
     - [x] 真核细胞 {kind: experiment} ^history-life-eukaryotes
@@ -34,6 +34,10 @@ links:
       - Why: 在成冰纪前夕提前投放多细胞试点群落，试图缩短复杂生命的等待期。
       - 中断原因：斯图尔特冰期使海洋长期封冻，光照与营养供给中断，试点群落未能存续；多细胞计划改到冰期结束后重新播种。
       - [文明构建日志](chronicle:civilization-log#-716893524-he)
+    - [x] 提前播种可缩短等待期 {kind: hypothesis, inconclusive: true} ^history-life-early-seeding
+      - Why: 雪球期试点所检验的判断：多细胞群落提前投放，复杂生命会更早出现。
+      - 结论：冰期中断了试点，提前播种本身是否有效没有得到检验，记为无定论。
+      - [文明构建日志](chronicle:civilization-log#-716893524-he)
     - [x] 多细胞动物 ^history-life-animals
       - Why: 冰期结束后重新播种多细胞谱系，以细胞黏附、信号传递和发育调控建立复杂动物体制；长期含氧环境支持其代谢和生态扩张，为感觉、行动和认知能力提供基础。
       - [文明构建日志](chronicle:civilization-log#-648932761-he)
@@ -41,11 +45,19 @@ links:
       - Why: 在软体动物分支上测试与脊椎动物无关的智慧路径：分布式神经系统、灵巧腕足和体色通讯。
       - 中止原因：雌体护卵期停食并在孵化前后死亡，寿命多为一至两年，幼体从未见过上一代，经验无法跨代传递，累积文化始终无法起步；记为“个体智力不等于文明”的对照实验。
       - [文明构建日志](chronicle:civilization-log#-296417302-he)
+    - [x] 个体智力不等于文明 {kind: finding, supported: true, replicated: true} ^history-life-culture-finding
+      - Why: 章鱼实验的结论：没有跨代传递，个体再聪明也积累不出文化；选定主谱系时以跨代学习为先决条件。
+      - 复现：鲸类与鸦科的观测给出同一结论，群体内传授越稳定，技术积累越快。
+      - [文明构建日志](chronicle:civilization-log#-296417302-he)
     - [-] 龙族培养计划 {kind: lineage} ^history-life-dragons
       - Why: 以恐龙谱系为首选智慧候选，持续投入温度调节、群居和育幼能力。
       - 终止原因：一亿六千余万年间体型与生态覆盖持续扩张，脑容量与体型之比却长期停滞，评估为投入回报递减；尤卡坦撞击后非鸟恐龙灭绝，计划终止，仅鸟类分支作为余脉保留。
       - [文明构建日志](chronicle:civilization-log#-231406815-he)
-    - [x] 哺乳动物新皮质 ^history-life-neocortex
+    - [x] 体型扩张会带来智力 {kind: hypothesis, refuted: true} ^history-life-size-hypothesis
+      - Why: 龙族计划的前提：体型与生态覆盖持续扩张，脑容量会随之增长。
+      - 结论：一亿六千余万年间脑容量与体型之比长期停滞，假设被否定；备份谱系改为优先投入新皮质。
+      - [文明构建日志](chronicle:civilization-log#-231406815-he)
+    - [x] 哺乳动物新皮质 {kind: lineage} ^history-life-neocortex
       - Why: 为夜行的小型哺乳动物加装分层处理多模态信息的新皮质，作为龙族计划的备份谱系；复杂信息处理能力是后来工程认知的演化前提。
       - [文明构建日志](chronicle:civilization-log#-201647309-he)
     - [x] 尤卡坦撞击 {kind: event} ^history-life-chicxulub
@@ -86,14 +98,14 @@ links:
     - [/] 社会治理与生态 ^governance
       - Why: 资源权利、环境预算和长期审计为戴森群扩张划定可执行的边界。
       - 当前阶段：跨代治理开始界定责任与资源规则；地球生态边界和全网能源物料审计仍待制定。
-    - [/] 跨代治理 ^foundation-governance
+    - [/] 跨代治理 {kind: law} ^foundation-governance
       - Why: 清楚界定地球生态、资源权利和空间安全的边界，才有条件扩大工程规模；这为戴森群扩张划定可执行的安全与生态约束。
       - 当前阶段：正在把既有组织协作转为资源权利、生态预算与空间安全条款；跨机构审计机制尚未成形。
       - 完成判据：公开环境预算、资源规则、责任机制及可审计的跨机构协调。
-    - [ ] 地球生态边界 ^governance-ecology
+    - [ ] 地球生态边界 {kind: law} ^governance-ecology
       - Why: 规定地球日照、轨道环境和排热约束，防止能源扩张损害文明赖以生存的生态系统。
       - 完成判据：持续监测环境指标，超限时可暂停新增收集器并执行退役方案。
-    - [ ] 能源物料审计 ^governance-audit
+    - [ ] 能源物料审计 {kind: law} ^governance-audit
       - Why: 统一核算收集、传输、使用、废热和物料损耗，使 II 型文明目标可以独立验收。
       - 完成判据：各站点公开可追溯的能源与物料账，并能核对全网净可用功率。
 
@@ -110,6 +122,8 @@ links:
       - Why: 提高宏观纤维的比强度与缺陷容限，为太空电梯系缆和轻质轨道结构提供候选材料。
       - 当前阶段：[NASA 正推进碳纳米管纱线放大制造与复材样件验证](https://www.nasa.gov/superlightweight-aerospace-composites/)；系缆级长尺强度与可靠性尚未证明。
       - 完成判据：长尺样带经过强度、疲劳、辐照和缺陷统计试验，批次性能及制造成本可复现。
+    - [ ] 碳纳米管纤维可达系缆级比强度 {kind: hypothesis} ^industry-tether-strength
+      - Why: 太空电梯方案成立的前提；长尺样带的强度、缺陷和寿命试验尚未完成，结论未检验。
     - [/] 轻质空间光伏 ^industry-space-pv
       - Why: 研究轻质高效率电池与耐辐照封装，降低戴森群每单位净功率的材料和运输需求。
       - 当前阶段：[空间用叠层电池已有研究器件和辐照试验](https://pmc.ncbi.nlm.nih.gov/articles/PMC13418752/)；大面积组件及长期在轨寿命尚未验证。
@@ -159,7 +173,7 @@ links:
     - [x] 万维网 ^history-information-web
       - Why: 可互联的知识记录扩大技术传播范围，缩短跨机构工程的协作周期。
       - [文明构建日志](chronicle:civilization-log#11989-03-he)
-    - [/] AI Agent 工具链 ^history-information-agent
+    - [/] AI Agent 工具链 {kind: artifact} ^history-information-agent
       - Why: 可审计的工具调用把部分数字任务从人手扩展到智能体，为未来太空设施自治提供方法起点。
       - 当前阶段：已具备工具调用、状态管理与执行追踪；长期自治的可靠性和物理设备权限仍在验证。
       - [文明构建日志](chronicle:civilization-log#12025-03-11-he)
@@ -199,10 +213,10 @@ links:
     - [x] 首颗人造卫星 {kind: milestone} ^history-space-sputnik
       - Why: 首个持续运行的轨道装置把技术网络扩展出地球表面，为后来分布式收集器提供先例。
       - [文明构建日志](chronicle:civilization-log#11957-10-04-he)
-    - [x] 首次载人入轨 ^history-space-gagarin
+    - [x] 首次载人入轨 {kind: milestone} ^history-space-gagarin
       - Why: 载人入轨积累生命保障与操作经验，为离地建造和维护所需的人类活动打基础。
       - [文明构建日志](chronicle:civilization-log#11961-04-12-he)
-    - [-] 核脉冲推进 ^history-space-orion
+    - [-] 核脉冲推进 {kind: experiment} ^history-space-orion
       - Why: 以连续小型核爆推动重型飞船，绕过化学火箭的载荷上限。
       - 废弃原因：《部分禁止核试验条约》禁止大气层与外层空间核爆，每次发射的放射性沉降代价也无法接受；1965 年终止。
       - [文明构建日志](chronicle:civilization-log#11965-he)
@@ -212,21 +226,21 @@ links:
     - [x] 首座空间站 ^history-space-salyut
       - Why: 长期驻留把轨道飞行推进为固定工作场所，为未来离地工厂与维修站提供先例。
       - [文明构建日志](chronicle:civilization-log#11971-04-19-he)
-    - [!] 核热火箭 ^history-space-nerva
+    - [!] 核热火箭 {kind: experiment} ^history-space-nerva
       - Why: 以反应堆加热氢工质，比冲约为化学推进的两倍，用于载人火星任务和重型轨道运输。
       - 搁置原因：地面试车已验证反应堆与发动机，但优先级与预算变化使项目在 1972 年底中止；重启前需先有轨道核安全规则。
       - [文明构建日志](chronicle:civilization-log#11972-he)
     - [x] 航天飞机首飞 ^history-space-shuttle
       - Why: 可重复使用运输扩大在轨服务与大型载荷组装能力，降低后续空间基础设施扩建门槛。
       - [文明构建日志](chronicle:civilization-log#11981-04-12-he)
-    - [-] 暴风雪号轨道器 ^history-space-buran
+    - [-] 暴风雪号轨道器 {kind: experiment} ^history-space-buran
       - Why: 与航天飞机并行验证另一套可复用轨道器和重型运载组合，保留运输冗余。
       - 废弃原因：唯一一次无人飞行自动着陆成功，但苏联解体后经费断绝，计划于 1993 年终止。
       - [文明构建日志](chronicle:civilization-log#11988-11-15-he)
     - [x] 空间站首舱 ^history-space-zarya
       - Why: 多国模块化组装把工业与协作网络延伸至轨道，为大型离地设施提供组织先例。
       - [文明构建日志](chronicle:civilization-log#11998-11-20-he)
-    - [x] 空间站连续驻留 ^history-space-iss
+    - [x] 空间站连续驻留 {kind: milestone} ^history-space-iss
       - Why: 持续有人值守积累补给和维修网络经验，为未来多个生产及能源站点的运营铺路。
       - [文明构建日志](chronicle:civilization-log#12000-11-02-he)
     - [x] 小行星样本回收 ^history-space-bennu
@@ -257,6 +271,9 @@ links:
     - [ ] 太阳系轨道规划 ^stellar-orbits
       - Why: 为收集器、工厂、运输船和自然天体划定长期稳定且可避碰的运行区域；轨道容量和安全边界决定收集器群能否长期扩张。
       - 完成判据：轨道配置通过长期扰动、碰撞级联和地球日照影响评估，具有扩张及退役路径。
+    - [ ] 碎片碰撞级联 {kind: risk} ^stellar-kessler
+      - Why: 收集器与工厂数量增长后，一次碰撞的碎片可能连锁击毁更多设施并封锁轨道带。
+      - 监测：轨道规划须给出碰撞概率上限、主动避碰和碎片清除预案。
 
   - [/] 能源采集 ^stellar
     - Why: 从蒸汽、核能和硅太阳电池延续到戴森群，实现恒星量级净可用功率。
@@ -270,6 +287,10 @@ links:
     - [!] 熔盐堆实验 {kind: experiment} ^history-industry-msr
       - Why: 以熔融氟盐同时承载燃料与冷却，验证高温、低压运行的另一条先进堆路线。
       - 搁置原因：实验堆运行四年后停堆，资源转向其他堆型；重启需要耐熔盐腐蚀的结构材料和在线燃料处理工艺。
+      - [文明构建日志](chronicle:civilization-log#11969-12-he)
+    - [x] 熔盐堆可在高温低压下运行 {kind: finding, partial: true, contested: true} ^history-industry-msr-finding
+      - Why: 实验堆四年运行的结论：高温低压运行可行，但结构材料的熔盐腐蚀仍未解决，只能算部分成立。
+      - 争议：重启方案对腐蚀与在线燃料处理的代价评估分歧较大。
       - [文明构建日志](chronicle:civilization-log#11969-12-he)
     - [-] 室温核聚变 {kind: hypothesis, refuted: true} ^history-industry-cold-fusion
       - Why: 评估电解装置中室温核聚变的报告，若成立可绕开反应堆获得核能。
@@ -297,9 +318,13 @@ links:
     - [ ] 首批太阳收集器 {star: true} ^stellar-pilot
       - Why: 集成采光、转换、散热、输能与机器人维护，检验完整装置的净收益；实测净收益为大规模复制提供工程依据。
       - 完成判据：示范编队连续交付经计量的净可用功率，且运行与维修成本可核算。
+    - [ ] 收集器采用环带还是散布构型？ {kind: question} ^stellar-layout-question
+      - Why: 环带构型便于维护和输能，散布构型遮挡少、碰撞风险低；首批收集器部署前需要定案。
     - [ ] 可控扩张网络 ^stellar-network
       - Why: 在持续维修和补给下复制收集器编队，并使输能、调度与轨道管理同步扩容；稳定扩容使净可用功率逐级接近恒星量级。
       - 完成判据：多批次新增装置投入运行后，净可用功率持续增长，碰撞规避、故障隔离和退役回收保持有效。
+    - [x] 太阳光度基准 {kind: reference} ^stellar-luminosity
+      - Why: 恒星尺度验收的口径来源：[太阳光度约 3.83 × 10²⁶ W](https://science.nasa.gov/universe/glossary/)。
     - [ ] 恒星尺度利用 {kind: milestone, star: true} ^stellar-scale
       - Why: 在长期稳定与生态约束下，达到 10²⁶ W 量级的可核算净可用功率；这是 II 型文明目标的最终验收条件。
       - 完成判据：长期审计能源收集、输送、利用和废热排放，确认净可用功率已达目标量级且地球日照保持在约定边界内。
@@ -437,3 +462,19 @@ agents relates industry-manufacturing: 控制离地生产与设备维护
 history-space relates industry-resources: 提供离地勘测和采样的任务经验
 foundation relates industry-network: 支撑多地点供应链的轨道物流
 stellar relates industry-network: 为离地制造和运输供给功率
+
+%% 假设、结论与它们的检验
+history-life-snowball-pilot relates history-life-early-seeding: tests
+history-life-dragons relates history-life-size-hypothesis: tests
+history-life-culture-finding from history-life-octopus
+history-life-sapiens relates history-life-culture-finding: 依据跨代学习选定主谱系
+history-cetaceans relates history-life-culture-finding: 复现
+history-corvids relates history-life-culture-finding: 复现
+history-life-neocortex relates history-life-size-hypothesis: 否定后转而优先投入
+industry-nanofibers relates industry-tether-strength: tests
+foundation-elevator-design relates industry-tether-strength: 方案依赖该结论
+history-industry-msr-finding from history-industry-msr
+stellar-kessler relates stellar-orbits: 约束轨道容量
+stellar-kessler relates agents-fleet: 编队须执行主动避碰
+stellar-pilot needs stellar-layout-question
+stellar-luminosity relates stellar-scale: 验收口径
