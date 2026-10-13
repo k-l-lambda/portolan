@@ -376,3 +376,61 @@ Concrete examples: A1 is a controlled comparison against A0, not merely work der
 * Added: decision, question, a three-hypothesis Readability study with an experiment and a finding, a risk and a milestone, plus `tags`, `priority` and `due`. Edges 8 → 17 (`trial relates frames-help: tests`, `labels-overlap from trial`, …). The test asserts 17 edges and that each mark appears; the README copy is diffed against the file.
 * The README image is drawn by `scripts/example-svg.ts` under plain Node, which cannot import JSX. The icon geometry moved to `web/src/markShapes.ts` as data; `KindIcons.tsx` renders it with React and the script with `shapesToSvg`, so the image matches the app.
 * `docs/example.svg` is 1369×1265 (23 boxes, 17 lines). A first overlap check reported every claim icon "OUTSIDE": it compared `getBoundingClientRect` with `getBBox`, which differ by the viewBox offset. With screen boxes for both, every mark is inside its card, before the title or after the ID, with no overlap.
+
+### `memo/portolan.rhumb` got kinds and topic tags; the changelog and shipped map were regenerated from the diary (diary-job `7211fab1`, portolan `ef29e2c`)
+
+* Kinds only where an item clearly is one: `decision` (naming, design decisions, relation labels, renderer choice), `artifact` (Spec 0.1), `milestone` (Publishing), and `finding` + `partial` for the expressiveness review (most work fits, experiments stretch it). Topic tags across branches: `research`, `links`, `lines`, `time`, `agents` on 15 items.
+* The one-off `/tmp/chlog/build.ts` was extended to days 1008-1012 and to the map's new home: links become `../changelog.md#…`, `repo:` links `../x.md` / `../../README.md`. Before overwriting, a dry run of the old build matched the repo changelog except for its link line, so it held no hand edits. 43 → 50 entries, 58 anchors, no misses.
+* Two fixes in the copy: a summary's `&lt;year&gt;` stayed escaped in a Markdown heading (entities are now decoded), and the shipped map's header comment says "changelog" again, as hand-edited before.
+* The `I002` came from the :4310 server started before the kinds commit: the Node process keeps its old parser. After a restart camelot-training, deep-starry-midi and portolan load with no diagnostics.
+
+### The hovered card lifts with a drop-shadow, the cards its highlight reaches with a lighter one; portolan `c6c110f`
+
+* A `filter: drop-shadow()` rather than a box-shadow, so the selection ring and the star frame (both box-shadows) are left as they are. Frames never lift. Tokens `--lift-hover` 0 6px 14px / 0.16 and `--lift-near` 0 3px 8px / 0.1, deeper in dark (0.55 / 0.4); 0.5 s fade like the other highlight changes, none under reduced motion.
+* Headless check on the project map: hovering Prior-art survey lifted it and its two linked cards (Backlog.md analysis, Naming), no frame, and nothing before or after the hover.
+
+### 12 kinds and every claim style but `retracted` in the civilization demo; portolan `c8fda73`
+
+* More kinds on existing nodes: milestones (LUCA, first crewed orbit, continuous ISS crew), `decision` for the oxygen trade-off, the neocortex as a backup `lineage`, Orion/NERVA/Buran as experiments, the agent toolchain as an `artifact`, and a custom `law` for the three governance items (badges `La` next to `Li`).
+* Claims need hypothesis/finding nodes, so the experiments' conclusions became their own nodes: size-brings-intelligence `refuted` (dragon plan), individual-intelligence-is-not-civilization `supported` + `replicated` (octopus; cetaceans and corvids replicate), early seeding `inconclusive` (snowball pilot cut short), molten-salt operation `partial` + `contested`, tether-grade nanotube strength untested. Plus a debris-cascade `risk`, a collector-layout `question` that the first collectors `needs`, and the luminosity `reference`.
+* The four finished claim nodes link to their experiment's log entry; without it they were dated by today's commit and would pull their groups down. Headless check: group order unchanged, `kind:hypothesis` 5, `is:refuted` 2, `kind:law` 3, no JS errors.
+
+## 2026-10-13
+
+### An 88 px rail at the far right next to Diagnostics; commits from the server, nodes highlighted on hover; portolan `2513c2b`
+
+* Server: `HistoryTracker.revisions()` runs `git log --follow -n51 --name-only` and `git show <sha>:<path>` per commit (8 at a time), cached by HEAD. `src/timeline.ts` parses each version and compares it with the one before: a node counts as changed when its status, title, attributes, notes or outgoing edges differ, matched by ID, else by title. A local point comes first when the file text differs from the newest commit, dated by mtime. Up to 50 points; one more revision is fetched only as the base. A map without commits gets one point per linked date (same date rule as freshness). Sent as `timeline` in `/api/doc`, so the Pages export includes it.
+* View: `TimelineRail` beside the panel, hidden while a node is selected. Ages via `shortAgo` (`now`, `17h`, `2d`, `3mo`, `long time ago`); linked dates via `shortDaysAgo` in whole days (`today`, `3d`) since their time is the end of the day; a run of equal ages labels only its first dot. Hover or keyboard focus highlights the point's nodes like a search (only their lines light up, folded ones through the nearest visible card) and lifts them; the tooltip gives the absolute time, short sha and message, the number of items changed and how many were since removed. At phone width panel and rail share the strip under the map.
+* Headless checks: on the shipped map 6 dots, matching `git log --follow` (including commits from before the move into `docs/demo`), labels `17h · 2d · · ·`, every dot on the line; hovering the latest commit (27 items) lit 17 visible cards; moving off the dots cleared it; selecting a node hid the rail; a temporary map outside git showed `today 3d 5d`; no horizontal scroll at 400 px; no JS errors. 105 tests pass, including a rename plus local edit, the cutoff and a deleted node.
+* Trouble: `tsc` failed with `TS6142: Module '../web/src/Timeline.tsx' … '--jsx' is not set` because a test imported label helpers from the `.tsx`; they moved to `web/src/timelineLabels.ts`. The rail did not show on :4310 because that server still ran the code from before; after a restart it returns 23 commits for portolan.rhumb and 32 for camelot-training.rhumb.
+
+### The :4310 server still ran the code from before the timeline; restarted, it returns 23 commits for portolan.rhumb and 32 for camelot-training.rhumb
+
+* Same cause as the `I002` on 10-12: the long-running Node process keeps the server code it started with, while the page picks up the rebuilt bundle on refresh. Its `/api/doc` had no `timeline`, so the rail was not drawn. From now on I restart it after any server-side change.
+
+### Newest dot 14 px, spacing 18 → 29 px, ages refreshed on entry, no scrollbar; portolan `7995d54`
+
+* Dots sit centred in a fixed 16 px column, so the line passes through the larger first dot too; the line now starts and ends at the first and last dot centres (`--row / 2`). A first measurement showed the line starting below the first dot (16 px against a 14.5 px centre); fixed.
+* `TimelineRail` keeps its own `entered` time and shows ages at `max(now, entered)`; entering the rail sets it when the shown ages are 60 s or more old. Checked by moving the page clock: +30 s left `8m 18h` as is, +2 h changed it to `2h 20h` only after entering.
+* Trouble with that check: the clock override passed through `Page.addScriptToEvaluateOnNewDocument` never ran (`window.__realNow is not a function`), so the first runs proved nothing; installing it with `Runtime.evaluate` after load worked.
+* Scrollbar: `scrollbar-width: none` plus `::-webkit-scrollbar { display: none }`, `touch-action: pan-y`, `overscroll-behavior: contain`. On camelot-training (590 px of overflow) a 240 px wheel moved it 240 px, and raw touch events moved it 173 px. `Input.synthesizeScrollGesture` with a touch source did not scroll it in headless Chrome, while raw touch events did, so that is the tool, not the page.
+
+### Diff panel under Diagnostics, pinned to the last hovered point; diffs computed by the server from the revision texts; portolan `c2318bf`
+
+* `src/diff.ts`: Myers line diff (common prefix and suffix trimmed first, capped at 2000 edits, beyond which the middle is shown removed then added) and `unifiedDiff` with 3 lines of context and merged hunks. A commit is compared with the revision before it, the first commit with nothing (`--- /dev/null`), local changes with the newest commit. This reuses the texts the timeline already holds, so renames need no git rename detection; the shipped map's first diff shows its old path `docs/portolan.rhumb`.
+* Fuzzed against an LCS reference: 4000 random pairs, both sides rebuilt and the edit count always minimal. 20,000 lines with two edits: 29 ms; two unrelated 2,000-line files: about 0.3 s. `Revision` now carries the file's path at each commit.
+* `GET /api/diff?file=…&point=<sha|local>` (400 for anything else, 404 for a point not in the history); the Pages export writes `api/diff/<file>/<point>.txt`, 18 for the demo.
+* View: `DiffPanel` stays on the last git point hovered or focused, fetched after 120 ms and cached (commits by sha, local by file version); the dot gets a ring; pointing at the panel highlights the point's nodes again; Close dismisses it. File and hunk headers, added and removed lines are colored from the status tokens, with old and new line numbers.
+* Checks: the panel's +/− counts match `git show --numstat` (9/0 and 8/1); headless Chrome showed it under Diagnostics, kept after the pointer left, switched between dots, highlighted from the panel and closed, with no JS errors. 108 tests pass.
+
+### Pages runs no server and no git; the history is computed at build time on the Actions runner and published as static files
+
+* `.github/workflows/pages.yml` checks out with `fetch-depth: 0`, so the runner has the full history. `pnpm build:pages` starts `portolan serve` on an ephemeral port there and saves its answers: `api/doc/<file>.json` (with `freshness` and `timeline`, built from `git log --follow` / `git show`) and one `api/diff/<file>/<sha>.txt` per point. The page sees the `portolan-static` meta and reads those files instead of `/api/…`.
+* Consequences: the history is frozen at the last deploy; there is never a local point (CI checks out a clean tree); nothing new is exposed, since the repository and its commits are public anyway.
+
+### Front matter `dates: links`: items take only their links' dates and git is not read; on in the civilization demo; portolan `afbe2ee`
+
+* `dates: git | links` (default `git`); any other value is `W014` and counts as `git`. With `links` an item takes its newest dated link, else its newest dated child, else no time; `nodeTimes(doc, null, dateOf)` returns no entry for it, and `NodeTime.lineTime` is null. The card text and the side panel drop the "earlier than commit …" part when there is no line time.
+* Server: for such a map `/api/doc` skips `HistoryTracker` entirely (`repo`, `lastCommit` null, `freshness.dates: "links"`), the history rail uses `linkTimeline`, and `/api/diff` returns 404. Diagnostics shows "Dates: from the dates of linked entries; git history is not read" instead of Last commit. The Pages export follows: links timeline for civilization, 6 diffs only for the project map.
+* Civilization: 62 items timed (56 by link, 6 by a child), 45 linked dates from 12,025 HE back to -4,352,814,673 HE, ages `9mo` … `40199y`, `long time ago`. Trouble found there: the 13 dates older than about 271,821 BCE are all clamped to `LONG_AGO`, so they tied and kept file order (-66M, -55M, -6M at the end). Ties now fall back to the year as written (HE minus 10000); a test covers it.
+* Side effect: undated plan items no longer borrow commit times, so two top-level groups swapped (stellar now below industry). Cases `19-dates` and `20-dates-invalid` plus a committed repo test (times and history stay off git, diff refused); 112 tests pass.

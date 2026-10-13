@@ -122,6 +122,8 @@ title: Portolan
       - [always-visible lines and steady hover](../changelog.md#lines-above-frames-labels-above-all-full-text-on-hover-stable-hover-portolan-0a05378-64ad5e9)
       - Highlighting and labels fade in and out instead of switching at once.
       - [smooth transitions](../changelog.md#dimming-line-width-and-labels-now-ease-over-05-s-portolan-1d2ede6)
+      - Highlighted cards lift with a soft shadow, the hovered one most.
+      - [hover shadow](../changelog.md#the-hovered-card-lifts-with-a-drop-shadow-the-cards-its-highlight-reaches-with-a-lighter-one-portolan-c6c110f)
     - [x] Timeline layout {tags: [lines, time]} ^ui-layout
       - Why: the view was crowded and its reading order arbitrary; it should read like a timeline that respects what depends on what.
       - Groups are drawn as frames around their items, and lines are routed around cards.
@@ -161,6 +163,8 @@ title: Portolan
       - [heading dates](../changelog.md#links-without-a-path-date-take-the-date-of-the-nearest-dated-heading-above-their-target-portolan-dcdae36)
       - Deep-past dates can be written in the Holocene calendar; anything older than a browser can show reads "long time ago".
       - [Holocene dates](../changelog.md#no-bce-before-headings-may-now-start-with--mm-dd-he-and-dates-beyond-the-js-range-show-long-time-ago-portolan-caae1df)
+      - A map of past events can take its times only from its links (`dates: links`), so commit times do not override them.
+      - [dates from links](../changelog.md#front-matter-dates-links-items-take-only-their-links-dates-and-git-is-not-read-on-in-the-civilization-demo-portolan-afbe2ee)
     - [x] Recent maps ^ui-recent
       - Why: switching maps meant going back to the start page every time.
       - [recent maps](../changelog.md#recent-maps-menu-and-click-to-copy-ids-and-commit-hashes-portolan-9dad94b)
@@ -179,6 +183,12 @@ title: Portolan
       - An exact ID jumps to its item; otherwise every match is outlined and the best ten are listed under the box.
       - [node search](../changelog.md#search-box-with-a-ranked-candidate-list-matches-are-outlined-on-the-map-portolan-b8f68ba)
       - `kind:hypothesis` and `is:refuted` narrow the search to one kind or claim state.
+    - [x] History rail {tags: [time]} ^ui-history
+      - Why: people want to see when a map changed and which items each change touched, without leaving the view.
+      - Beside Diagnostics, each commit is a dot with its age; pointing at one highlights the items it changed. A map without commits shows its linked dates.
+      - [history rail](../changelog.md#an-88-px-rail-at-the-far-right-next-to-diagnostics-commits-from-the-server-nodes-highlighted-on-hover-portolan-2513c2b)
+      - Pointing at a commit opens its diff under Diagnostics, colored like a diff, until another dot or Close.
+      - [diff panel](../changelog.md#diff-panel-under-diagnostics-pinned-to-the-last-hovered-point-diffs-computed-by-the-server-from-the-revision-texts-portolan-c2318bf)
     - [x] Compass-rose icon ^ui-favicon
       - Why: the app had no icon; a portolan compass rose ties the browser tab and the README to the project's name.
       - [favicon](../changelog.md#16-point-portolan-compass-rose-on-a-navy-tile-also-the-readme-logo-portolan-2dfaf35)
@@ -217,6 +227,8 @@ title: Portolan
     - [live demo](../changelog.md#read-only-demo-at-httpsk-l-lambdagithubioportolan-deployed-by-githubworkflowspagesyml-portolan-5eea371)
     - The demo now shows a folder of maps, including a fictional civilization-building map with deep-past dates and abandoned branches.
     - [demo folder](../changelog.md#the-project-map-is-now-docsdemoportolanrhumb-pages-exports-every-map-under-docsdemo-portolan-d59ccdd); [civilization branches](../changelog.md#15-branch-nodes-with-reasons-designer-voice-notes-for-the-life-stages-11-new-he-log-entries-committed-by-the-user-as-portolan-c8483af)
+    - The civilization demo also shows kinds and claims; this map carries its own kinds and topic tags.
+    - [demo claims](../changelog.md#12-kinds-and-every-claim-style-but-retracted-in-the-civilization-demo-portolan-c8fda73); [map kinds](../changelog.md#memoportolanrhumb-got-kinds-and-topic-tags-the-changelog-and-shipped-map-were-regenerated-from-the-diary-diary-job-7211fab1-portolan-ef29e2c)
 
 %% Rhumb tooling
 rhumb-spec needs rhumb-decisions
@@ -252,6 +264,7 @@ ui-layout needs ui-tree, ui-freshness: items are ordered by when they changed
 ui-labels needs ui-layout
 ui-star needs rhumb-star, ui-edit
 ui-search needs ui-tree
+ui-history needs ui-freshness, ui-diary
 ui-recent needs ui-index
 ui-copy needs ui-diary
 ui-legend needs ui-tree, ui-freshness
