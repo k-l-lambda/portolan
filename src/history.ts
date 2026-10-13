@@ -63,8 +63,8 @@ export interface NodeTime {
    * `children`: the node has no links but has child nodes; it takes the newest child's time.
    */
   source: "commit" | "local" | "link" | "children";
-  /** Time of the node's own line, kept so the UI can show both. */
-  lineTime: LineTime;
+  /** Time of the node's own line, kept so the UI can show both; null when git is not read (`dates: links`). */
+  lineTime: LineTime | null;
   /** The dated link that set `time`, when source is `link`. */
   link: { date: string; target: string } | null;
   /** The child whose time was used, when source is `children`. */
@@ -312,38 +312,48 @@ function dayStart(time: number): number {
  */
 export function nodeTimes(
   doc: RhumbDocument,
-  history: FileHistory,
+  /** Line times from git; null for `dates: links`, where only dated links count. */
+  history: FileHistory | null,
   dateOf?: (anchor: Anchor) => { date: string; time: number } | null,
 ): NodeTime[] {
   const out: NodeTime[] = [];
-  // Returns the node's time after its children are computed, so parents can use them.
-  const visit = (n: RhumbNode): NodeTime => {
+  // Returns the node's time after its children are computed, so parents can use them; null when
+  // nothing dates it (only without git: an item with no dated link and no dated child).
+  const visit = (n: RhumbNode): NodeTime | null => {
     const slot = out.length;
     out.push(null as unknown as NodeTime); // keep pre-order output
-    const kids = n.children.map(visit);
-    const lineTime = history.lines[n.line - 1] ?? { time: history.mtime, source: "local" as const, sha: null };
+    const kids = n.children.map(visit).filter((k): k is NodeTime => k !== null);
+    const lineTime = history ? history.lines[n.line - 1] ?? { time: history.mtime, source: "local" as const, sha: null } : null;
     const base = { line: n.line, lineTime, link: null, child: null };
 
-    let t: NodeTime;
-    if (n.anchors.length === 0 && kids.length > 0) {
-      // No links: the node is as fresh as its newest child.
+    let link: { date: string; time: number; target: string } | null = null;
+    for (const a of n.anchors) {
+      const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target) ?? (a.kind === "url" ? null : dateOf?.(a) ?? null);
+      if (d && (!link || d.time > link.time)) link = { ...d, target: a.target };
+    }
+    const newestChild = () => {
       const newest = kids.reduce((a, b) => (b.time > a.time ? b : a));
-      const child = n.children[kids.indexOf(newest)]!;
-      t = { ...base, time: newest.time, source: "children", child: { line: child.line, id: child.id } };
+      const child = n.children.find((c) => c.line === newest.line)!;
+      return { ...base, time: newest.time, source: "children" as const, child: { line: child.line, id: child.id } };
+    };
+
+    let t: NodeTime | null;
+    if (!lineTime) {
+      // Links only: the node's own dated link, else its newest dated child, else no time.
+      t = link ? { ...base, time: link.time, source: "link", link: { date: link.date, target: link.target } }
+        : kids.length > 0 ? newestChild() : null;
+    } else if (n.anchors.length === 0 && kids.length > 0) {
+      // No links: the node is as fresh as its newest child.
+      t = newestChild();
     } else {
-      let link: { date: string; time: number; target: string } | null = null;
-      for (const a of n.anchors) {
-        const d = linkDate(a.kind === "url" ? a.target : a.path ?? a.target) ?? (a.kind === "url" ? null : dateOf?.(a) ?? null);
-        if (d && (!link || d.time > link.time)) link = { ...d, target: a.target };
-      }
       // A link's time is the end of its day, so "an earlier day" is "ends before this day starts".
       t = link !== null && link.time < dayStart(lineTime.time)
         ? { ...base, time: link.time, source: "link", link: { date: link.date, target: link.target } }
         : { ...base, time: lineTime.time, source: lineTime.source };
     }
-    out[slot] = t;
+    if (t) out[slot] = t;
     return t;
   };
   doc.nodes.forEach(visit);
-  return out;
+  return out.filter(Boolean);
 }

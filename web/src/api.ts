@@ -19,6 +19,8 @@ export interface Freshness {
   repo: string | null;
   head: string | null;
   tracked: boolean;
+  /** `links`: the map dates items by links only and git was not read (front matter `dates`). */
+  dates?: "git" | "links";
   mtime: number;
   dirtyLines: number;
   lastCommit: Commit | null;

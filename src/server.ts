@@ -242,15 +242,18 @@ export function createRhumbServer(options: ServerOptions): Server {
       const ctx = contextFor(abs, doc, readLinked);
       const anchors = checkAnchors(doc, ctx);
       const diagnostics = [...doc.diagnostics, ...derived.diagnostics, ...anchors].sort((a, b) => a.line - b.line);
-      const h = await history.file(abs, version);
       const dateOf = (a: Anchor) => headingDate(resolveAnchor(a, ctx), readLinked);
+      // `dates: links`: items and the history rail are dated by links only, and git is not read.
+      const h = doc.dates === "links" ? null : await history.file(abs, version);
       const freshness = {
-        repo: h.repo, head: h.head, tracked: h.tracked, mtime: h.mtime, dirtyLines: h.dirtyLines,
-        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h, dateOf), commits: h.commits,
+        dates: doc.dates,
+        repo: h?.repo ?? null, head: h?.head ?? null, tracked: h?.tracked ?? false,
+        mtime: h?.mtime ?? Math.floor(statSync(abs).mtimeMs / 1000), dirtyLines: h?.dirtyLines ?? 0,
+        lastCommit: h?.lastCommit ?? null, nodes: nodeTimes(doc, h, dateOf), commits: h?.commits ?? {},
       };
-      // Commits that touched the file; a map with none is dated by its links instead.
-      const revs = await history.revisions(abs, TIMELINE_LIMIT);
-      const timeline = revs.revisions.length > 0
+      // Commits that touched the file; a map with none (or with `dates: links`) is dated by its links instead.
+      const revs = h ? await history.revisions(abs, TIMELINE_LIMIT) : { revisions: [], hasOlder: false };
+      const timeline = h && revs.revisions.length > 0
         ? gitTimeline(doc, source, h.mtime, revs.revisions, revs.hasOlder)
         : linkTimeline(doc, dateOf);
       return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness, timeline });
@@ -261,6 +264,7 @@ export function createRhumbServer(options: ServerOptions): Server {
       const { abs } = fileFor(param);
       const point = url.searchParams.get("point") ?? "";
       if (point !== "local" && !/^[0-9a-f]{40}$/.test(point)) throw new HttpError(400, "Invalid point");
+      if (load(abs).doc.dates === "links") throw new HttpError(404, "This map is dated by its links, not by git");
       const { revisions } = await history.revisions(abs, TIMELINE_LIMIT);
       const diff = pointDiff(revisions, point, readFileSync(abs, "utf8"));
       if (diff === null) throw new HttpError(404, "No such point in this map's history");

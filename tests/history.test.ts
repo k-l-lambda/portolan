@@ -52,7 +52,7 @@ describe("HistoryTracker", () => {
     expect(h.lastCommit).toMatchObject({ time: T2, summary: "finish b" });
     const times = nodeTimes(parse(src), h);
     expect(times.map((t) => [t.line, t.time, t.source])).toEqual([[1, T1, "commit"], [2, T2, "commit"], [3, mtime, "local"]]);
-    expect(h.commits[times[1]!.lineTime.sha!]!.summary).toBe("finish b");
+    expect(h.commits[times[1]!.lineTime!.sha!]!.summary).toBe("finish b");
 
     // A new commit moves HEAD; the tracker notices and re-blames.
     expect(await tracker.pollHeads()).toEqual([]);
@@ -91,7 +91,7 @@ links:
     expect(byLine[9]).toMatchObject({ source: "commit", link: null });
     // An uncommitted line linking to an earlier day also takes the linked date.
     expect(byLine[10]).toMatchObject({ source: "link", link: { date: "2025-12-01" } });
-    expect(byLine[10]!.lineTime.source).toBe("local");
+    expect(byLine[10]!.lineTime!.source).toBe("local");
   });
 
   it("does not treat a link dated the commit's own day as earlier", async () => {
@@ -358,6 +358,15 @@ links:
 `);
     const t = linkTimeline(doc);
     expect(t.source).toBe("links");
+    // Dates beyond the JS range share one clamped time; their written years still order them.
+    const deep = linkTimeline(parse(`---
+links:
+  log: log.md
+---
+- [x] Older [x](log:#-4,352,814,673-he) ^older
+- [x] Newer [x](log:#-6,124,853-he) ^newer
+`), (a) => ({ "-4,352,814,673-he": { date: "-4,352,814,673 HE", time: LONG_AGO }, "-6,124,853-he": { date: "-6,124,853 HE", time: LONG_AGO } })[a.fragment!] ?? null);
+    expect(deep.points.map((p) => p.date)).toEqual(["-6,124,853 HE", "-4,352,814,673 HE"]);
     expect(t.points.map((p) => [p.kind, p.date, p.nodes])).toEqual([
       ["link", "2026-10-10", ["later"]],
       ["link", "2026-10-08", ["early", "later"]],
@@ -462,5 +471,54 @@ describe("diffs of history points", () => {
       ["ctx", 2, 2, "x"], ["del", 3, null, "y"], ["add", null, 3, "Y"], ["ctx", 4, 4, "z"],
       ["hunk", null, null, "@@ -0,0 +1,1 @@"], ["add", null, 1, "top"],
     ]);
+  });
+});
+
+describe("dates: links", () => {
+  let dir: string;
+  afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
+
+  it("dates items by their links only, not by git", () => {
+    const doc = parse(`---
+dates: links
+links:
+  diary: ../diary/{path}.md
+---
+- [/] Group ^group
+  - [x] Linked [notes](diary:2026/1008) ^linked
+  - [ ] Undated ^undated
+- [ ] Alone ^alone
+`);
+    const times = nodeTimes(doc, null);
+    // The group takes its dated child; items with nothing dated have no time at all.
+    expect(times.map((t) => [t.line, t.source, t.link?.date ?? t.child?.id, t.lineTime])).toEqual([
+      [6, "children", "linked", null],
+      [7, "link", "2026-10-08", null],
+    ]);
+  });
+
+  it("keeps a committed map's times and history off git", async () => {
+    dir = repo();
+    mkdirSync(join(dir, "diary", "2026"), { recursive: true });
+    writeFileSync(join(dir, "diary", "2026", "1008.md"), "# notes\n");
+    const file = join(dir, "plan.rhumb");
+    writeFileSync(file, "---\ndates: links\nlinks:\n  diary: diary/{path}.md\n---\n- [x] Linked [notes](diary:2026/1008) ^linked\n- [ ] Undated ^undated\n");
+    commit(dir, "first", T2);
+    const server = createRhumbServer({ root: dir });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    try {
+      const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+      const body = await (await fetch(`${base}/api/doc?file=plan.rhumb`)).json() as {
+        freshness: { dates: string; repo: string | null; lastCommit: unknown; nodes: { line: number; source: string }[] };
+        timeline: { source: string; points: { kind: string; date: string }[] };
+      };
+      expect(body.freshness).toMatchObject({ dates: "links", repo: null, lastCommit: null });
+      expect(body.freshness.nodes.map((t) => [t.line, t.source])).toEqual([[6, "link"]]);
+      expect(body.timeline.source).toBe("links");
+      expect(body.timeline.points.map((p) => [p.kind, p.date])).toEqual([["link", "2026-10-08"]]);
+      expect((await fetch(`${base}/api/diff?file=plan.rhumb&point=local`)).status).toBe(404);
+    } finally {
+      server.close();
+    }
   });
 });

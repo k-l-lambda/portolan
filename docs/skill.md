@@ -86,6 +86,7 @@ links:
 Every Markdown link in a node's title or notes is an anchor of that node. Prefer an anchor note over a link in the title.
 
 - Define link prefixes in front matter `links:`; `{path}` is replaced and the result is relative to the `.rhumb` file. Then write `diary:2026/1008#frag`.
+- Items are dated by git (each line's last commit, or an earlier dated link). When the links carry the real dates and commit times would mislead, for example a map of past events, set `dates: links` in the front matter: items then take only their links' dates.
 - Plain relative paths (`../notes/x.md#frag`) and `https://` URLs also work.
 - The fragment is a GitHub heading slug (lowercase, punctuation removed, spaces → `-`). A unique prefix is enough: `#portolan` matches `## Portolan: agent-human shared mind map ...`.
 - To point at one entry under the heading, append a text fragment: `#portolan:~:text=Backlog.md`. The resolver picks the first top-level list item under that heading whose lines contain the text. Choose a distinctive phrase from the entry's first line or summary.
@@ -304,6 +305,7 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | `[x]` parent with open children | `W007` | close or drop the children first |
 | `[/]`/`[x]` node whose `needs` target is not done | `W008` | fix the status or the edge |
 | `^Upper_Case` or `^_handmade` ID | `W009` | lowercase kebab-case, no leading `_` |
+| `dates:` other than `git` or `links` | `W014` | use one of the two |
 | `kind: 3`, `refuted: yes` | `W012` | `kind` is a word; claim flags are `true` (remove the key instead of `false`) |
 | `supported: true` and `refuted: true` together | `W013` | keep the one verdict the evidence supports |
 | Claim flag on an item that is not a hypothesis or finding | `I004` | add `kind: hypothesis` or `kind: finding`, or drop the flag |

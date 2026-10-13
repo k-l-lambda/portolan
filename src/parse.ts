@@ -11,7 +11,7 @@ const STATUS: Record<string, Status> = {
   "-": "dropped", "!": "blocked", "?": "idea",
 };
 export const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
-const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links"]);
+const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links", "dates"]);
 const ATTR_KEYS = new Set<string>(["owner", "due", "tags", "priority", "star", "kind", ...CLAIM_FLAGS]);
 const URL_SCHEMES = new Set(["http", "https", "mailto"]);
 export const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
@@ -54,6 +54,7 @@ export function parse(source: string, options: ParseOptions = {}): RhumbDocument
     rhumb: RHUMB_VERSION,
     title: options.fileName ? basename(options.fileName, extname(options.fileName)) : null,
     links: {},
+    dates: "git",
     nodes: [],
     edges: [],
     diagnostics,
@@ -208,6 +209,10 @@ function readFrontMatter(
       } else {
         doc.links = links;
       }
+    } else if (key === "dates") {
+      const v = isScalar(value) ? value.value : null;
+      if (v === "git" || v === "links") doc.dates = v;
+      else report("W014", keyLine, `dates must be git or links; using git`);
     } else if (!FRONT_MATTER_KEYS.has(key)) {
       report("I001", keyLine, `Unknown front matter key "${key}"`);
     }

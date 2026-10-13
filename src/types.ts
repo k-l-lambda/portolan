@@ -62,6 +62,11 @@ export interface RhumbDocument {
   rhumb: string;
   title: string | null;
   links: Record<string, string>;
+  /**
+   * Where item times come from: `git` (default) dates lines by their commits, `links` only by
+   * the dates of their links, without reading the repository (front matter `dates`).
+   */
+  dates: "git" | "links";
   nodes: RhumbNode[];
   edges: Edge[];
   diagnostics: Diagnostic[];

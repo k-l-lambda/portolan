@@ -65,6 +65,9 @@ If the first line is `---`, everything up to the next `---` is parsed as YAML. T
 | `rhumb` | syntax version | current version |
 | `title` | graph title | file name |
 | `links` | link prefix table, `prefix: template`, with a `{path}` placeholder in the template | empty |
+| `dates` | where tools take item times from: `git` (each line's last commit, or an earlier dated link) or `links` (dated links only; the repository is not read) | `git` |
+
+`dates: links` suits a map whose links carry the real dates, such as a chronicle of past events: an item takes the date of its newest dated link, else of its newest dated child, and has no time otherwise. Tools then build any history view from the linked dates, not from commits. Any other value is warning `W014` and counts as `git`.
 
 Unknown keys are kept and reported as `I001`. A version newer than the parser supports is error `E013`. A missing closing `---`, invalid YAML, or a `links` value that is not a string map is error `E012`; an unterminated block makes the whole file unusable.
 

@@ -109,6 +109,14 @@ export function gitTimeline(current: RhumbDocument, currentSource: string, mtime
   return { source: "git", points, truncated: hasOlder };
 }
 
+/** The year of a date label such as `2026-10-08` or `-4,352,814,673 HE`, in CE. */
+function writtenYear(date: string): number {
+  const m = /^([−-]?[\d,]+)/.exec(date);
+  if (!m) return 0;
+  const year = Number(m[1]!.replace(/,/g, "").replace("−", "-"));
+  return / HE\b/.test(date) ? year - 10000 : year;
+}
+
 /**
  * Timeline for a map without commits: one point per date its links name, newest first. A
  * link's date comes from its path (`diary:2026/1008`) or, through `dateOf`, from the dated
@@ -129,7 +137,9 @@ export function linkTimeline(doc: RhumbDocument, dateOf?: (anchor: Anchor) => { 
     }
   };
   walk(doc.nodes);
-  const all = [...byDate].sort((a, b) => b[1].time - a[1].time);
+  // Dates further back than a JS Date can hold are all clamped to one time, so ties are broken
+  // by the year as written (a Holocene year is CE + 10000).
+  const all = [...byDate].sort((a, b) => b[1].time - a[1].time || writtenYear(b[0]) - writtenYear(a[0]));
   const points = all.slice(0, TIMELINE_LIMIT).map(([date, s]): TimelinePoint => ({
     kind: "link", time: s.time, sha: null, summary: null, date, nodes: [...s.nodes], gone: 0,
   }));

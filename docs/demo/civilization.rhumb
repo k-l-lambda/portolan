@@ -1,6 +1,8 @@
 ---
 rhumb: 0.1
 title: II 型文明培养计划
+# 节点时间只取自文明构建日志的纪年，不读取 git 提交时间。
+dates: links
 links:
   chronicle: "{path}.md"
 ---

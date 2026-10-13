@@ -58,9 +58,9 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
                 </button>
               </>
             )}
-            {updated.source === "commit" && <CommitRef sha={updated.lineTime.sha!} freshness={freshness} />}
+            {updated.source === "commit" && updated.lineTime && <CommitRef sha={updated.lineTime.sha!} freshness={freshness} />}
           </dd>
-          {(updated.source === "link" || updated.source === "children") && (
+          {(updated.source === "link" || updated.source === "children") && updated.lineTime && (
             <>
               <dt>{updated.lineTime.source === "local" ? "Line edited" : "Line committed"}</dt>
               <dd>
@@ -149,12 +149,21 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
     <aside className="panel" aria-label="Document diagnostics">
       <h2 className="panel-title">Diagnostics</h2>
       <dl className="fresh-info">
-        <dt>Last commit</dt>
-        <dd>
-          {!freshness.repo ? "not in a git repository"
-            : !freshness.tracked ? "not committed yet (untracked)"
-            : c ? <>{at(c.time)} · <CopyText value={c.sha} label={c.sha.slice(0, 8)} className="sha" /> {c.summary}</> : "none"}
-        </dd>
+        {freshness.dates === "links" ? (
+          <>
+            <dt>Dates</dt>
+            <dd>from the dates of linked entries (<code>dates: links</code>); git history is not read</dd>
+          </>
+        ) : (
+          <>
+            <dt>Last commit</dt>
+            <dd>
+              {!freshness.repo ? "not in a git repository"
+                : !freshness.tracked ? "not committed yet (untracked)"
+                : c ? <>{at(c.time)} · <CopyText value={c.sha} label={c.sha.slice(0, 8)} className="sha" /> {c.summary}</> : "none"}
+            </dd>
+          </>
+        )}
         <dt>File modified</dt>
         <dd>
           {at(freshness.mtime)}
