@@ -156,6 +156,7 @@ describe("staticPath", () => {
     expect(staticPath("doc", "team plans/q4 #1.rhumb")).toBe("api/doc/team%20plans/q4%20%231.rhumb.json");
     expect(staticPath("anchor", "a/b.rhumb", 12, 0)).toBe("api/anchor/a/b.rhumb/12-0.json");
     expect(staticPath("source", "a/b.rhumb")).toBe("api/source/a/b.rhumb.txt");
+    expect(staticPath("diff", "a/b.rhumb", "local")).toBe("api/diff/a/b.rhumb/local.txt");
   });
 });
 

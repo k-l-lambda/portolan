@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
 import { HistoryTracker, nodeTimes } from "./history.ts";
-import { gitTimeline, linkTimeline, TIMELINE_LIMIT } from "./timeline.ts";
+import { gitTimeline, linkTimeline, pointDiff, TIMELINE_LIMIT } from "./timeline.ts";
 import { isStarred, parse } from "./parse.ts";
 import { checkAnchors, contextFor, excerpt, headingDate, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
@@ -254,6 +254,19 @@ export function createRhumbServer(options: ServerOptions): Server {
         ? gitTimeline(doc, source, h.mtime, revs.revisions, revs.hasOlder)
         : linkTimeline(doc, dateOf);
       return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness, timeline });
+    }
+
+    if (key === "GET /api/diff") {
+      // What one history point changed in the map, as a unified diff (`point`: a commit sha or `local`).
+      const { abs } = fileFor(param);
+      const point = url.searchParams.get("point") ?? "";
+      if (point !== "local" && !/^[0-9a-f]{40}$/.test(point)) throw new HttpError(400, "Invalid point");
+      const { revisions } = await history.revisions(abs, TIMELINE_LIMIT);
+      const diff = pointDiff(revisions, point, readFileSync(abs, "utf8"));
+      if (diff === null) throw new HttpError(404, "No such point in this map's history");
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-cache" });
+      res.end(diff);
+      return;
     }
 
     if (key === "GET /api/source") {

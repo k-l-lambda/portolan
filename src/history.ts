@@ -31,6 +31,8 @@ export interface Revision {
   /** Committer time, unix seconds. */
   time: number;
   summary: string;
+  /** The file's path at that commit, relative to the repository root. */
+  path: string;
   source: string;
 }
 
@@ -193,7 +195,7 @@ export class HistoryTracker {
     for (let i = 0; i < records.length; i += 8) {
       const batch = await Promise.all(records.slice(i, i + 8).map(async (r) => {
         const source = await git(repo, ["show", `${r.sha}:${r.path}`]).catch(() => "");
-        return { sha: r.sha, time: r.time, summary: r.summary, source };
+        return { sha: r.sha, time: r.time, summary: r.summary, path: r.path, source };
       }));
       revisions.push(...batch);
     }

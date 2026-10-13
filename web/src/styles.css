@@ -426,8 +426,11 @@ a { color: var(--accent); }
   width: 380px; flex: none; overflow: auto; padding: 14px 16px;
   border-left: 1px solid var(--border); background: var(--surface);
 }
-/* Right side: the panel, and beside Diagnostics the history rail, a fixed strip on the far right. */
+/* Right side: the panel (with the diff of a history point under Diagnostics), and beside them the
+   history rail, a fixed strip on the far right. */
 .side { flex: none; display: flex; min-height: 0; }
+.side-main { width: 380px; flex: none; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--border); background: var(--surface); }
+.side-main > .panel { width: auto; flex: 1 1 auto; min-height: 0; border-left: 0; }
 .rail {
   width: 88px; flex: none; overflow-y: auto; padding: 14px 8px 14px 4px;
   border-left: 1px solid var(--border); background: var(--surface);
@@ -463,6 +466,33 @@ a { color: var(--accent); }
 .rail-local .rail-dot:hover, .rail-local.active .rail-dot { background: var(--st-doing); }
 .rail-link .rail-dot:hover, .rail-link.active .rail-dot { background: var(--muted); }
 .rail-point.active .rail-age { color: var(--text); }
+/* The point whose diff is open: a ring around its dot. */
+.rail-point.pinned .rail-dot { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent); }
+.rail-local.pinned .rail-dot { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--st-doing); }
+
+/* Diff of a history point: diff syntax colors from the status tokens, so both themes follow. */
+.diff-panel { flex: 0 1 55%; min-height: 0; display: flex; flex-direction: column; padding: 10px 16px 12px; border-top: 1px solid var(--border); }
+.diff-head { display: flex; align-items: center; gap: 8px; }
+.diff-title { flex: 1; min-width: 0; margin: 0; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diff-close { flex: none; width: 22px; height: 22px; padding: 0; font-size: 16px; line-height: 1; border: 1px solid transparent; border-radius: 4px; background: none; color: var(--muted); cursor: pointer; }
+.diff-close:hover { color: var(--text); border-color: var(--border); }
+.diff-close:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.diff-meta { margin: 2px 0 8px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.diff-stat-add { color: var(--st-done); }
+.diff-stat-del { color: var(--st-blocked); }
+.diff-body { flex: 1; min-height: 0; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); }
+.diff-body:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.diff { width: 100%; border-collapse: collapse; font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.diff td { padding: 0 6px; vertical-align: top; }
+.diff-num { width: 1%; text-align: right; color: var(--muted); user-select: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.diff-text { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); }
+.diff-mark { display: inline-block; width: 1.2ch; user-select: none; }
+.diff-file .diff-text { color: var(--muted); font-weight: 600; }
+.diff-hunk td { color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.diff-add td { background: color-mix(in srgb, var(--st-done) 14%, transparent); }
+.diff-add .diff-mark { color: var(--st-done); }
+.diff-del td { background: color-mix(in srgb, var(--st-blocked) 13%, transparent); }
+.diff-del .diff-mark { color: var(--st-blocked); }
 .rail-dot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 6px; }
 .panel-title { font-size: 16px; margin: 4px 0; }
@@ -502,5 +532,6 @@ a { color: var(--accent); }
   .search-input { width: 140px; }
   .doc-body { flex-direction: column; }
   .side { max-height: 45%; border-top: 1px solid var(--border); }
+  .side-main { width: auto; flex: 1; min-width: 0; border-left: 0; }
   .panel { width: auto; flex: 1; min-width: 0; border-left: 0; }
 }

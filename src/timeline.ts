@@ -3,6 +3,7 @@
 // differs from its last commit. Each point lists the nodes it changed. A map outside git (or not
 // committed yet) is dated by its links instead: one point per linked date.
 
+import { unifiedDiff } from "./diff.ts";
 import { linkDate, type Revision } from "./history.ts";
 import { parse } from "./parse.ts";
 import type { Anchor, Edge, RhumbDocument, RhumbNode } from "./types.ts";
@@ -133,4 +134,19 @@ export function linkTimeline(doc: RhumbDocument, dateOf?: (anchor: Anchor) => { 
     kind: "link", time: s.time, sha: null, summary: null, date, nodes: [...s.nodes], gone: 0,
   }));
   return { source: "links", points, truncated: all.length > TIMELINE_LIMIT };
+}
+
+/**
+ * The diff a git timeline point stands for, in unified format: a commit against the revision
+ * before it (nothing before the first one), `local` (uncommitted changes) against the newest
+ * commit. Null when the point is not among `revisions`.
+ */
+export function pointDiff(revisions: Revision[], point: string, current: string): string | null {
+  if (revisions.length === 0) return null;
+  if (point === "local") return unifiedDiff(revisions[0]!.source, current, revisions[0]!.path);
+  const i = revisions.findIndex((r) => r.sha === point);
+  if (i < 0) return null;
+  const r = revisions[i]!;
+  const base = revisions[i + 1] ?? null;
+  return unifiedDiff(base?.source ?? null, r.source, r.path);
 }

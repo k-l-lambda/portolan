@@ -6,11 +6,13 @@ import { useState } from "react";
 import type { Timeline } from "../../src/timeline.ts";
 import { pointKey, pointTitle, railLabels } from "./timelineLabels.ts";
 
-export function TimelineRail({ timeline, now, active, onActive }: {
+export function TimelineRail({ timeline, now, active, pinned = null, onActive }: {
   timeline: Timeline;
   now: number;
   /** Key of the highlighted point, see pointKey. */
   active: string | null;
+  /** Key of the point whose diff is shown, marked with a ring. */
+  pinned?: string | null;
   onActive: (key: string | null) => void;
 }) {
   // The view's clock ticks once a minute; entering the rail also refreshes the ages when they
@@ -32,7 +34,7 @@ export function TimelineRail({ timeline, now, active, onActive }: {
             {timeline.points.map((p, i) => {
               const key = pointKey(p);
               return (
-                <li key={key} className={`rail-point rail-${p.kind}${active === key ? " active" : ""}`}>
+                <li key={key} className={`rail-point rail-${p.kind}${active === key ? " active" : ""}${pinned === key ? " pinned" : ""}`}>
                   <span className="rail-age" aria-hidden={labels[i] === null}>{labels[i] ?? ""}</span>
                   <button type="button" className="rail-dot" title={pointTitle(p)}
                     aria-label={pointTitle(p).replace(/\n/g, ", ")}

@@ -62,17 +62,25 @@ export const READ_ONLY = STATIC !== null;
 export const DEFAULT_FILE = STATIC || null;
 
 /** Static file for an API call; mirrors what scripts/build-pages.ts writes. */
-export function staticPath(kind: "files" | "doc" | "anchor" | "source", file?: string, line?: number, index?: number): string {
+export function staticPath(kind: "files" | "doc" | "anchor" | "source" | "diff", file?: string, line?: number | string, index?: number): string {
   if (kind === "files") return "api/files.json";
   // Each path segment is encoded on its own, so `sub/a.rhumb` maps to real folders on the host.
   const f = file!.split("/").map(encodeURIComponent).join("/");
   // Source is saved as .txt, so a static host serves it as text instead of a download.
   if (kind === "source") return `api/source/${f}.txt`;
+  // `line` is the history point here: a commit sha or "local".
+  if (kind === "diff") return `api/diff/${f}/${line}.txt`;
   return kind === "doc" ? `api/doc/${f}.json` : `api/anchor/${f}/${line}-${index}.json`;
 }
 
 /** URL of a map's raw .rhumb text, to open in a new tab. */
 export const sourceUrl = (file: string) => (STATIC !== null ? staticPath("source", file) : `/api/source?${q(file)}`);
+
+async function text(path: string): Promise<string> {
+  const res = await fetch(path);
+  if (!res.ok) throw new ApiError(res.status, (await res.json().catch(() => ({}))).error ?? res.statusText);
+  return res.text();
+}
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
@@ -93,6 +101,9 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ version, edit }),
     }),
+  /** What a history point changed, as a unified diff; `point` is a commit sha or "local". */
+  diff: (file: string, point: string) =>
+    text(STATIC !== null ? staticPath("diff", file, point) : `/api/diff?${q(file)}&point=${encodeURIComponent(point)}`),
   anchor: (file: string, line: number, index: number) =>
     call<AnchorResponse>(STATIC !== null ? staticPath("anchor", file, line, index) : `/api/anchor?${q(file)}&node=${line}&index=${index}`),
 };

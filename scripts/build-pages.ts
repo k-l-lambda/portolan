@@ -8,6 +8,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } fr
 import type { AddressInfo } from "node:net";
 import { dirname, join, resolve } from "node:path";
 import { createRhumbServer } from "../src/server.ts";
+import type { Timeline } from "../src/timeline.ts";
 import type { RhumbNode } from "../src/types.ts";
 import { staticPath } from "../web/src/api.ts";
 
@@ -39,6 +40,7 @@ cpSync(webDist, out, { recursive: true });
 await save("/api/files", staticPath("files"));
 const { files } = (await (await fetch(`${base}/api/files`)).json()) as { files: { file: string }[] };
 let anchors = 0;
+let diffs = 0;
 for (const { file } of files) {
   const q = `file=${encodeURIComponent(file)}`;
   await save(`/api/doc?${q}`, staticPath("doc", file));
@@ -46,7 +48,15 @@ for (const { file } of files) {
   const source = onDisk(staticPath("source", file));
   mkdirSync(dirname(source), { recursive: true });
   writeFileSync(source, await (await fetch(`${base}/api/source?${q}`)).text());
-  const { doc } = (await (await fetch(`${base}/api/doc?${q}`)).json()) as { doc: { nodes: RhumbNode[] } };
+  const { doc, timeline } = (await (await fetch(`${base}/api/doc?${q}`)).json()) as { doc: { nodes: RhumbNode[] }; timeline?: Timeline };
+  // The diff behind each history point; a static host serves them as text.
+  for (const p of timeline?.source === "git" ? timeline.points : []) {
+    const point = p.kind === "local" ? "local" : p.sha!;
+    const out = onDisk(staticPath("diff", file, point));
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, await (await fetch(`${base}/api/diff?${q}&point=${point}`)).text());
+    diffs++;
+  }
   const walk = async (nodes: RhumbNode[]) => {
     for (const n of nodes) {
       for (let i = 0; i < n.anchors.length; i++, anchors++) {
@@ -67,5 +77,5 @@ writeFileSync(index, readFileSync(index, "utf8").replace("<head>", `<head>\n    
 writeFileSync(join(out, ".nojekyll"), "");
 
 server.close();
-console.log(`${outArg}: ${files.length} map(s), ${anchors} anchors`);
+console.log(`${outArg}: ${files.length} map(s), ${anchors} anchors, ${diffs} diffs`);
 process.exit(0); // the server's history poller would keep the process alive

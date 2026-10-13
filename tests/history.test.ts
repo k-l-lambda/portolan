@@ -4,7 +4,8 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { contextFor, createRhumbServer, dateIn, gitTimeline, headingDate, HistoryTracker, linkDate, linkTimeline, LONG_AGO, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
+import { contextFor, createRhumbServer, dateIn, gitTimeline, headingDate, HistoryTracker, linkDate, linkTimeline, LONG_AGO, nodeTimes, parse, pointDiff, resolveAnchor, unifiedDiff, versionOf } from "../src/index.ts";
+import { parseUnified } from "../web/src/diffView.ts";
 import { absoluteTime, freshness, isoTime, relativeTime, shortAgo, shortDaysAgo } from "../web/src/time.ts";
 import { pointTitle, railLabels } from "../web/src/timelineLabels.ts";
 
@@ -404,5 +405,62 @@ describe("history rail labels", () => {
     const t = pointTitle({ kind: "commit", time: T1, sha: "0123456789abcdef".padEnd(40, "0"), summary: "finish b", date: null, nodes: ["a", "b"], gone: 1 });
     expect(t.split("\n")).toEqual([absoluteTime(T1), "01234567 finish b", "2 items changed, 1 item since removed"]);
     expect(pointTitle({ kind: "link", time: T1, sha: null, summary: null, date: "2026-10-08", nodes: ["x"], gone: 0 })).toBe("2026-10-08\n1 item linked to this date");
+  });
+});
+
+describe("diffs of history points", () => {
+  let dir: string;
+  afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
+
+  it("writes unified diffs with merged hunks", () => {
+    const a = Array.from({ length: 20 }, (_, i) => `l${i + 1}`).join("\n") + "\n";
+    const b = a.replace("l3\n", "l3 changed\n").replace("l6\n", "").replace("l18\n", "l18\nnew\n");
+    expect(unifiedDiff(a, b, "plan.rhumb", 2)).toBe([
+      "--- a/plan.rhumb", "+++ b/plan.rhumb",
+      // The changes at 3 and 6 share their context, so they make one hunk.
+      "@@ -1,8 +1,7 @@", " l1", " l2", "-l3", "+l3 changed", " l4", " l5", "-l6", " l7", " l8",
+      "@@ -17,4 +16,5 @@", " l17", " l18", "+new", " l19", " l20", "",
+    ].join("\n"));
+    expect(unifiedDiff(a, a, "plan.rhumb")).toBe("");
+    // A first commit adds every line; an insertion into an empty file names line 0.
+    expect(unifiedDiff(null, "x\ny\n", "new.rhumb")).toBe("--- /dev/null\n+++ b/new.rhumb\n@@ -0,0 +1,2 @@\n+x\n+y\n");
+  });
+
+  it("serves the diff of a commit, the first commit and local changes", async () => {
+    dir = repo();
+    const file = join(dir, "plan.rhumb");
+    writeFileSync(file, "- [ ] A ^a\n- [ ] B ^b\n");
+    commit(dir, "first", T1);
+    writeFileSync(file, "- [ ] A ^a\n- [x] B ^b\n");
+    commit(dir, "finish b", T2);
+    writeFileSync(file, "- [/] A ^a\n- [x] B ^b\n");
+    const { revisions } = await new HistoryTracker().revisions(file, 50);
+    expect(pointDiff(revisions, revisions[0]!.sha, "")).toBe("--- a/plan.rhumb\n+++ b/plan.rhumb\n@@ -1,2 +1,2 @@\n - [ ] A ^a\n-- [ ] B ^b\n+- [x] B ^b\n");
+    expect(pointDiff(revisions, revisions[1]!.sha, "")!.split("\n").slice(0, 3)).toEqual(["--- /dev/null", "+++ b/plan.rhumb", "@@ -0,0 +1,2 @@"]);
+    expect(pointDiff(revisions, "f".repeat(40), "")).toBeNull();
+
+    const server = createRhumbServer({ root: dir });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    try {
+      const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}/api/diff?file=plan.rhumb`;
+      const local = await fetch(`${base}&point=local`);
+      expect(local.headers.get("content-type")).toMatch(/^text\/plain/);
+      expect(await local.text()).toContain("-- [ ] A ^a\n+- [/] A ^a\n");
+      expect((await fetch(`${base}&point=${revisions[0]!.sha}`)).status).toBe(200);
+      expect((await fetch(`${base}&point=${"0".repeat(40)}`)).status).toBe(404);
+      expect((await fetch(`${base}&point=HEAD`)).status).toBe(400);
+    } finally {
+      server.close();
+    }
+  });
+
+  it("numbers diff rows for the panel", () => {
+    const { rows, added, removed } = parseUnified("--- a/p\n+++ b/p\n@@ -2,3 +2,3 @@\n x\n-y\n+Y\n z\n@@ -0,0 +1,1 @@\n+top\n");
+    expect([added, removed]).toEqual([2, 1]);
+    expect(rows.map((r) => [r.kind, r.old, r.new, r.text])).toEqual([
+      ["file", null, null, "--- a/p"], ["file", null, null, "+++ b/p"], ["hunk", null, null, "@@ -2,3 +2,3 @@"],
+      ["ctx", 2, 2, "x"], ["del", 3, null, "y"], ["add", null, 3, "Y"], ["ctx", 4, 4, "z"],
+      ["hunk", null, null, "@@ -0,0 +1,1 @@"], ["add", null, 1, "top"],
+    ]);
   });
 });

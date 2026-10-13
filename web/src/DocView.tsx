@@ -13,6 +13,7 @@ import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { searchNodes } from "./search.ts";
 import { TimelineRail } from "./Timeline.tsx";
+import { DiffPanel } from "./DiffPanel.tsx";
 import { pointKey } from "./timelineLabels.ts";
 import { nodeKind } from "../../src/kinds.ts";
 import { IconButton } from "./IconButton.tsx";
@@ -199,6 +200,38 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // History rail (shown with Diagnostics): the point under the pointer or keyboard focus.
   const [railActive, setRailActive] = useState<string | null>(null);
   useEffect(() => setRailActive(null), [selected]);
+  // The diff panel stays on the last git point hovered or focused until another one or Close;
+  // pointing at the panel highlights that point's nodes again.
+  const [diffPoint, setDiffPoint] = useState<string | null>(null);
+  const [diffHover, setDiffHover] = useState(false);
+  const [diffText, setDiffText] = useState<{ key: string; text: string | null; error: string | null } | null>(null);
+  const diffCache = useRef(new Map<string, string>());
+  const onRailActive = useCallback((key: string | null) => {
+    setRailActive(key);
+    if (key && data?.timeline?.source === "git") setDiffPoint(key);
+  }, [data]);
+  // Forget a pinned point that a reload removed, or when another map opens.
+  useEffect(() => {
+    if (diffPoint && !data?.timeline?.points.some((p) => pointKey(p) === diffPoint)) setDiffPoint(null);
+  }, [data, diffPoint]);
+  useEffect(() => { setDiffPoint(null); diffCache.current.clear(); }, [file]);
+  useEffect(() => {
+    if (!diffPoint || !data) return;
+    // Uncommitted changes move with the file; a commit's diff never does.
+    const cacheKey = diffPoint === "local" ? `local:${data.version}` : diffPoint;
+    const hit = diffCache.current.get(cacheKey);
+    if (hit !== undefined) return setDiffText({ key: diffPoint, text: hit, error: null });
+    setDiffText({ key: diffPoint, text: null, error: null });
+    let live = true;
+    // A short wait, so sweeping the pointer down the rail does not fetch every dot on the way.
+    const t = setTimeout(() => {
+      api.diff(file, diffPoint).then(
+        (text) => { diffCache.current.set(cacheKey, text); if (live) setDiffText({ key: diffPoint, text, error: null }); },
+        (e) => live && setDiffText({ key: diffPoint, text: null, error: `Could not load the diff: ${(e as Error).message}` }),
+      );
+    }, 120);
+    return () => { live = false; clearTimeout(t); };
+  }, [diffPoint, data, file]);
   const [query, setQuery] = useState("");
   const search = useMemo(() => searchNodes(all.values(), query), [all, query]);
   const [hit, setHit] = useState(-1);
@@ -365,7 +398,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     };
     const focusNodes = new Set<string>();
     const matches = new Set(search.keys.map(shown).filter((k): k is string => k !== null));
-    const point = !hover && !selected && railActive ? data?.timeline?.points.find((p) => pointKey(p) === railActive) : undefined;
+    const railKey = railActive ?? (diffHover ? diffPoint : null);
+    const point = !hover && !selected && railKey ? data?.timeline?.points.find((p) => pointKey(p) === railKey) : undefined;
     const railNodes = new Set((point?.nodes ?? []).map(shown).filter((k): k is string => k !== null));
     const searching = !hover && !point && query.trim() !== "";
     // Like a search, a history point lights up only its own nodes and the lines between them.
@@ -454,7 +488,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id)))
       : point ? railNodes : new Set<string>();
     return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near) };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, data]);
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, data]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -627,6 +661,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           </ReactFlow>
         </div>
         <div className="side">
+        <div className="side-main">
         <SidePanel
           key={data.version}
           file={file}
@@ -638,7 +673,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           now={now}
           onSelectLine={selectLine}
         />
-        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive} onActive={setRailActive} />}
+        {!node && diffPoint && (() => {
+          const p = data.timeline?.points.find((x) => pointKey(x) === diffPoint);
+          const d = diffText?.key === diffPoint ? diffText : null;
+          return p && <DiffPanel point={p} diff={d?.text ?? null} error={d?.error ?? null} now={now}
+            onClose={() => (setDiffPoint(null), setDiffHover(false))} onHover={setDiffHover} />;
+        })()}
+        </div>
+        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive ?? (diffHover ? diffPoint : null)} pinned={diffPoint} onActive={onRailActive} />}
         </div>
       </div>
     </div>
