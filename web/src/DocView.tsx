@@ -12,6 +12,8 @@ import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { searchNodes } from "./search.ts";
+import { TimelineRail } from "./Timeline.tsx";
+import { pointKey } from "./timelineLabels.ts";
 import { nodeKind } from "../../src/kinds.ts";
 import { IconButton } from "./IconButton.tsx";
 import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
@@ -194,6 +196,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // best SEARCH_LIST matches are listed; arrows move through them, Enter or a click goes to one.
   // With the list closed, Enter steps through every match best first (Shift+Enter backwards).
   // Escape closes the list, then clears the query.
+  // History rail (shown with Diagnostics): the point under the pointer or keyboard focus.
+  const [railActive, setRailActive] = useState<string | null>(null);
+  useEffect(() => setRailActive(null), [selected]);
   const [query, setQuery] = useState("");
   const search = useMemo(() => searchNodes(all.values(), query), [all, query]);
   const [hit, setHit] = useState(-1);
@@ -349,9 +354,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
   const { nodes, edges, focusCss } = useMemo(() => {
-    // Focus set: the hovered node, else the search matches (only they and the edges between
-    // them light up), else the selected node, else (with "Highlight starred") every starred
-    // node. A node in a collapsed subtree is shown through its nearest visible card.
+    // Focus set: the hovered node, else the nodes a hovered history point changed, else the
+    // search matches (for both, only they and the edges between them light up), else the
+    // selected node, else (with "Highlight starred") every starred node. A node in a collapsed
+    // subtree is shown through its nearest visible card.
     const visibleKeys = new Set(base.nodes.map((n) => n.id));
     const shown = (key: string): string | null => {
       for (let k: string | null = key; k; k = parents.get(k) ? nodeKey(parents.get(k)!) : null) if (visibleKeys.has(k)) return k;
@@ -359,8 +365,13 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     };
     const focusNodes = new Set<string>();
     const matches = new Set(search.keys.map(shown).filter((k): k is string => k !== null));
-    const searching = !hover && query.trim() !== "";
+    const point = !hover && !selected && railActive ? data?.timeline?.points.find((p) => pointKey(p) === railActive) : undefined;
+    const railNodes = new Set((point?.nodes ?? []).map(shown).filter((k): k is string => k !== null));
+    const searching = !hover && !point && query.trim() !== "";
+    // Like a search, a history point lights up only its own nodes and the lines between them.
+    const exclusive = searching || !!point;
     if (hover?.kind === "node") focusNodes.add(hover.id);
+    else if (point) railNodes.forEach((k) => focusNodes.add(k));
     else if (searching) matches.forEach((k) => focusNodes.add(k));
     else if (!hover && selected) focusNodes.add(selected);
     else if (!hover && highlightStars) for (const n of starredList) { const k = shown(nodeKey(n)); if (k) focusNodes.add(k); }
@@ -368,7 +379,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const activeEdges = new Set<string>();
     const activeNodes = new Set<string>(focusNodes);
     for (const e of base.edges) {
-      const touches = searching
+      const touches = exclusive
         ? focusNodes.has(e.source) && focusNodes.has(e.target)
         : focusNodes.has(e.source) || focusNodes.has(e.target);
       if (e.id === focusEdge || touches) {
@@ -376,8 +387,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         activeNodes.add(e.source).add(e.target);
       }
     }
-    // A search with no match still dims the map, so "nothing found" is visible.
-    const focused = activeNodes.size > 0 || searching;
+    // A search with no match, or a point whose nodes are all gone, still dims the map.
+    const focused = activeNodes.size > 0 || exclusive;
     // Containers of active cards stay undimmed, otherwise their opacity would fade the cards too.
     for (const key of [...activeNodes]) {
       for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) activeNodes.add(nodeKey(p));
@@ -440,9 +451,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     // Dimming is a stylesheet keyed by node ID instead (see focusCss).
     // While hovering, the cards the highlight reaches lift a little; the hovered card itself lifts
     // more through plain :hover CSS, so it is left out here.
-    const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id))) : new Set<string>();
+    const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id)))
+      : point ? railNodes : new Set<string>();
     return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near) };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query]);
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, data]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -614,6 +626,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             }} />
           </ReactFlow>
         </div>
+        <div className="side">
         <SidePanel
           key={data.version}
           file={file}
@@ -625,6 +638,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           now={now}
           onSelectLine={selectLine}
         />
+        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive} onActive={setRailActive} />}
+        </div>
       </div>
     </div>
   );

@@ -25,6 +25,15 @@ export interface Commit {
   summary: string;
 }
 
+/** One commit that touched a file, with the file's text at that commit. */
+export interface Revision {
+  sha: string;
+  /** Committer time, unix seconds. */
+  time: number;
+  summary: string;
+  source: string;
+}
+
 export interface FileHistory {
   /** Repository root, or null when the file is not inside a git work tree. */
   repo: string | null;
@@ -97,6 +106,7 @@ export class HistoryTracker {
   private repoOf = new Map<string, Promise<string | null>>();
   private heads = new Map<string, string | null>();
   private cache = new Map<string, { key: string; value: FileHistory }>();
+  private revCache = new Map<string, { key: string; value: Promise<{ revisions: Revision[]; hasOlder: boolean }> }>();
   private polling = false;
 
   /** Repository root containing `dir`, or null. */
@@ -146,6 +156,48 @@ export class HistoryTracker {
     const value = await this.compute(abs, repo, head, mtime);
     this.cache.set(abs, { key, value });
     return value;
+  }
+
+  /**
+   * The last `limit` commits that touched the file, newest first and following renames, with
+   * its text at each. One more is fetched when it exists, as the base the oldest shown commit
+   * is compared with (`hasOlder`). Empty outside git or for a file never committed.
+   */
+  async revisions(abs: string, limit: number): Promise<{ revisions: Revision[]; hasOlder: boolean }> {
+    const repo = await this.repo(dirname(abs));
+    const head = repo ? await this.head(repo) : null;
+    if (!repo || !head) return { revisions: [], hasOlder: false };
+    const key = `${head}:${limit}`;
+    const hit = this.revCache.get(abs);
+    if (hit?.key === key) return hit.value;
+    const value = this.loadRevisions(abs, repo, limit);
+    this.revCache.set(abs, { key, value });
+    return value;
+  }
+
+  private async loadRevisions(abs: string, repo: string, limit: number): Promise<{ revisions: Revision[]; hasOlder: boolean }> {
+    let log: string;
+    try {
+      log = await git(dirname(abs), ["-c", "core.quotePath=false", "log", "--follow", `-n${limit + 1}`,
+        "--format=%x1e%H%x00%ct%x00%s", "--name-only", "--", basename(abs)]);
+    } catch {
+      return { revisions: [], hasOlder: false };
+    }
+    // Each record: "sha\0time\0subject" then the file's path at that commit (repo-relative).
+    const records = log.split("\x1e").slice(1).map((r) => {
+      const [header = "", ...rest] = r.split("\n");
+      const [sha = "", time = "0", summary = ""] = header.split("\0");
+      return { sha, time: Number(time), summary, path: rest.filter((l) => l.trim()).at(-1) ?? "" };
+    }).filter((r) => r.sha && r.path);
+    const revisions: Revision[] = [];
+    for (let i = 0; i < records.length; i += 8) {
+      const batch = await Promise.all(records.slice(i, i + 8).map(async (r) => {
+        const source = await git(repo, ["show", `${r.sha}:${r.path}`]).catch(() => "");
+        return { sha: r.sha, time: r.time, summary: r.summary, source };
+      }));
+      revisions.push(...batch);
+    }
+    return { revisions, hasOlder: revisions.length > limit };
   }
 
   private async compute(abs: string, repo: string | null, head: string | null, mtime: number): Promise<FileHistory> {

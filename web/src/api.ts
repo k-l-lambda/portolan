@@ -2,6 +2,7 @@ import type { EditOp } from "../../src/edit.ts";
 import type { Commit, NodeTime } from "../../src/history.ts";
 import type { NodeState } from "../../src/derive.ts";
 import type { Resolved } from "../../src/resolve.ts";
+import type { Timeline } from "../../src/timeline.ts";
 import type { Anchor, RhumbDocument } from "../../src/types.ts";
 
 export interface FileSummary {
@@ -31,6 +32,8 @@ export interface DocResponse {
   doc: RhumbDocument;
   derived: NodeState[];
   freshness: Freshness;
+  /** Missing from static exports built before the history rail existed. */
+  timeline?: Timeline;
 }
 
 export interface AnchorResponse extends Resolved {

@@ -4,8 +4,9 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { contextFor, createRhumbServer, dateIn, headingDate, HistoryTracker, linkDate, LONG_AGO, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
-import { absoluteTime, freshness, isoTime, relativeTime } from "../web/src/time.ts";
+import { contextFor, createRhumbServer, dateIn, gitTimeline, headingDate, HistoryTracker, linkDate, linkTimeline, LONG_AGO, nodeTimes, parse, resolveAnchor, versionOf } from "../src/index.ts";
+import { absoluteTime, freshness, isoTime, relativeTime, shortAgo, shortDaysAgo } from "../web/src/time.ts";
+import { pointTitle, railLabels } from "../web/src/timelineLabels.ts";
 
 const T1 = 1767225600; // 2026-01-01T00:00:00Z
 const T2 = 1769904000; // 2026-02-01T00:00:00Z
@@ -290,5 +291,118 @@ describe("time helpers", () => {
     expect(relativeTime(T2 - 5 * 60, T2)).toBe("5 min ago");
     expect(relativeTime(T2 - 3 * 3600, T2)).toBe("3 h ago");
     expect(relativeTime(T2 - 2 * 86_400, T2)).toBe("2 d ago");
+  });
+});
+
+describe("timeline", () => {
+  let dir: string;
+  afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
+
+  it("lists commits newest first with the nodes each changed, local changes on top", async () => {
+    dir = repo();
+    mkdirSync(join(dir, "old"));
+    const first = join(dir, "old", "plan.rhumb");
+    writeFileSync(first, "- [ ] A ^a\n- [ ] B ^b\n- [ ] Untitled\n");
+    commit(dir, "first", T1);
+    // Rename, and finish B in the same commit; following renames keeps the first commit.
+    mkdirSync(join(dir, "maps"));
+    execFileSync("git", ["mv", "old/plan.rhumb", "maps/plan.rhumb"], { cwd: dir });
+    const file = join(dir, "maps", "plan.rhumb");
+    writeFileSync(file, "- [ ] A ^a\n- [x] B ^b\n- [ ] Untitled\na needs b\n");
+    commit(dir, "finish b, a needs b", T2);
+    const src = "- [ ] A ^a\n- [x] B ^b\n- [ ] Untitled\n- [ ] C ^c\na needs b\n";
+    writeFileSync(file, src);
+    utimesSync(file, T2 + 60, T2 + 60);
+
+    const tracker = new HistoryTracker();
+    const revs = await tracker.revisions(file, 50);
+    expect(revs.revisions.map((r) => r.summary)).toEqual(["finish b, a needs b", "first"]);
+    expect(revs.hasOlder).toBe(false);
+    const t = gitTimeline(parse(src), src, T2 + 60, revs.revisions, revs.hasOlder);
+    expect(t.source).toBe("git");
+    expect(t.points.map((p) => [p.kind, p.time, p.nodes])).toEqual([
+      ["local", T2 + 60, ["c"]],
+      // B's status and A's new edge both count; the untitled node is matched by its title.
+      ["commit", T2, ["a", "b"]],
+      ["commit", T1, ["a", "b", "line:3"]],
+    ]);
+    expect(t.points[1]).toMatchObject({ summary: "finish b, a needs b", sha: expect.stringMatching(/^[0-9a-f]{40}$/) });
+
+    // With a limit, the extra revision is only the base: "first" is cut, and "finish b"
+    // still lists only what it changed.
+    const one = await tracker.revisions(file, 1);
+    expect(one.hasOlder).toBe(true);
+    const cut = gitTimeline(parse(src), src, T2 + 60, one.revisions, one.hasOlder);
+    expect(cut.truncated).toBe(true);
+    expect(cut.points.map((p) => [p.kind, p.nodes])).toEqual([["local", ["c"]], ["commit", ["a", "b"]]]);
+
+    // Clean tree: no local point. A node deleted since a commit counts as gone.
+    const clean = "- [ ] A ^a\n- [ ] Untitled\n";
+    writeFileSync(file, clean);
+    commit(dir, "drop b", T2 + 3600);
+    const after = await new HistoryTracker().revisions(file, 50);
+    const t2 = gitTimeline(parse(clean), clean, T2 + 3600, after.revisions);
+    expect(t2.points.map((p) => p.kind)).toEqual(["commit", "commit", "commit"]);
+    expect(t2.points[1]).toMatchObject({ nodes: ["a"], gone: 1 });
+  });
+
+  it("dates a map without commits by its links", () => {
+    const doc = parse(`---
+links:
+  diary: ../diary/{path}.md
+---
+- [x] Early [notes](diary:2026/1008) ^early
+- [x] Later [notes](diary:2026/1010), [more](diary:2026/1008#x) ^later
+- [ ] Undated ^none
+`);
+    const t = linkTimeline(doc);
+    expect(t.source).toBe("links");
+    expect(t.points.map((p) => [p.kind, p.date, p.nodes])).toEqual([
+      ["link", "2026-10-10", ["later"]],
+      ["link", "2026-10-08", ["early", "later"]],
+    ]);
+  });
+
+  it("is part of the doc response", async () => {
+    dir = repo();
+    const file = join(dir, "plan.rhumb");
+    writeFileSync(file, "- [ ] A ^a\n");
+    commit(dir, "first", T1);
+    const server = createRhumbServer({ root: dir });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    try {
+      const port = (server.address() as AddressInfo).port;
+      const body = await (await fetch(`http://127.0.0.1:${port}/api/doc?file=plan.rhumb`)).json() as { timeline: { source: string; points: { kind: string; nodes: string[] }[] } };
+      expect(body.timeline.source).toBe("git");
+      expect(body.timeline.points).toEqual([expect.objectContaining({ kind: "commit", nodes: ["a"], summary: "first" })]);
+    } finally {
+      server.close();
+    }
+  });
+});
+
+describe("history rail labels", () => {
+  it("formats ages compactly, linked days by whole days", () => {
+    expect([30, 5 * 60, 3 * 3600, 2 * 86_400, 90 * 86_400, 800 * 86_400].map((d) => shortAgo(T2 - d, T2))).toEqual(["now", "5m", "3h", "2d", "3mo", "2y"]);
+    expect(shortAgo(LONG_AGO, T2)).toBe("long time ago");
+    // A link's time is the end of its day: before that it is today, then whole days.
+    expect(shortDaysAgo(T2, T2 - 10)).toBe("today");
+    expect(shortDaysAgo(T2, T2 + 5)).toBe("1d");
+    expect(shortDaysAgo(T2, T2 + 86_400)).toBe("1d");
+    expect(shortDaysAgo(T2, T2 + 86_401)).toBe("2d");
+    expect(shortDaysAgo(LONG_AGO, T2)).toBe("long time ago");
+  });
+
+  it("shows an age only on the first of a run of equal ages", () => {
+    const p = (kind: "local" | "commit", ago: number) => ({ kind, time: T2 - ago, sha: "a".repeat(40), summary: "s", date: null, nodes: [], gone: 0 });
+    const points = [p("local", 10), p("commit", 20 * 60), p("commit", 25 * 60 + 5), p("commit", 2 * 86_400), p("commit", 2 * 86_400 + 60), p("commit", 9 * 86_400)];
+    // 20m and 25m differ; the two 2d commits share one label.
+    expect(railLabels(points, T2)).toEqual(["now", "20m", "25m", "2d", null, "9d"]);
+  });
+
+  it("puts the absolute time and the commit message in the tooltip", () => {
+    const t = pointTitle({ kind: "commit", time: T1, sha: "0123456789abcdef".padEnd(40, "0"), summary: "finish b", date: null, nodes: ["a", "b"], gone: 1 });
+    expect(t.split("\n")).toEqual([absoluteTime(T1), "01234567 finish b", "2 items changed, 1 item since removed"]);
+    expect(pointTitle({ kind: "link", time: T1, sha: null, summary: null, date: "2026-10-08", nodes: ["x"], gone: 0 })).toBe("2026-10-08\n1 item linked to this date");
   });
 });

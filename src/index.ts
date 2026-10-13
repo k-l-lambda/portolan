@@ -5,6 +5,7 @@ export { derive, type Derived, type NodeState } from "./derive.ts";
 export { checkAnchors, contextFor, excerpt, githubSlug, headingDate, resolveAnchor, type ResolveContext, type Resolved } from "./resolve.ts";
 export { foldThreads, ThreadStore, type Message, type Thread, type ThreadAction, type ThreadEvent } from "./threads.ts";
 export { createRhumbServer, versionOf, type ServerOptions } from "./server.ts";
-export { dateIn, HistoryTracker, linkDate, LONG_AGO, nodeTimes, parseBlame, type Commit, type FileHistory, type LineTime, type NodeTime } from "./history.ts";
+export { dateIn, HistoryTracker, linkDate, LONG_AGO, nodeTimes, parseBlame, type Commit, type FileHistory, type LineTime, type NodeTime, type Revision } from "./history.ts";
+export { gitTimeline, linkTimeline, TIMELINE_LIMIT, type Timeline, type TimelinePoint } from "./timeline.ts";
 export type * from "./types.ts";
 export { CLAIM_FLAGS, CLAIM_KINDS, claimOf, isPresetKind, nodeKind, PRESET_KINDS, QUALIFIERS, VERDICTS, type Claim, type ClaimFlag, type ClaimMark, type PresetKind, type Qualifier, type Verdict } from "./kinds.ts";

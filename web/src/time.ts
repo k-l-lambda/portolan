@@ -19,6 +19,30 @@ export function relativeTime(time: number, now: number): string {
   return `${Math.floor(s / (365 * DAY))} y ago`;
 }
 
+/** Compact age for the history rail: "now", "5m", "3h", "2d", "4mo", "3y", "long time ago". */
+export function shortAgo(time: number, now: number): string {
+  if (!(time > DATE_MIN)) return LONG_AGO_TEXT;
+  const s = Math.max(0, now - time);
+  if (s < MIN) return "now";
+  if (s < HOUR) return `${Math.floor(s / MIN)}m`;
+  if (s < DAY) return `${Math.floor(s / HOUR)}h`;
+  if (s < 60 * DAY) return `${Math.floor(s / DAY)}d`;
+  if (s < 730 * DAY) return `${Math.floor(s / (30 * DAY))}mo`;
+  return `${Math.floor(s / (365 * DAY))}y`;
+}
+
+/**
+ * Compact age of a linked date (whose time is the end of that local day): "today", or whole
+ * days back as in shortAgo, so a link from this morning does not read as hours ago.
+ */
+export function shortDaysAgo(dayEnd: number, now: number): string {
+  if (!(dayEnd > DATE_MIN)) return LONG_AGO_TEXT;
+  if (now <= dayEnd) return "today";
+  // Any time on the next day is 1 day after the end of the linked day, and so on.
+  const days = Math.ceil((now - dayEnd) / DAY);
+  return days < 60 ? `${days}d` : shortAgo(dayEnd, now);
+}
+
 export function absoluteTime(time: number): string {
   if (!(time > DATE_MIN)) return LONG_AGO_TEXT;
   const d = new Date(time * 1000);

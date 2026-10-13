@@ -14,10 +14,11 @@ import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
 import { HistoryTracker, nodeTimes } from "./history.ts";
+import { gitTimeline, linkTimeline, TIMELINE_LIMIT } from "./timeline.ts";
 import { isStarred, parse } from "./parse.ts";
 import { checkAnchors, contextFor, excerpt, headingDate, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
-import type { RhumbNode } from "./types.ts";
+import type { Anchor, RhumbNode } from "./types.ts";
 
 export interface ServerOptions {
   /** A directory (serves every .rhumb below it) or a single .rhumb file. */
@@ -236,17 +237,23 @@ export function createRhumbServer(options: ServerOptions): Server {
 
     if (key === "GET /api/doc") {
       const { rel, abs } = fileFor(param);
-      const { version, doc } = load(abs);
+      const { source, version, doc } = load(abs);
       const derived = derive(doc);
       const ctx = contextFor(abs, doc, readLinked);
       const anchors = checkAnchors(doc, ctx);
       const diagnostics = [...doc.diagnostics, ...derived.diagnostics, ...anchors].sort((a, b) => a.line - b.line);
       const h = await history.file(abs, version);
+      const dateOf = (a: Anchor) => headingDate(resolveAnchor(a, ctx), readLinked);
       const freshness = {
         repo: h.repo, head: h.head, tracked: h.tracked, mtime: h.mtime, dirtyLines: h.dirtyLines,
-        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h, (a) => headingDate(resolveAnchor(a, ctx), readLinked)), commits: h.commits,
+        lastCommit: h.lastCommit, nodes: nodeTimes(doc, h, dateOf), commits: h.commits,
       };
-      return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness });
+      // Commits that touched the file; a map with none is dated by its links instead.
+      const revs = await history.revisions(abs, TIMELINE_LIMIT);
+      const timeline = revs.revisions.length > 0
+        ? gitTimeline(doc, source, h.mtime, revs.revisions, revs.hasOlder)
+        : linkTimeline(doc, dateOf);
+      return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness, timeline });
     }
 
     if (key === "GET /api/source") {
