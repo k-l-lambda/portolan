@@ -431,28 +431,35 @@ a { color: var(--accent); }
 .rail {
   width: 88px; flex: none; overflow-y: auto; padding: 14px 8px 14px 4px;
   border-left: 1px solid var(--border); background: var(--surface);
+  /* Scrolls by wheel, touch drag and keyboard focus, without a visible scrollbar in the narrow strip. */
+  scrollbar-width: none; touch-action: pan-y; overscroll-behavior: contain;
 }
+.rail::-webkit-scrollbar { display: none; }
 .rail-title { margin: 4px 0 10px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .rail-empty, .rail-more { margin: 6px 0 0 8px; font-size: 11px; }
-/* Ages in a right-aligned column, dots on one vertical line through the second column. */
-.rail-list { --dot: 10px; --col: 58px; position: relative; list-style: none; margin: 0; padding: 0; }
+/* Ages in a right-aligned column; dots centred in a fixed second column, so the vertical line
+   runs through every dot's centre whatever its size. The newest point gets a larger dot. */
+.rail-list { --dot: 10px; --lead: 14px; --slot: 16px; --col: 54px; --row: 29px; position: relative; list-style: none; margin: 0; padding: 0; }
 .rail-list::before {
-  content: ""; position: absolute; top: 9px; bottom: 9px; left: calc(var(--col) + 6px + var(--dot) / 2 - 1px);
+  content: ""; position: absolute; top: calc(var(--row) / 2); bottom: calc(var(--row) / 2); left: calc(var(--col) + 6px + var(--slot) / 2 - 1px);
   width: 2px; border-radius: 1px; background: var(--border);
 }
-.rail-point { position: relative; display: grid; grid-template-columns: var(--col) auto; align-items: center; column-gap: 6px; min-height: 18px; padding: 2px 0; }
+.rail-point { position: relative; display: grid; grid-template-columns: var(--col) var(--slot); justify-items: center; align-items: center; column-gap: 6px; min-height: var(--row); padding: 3px 0; }
+.rail-point .rail-age { justify-self: stretch; }
 .rail-age {
   text-align: right; font-size: 11px; line-height: 1.2; color: var(--muted); font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .rail-dot {
   width: var(--dot); height: var(--dot); padding: 0; border-radius: 50%; cursor: default;
+  box-sizing: border-box;
   border: 2px solid var(--accent); background: var(--surface);
   transition: transform 0.15s ease, background-color 0.15s ease;
 }
 .rail-local .rail-dot { border-color: var(--st-doing); border-style: dashed; }
 .rail-link .rail-dot { border-color: var(--muted); }
-.rail-dot:hover, .rail-point.active .rail-dot { transform: scale(1.35); background: var(--accent); }
+.rail-point:first-child .rail-dot { width: var(--lead); height: var(--lead); border-width: 2.5px; }
+.rail-dot:hover, .rail-point.active .rail-dot { transform: scale(1.3); background: var(--accent); }
 .rail-local .rail-dot:hover, .rail-local.active .rail-dot { background: var(--st-doing); }
 .rail-link .rail-dot:hover, .rail-link.active .rail-dot { background: var(--muted); }
 .rail-point.active .rail-age { color: var(--text); }
