@@ -1,6 +1,6 @@
-// Time on an item (spec 3.5), as a small bar and text in the card's foot. While doing: how long the
-// current run has taken against its estimate, green on time, amber nearly due, red over. Once it
-// has finished: the actual time it took, green within the estimate, red over, with a check mark.
+// Time on an item (spec 3.5) in the card's foot. While doing: how long the current run has taken
+// against its estimate, as a bar and text, green on time, amber nearly due, red over. Once it has
+// finished: only the actual time it took, with a check mark, no estimate and no bar.
 
 import type { Timing } from "../../src/timing.ts";
 import { formatDuration, sharePercent } from "../../src/timing.ts";
@@ -10,13 +10,7 @@ const STATE_TEXT = { ok: "on time", near: "nearly due", over: "over the estimate
 
 /** Tooltip and accessible text for a timing. */
 export function timerText(t: Timing): string {
-  if (t.closed) {
-    const range = `${absoluteTime(t.started!)} – ${absoluteTime(t.finished!)}`;
-    if (t.estimate === null) return `took ${formatDuration(t.elapsed!)}, no estimate; ${range}`;
-    const pct = sharePercent(t.elapsed!, t.estimate);
-    const diff = t.elapsed! > t.estimate ? `${formatDuration(t.elapsed! - t.estimate)} over` : `${formatDuration(t.estimate - t.elapsed!)} under`;
-    return `took ${formatDuration(t.elapsed!)} of ${formatDuration(t.estimate)} estimated (${pct}%, ${diff}); ${range}`;
-  }
+  if (t.closed) return `took ${formatDuration(t.elapsed!)}; ${absoluteTime(t.started!)} – ${absoluteTime(t.finished!)}`;
   const since = t.started === null ? null : `started ${absoluteTime(t.started)}`;
   if (t.estimate !== null && t.elapsed !== null) {
     const pct = sharePercent(t.elapsed, t.estimate);
@@ -35,12 +29,14 @@ export function timingRecord(t: Timing): string {
 
 export function TimerChip({ timing }: { timing: Timing }) {
   const { estimate, elapsed, state, closed } = timing;
-  const label = elapsed !== null && estimate !== null ? `${formatDuration(elapsed)}/${formatDuration(estimate)}`
+  // A finished run shows only what it took: no estimate, no bar, no on-time color.
+  const label = closed ? formatDuration(elapsed!)
+    : elapsed !== null && estimate !== null ? `${formatDuration(elapsed)}/${formatDuration(estimate)}`
     : elapsed !== null ? formatDuration(elapsed) : `est. ${formatDuration(estimate!)}`;
-  const share = elapsed !== null && estimate !== null ? Math.min(1, elapsed / estimate) : null;
+  const share = !closed && elapsed !== null && estimate !== null ? Math.min(1, elapsed / estimate) : null;
   const text = timerText(timing);
   return (
-    <span className={`timer timer-${state ?? "plain"}${closed ? " timer-closed" : ""}`} role="img" aria-label={`Time: ${text}`} title={text}>
+    <span className={`timer timer-${closed ? "plain" : state ?? "plain"}${closed ? " timer-closed" : ""}`} role="img" aria-label={`Time: ${text}`} title={text}>
       <svg className="timer-icon" viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"
         fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         {/* A running clock while doing; a clock with a check once the run has finished. */}

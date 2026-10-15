@@ -53,7 +53,8 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
       {(() => {
         const t = timingOf(node, now);
         if (!t) return null;
-        // Work in progress and finished runs are compared with the estimate; otherwise a record.
+        // Work in progress is compared with its estimate, a finished run shows what it took;
+        // otherwise the values are only a record.
         const live = node.status === "doing" || t.closed;
         return (
           <dl className="fresh-info">

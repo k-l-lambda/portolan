@@ -164,7 +164,7 @@ Work can say how long it should take, when it started and when it finished, so t
 - These are working figures, not measurements: precision suited to the work is enough (minutes for a task of hours, a date for one of weeks), and a rough estimate is better than none.
 - When work is interrupted and later resumed, `started` is reset to the restart and `estimate` is the new estimate of the remaining work. The values always describe the current run, not the total.
 - While the node is `doing`, tools show the time since `started` against `estimate`: on time below 80% of the estimate, nearly due from 80%, over past it. A `finished` on a doing node is info `I005` and is ignored.
-- On any other status, a node with both `started` and `finished` shows the time it took against the estimate: within it, or over. Without both, the values stay as a record.
+- On any other status, a node with both `started` and `finished` shows only the time it took, without the estimate. Without both, the values stay as a record.
 
 ### 3.6 Hierarchy
 
