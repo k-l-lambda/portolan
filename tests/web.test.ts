@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { claimMarks, defaultCollapsed, kindLetters, plainTitle, shortId, starredInside } from "../web/src/layout.ts";
+import { claimMarks, defaultCollapsed, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import { searchNodes } from "../web/src/search.ts";
 
 describe("view helpers", () => {
@@ -20,6 +20,25 @@ describe("view helpers", () => {
   - [ ] Child ^child
 `);
     expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["done", "idle"]);
+  });
+
+  it("undoes the user's folds above work that started on a reload, and only those", () => {
+    const d = parse(`- [/] Root ^root
+  - [ ] Group ^group
+    - [ ] Sub ^sub
+      - [/] Task ^task
+  - [x] Done ^done
+    - [x] Leaf ^leaf
+`);
+    const nodes = new Map<string, (typeof d.nodes)[number]>();
+    const parents = new Map<string, (typeof d.nodes)[number] | null>();
+    const walk = (ns: typeof d.nodes, p: (typeof d.nodes)[number] | null) => ns.forEach((n) => (nodes.set(nodeKey(n), n), parents.set(nodeKey(n), p), walk(n.children, n)));
+    walk(d.nodes, null);
+    const folds = new Map([["root", true], ["sub", true], ["done", true], ["group", false]]);
+    // `task` started since the last load: the folds above it go, the fold on `done` stays.
+    expect([...unfoldStarted(folds, new Set(["root"]), nodes, parents)]).toEqual([["done", true], ["group", false]]);
+    // Nothing newly doing: the same map comes back, so React sees no change.
+    expect(unfoldStarted(folds, new Set(["root", "task"]), nodes, parents)).toBe(folds);
   });
 
   it("folds starred nodes like any other and counts stars inside", () => {

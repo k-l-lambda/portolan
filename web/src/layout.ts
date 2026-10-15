@@ -35,6 +35,27 @@ export function defaultCollapsed(roots: RhumbNode[]): Set<string> {
   return out;
 }
 
+/**
+ * Folds to undo after a reload: the user's folds (`overrides` set to true) on the ancestors of
+ * nodes that are doing now but were not before, so newly started work shows even inside a group
+ * folded by hand. Returns the new overrides, or `overrides` itself when nothing changes.
+ */
+export function unfoldStarted(
+  overrides: Map<string, boolean>,
+  doingBefore: Set<string>,
+  nodes: Map<string, RhumbNode>,
+  parents: Map<string, RhumbNode | null>,
+): Map<string, boolean> {
+  let next: Map<string, boolean> | null = null;
+  for (const [key, n] of nodes) {
+    if (n.status !== "doing" || doingBefore.has(key)) continue;
+    for (let p = parents.get(key); p; p = parents.get(nodeKey(p))) {
+      if (overrides.get(nodeKey(p)) === true) (next ??= new Map(overrides)).delete(nodeKey(p));
+    }
+  }
+  return next ?? overrides;
+}
+
 /** Number of starred descendants of each node (the node itself not counted). */
 export function starredInside(roots: RhumbNode[]): Map<string, number> {
   const out = new Map<string, number>();

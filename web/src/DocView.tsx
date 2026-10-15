@@ -6,7 +6,7 @@ import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, kindLetters, nodeKey, plainTitle, starred, starredInside } from "./layout.ts";
+import { defaultCollapsed, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
@@ -129,6 +129,17 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   }, [data]);
 
   const defaults = useMemo(() => (data ? defaultCollapsed(data.doc.nodes) : new Set<string>()), [data]);
+  // A reload that starts work (a node newly doing, at any depth) undoes the user's folds above it,
+  // so the new work shows even inside a group folded by hand earlier; other folds are kept.
+  const doingBefore = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    const doing = new Set([...all].filter(([, n]) => n.status === "doing").map(([k]) => k));
+    const before = doingBefore.current;
+    doingBefore.current = doing;
+    // First load: the defaults already open every doing branch.
+    if (before) setOverrides((prev) => unfoldStarted(prev, before, all, parents));
+  }, [all, parents]);
+  useEffect(() => { doingBefore.current = null; }, [file]);
   const collapsed = useMemo(() => {
     const out = new Set(defaults);
     for (const [key, isCollapsed] of overrides) {
