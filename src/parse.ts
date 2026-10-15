@@ -2,6 +2,7 @@ import { basename, extname } from "node:path";
 import { isMap, isScalar, parseDocument } from "yaml";
 import { parse as parseLine } from "./generated/line-parser.js";
 import { CLAIM_FLAGS, CLAIM_KINDS, nodeKind, VERDICTS } from "./kinds.ts";
+import { parseDuration, parseMoment } from "./timing.ts";
 import type { Anchor, Diagnostic, Edge, EdgeKind, Level, RhumbDocument, RhumbNode, Status } from "./types.ts";
 
 export const RHUMB_VERSION = "0.1";
@@ -12,7 +13,7 @@ const STATUS: Record<string, Status> = {
 };
 export const EDGE_KINDS = new Set<EdgeKind>(["needs", "blocks", "relates", "replaces", "from"]);
 const FRONT_MATTER_KEYS = new Set(["rhumb", "title", "links", "dates"]);
-const ATTR_KEYS = new Set<string>(["owner", "due", "tags", "priority", "star", "kind", ...CLAIM_FLAGS]);
+const ATTR_KEYS = new Set<string>(["owner", "due", "tags", "priority", "star", "kind", ...CLAIM_FLAGS, "estimate", "started", "finished"]);
 const URL_SCHEMES = new Set(["http", "https", "mailto"]);
 export const HAND_ID = /^[a-z0-9][a-z0-9-]{0,47}$/;
 export const GEN_ID = /^_[a-z2-7]{6}$/;
@@ -134,6 +135,7 @@ export function parse(source: string, options: ParseOptions = {}): RhumbDocument
       report("W010", lineNo, "star must be true or false; this node is treated as not starred");
     }
     checkClaim(attrs, lineNo, report);
+    checkTiming(attrs, status, lineNo, report);
     const node: RhumbNode = {
       id, generated_id: generated, status, title, attrs,
       notes: [], anchors: extractAnchors(title, lineNo, doc.links, report),
@@ -501,6 +503,25 @@ function resolveEdges(
       }
       doc.edges.push({ kind, from: a.id!, to: b.id!, label: stmt.label, line: stmt.line });
     }
+  }
+}
+
+/** Timing (spec 3.5): value formats, a finish before the start, a finish on work still in progress. */
+function checkTiming(attrs: Record<string, unknown>, status: Status | null, line: number, report: (code: string, line: number, message: string) => void) {
+  if ("estimate" in attrs && parseDuration(attrs.estimate) === null) {
+    report("W015", line, "estimate must be a duration such as 45m, 2h, 1h30m or 2y; it is ignored");
+  }
+  const at: Record<string, number | null> = {};
+  for (const key of ["started", "finished"]) {
+    if (!(key in attrs)) continue;
+    at[key] = parseMoment(attrs[key], key === "finished");
+    if (at[key] === null) report("W016", line, `${key} must be a date-time such as 2026-10-15T09:30+08:00; it is ignored`);
+  }
+  if (at.started != null && at.finished != null && at.finished < at.started) {
+    report("W017", line, "finished is before started; the actual time is not shown");
+  }
+  if (status === "doing" && at.finished != null) {
+    report("I005", line, "A doing node has finished; remove it, or reset started and the estimate if the work resumed");
   }
 }
 

@@ -10,3 +10,4 @@ export { gitTimeline, linkTimeline, pointDiff, TIMELINE_LIMIT, type Timeline, ty
 export { diffLines, splitLines, unifiedDiff, type DiffOp } from "./diff.ts";
 export type * from "./types.ts";
 export { CLAIM_FLAGS, CLAIM_KINDS, claimOf, isPresetKind, nodeKind, PRESET_KINDS, QUALIFIERS, VERDICTS, type Claim, type ClaimFlag, type ClaimMark, type PresetKind, type Qualifier, type Verdict } from "./kinds.ts";
+export { byUrgency, formatDuration, NEAR_DUE, parseDuration, parseMoment, sharePercent, timingOf, timingReport, type Timing } from "./timing.ts";

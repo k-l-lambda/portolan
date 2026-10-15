@@ -109,7 +109,7 @@ The parser strips suffixes from the end of the line, in this order:
 3. The rest is the title, which is parsed as inline Markdown (links, code, emphasis).
 
 - `^` and `{` in the middle of a title need no escaping. Only a title that itself ends in `^word` or `{…}` must write `\^` or `\{`.
-- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list), `priority` (`high` / `normal` / `low`), `star` (boolean), and `kind` with the claim flags of section 3.4. Unknown keys are kept and reported as `I002`.
+- Reserved attribute keys are `owner`, `due` (ISO date), `tags` (list), `priority` (`high` / `normal` / `low`), `star` (boolean), `kind` with the claim flags of section 3.4, and `estimate`, `started` and `finished` (section 3.5). Unknown keys are kept and reported as `I002`.
 - `star: true` marks a node as a favorite of the project; it is shared like any other attribute and is independent of status. To unstar, remove the key. Any value other than `true`/`false` is warning `W010` and the node counts as not starred.
 - Markdown links in a title are anchors, see section 4.
 
@@ -150,7 +150,23 @@ Claim flags record how the evidence stands for a claim, written like `star`: `{k
 - A flag set to `false` counts as unset; remove the key instead. A non-boolean flag, or a `kind` that is not a non-empty string, is warning `W012` and counts as unset.
 - Claim flags are meant for `hypothesis` and `finding`. On any other kind (or none) they are info `I004`, since an experiment node sometimes records its own result.
 
-### 3.5 Hierarchy
+### 3.5 Timing
+
+Work can say how long it should take, when it started and when it finished, so tools can show how long it has run, or how long it took, against the estimate:
+
+```rhumb
+- [/] Port the parser {estimate: 2h, started: 2026-10-15T09:30+08:00} ^port
+- [x] Write the spec {estimate: 1d, started: 2026-10-08T10:00+08:00, finished: 2026-10-09T15:00+08:00} ^spec
+```
+
+- `estimate` is a duration: a number with a unit, units largest first, each at most once (`45m`, `2h`, `1h30m`, `1.5h`, `3d`, `1w2d`, `2y`). Units are `y`, `w`, `d`, `h`, `m`, `s`; a day is 24 hours of clock time and a year 365 days. Anything else, including a bare number, is warning `W015` and is ignored.
+- `started` is when the current run began, `finished` when it ended: an ISO date-time, with or without seconds and an offset (`2026-10-15T09:30+08:00`, `2026-10-15T01:30Z`, `2026-10-15 09:30`), or a date. A date alone is the start of that day for `started` and its end for `finished`. Without an offset the time is local to the reader, so prefer writing one. Anything else is warning `W016` and is ignored; a `finished` before `started` is warning `W017`.
+- These are working figures, not measurements: precision suited to the work is enough (minutes for a task of hours, a date for one of weeks), and a rough estimate is better than none.
+- When work is interrupted and later resumed, `started` is reset to the restart and `estimate` is the new estimate of the remaining work. The values always describe the current run, not the total.
+- While the node is `doing`, tools show the time since `started` against `estimate`: on time below 80% of the estimate, nearly due from 80%, over past it. A `finished` on a doing node is info `I005` and is ignored.
+- On any other status, a node with both `started` and `finished` shows the time it took against the estimate: within it, or over. Without both, the values stay as a record.
+
+### 3.6 Hierarchy
 
 Nesting follows Markdown nested lists:
 
@@ -158,7 +174,7 @@ Nesting follows Markdown nested lists:
 - Siblings must have the same indentation. A dedent must return to an existing level, otherwise it is error `E004`.
 - A tab counts as 4 columns, as in CommonMark. `fmt` always writes 2 spaces per level.
 
-### 3.6 Notes
+### 3.7 Notes
 
 A list item without a checkbox is a note that belongs to its parent node. A note is not a child node: the UI shows it as part of the node's description, not as a new branch.
 

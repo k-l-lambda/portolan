@@ -16,6 +16,8 @@ import { TimelineRail } from "./Timeline.tsx";
 import { DiffPanel } from "./DiffPanel.tsx";
 import { pointKey } from "./timelineLabels.ts";
 import { nodeKind } from "../../src/kinds.ts";
+import { byUrgency, timingOf } from "../../src/timing.ts";
+import type { TimedItem } from "./TimerChip.tsx";
 import { IconButton } from "./IconButton.tsx";
 import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
@@ -174,6 +176,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   const stars = useMemo(() => (data ? starredInside(data.doc.nodes) : new Map<string, number>()), [data]);
   const letters = useMemo(() => kindLetters(data?.doc.nodes ?? []), [data]);
+  // Doing items with timing, for the Diagnostics panel; refreshed with the view's clock.
+  const timed = useMemo(() => {
+    const out: TimedItem[] = [];
+    for (const [key, n] of all) {
+      const timing = n.status === "doing" ? timingOf(n, now) : null;
+      if (timing) out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", timing });
+    }
+    return out.sort((a, b) => byUrgency(a.timing, b.timing) || a.line - b.line);
+  }, [all, now]);
   const starredList = useMemo(() => [...all.values()].filter(starred), [all]);
   const [highlightStars, setHighlightStars] = useState(false);
   const [starMenu, setStarMenu] = useState(false);
@@ -321,6 +332,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         ...cardTime(times.get(b.node.line), now),
         selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
         kindLetters: letters.get(nodeKind(b.node) ?? ""),
+        // Work in progress shows its running time, a finished run its actual time; otherwise the
+        // attributes are only a record (side panel).
+        timing: (() => { const t = timingOf(b.node, now); return t && (b.node.status === "doing" || t.closed) ? t : null; })(),
         onStatus, onToggle, onStar,
       },
     }));
@@ -669,6 +683,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           state={node ? data.derived.find((s) => s.line === node.line) : undefined}
           diagnostics={data.doc.diagnostics}
           onStar={onStar}
+          timed={timed}
+          onGoTo={goTo}
           freshness={data.freshness}
           now={now}
           onSelectLine={selectLine}

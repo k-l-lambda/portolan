@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {"id": "both", "attrs": {"estimate": "2h", "started": "2026-10-15T09:30+08:00"}},
+    {"id": "compound"},
+    {"id": "date"},
+    {"id": "nounit", "attrs": {"estimate": 30}},
+    {"id": "soon"},
+    {"id": "yesterday"},
+    {"id": "impossible"},
+    {"id": "plan"},
+    {"id": "closed", "attrs": {"estimate": "2h", "started": "2026-10-15T09:00+08:00", "finished": "2026-10-15T10:40+08:00"}},
+    {"id": "backwards"},
+    {"id": "badfinish"},
+    {"id": "reopened"},
+    {"id": "years"},
+    {"id": "sameday"}
+  ],
+  "diagnostics": [["W015", 4], ["W015", 5], ["W016", 6], ["W016", 7], ["W017", 10], ["W016", 11], ["I005", 12]]
+}

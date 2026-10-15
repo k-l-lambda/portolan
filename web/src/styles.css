@@ -247,6 +247,7 @@ a { color: var(--accent); }
 .legend-line path { stroke: currentColor; } .legend-line .legend-arrow, .legend-line .legend-tab { fill: currentColor; stroke: none; }
 .legend .legend-hint { margin: 0 0 6px; }
 .legend-marks li { grid-template-columns: 22px 88px 1fr; }
+.legend-timers li { grid-template-columns: 112px 1fr; }
 .legend-marks .kind-mark, .legend-marks .claim-mark { justify-self: center; }
 .legend-hint code { font-size: 11px; }
 .legend-chip { justify-self: start; grid-column: span 2; padding: 1px 6px; border-radius: 4px; font: 600 11px/14px system-ui, sans-serif; border: 1px solid color-mix(in srgb, var(--edge-needs) 55%, transparent); background: var(--surface); }
@@ -338,7 +339,37 @@ a { color: var(--accent); }
 .react-flow__node:hover .card-title { display: block; overflow: visible; white-space: nowrap; -webkit-line-clamp: unset; }
 .react-flow__node:hover .card-title-text { padding-right: 6px; border-radius: 0 4px 4px 0; background: var(--card-bg); }
 .card-foot { display: flex; gap: 5px; align-items: center; font-size: 11px; min-width: 0; }
-.card-id { flex: none; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
+.card-id { flex: 0 1 auto; min-width: 2ch; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
+/* Timer of a doing item: a bar of elapsed against estimated time, colored by how close it is. */
+.timer, .timed-row { --timer: var(--muted); }
+.timer { flex: none; display: inline-flex; align-items: center; gap: 3px; color: var(--timer);
+  font: 600 10.5px/1 ui-monospace, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* After the default above, so a state wins on both the card chip and the list row. */
+.timer-ok { --timer: var(--st-done); }
+.timer-near { --timer: var(--warning); }
+.timer-over { --timer: var(--error); }
+.timer-icon { flex: none; }
+.timer-bar { position: relative; width: 26px; height: 5px; border-radius: 3px; overflow: hidden;
+  background: color-mix(in srgb, var(--timer) 18%, var(--surface-2)); }
+.timer-fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--timer); }
+/* In-progress list in the Diagnostics panel: a row per timed doing item, most urgent first. */
+.timed h3 { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.timed-count { font-variant-numeric: tabular-nums; color: var(--muted); }
+.timed-flag { color: var(--timer); text-transform: none; letter-spacing: 0; font-weight: 600; }
+.timed-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.timed-row {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 2px 10px;
+  padding: 5px 8px; border: 0; border-radius: 4px; background: var(--surface-2); color: var(--text); font: inherit; text-align: left; cursor: pointer;
+}
+.timed-row:hover { background: color-mix(in srgb, var(--timer) 10%, var(--surface-2)); }
+.timed-row:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.timed-title { min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timed-value { font: 600 11px/1.3 ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--timer); white-space: nowrap; }
+.timed-bar { grid-column: 1 / -1; position: relative; height: 5px; margin-top: 2px; border-radius: 3px;
+  background: color-mix(in srgb, var(--timer) 18%, var(--surface)); }
+.timed-fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--timer); }
+/* Past the estimate: a mark where it ran out, the rest of the bar is the overrun. */
+.timed-mark { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text); }
 /* Kind (spec 3.4): a muted icon or a custom kind's letters before the title; claim icons in the foot. */
 .kind-mark { flex: none; display: inline-flex; align-items: center; height: 16px; color: var(--muted); }
 .kind-letters {

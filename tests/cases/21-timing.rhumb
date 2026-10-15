@@ -1,0 +1,14 @@
+- [/] Both {estimate: 2h, started: 2026-10-15T09:30+08:00} ^both
+- [/] Compound estimate {estimate: 1h30m, started: 2026-10-15 09:30} ^compound
+- [/] Date only {estimate: 3d, started: 2026-10-15} ^date
+- [/] No unit {estimate: 30} ^nounit
+- [/] Not a duration {estimate: soon} ^soon
+- [/] Not a time {started: yesterday} ^yesterday
+- [/] Impossible date {started: 2026-13-40} ^impossible
+- [ ] Plan with an estimate only {estimate: 45m} ^plan
+- [x] Finished run {estimate: 2h, started: 2026-10-15T09:00+08:00, finished: 2026-10-15T10:40+08:00} ^closed
+- [x] Finished before it started {started: 2026-10-15T10:00Z, finished: 2026-10-15T09:00Z} ^backwards
+- [x] Finish not a time {started: 2026-10-15, finished: later} ^badfinish
+- [/] Reopened but still finished {started: 2026-10-15T09:00Z, finished: 2026-10-15T10:00Z} ^reopened
+- [x] Year estimate {estimate: 2y, started: 2024-01-01, finished: 2025-06-01} ^years
+- [x] Same day, finish as a date {started: 2026-10-15T09:30+08:00, finished: 2026-10-15} ^sameday

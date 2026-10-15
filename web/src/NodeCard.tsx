@@ -5,6 +5,8 @@ import type { RhumbNode, Status } from "../../src/types.ts";
 import { claimMarks, plainTitle, shortId, starred } from "./layout.ts";
 import { ClaimIcon, KindMark } from "./KindIcons.tsx";
 import { nodeKind } from "../../src/kinds.ts";
+import type { Timing } from "../../src/timing.ts";
+import { TimerChip } from "./TimerChip.tsx";
 import { READ_ONLY } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 import type { NodeTime } from "../../src/history.ts";
@@ -35,6 +37,8 @@ export interface CardData extends Record<string, unknown> {
   starsInside: number;
   /** Letters of a custom kind (see `kindLetters`); unused for preset kinds. */
   kindLetters: string | undefined;
+  /** Time of a doing item against its estimate, refreshed with the view's clock. */
+  timing: Timing | null;
   onStatus: (node: RhumbNode, status: Status) => void;
   onToggle: (node: RhumbNode) => void;
   onStar: (node: RhumbNode) => void;
@@ -44,7 +48,7 @@ export interface CardData extends Record<string, unknown> {
 export type CardNode = Node<CardData, "card" | "fill">;
 
 export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
-  const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, starsInside, kindLetters, onStatus, onToggle, onStar } = data;
+  const { node, parentId, state, fresh, updatedText, hidden, container, selected, collapsed, starsInside, kindLetters, timing, onStatus, onToggle, onStar } = data;
   const status = node.status ?? "todo";
   const title = plainTitle(node.title) || "(untitled)";
   const isStar = starred(node);
@@ -86,6 +90,7 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
       <div className="card-foot">
         <span className="card-id" title={node.id ? `^${node.id}` : undefined}>{shortId(node.id, parentId)}</span>
         {claims.length > 0 && <span className="claim-marks">{claims.map((m) => <ClaimIcon key={m} mark={m} />)}</span>}
+        {timing && <TimerChip timing={timing} />}
         {state?.ready && <span className="badge badge-ready">ready</span>}
         {node.anchors.length > 0 && <span className="badge">{node.anchors.length} link{node.anchors.length > 1 ? "s" : ""}</span>}
         {collapsed && starsInside > 0 && (

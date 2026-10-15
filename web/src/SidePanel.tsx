@@ -8,6 +8,8 @@ import { StarIcon } from "./NodeCard.tsx";
 import { CopyText } from "./CopyText.tsx";
 import { renderMarkdown } from "./markdown.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
+import { timingOf } from "../../src/timing.ts";
+import { TimedWork, TimerChip, timerText, timingRecord, type TimedItem } from "./TimerChip.tsx";
 
 interface Props {
   file: string;
@@ -18,10 +20,17 @@ interface Props {
   now: number;
   onSelectLine: (line: number) => void;
   onStar: (node: RhumbNode) => void;
+  /** Doing items with timing, most urgent first (shown with Diagnostics). */
+  timed?: TimedItem[];
+  /** Reveal, select and center a node by key. */
+  onGoTo?: (key: string) => void;
 }
 
-export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onStar }: Props) {
-  if (!node) return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onSelectLine={onSelectLine} />;
+export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onStar, timed = [], onGoTo }: Props) {
+  if (!node) {
+    return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onSelectLine={onSelectLine}
+      timed={timed} onGoTo={onGoTo ?? ((key) => { const i = timed.find((t) => t.key === key); if (i) onSelectLine(i.line); })} />;
+  }
   const updated = freshness.nodes.find((t) => t.line === node.line);
   const own = diagnostics.filter((d) => d.line === node.line || node.notes.some((n) => n.line === d.line));
   return (
@@ -41,6 +50,18 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
         {state?.ready && <span className="badge badge-ready">ready</span>}
       </p>
       <ProgressBar progress={state?.progress ?? null} />
+      {(() => {
+        const t = timingOf(node, now);
+        if (!t) return null;
+        // Work in progress and finished runs are compared with the estimate; otherwise a record.
+        const live = node.status === "doing" || t.closed;
+        return (
+          <dl className="fresh-info">
+            <dt>Time</dt>
+            <dd>{live ? <><TimerChip timing={t} /> {timerText(t)}</> : timingRecord(t)}</dd>
+          </dl>
+        );
+      })()}
       {updated && (
         <dl className="fresh-info">
           <dt>Updated</dt>
@@ -138,8 +159,9 @@ function AnchorView({ file, line, index }: { file: string; line: number; index: 
   );
 }
 
-function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
+function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine, timed, onGoTo }: {
   diagnostics: Diagnostic[]; freshness: Freshness; now: number; onSelectLine: (line: number) => void;
+  timed: TimedItem[]; onGoTo: (key: string) => void;
 }) {
   const at = (t: number) => (
     <time dateTime={isoTime(t)} title={absoluteTime(t)}>{relativeTime(t, now)}</time>
@@ -172,6 +194,8 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine }: {
             : " · no uncommitted changes")}
         </dd>
       </dl>
+      {timed.length > 0 && <TimedWork items={timed} onSelect={(i) => onGoTo(i.key)} />}
+      {diagnostics.length > 0 && timed.length > 0 && <h3>Problems</h3>}
       {diagnostics.length === 0
         ? <p className="muted">No problems. Select a node to see its notes and diary links.</p>
         : <DiagnosticList diagnostics={diagnostics} onSelectLine={onSelectLine} />}

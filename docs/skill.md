@@ -65,6 +65,7 @@ links:
 - Attributes are optional: `owner`, `due` (ISO date), `tags` (list), `priority` (`high`/`normal`/`low`), `star` (boolean), `kind` and the claim flags below. Other keys are kept but reported as `I002`.
 - `{star: true}` is the project's shared favorite mark, shown with a dedicated star in the web view. Humans usually set it; add or remove a star only when the user asks. Unstar by removing the key, not by writing `false`. Any other value is `W010`.
 - `{kind: …}` says what an item is when it is not plain work: `milestone`, `experiment`, `hypothesis`, `finding`, `question`, `decision`, `risk`, `artifact`, `reference`, `event` (no kind means `task`). Any other word is a custom kind, shown by its first letters. Add a kind only where it helps a reader; most items need none.
+- Timing: `{estimate: 2h, started: 2026-10-15T09:30+08:00, finished: …}`. `estimate` is a duration with units, largest first (`45m`, `2h`, `1h30m`, `3d`, `2y`); a bare number is `W015`. `started` and `finished` are ISO date-times, best with the offset, or plain dates; anything else is `W016`. They are working figures: be roughly right (minutes for hours of work, a date for weeks of it), not exact. See section 5 for when to set them.
 - A `hypothesis` or `finding` records how its evidence stands with one verdict flag, written like `star`: `{kind: hypothesis, refuted: true}`. Verdicts are `supported`, `partial`, `refuted`, `inconclusive`; at most one (`W013`). `replicated`, `contested`, `retracted` may be added to a verdict. Status and verdict are separate: when an investigation finishes, mark it `[x]` and set the verdict the evidence supports; finishing never implies `supported`. Leave a hypothesis without a verdict until it has been tested.
 - Hierarchy is 2 spaces per level. A node's parent is the nearest preceding node with smaller indentation; siblings share one indentation.
 - Notes are list items without a checkbox. They belong to the node above them and are not children. Use them for blocked reasons, short context and links.
@@ -166,6 +167,9 @@ threads-format from server
 ## 5. Status discipline
 
 - Parent status is written, not derived. When the first child starts, set the parent to `[/]` (otherwise `I003`).
+- When you set an item to `[/]`, or create it as `[/]`, give it both timing attributes: `started` (now, with your offset) and `estimate` (your honest guess at how long it takes). The view then shows how long it has run against the estimate. A group that is `[/]` only because a child started needs none; time the item actually being worked.
+- If work on an item was interrupted (it went back to `[ ]` or `[!]`, or sat untouched while you did other things) and you now resume it, re-estimate the work that remains and reset `started` to the restart. Do not keep the old start: the values describe the current run.
+- When you mark an item `[x]`, you may add `finished` (now, at the same precision as `started`); with both, the view shows how long it actually took against the estimate. Keep `estimate` and `started` as they were. If a done item is reopened to `[/]`, remove `finished` (otherwise `I005`) and treat it as a restart: new `started`, new estimate.
 - Do not mark a parent `[x]` while its subtree has `[ ]`, `[/]` or `[!]` nodes (`W007`). Finish, drop (`[-]`) or move the open children first.
 - Do not mark a node `[/]` or `[x]` while one of its `needs` targets is not done (`W008`). Either finish the dependency, or the edge is wrong and should be removed or changed to `relates`.
 - Use `[!]` only with a note that says what it is waiting for.
@@ -306,6 +310,10 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | `[/]`/`[x]` node whose `needs` target is not done | `W008` | fix the status or the edge |
 | `^Upper_Case` or `^_handmade` ID | `W009` | lowercase kebab-case, no leading `_` |
 | `dates:` other than `git` or `links` | `W014` | use one of the two |
+| `estimate: 30`, `estimate: soon` | `W015` | a duration with units: `30m`, `2h`, `1h30m` |
+| `started: yesterday`, `finished: 10/15` | `W016` | an ISO date-time: `2026-10-15T09:30+08:00` |
+| `finished` earlier than `started` | `W017` | check both; the actual time is not shown |
+| `finished` on a `[/]` item | `I005` | remove it, or set the item `[x]` |
 | `kind: 3`, `refuted: yes` | `W012` | `kind` is a word; claim flags are `true` (remove the key instead of `false`) |
 | `supported: true` and `refuted: true` together | `W013` | keep the one verdict the evidence supports |
 | Claim flag on an item that is not a hypothesis or finding | `I004` | add `kind: hypothesis` or `kind: finding`, or drop the flag |

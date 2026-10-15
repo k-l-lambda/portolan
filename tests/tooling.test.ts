@@ -5,9 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { staticPath } from "../web/src/api.ts";
-import {
-  applyEdit, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, headingDate, parse, resolveAnchor, ThreadStore,
-} from "../src/index.ts";
+import { applyEdit, byUrgency, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, formatDuration, headingDate, parse, parseDuration, parseMoment, resolveAnchor, ThreadStore, sharePercent, timingOf, timingReport } from "../src/index.ts";
 
 const SRC = `---
 title: T
@@ -418,3 +416,97 @@ function diffLines(a: string, b: string): [string, string][] {
   const y = b.split("\n");
   return x.flatMap((l, i) => (l === y[i] ? [] : [[l, y[i]!] as [string, string]]));
 }
+
+describe("timing", () => {
+  it("reads durations with units, largest first", () => {
+    expect(["45m", "2h", "1h30m", "1.5h", "3d", "1w2d", "90s", " 2H ", "2y", "1y26w"].map(parseDuration)).toEqual([2700, 7200, 5400, 5400, 259_200, 777_600, 90, 7200, 63_072_000, 31_536_000 + 26 * 604_800]);
+    // No unit, wrong order, a repeated unit, zero, other types.
+    expect(["30", "30m1h", "1h1h", "0m", "soon", "", 30, null].map(parseDuration)).toEqual([null, null, null, null, null, null, null, null]);
+  });
+
+  it("reads start times with an offset, in UTC, or local", () => {
+    const utc = Date.UTC(2026, 9, 15, 1, 30) / 1000;
+    expect(parseMoment("2026-10-15T09:30+08:00")).toBe(utc);
+    expect(parseMoment("2026-10-15T09:30+0800")).toBe(utc);
+    expect(parseMoment("2026-10-15T01:30:00Z")).toBe(utc);
+    expect(parseMoment("2026-10-14T20:30-05:00")).toBe(utc);
+    expect(parseMoment("2026-10-15 09:30")).toBe(new Date(2026, 9, 15, 9, 30).getTime() / 1000);
+    expect(parseMoment("2026-10-15")).toBe(new Date(2026, 9, 15).getTime() / 1000);
+    // A finish written as a date means "during that day": its last second.
+    expect(parseMoment("2026-10-15", true)).toBe(new Date(2026, 9, 16).getTime() / 1000 - 1);
+    expect(parseMoment("2026-10-15T09:30Z", true)).toBe(utc + 8 * 3600);
+    expect(["2026-13-01", "2026-02-30", "2026-10-15T24:00", "yesterday", "10/15/2026", 1760491800].map((v) => parseMoment(v))).toEqual([null, null, null, null, null, null]);
+  });
+
+  it("compares the time since the start with the estimate", () => {
+    const start = Date.UTC(2026, 9, 15, 1, 0) / 1000;
+    const at = (minutes: number) => start + minutes * 60;
+    const node = { status: "doing" as const, attrs: { estimate: "2h", started: "2026-10-15T01:00Z" } };
+    expect(timingOf(node, at(30))).toEqual({ estimate: 7200, started: start, finished: null, elapsed: 1800, closed: false, state: "ok" });
+    expect(timingOf(node, at(96))?.state).toBe("near"); // 80% of 2h
+    expect(timingOf(node, at(120))?.state).toBe("near"); // exactly the estimate is not over yet
+    expect(timingOf(node, at(121))?.state).toBe("over");
+    // A start in the future counts as just started; one attribute alone has no state.
+    expect(timingOf(node, at(-10))).toMatchObject({ elapsed: 0, state: "ok" });
+    const doing = (attrs: Record<string, unknown>) => ({ status: "doing" as const, attrs });
+    expect(timingOf(doing({ estimate: "2h" }), at(0))).toEqual({ estimate: 7200, started: null, finished: null, elapsed: null, closed: false, state: null });
+    expect(timingOf(doing({ started: "2026-10-15T01:00Z" }), at(5))).toMatchObject({ estimate: null, elapsed: 300, state: null });
+    expect(timingOf(doing({ estimate: "soon" }), at(0))).toBeNull();
+    expect(timingOf(doing({}), at(0))).toBeNull();
+  });
+
+  it("shows the actual time of a finished run", () => {
+    const start = Date.UTC(2026, 9, 15, 1, 0) / 1000;
+    const done = (attrs: Record<string, unknown>) => ({ status: "done" as const, attrs });
+    const run = { estimate: "2h", started: "2026-10-15T01:00Z", finished: "2026-10-15T02:40Z" };
+    // The clock no longer matters once it finished; under the estimate is ok, never "near".
+    expect(timingOf(done(run), start + 99_999)).toEqual({ estimate: 7200, started: start, finished: start + 6000, elapsed: 6000, closed: true, state: "ok" });
+    expect(timingOf(done({ ...run, finished: "2026-10-15T03:30Z" }), 0)).toMatchObject({ elapsed: 9000, closed: true, state: "over" });
+    expect(timingOf(done({ started: run.started, finished: run.finished }), 0)).toMatchObject({ elapsed: 6000, closed: true, state: null });
+    // Not finished, or not doing without a finish: a record only, no elapsed time.
+    expect(timingOf(done({ estimate: "2h", started: run.started }), start + 60)).toMatchObject({ elapsed: null, closed: false, state: null });
+    // Reopened: doing again, the time since the start counts and the old finish is ignored.
+    expect(timingOf({ status: "doing", attrs: run }, start + 600)).toMatchObject({ elapsed: 600, closed: false, state: "ok" });
+    // A finish before the start (W017) gives no actual time.
+    expect(timingOf(done({ started: run.finished, finished: run.started }), 0)).toMatchObject({ elapsed: null, closed: false });
+  });
+
+  it("reports doing nodes with timing for check, most urgent first", () => {
+    const now = Date.UTC(2026, 9, 15, 3, 0) / 1000;
+    const doc = parse(`- [/] Release ^release
+  - [/] Notes {estimate: 2h, started: 2026-10-15T02:30Z} ^notes
+  - [/] Labels {estimate: 45m, started: 2026-10-15T01:00Z} ^labels
+  - [/] Review {started: 2026-10-15T02:40Z} ^review
+  - [/] Bench {estimate: 3h} ^bench
+  - [x] Done {estimate: 1h, started: 2026-10-15T00:00Z, finished: 2026-10-15T00:50Z} ^done
+  - [ ] Planned {estimate: 1h} ^planned
+`);
+    expect(timingReport(doc, "plan.rhumb", now)).toEqual([
+      "timing: 4 doing (1 over)",
+      "plan.rhumb:3: over         2h / 45m           (267%)  ^labels Labels",
+      "plan.rhumb:2: on time      30m / 2h           (25%)   ^notes Notes",
+      "plan.rhumb:4: running      20m / no estimate          ^review Review",
+      "plan.rhumb:5: not started  - / 3h                     ^bench Bench",
+    ]);
+    // Only doing nodes count: a finished or planned one is left out, and none means no report.
+    expect(timingReport(parse("- [x] Done {estimate: 1h, started: 2026-10-15T00:00Z, finished: 2026-10-15T00:50Z} ^d\n"), "p", now)).toEqual([]);
+  });
+
+  it("orders running items by urgency", () => {
+    const t = (estimate: number | null, elapsed: number | null) => ({ estimate, started: elapsed === null ? null : 0, finished: null, elapsed, closed: false,
+      state: estimate === null || elapsed === null ? null : elapsed > estimate ? "over" as const : elapsed >= 0.8 * estimate ? "near" as const : "ok" as const });
+    const items = { slightlyOver: t(60, 66), wayOver: t(60, 180), near: t(100, 90), ok: t(100, 10), okLater: t(100, 50), noEstimate: t(null, 500), notStarted: t(30, null) };
+    const order = Object.entries(items).sort(([, a], [, b]) => byUrgency(a, b)).map(([k]) => k);
+    expect(order).toEqual(["wayOver", "slightlyOver", "near", "okLater", "ok", "noEstimate", "notStarted"]);
+  });
+
+  it("never shows 100% while still under the estimate", () => {
+    expect([sharePercent(50, 100), sharePercent(995, 1000), sharePercent(100, 100), sharePercent(1004, 1000), sharePercent(267, 100)]).toEqual([50, 99, 100, 100, 267]);
+  });
+
+  it("formats durations compactly", () => {
+    const d = 86_400, w = 7 * d, y = 365 * d;
+    expect([0, 59, 60, 25 * 60, 7200, 9000, d, d + 4 * 3600 + 59 * 60, 13 * d, 2 * w, 5 * w + 2 * d, y, 7 * y + 16 * d, 35 * y].map(formatDuration))
+      .toEqual(["0m", "0m", "1m", "25m", "2h", "2h30m", "1d", "1d4h", "13d", "2w", "5w2d", "1y", "7y2w", "35y"]);
+  });
+});

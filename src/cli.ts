@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// rhumb check <file>   parse + derived + anchor diagnostics; exit 1 on errors
+// rhumb check <file>   parse + derived + anchor diagnostics, then the timing of doing nodes; exit 1 on errors
 // rhumb fmt <file>     assign missing IDs and normalize status aliases in place
 // portolan serve <dir|file> [--port N]   web UI + API for every .rhumb under dir (127.0.0.1 only)
 
@@ -10,6 +10,7 @@ import { format } from "./format.ts";
 import { parse } from "./parse.ts";
 import { checkAnchors, contextFor } from "./resolve.ts";
 import { createRhumbServer } from "./server.ts";
+import { timingReport } from "./timing.ts";
 
 const [cmd, file, ...rest] = process.argv.slice(2);
 if (!cmd || !file || !["check", "fmt", "serve"].includes(cmd)) {
@@ -25,6 +26,9 @@ if (cmd === "check") {
   const diags = [...doc.diagnostics, ...derive(doc).diagnostics, ...checkAnchors(doc, contextFor(path, doc, read))]
     .sort((a, b) => a.line - b.line);
   for (const d of diags) console.log(`${file}:${d.line}: ${d.level} ${d.code} ${d.message}`);
+  // How doing nodes stand against their estimates; informational, never changes the exit code.
+  const timing = timingReport(doc, file, Math.floor(Date.now() / 1000));
+  if (timing.length > 0) console.log([...(diags.length > 0 ? [""] : []), ...timing].join("\n"));
   process.exit(diags.some((d) => d.level === "error") ? 1 : 0);
 }
 

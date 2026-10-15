@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { EdgeKind } from "../../src/types.ts";
 import { PRESET_KINDS, QUALIFIERS, VERDICTS, type ClaimMark } from "../../src/kinds.ts";
 import { CLAIM_MEANING, ClaimIcon, KIND_MEANING, KindMark } from "./KindIcons.tsx";
+import { TimerChip } from "./TimerChip.tsx";
 
 const LINES: { kind: EdgeKind; arrow: boolean; dashed?: string; name: string; meaning: string }[] = [
   { kind: "needs", arrow: true, name: "needs", meaning: "the arrow points to what must happen first" },
@@ -111,6 +112,21 @@ export function Legend({ letters = new Map() }: { letters?: Map<string, string> 
               <ClaimIcon mark={m} />
               <span className="legend-name">{m}</span>
               <span className="muted">{CLAIM_MEANING[m]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <h3>Time</h3>
+        <p className="muted legend-hint">
+          From <code>{"{estimate: 2h, started: …, finished: …}"}</code>: on a doing item the time since the start, on a finished one the time it took, against the estimate.
+        </p>
+        <ul className="legend-grid legend-timers">
+          {([["ok", 2_400, false, "on time, under 80% of the estimate"], ["near", 6_300, false, "nearly due, 80% or more"], ["over", 9_000, false, "over the estimate"],
+            ["ok", 6_000, true, "finished within the estimate"], ["over", 9_000, true, "finished over the estimate"]] as const).map(([state, elapsed, closed, meaning]) => (
+            <li key={`${state}-${closed}`}>
+              <TimerChip timing={{ estimate: 7_200, started: 0, finished: closed ? elapsed : null, elapsed, closed, state }} />
+              <span className="muted">{meaning}</span>
             </li>
           ))}
         </ul>

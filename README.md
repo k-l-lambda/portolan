@@ -90,7 +90,7 @@ The same map in the web view:
   <img src="docs/example.svg" alt="The example map in the Portolan web view: a Portolan frame holding the Rhumb DSL, Web view and Readability study frames and their items, colored by status, marked with kind icons and claim verdicts, and joined by needs, relates, replaces and from lines" width="560">
 </p>
 
-Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite; `{kind: hypothesis, refuted: true}` says what an item is and how the evidence for a claim stands. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
+Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite; `{kind: hypothesis, refuted: true}` says what an item is and how the evidence for a claim stands; `{estimate: 2h, started: …, finished: …}` times work in progress and records how long it took. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
 
 ## Status
 
