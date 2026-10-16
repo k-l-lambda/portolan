@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { Timeline } from "../../src/timeline.ts";
 import { pointKey, pointTitle, railLabels } from "./timelineLabels.ts";
 
-export function TimelineRail({ timeline, now, active, pinned = null, onActive }: {
+export function TimelineRail({ timeline, now, active, pinned = null, onActive, onPick }: {
   timeline: Timeline;
   now: number;
   /** Key of the highlighted point, see pointKey. */
@@ -14,6 +14,8 @@ export function TimelineRail({ timeline, now, active, pinned = null, onActive }:
   /** Key of the point whose diff is shown, marked with a ring. */
   pinned?: string | null;
   onActive: (key: string | null) => void;
+  /** Clicking a dot: the view frames the nodes that point changed. */
+  onPick?: (key: string) => void;
 }) {
   // The view's clock ticks once a minute; entering the rail also refreshes the ages when they
   // are a minute or more old (a background tab's timer may have been held back).
@@ -38,7 +40,9 @@ export function TimelineRail({ timeline, now, active, pinned = null, onActive }:
                   <span className="rail-age" aria-hidden={labels[i] === null}>{labels[i] ?? ""}</span>
                   <button type="button" className="rail-dot" title={pointTitle(p)}
                     aria-label={pointTitle(p).replace(/\n/g, ", ")}
-                    onPointerEnter={() => onActive(key)} onFocus={() => onActive(key)} onBlur={() => onActive(null)} />
+                    aria-disabled={!onPick || p.nodes.length === 0}
+                    onPointerEnter={() => onActive(key)} onFocus={() => onActive(key)} onBlur={() => onActive(null)}
+                    onClick={() => onPick?.(key)} />
                 </li>
               );
             })}

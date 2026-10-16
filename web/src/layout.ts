@@ -36,6 +36,22 @@ export function defaultCollapsed(roots: RhumbNode[]): Set<string> {
 }
 
 /**
+ * How to frame a group of nodes in a viewport: where to centre and at what zoom, never above
+ * `maxZoom` so a single small item is shown with its surroundings instead of filling the screen.
+ */
+export function fitZoom(
+  bounds: { x: number; y: number; width: number; height: number },
+  viewport: { width: number; height: number },
+  padding = 0.2,
+  maxZoom = 1,
+): { x: number; y: number; zoom: number } {
+  // The same arithmetic the library uses for `fitBounds`: the padding is a share of the viewport
+  // taken off each side, and the zoom is capped so a small group is not blown up to fill the screen.
+  const fit = Math.min(viewport.width * (1 - padding) / bounds.width, viewport.height * (1 - padding) / bounds.height);
+  return { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2, zoom: Math.min(maxZoom, fit) };
+}
+
+/**
  * Folds to undo after a reload: the user's folds (`overrides` set to true) on the ancestors of
  * nodes that are doing now but were not before, so newly started work shows even inside a group
  * folded by hand. Returns the new overrides, or `overrides` itself when nothing changes.

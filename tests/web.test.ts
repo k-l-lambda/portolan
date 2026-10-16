@@ -5,9 +5,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
-import { claimMarks, defaultCollapsed, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
+import { claimMarks, defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import { searchNodes } from "../web/src/search.ts";
-import { timerState } from "../web/src/TimerChip.tsx";
+import { timerState } from "../web/src/timerState.ts";
 
 describe("view helpers", () => {
   it("collapses subtrees without doing work by default", () => {
@@ -54,6 +54,20 @@ describe("view helpers", () => {
     expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["archive", "group", "plain"]);
     const n = starredInside(d.nodes);
     expect([n.get("archive"), n.get("group"), n.get("key"), n.get("plain")]).toEqual([1, 1, 0, 0]);
+  });
+
+  it("frames a set of nodes, never zooming past the cap", () => {
+    const view = { width: 1000, height: 600 };
+    // Two nodes far apart: centred on them, at the zoom the viewport allows for that box.
+    expect(fitZoom({ x: 100, y: 50, width: 800, height: 200 }, view)).toEqual({ x: 500, y: 150, zoom: Math.min(800 / 800, 480 / 200) });
+    // A single small card would fill the screen, so the zoom stops at the cap.
+    expect(fitZoom({ x: 0, y: 0, width: 240, height: 76 }, view)).toEqual({ x: 120, y: 38, zoom: 1 });
+    expect(fitZoom({ x: 0, y: 0, width: 240, height: 76 }, view, 0.2, 0.75).zoom).toBe(0.75);
+    // No nodes to frame: the cap again, not infinity.
+    expect(fitZoom({ x: 10, y: 20, width: 0, height: 0 }, view).zoom).toBe(1);
+    // The cap never raises a fit that is already smaller.
+    // 4000 wide and 3000 tall in a 1000x600 viewport: the height is the tighter side.
+    expect(fitZoom({ x: 0, y: 0, width: 4000, height: 3000 }, view).zoom).toBeCloseTo(480 / 3000, 5);
   });
 
   it("decides which nodes carry a timer chip", () => {

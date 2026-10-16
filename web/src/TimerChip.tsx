@@ -5,6 +5,7 @@
 
 import type { Timing } from "../../src/timing.ts";
 import { formatDuration, sharePercent } from "../../src/timing.ts";
+import { timerState } from "./timerState.ts";
 import { absoluteTime } from "./time.ts";
 
 const STATE_TEXT = { ok: "on time", near: "nearly due", over: "over the estimate" } as const;
@@ -26,19 +27,6 @@ export function timerText(t: Timing): string {
 export function timingRecord(t: Timing): string {
   return [t.estimate !== null ? `estimated ${formatDuration(t.estimate)}` : null, t.started !== null ? `started ${absoluteTime(t.started)}` : null,
     t.finished !== null ? `finished ${absoluteTime(t.finished)}` : null].filter(Boolean).join("; ");
-}
-
-/**
- * What the card shows for a node at `status`: the chip only where there is something to say.
- * Doing compares its run with the estimate, a finished run shows what it took, and a todo shows
- * just the estimate. Anything else (a todo with no estimate, a dropped or idea item) shows none.
- */
-export function timerState(timing: Timing | null, status: string | null): "live" | "closed" | "estimate" | null {
-  if (!timing) return null;
-  if (status === "doing") return "live";
-  if (timing.closed) return "closed";
-  if (status === "todo" && timing.estimate !== null && timing.elapsed === null) return "estimate";
-  return null;
 }
 
 export function TimerChip({ timing }: { timing: Timing }) {

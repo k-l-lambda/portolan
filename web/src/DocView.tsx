@@ -6,7 +6,7 @@ import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
+import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
@@ -17,7 +17,8 @@ import { DiffPanel } from "./DiffPanel.tsx";
 import { pointKey } from "./timelineLabels.ts";
 import { nodeKind } from "../../src/kinds.ts";
 import { byUrgency, timingOf } from "../../src/timing.ts";
-import { timerState, type TimedItem } from "./TimerChip.tsx";
+import type { TimedItem } from "./TimerChip.tsx";
+import { timerState } from "./timerState.ts";
 import { IconButton } from "./IconButton.tsx";
 import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
@@ -25,6 +26,9 @@ import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard, fill: FrameFill };
+
+/** The closest the view goes when framing a history point: about a card's width on screen. */
+const FRAME_MAX_ZOOM = 1.1;
 
 /** Candidates listed under the search box. */
 const SEARCH_LIST = 10;
@@ -310,6 +314,33 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     );
     return () => { live = false; };
   }, [data, collapsed]);
+
+  // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
+  // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
+  const [pendingFrame, setPendingFrame] = useState<Set<string> | null>(null);
+  const framePoint = useCallback((key: string) => {
+    const point = data?.timeline?.points.find((p) => pointKey(p) === key);
+    if (!point || point.nodes.length === 0) return;
+    const keys = new Set(point.nodes);
+    keys.forEach(reveal);
+    setPendingFrame(keys);
+  }, [data, reveal]);
+  useEffect(() => {
+    if (!pendingFrame || !layout) return;
+    const boxes = layout.boxes.filter((b) => pendingFrame.has(b.key));
+    // Ancestors may still be expanding: the next layout will have them.
+    if (boxes.length === 0 || boxes.length < pendingFrame.size) return;
+    const x = Math.min(...boxes.map((b) => b.x)), y = Math.min(...boxes.map((b) => b.y));
+    const right = Math.max(...boxes.map((b) => b.x + b.width)), bottom = Math.max(...boxes.map((b) => b.y + b.height));
+    // `getViewport` gives position and zoom only, so measure the pane for its size.
+    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+    const view = { width: pane?.width ?? 1000, height: pane?.height ?? 600 };
+    // Cap the zoom so a point that changed one small item does not fill the screen with it; a
+    // point that changed a wide area still fits, since that needs a lower zoom anyway.
+    const target = fitZoom({ x, y, width: right - x, height: bottom - y }, view, 0.2, FRAME_MAX_ZOOM);
+    flow.setCenter(target.x, target.y, { zoom: target.zoom, duration: 500 });
+    setPendingFrame(null);
+  }, [pendingFrame, layout, flow]);
 
   const base = useMemo(() => {
     if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
@@ -707,7 +738,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onClose={() => (setDiffPoint(null), setDiffHover(false))} onHover={setDiffHover} />;
         })()}
         </div>
-        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive ?? (diffHover ? diffPoint : null)} pinned={diffPoint} onActive={onRailActive} />}
+        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive ?? (diffHover ? diffPoint : null)} pinned={diffPoint}
+            onActive={onRailActive} onPick={framePoint} />}
         </div>
       </div>
     </div>
