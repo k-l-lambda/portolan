@@ -72,3 +72,12 @@ export const SearchIcon = () => (
     <path d="m10.3 10.3 3.6 3.6" />
   </Icon>
 );
+
+/** A card lifted off a ground plane with a depth ruler beside it: the 3D view. */
+export const View3DIcon = () => (
+  <Icon>
+    <path d="M1.6 12.4 8 10.2l6.4 2.2L8 14.6z" />
+    <path d="M3.6 8.9 8 7.4l4.4 1.5-4.4 1.5z" opacity=".55" />
+    <path d="M5.4 5.5 8 4.7l2.6.8L8 6.3z" opacity=".3" />
+  </Icon>
+);

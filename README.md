@@ -94,6 +94,27 @@ The same map in the web view:
 
 Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite; `{kind: hypothesis, refuted: true}` says what an item is and how the evidence for a claim stands; `{estimate: 2h, started: …, finished: …}` times work in progress and records how long it took. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
 
+## The time-depth view
+
+The `3D` button in the toolbar tilts the map along a second axis for time. It is not a camera
+tilt: the flat layout stays exactly as it is, and each card is lifted off it by its own update
+time, older further back. Nothing is scaled, so cards stay readable and the relation lines still
+meet them, and because the projection moves points rather than transforming the pane, pan, zoom,
+the navigator and clicking all keep working as they do in 2D.
+
+Under each timed card, on the ground, lies the stretch of time that work occupied:
+
+| On the ground | Means |
+| --- | --- |
+| Solid band in the status colour | A finished run, from `started` to `finished` — what it really took |
+| Solid band, green / amber / red | Work in progress, from `started` to now, against its `estimate` |
+| Dashed outline | A todo's `estimate`: a plan, not a measurement |
+
+The depth ruler at the map's bottom-left labels the window in hours, days, months or years,
+whichever suits its span. The window follows the navigator's frame — the region on screen — so
+zooming into a stretch of the map brings its own times into view. Every timed card also carries a
+ruled track beneath it, so its depth can be read against its neighbours despite the tilt.
+
 ## Status
 
 Portolan is experimental and changing quickly. What exists today:
@@ -104,6 +125,7 @@ Portolan is experimental and changing quickly. What exists today:
 - A thread store for annotations in an append-only `.threads.jsonl` sidecar
 - A local server that serves the map, derived values and threads, and pushes file changes live
 - A first web view, with a mind map and a diary panel, still being built
+- A time-depth view: a 3D toggle that lifts each card off the map by its own time and lays the time each piece of work occupied on the ground beneath it
 
 The server has no authentication and binds to `127.0.0.1` only. Do not expose it.
 

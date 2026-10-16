@@ -1,10 +1,12 @@
 import {
   Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
+import { DepthFloor } from "./DepthLayer.tsx";
+import { DEPTH_MAX, depthScene, nextFocus, project, projectPath, ribbonFor, sameFocus, type Focus } from "./depth.ts";
 import { layoutElk, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -20,7 +22,7 @@ import { byUrgency, timingOf } from "../../src/timing.ts";
 import type { TimedItem } from "./TimerChip.tsx";
 import { timerState } from "./timerState.ts";
 import { IconButton } from "./IconButton.tsx";
-import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
+import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon, View3DIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
 import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
@@ -301,6 +303,17 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     }
   };
 
+  // The 3D view lifts each card by its own time (see depth.ts). The window it shows comes from the
+  // region the navigator's frame holds, so the depth follows whatever the map is showing.
+  const [threeD, setThreeD] = useState(false);
+  const [depthWin, setDepthWin] = useState<Focus | null>(null);
+  const prevFocus = useRef<Focus | null>(null);
+  const prev2Focus = useRef<Focus | null>(null);
+  const [view, setView] = useState<{ x: number; y: number; zoom: number } | null>(null);
+  useEffect(() => {
+    setDepthWin(null); prevFocus.current = null; prev2Focus.current = null; setView(null);
+  }, [file]);
+
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
   const [layoutError, setLayoutError] = useState<string | null>(null);
@@ -314,6 +327,50 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     );
     return () => { live = false; };
   }, [data, collapsed]);
+
+  // A node's own time, the one the depth axis measures from: the same source the cards use for
+  // freshness, so a map dated by links (`dates: links`) is laid out by those dates instead of git.
+  const nodeTimes = useMemo(() => new Map((data?.freshness.nodes ?? []).map((t) => [t.line, t.time])), [data]);
+  const timeOf = useCallback((key: string) => {
+    const box = layout?.boxes.find((b) => b.key === key);
+    return box ? nodeTimes.get(box.node.line) : undefined;
+  }, [layout, nodeTimes]);
+
+  // The window the depth axis shows, from the region the navigator's frame holds: the visible part
+  // of the map. Recomputing it needs a settled viewport, so it waits for the pan or zoom to end.
+  useEffect(() => {
+    if (!threeD) return;
+    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+    if (!view || !pane) return;
+    const rect = { x: -view.x / view.zoom, y: -view.y / view.zoom, width: pane.width / view.zoom, height: pane.height / view.zoom };
+    const found = nextFocus(layout?.boxes ?? [], timeOf, rect, prevFocus.current, prev2Focus.current);
+    if (!found || sameFocus(found, depthWin)) return;
+    prev2Focus.current = prevFocus.current;
+    prevFocus.current = found;
+    setDepthWin(found);
+  }, [threeD, view, layout, timeOf, depthWin]);
+
+  /** The scene for the current window: where each card sits in depth, and the floor beneath it. */
+  const scene = useMemo(() => (threeD && depthWin && layout
+    ? depthScene(layout.boxes, depthWin, timeOf, (key) => {
+      const box = layout.boxes.find((b) => b.key === key);
+      if (!box) return null;
+      const own = nodeTimes.get(box.node.line);
+      return ribbonFor(timingOf(box.node, now), box.node.status, own ?? depthWin.to, now, depthWin);
+    })
+    : null), [threeD, depthWin, layout, timeOf, nodeTimes, now]);
+
+  // Where each card is drawn: its layout position, lifted by its own time. Farther cards fade, so
+  // depth reads even where two cards overlap; nothing is scaled, so handles stay on the outline.
+  const placed = useMemo(() => {
+    const out = new Map<string, { x: number; y: number; z: number; fog: number }>();
+    if (!layout) return out;
+    for (const b of layout.boxes) {
+      const z = scene?.z.get(b.key) ?? 0;
+      out.set(b.key, { ...project(b.x, b.y, z), z });
+    }
+    return out;
+  }, [layout, scene]);
 
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
@@ -351,9 +408,12 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const nodes: CardNode[] = boxes.map((b) => ({
       id: b.key,
       type: "card",
-      position: { x: b.x, y: b.y },
+      position: { x: placed.get(b.key)?.x ?? b.x, y: placed.get(b.key)?.y ?? b.y },
       width: b.width,
       height: b.height,
+      // In 3D the fog rides on the wrapper as a custom property, so the card's own stylesheet
+      // combines it with the status and focus opacities instead of one inline value overriding them.
+      style: scene ? ({ "--fog": `${placed.get(b.key)?.fog ?? 1}` } as CSSProperties) : undefined,
       // Every rebuild (reload, new layout, the freshness tick) creates new node objects. Without
       // `measured`, xyflow drops their handle bounds and hides every edge until the cards are
       // measured again, so lines blinked out for a few frames. The size is known, so pass it.
@@ -366,7 +426,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       //   360      focused lines, drawn over everything except labels
       //   400      edge labels
       // So lines pass behind every title and control, yet stay visible inside frames.
-      zIndex: b.container ? 150 + b.depth : 200 + b.depth,
+      // 3D draws cards nearest-first, so a far card passes behind a near one. A frame takes its own
+      // children's frontmost depth, so it stays around them instead of sinking to its own far edge.
+      zIndex: scene ? cardZ(b, placed, scene.z) : b.container ? 150 + b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
@@ -382,7 +444,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     }));
     const fills: CardNode[] = boxes.filter((b) => b.container).map((b) => {
       const frame = nodes.find((n) => n.id === b.key)!;
-      return { ...frame, id: fillId(b.key), type: "fill", zIndex: b.depth, selectable: false, focusable: false };
+      // The fill sits at the bottom of the stack: card layers in 2D, and below every card in 3D,
+      // where it must still carry its own frame's projected position.
+      return { ...frame, id: fillId(b.key), type: "fill", zIndex: scene ? 1000 + b.depth : b.depth, selectable: false, focusable: false };
     });
     nodes.unshift(...fills);
     const edges: FlowEdge[] = layout.routes.map((e) => {
@@ -395,7 +459,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         target: e.target,
         type: "polyline",
         // The label written in the Rhumb line, if this route draws one edge; only these repeat.
-        data: { points: e.points, arrow, written: e.count === 1 ? e.label : null },
+        data: {
+          // A relation between two cards at different times leans with them.
+          points: scene ? projectPath(e.points, placed.get(e.source)?.z ?? 0, placed.get(e.target)?.z ?? 0) : e.points,
+          arrow, written: e.count === 1 ? e.label : null,
+        },
         className: style.className,
         style: style.dashed ? { strokeDasharray: style.dashed } : undefined,
         markerEnd: arrow ? { type: MarkerType.ArrowClosed, width: 16, height: 16 } : undefined,
@@ -406,7 +474,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar]);
+  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed]);
 
   useEffect(() => {
     if (!pendingCenter || !layout) return;
@@ -580,6 +648,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onClick={() => setOverrides(new Map())} disabled={overrides.size === 0} />
           <IconButton icon={<EdgeLabelsIcon />} label={allLabels ? "Hide edge labels" : "Show all edge labels"}
             pressed={allLabels} onClick={() => setAllLabels((v) => !v)} />
+          <IconButton icon={<View3DIcon />} pressed={threeD}
+            label={threeD ? "Leave the time-depth view" : "Time-depth view: lift each card off the map by its own time and lay each node's time on the ground beneath it"}
+            onClick={() => setThreeD((v) => !v)}>
+            <span className="icon-text">3D</span>
+          </IconButton>
         </div>
         <div className="search" role="search" ref={searchWrap}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setListOpen(false); }}>
@@ -705,8 +778,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onEdgeMouseEnter={(e, ed) => { if (!fromLabel(e)) setHover({ kind: "edge", id: ed.id }); }}
             onEdgeMouseLeave={() => setHover(null)}
             onPaneClick={() => setSelected(null)}
+            // The last settled pan or zoom; in 3D it picks the window the depth axis covers.
+            onMoveEnd={(_e, v) => setView({ x: v.x, y: v.y, zoom: v.zoom })}
             proOptions={{ hideAttribution: false }}
           >
+            {scene && <DepthFloor scene={scene} />}
             <Background gap={24} />
             <Controls showInteractive={false} />
             <MiniMap pannable zoomable nodeClassName={(n) => {
@@ -791,4 +867,18 @@ function useOutsidePress(ref: RefObject<HTMLElement | null>, open: boolean, clos
 function rememberAt(last: Map<string, { x: number; y: number }>, id: string, at: { x: number; y: number } | undefined) {
   if (at) last.set(id, at);
   return at ?? last.get(id);
+}
+
+/**
+ * Stacking order for a card in the 3D view. A plain card takes its own depth, nearest on top. A
+ * frame takes the frontmost depth anywhere inside it, so it encloses its own children rather than
+ * sinking to the depth of whatever node happens to represent it, and frames always stay below the
+ * cards they hold. Depth 0 (the newest) is `DEPTH_MAX` in this scale, the farthest.
+ */
+function cardZ(b: { key: string; container: boolean }, placed: Map<string, { z: number }>, z: Map<string, number>): number {
+  const key = b.key.split("::")[0]!;
+  if (!b.container) return 2000 + Math.round(DEPTH_MAX - (placed.get(key)?.z ?? 0));
+  const own = [...z].filter(([k]) => k === key || k.startsWith(`${key}-`) || k.includes(`${key}::`));
+  const front = own.length > 0 ? Math.min(...own.map(([, v]) => v)) : z.get(key) ?? DEPTH_MAX;
+  return 1500 + Math.round(DEPTH_MAX - front);
 }

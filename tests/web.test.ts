@@ -5,7 +5,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
+import { timingOf } from "../src/timing.ts";
 import { claimMarks, defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
+import { axisTicks, depthPx, depthScene, nextFocus, niceSpan, project, projectPath, ribbonFor, TICK_COUNT, yearLabel } from "../web/src/depth.ts";
 import { searchNodes } from "../web/src/search.ts";
 import { timerState } from "../web/src/timerState.ts";
 
@@ -258,5 +260,286 @@ describe("kinds and claims", () => {
     expect(searchNodes(d.nodes, "lr kind:HYPOTHESIS").keys).toEqual(["lr"]);
     expect(searchNodes(d.nodes, "is:refuted is:supported").keys).toEqual([]);
     expect(searchNodes(d.nodes, "kind:nothing").keys).toEqual([]);
+  });
+});
+
+describe("the 3D time-depth view", () => {
+  const HOUR = 3600;
+  const DAY = 86_400;
+  const YEAR = 365 * DAY;
+  /** 2026-10-16 12:00 local, the reference "now" for these tests. */
+  const NOW = Math.floor(new Date(2026, 9, 16, 12, 0, 0).getTime() / 1000);
+  const at = (y: number, m: number, d: number, h = 0) => Math.floor(new Date(y, m - 1, d, h).getTime() / 1000);
+
+  it("puts the newest moment on the front plane and older ones further back", () => {
+    const focus = { to: NOW, span: 10 * DAY };
+    expect(depthPx(NOW, focus)).toBe(0);
+    expect(depthPx(NOW - 10 * DAY, focus)).toBe(280);
+    // Halfway back in time is halfway back in depth.
+    expect(depthPx(NOW - 5 * DAY, focus)).toBeCloseTo(140, 6);
+    // Outside the window, times clamp to its two ends rather than running off the axis.
+    expect(depthPx(NOW + DAY, focus)).toBe(0);
+    expect(depthPx(NOW - 99 * DAY, focus)).toBe(280);
+  });
+
+  it("lifts a point up and to the right, without shrinking it", () => {
+    const near = project(100, 100, 0);
+    expect(near).toEqual({ x: 100, y: 100, fog: 1 });
+    const far = project(100, 100, 280);
+    expect(far.x).toBeGreaterThan(100); // to the right
+    expect(far.y).toBeLessThan(100); // and up
+    expect(far.fog).toBeCloseTo(0.5, 6);
+    // Any point at any depth is only ever translated: the projection has no scale factor.
+    for (const z of [0, 70, 140, 280]) {
+      const p = project(0, 0, z);
+      expect(Number.isFinite(p.x) && Number.isFinite(p.y)).toBe(true);
+    }
+  });
+
+  it("leans a relation between two moments, and leaves one within a single moment alone", () => {
+    const path = [{ x: 0, y: 0 }, { x: 100, y: 0 }];
+    expect(projectPath(path, 0, 0)).toEqual(path);
+    const leaning = projectPath(path, 0, 280);
+    expect(leaning[0]).toEqual({ x: 0, y: 0 });
+    expect(leaning[1]!.x).toBeGreaterThan(100);
+    expect(leaning[1]!.y).toBeLessThan(0);
+    // Interpolated along the path: the midpoint leans half as far as the end.
+    const mid = projectPath([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }], 0, 280)[1]!;
+    expect(mid.x).toBeCloseTo(project(0, 0, 140).x, 6);
+  });
+
+  it("picks a round window, so the projection holds still while panning", () => {
+    expect(niceSpan(10)).toBe(300);
+    expect(niceSpan(3 * HOUR)).toBe(6 * HOUR);
+    expect(niceSpan(2 * DAY)).toBe(3 * DAY);
+    expect(niceSpan(40 * DAY)).toBe(90 * DAY);
+    expect(niceSpan(400 * DAY)).toBe(5 * YEAR);
+  });
+
+  describe("the window follows the region on screen", () => {
+    const boxes = [
+      { key: "old", x: 0, y: 0, width: 100, height: 50 },
+      { key: "new", x: 400, y: 0, width: 100, height: 50 },
+    ];
+    const times = new Map([["old", NOW - 20 * DAY], ["new", NOW]]);
+    const timeOf = (k: string) => times.get(k);
+    const onScreen = { x: 0, y: 0, width: 200, height: 100 };
+
+    it("takes the span from the cards inside the frame", () => {
+      // Only the old card is on screen, so the window is a short one with nothing to spread over.
+      expect(nextFocus(boxes, timeOf, onScreen, null, null)).toEqual({ to: expect.any(Number), span: 300 });
+    });
+
+    it("covers both ends when both are framed, quantised to a round span", () => {
+      const f = nextFocus(boxes, timeOf, { x: 0, y: 0, width: 1000, height: 100 }, null, null)!;
+      expect(f.span).toBe(30 * DAY); // 20 days of work, rounded up
+      // The front edge sits on a whole step at or after the newest card, so panning by less than a
+      // step keeps the window, and the front plane is never behind the work it shows.
+      const step = f.span / TICK_COUNT;
+      expect(f.to % step).toBeCloseTo(0, 6);
+      expect(f.to).toBeGreaterThanOrEqual(NOW);
+      expect(f.to - NOW).toBeLessThan(step);
+    });
+
+    it("keeps the window when the frame moves less than a step, and refuses to oscillate", () => {
+      const first = nextFocus(boxes, timeOf, { x: 0, y: 0, width: 1000, height: 100 }, null, null)!;
+      const nudged = nextFocus(boxes, timeOf, { x: -5, y: 0, width: 1000, height: 100 }, first, null)!;
+      expect(nudged).toBe(first);
+      // A window that repeats the one from before last is refused: the projection moved the cards,
+      // and without this the window and the visible set would chase each other.
+      const other = { to: first.to - first.span, span: first.span };
+      expect(nextFocus(boxes, timeOf, { x: 0, y: 0, width: 1000, height: 100 }, other, first)).toBe(other);
+    });
+
+    it("keeps the window it has when no dated card is in the frame", () => {
+      const nowhere = { x: 5000, y: 5000, width: 10, height: 10 };
+      expect(nextFocus(boxes, timeOf, nowhere, null, null)).toBeNull();
+    });
+  });
+
+  describe("the ruler", () => {
+    it("labels clock time within a day, days within a month, months within a year", () => {
+      const hours = axisTicks({ to: NOW, span: 12 * HOUR });
+      expect(hours.length).toBeGreaterThan(3);
+      expect(hours.every((t) => /^\d{2}:\d{2}$/.test(t.label))).toBe(true);
+      // Midnight is the boundary a reader scans for, so it is the tick drawn heavier.
+      const midnight = axisTicks({ to: at(2026, 10, 16, 12), span: 24 * HOUR }).filter((t) => t.major).map((t) => t.label);
+      expect(midnight).toEqual(["00:00"]);
+
+      const days = axisTicks({ to: NOW, span: 7 * DAY });
+      expect(days.map((t) => t.label).slice(0, 3)).toEqual(["Oct 16", "Oct 15", "Oct 14"]);
+
+      const months = axisTicks({ to: NOW, span: YEAR });
+      // Every tick a month name, and the year riding on the January tick — never "Oct 26", which
+      // would read as the 26th of October.
+      expect(months.every((t) => /^[A-Z][a-z]{2}$|^\d{4}$/.test(t.label))).toBe(true);
+      // A month name is a bare month name and never reads as a date, and the January tick — the
+      // one drawn heavier — is the one that carries the year.
+      const january = months.filter((t) => t.major);
+      expect(january.length).toBeGreaterThan(0);
+      expect(january.every((t) => /^\d{4}$/.test(t.label))).toBe(true);
+    });
+
+    it("names years, then decades and eras, on a long map", () => {
+      // Ticks count back from a whole multiple of the step, so they land on their own boundaries
+      // rather than drifting a year per step (which is what stepping in 365-day blocks would do).
+      expect(axisTicks({ to: at(2026, 10, 16), span: 100 * YEAR }).map((t) => t.label).slice(0, 3)).toEqual(["2020", "2010", "2000"]);
+      // A quarter-century window fills the axis with 3-year steps, the finest that still fits.
+      expect(axisTicks({ to: at(2026, 10, 16), span: 25 * YEAR }).map((t) => t.label).slice(0, 3)).toEqual(["2025", "2022", "2019"]);
+      // Across the epoch the era changes with the sign, no year is named twice, and the heavier
+      // ticks land on the round boundaries a reader scans for.
+      const long = axisTicks({ to: at(2026, 10, 16), span: 1e4 * YEAR });
+      expect(long.map((t) => t.label).slice(0, 3)).toEqual(["2000", "1000", "1 BCE"]);
+      expect(new Set(long.map((t) => t.label)).size).toBe(long.length);
+      // The heavier marks are spread out — about two in view — rather than landing on every tick.
+      const centuries = axisTicks({ to: at(2026, 10, 16), span: 500 * YEAR });
+      expect(centuries.filter((t) => t.major).length).toBe(2);
+      expect(centuries.filter((t) => t.major).map((t) => t.label)).toEqual(["2000", "1750"]);
+      for (const span of [100 * YEAR, 1e4 * YEAR, 1e6 * YEAR]) {
+        const major = axisTicks({ to: at(2026, 10, 16), span }).filter((t) => t.major);
+        expect(major.length, `span ${span}`).toBeGreaterThanOrEqual(1);
+        expect(major.length, `span ${span}`).toBeLessThanOrEqual(3);
+      }
+
+      expect(yearLabel(2026)).toBe("2026");
+      expect(yearLabel(-66_000_000)).toBe("66M BCE");
+      expect(yearLabel(-1)).toBe("2 BCE"); // astronomical year -1 is 2 BCE
+      expect(yearLabel(0)).toBe("1 BCE");
+      expect(yearLabel(1e6)).toBe("1M CE"); // a compacted year says which era it is in
+    });
+
+    it("places every tick on a real boundary and inside the window", () => {
+      for (const span of [HOUR, 6 * HOUR, DAY, 7 * DAY, 30 * DAY, YEAR, 25 * YEAR, 1e4 * YEAR, 1e8 * YEAR]) {
+        const focus = { to: NOW, span };
+        const ticks = axisTicks(focus);
+        expect(ticks.length, `span ${span}`).toBeGreaterThanOrEqual(2);
+        for (const t of ticks) {
+          expect(t.time).toBeLessThanOrEqual(focus.to);
+          expect(t.time).toBeGreaterThanOrEqual(focus.to - focus.span);
+          expect(t.z).toBeCloseTo(depthPx(t.time, focus), 6);
+          expect(t.label.length).toBeGreaterThan(0);
+        }
+        // Newest first, and strictly descending.
+        for (let i = 1; i < ticks.length; i++) expect(ticks[i]!.time, `span ${span}`).toBeLessThan(ticks[i - 1]!.time);
+        // The window is covered: the gap in front of the newest tick and behind the oldest are
+        // each smaller than the ticks' own spacing, so no stretch of the axis is left unlabelled.
+        const gap = ticks[0]!.time - ticks[1]!.time;
+        expect(focus.to - ticks[0]!.time, `span ${span}`).toBeLessThan(gap + 1);
+        expect(ticks[ticks.length - 1]!.time - (focus.to - focus.span), `span ${span}`).toBeLessThan(gap + 1);
+      }
+    });
+
+    it("caps the number of ticks so their labels stay apart", () => {
+      for (const span of [HOUR, DAY, YEAR, 1e6 * YEAR]) {
+        const ticks = axisTicks({ to: NOW, span });
+        expect(ticks.length, `span ${span}`).toBeLessThanOrEqual(14);
+        expect(ticks.length, `span ${span}`).toBeGreaterThanOrEqual(2);
+        // No two ticks land on the same depth, which is what would stack two labels together.
+        expect(new Set(ticks.map((t) => t.z.toFixed(3))).size, `span ${span}`).toBe(ticks.length);
+      }
+    });
+  });
+
+  describe("time footprints", () => {
+    const focus = { to: NOW, span: 30 * DAY };
+    const node = (attrs: Record<string, unknown>, status: "todo" | "doing" | "done") => ({ attrs, status });
+
+    it("draws a finished run as the time it really took", () => {
+      const r = ribbonFor(timingOf(node({ estimate: "3d", started: "2026-09-20", finished: "2026-09-24" }, "done"), NOW), "done", at(2026, 9, 20), NOW, focus)!;
+      expect(r.kind).toBe("actual");
+      expect(r.from).toBe(at(2026, 9, 20));
+      expect(r.to).toBe(at(2026, 9, 25) - 1); // a date-only finish means during that day
+      expect(r.label).toBe("4d23h"); // four days and 23 hours 59 minutes, as the duration form reads
+      // A finish with a time of day is exact.
+      const exact = ribbonFor(timingOf(node({ started: "2026-09-20T09:00", finished: "2026-09-20T11:30" }, "done"), NOW), "done", at(2026, 9, 20), NOW, focus)!;
+      expect(exact.label).toBe("2h30m");
+    });
+
+    it("draws a running run from its start to now, coloured by its estimate", () => {
+      const started = NOW - 6 * DAY;
+      const r = ribbonFor(timingOf(node({ estimate: "5d", started: "2026-10-10" }, "doing"), NOW), "doing", started, NOW, focus)!;
+      expect(r.kind).toBe("running");
+      expect(r.to).toBe(NOW);
+      expect(r.state).toBe("over");
+      expect(r.label).toBe("6d12h");
+    });
+
+    it("draws a todo's estimate as a range at its own time, kept inside the window", () => {
+      const own = NOW - 20 * DAY;
+      const r = ribbonFor(timingOf(node({ estimate: "10d" }, "todo"), NOW), "todo", own, NOW, focus)!;
+      expect(r.kind).toBe("estimate");
+      expect(r.from).toBe(own); // plenty of room in front, so it starts where the node sits
+      expect(r.to - r.from).toBe(10 * DAY);
+      // A plan that would run past the front plane is pulled back, so its length stays readable
+      // instead of being cut off by the edge.
+      const over = ribbonFor(timingOf(node({ estimate: "10d" }, "todo"), NOW), "todo", NOW - DAY, NOW, focus)!;
+      expect(over.to - over.from).toBe(10 * DAY);
+      expect(over.to).toBe(NOW);
+      // A plan the window cannot hold at all is trimmed at the old end.
+      const huge = ribbonFor(timingOf(node({ estimate: "90d" }, "todo"), NOW), "todo", own, NOW, focus)!;
+      expect(huge.to).toBe(NOW);
+      expect(huge.from).toBe(NOW - 30 * DAY);
+    });
+
+    it("shows nothing for a node with no timing, or a todo with no estimate", () => {
+      expect(ribbonFor(null, "todo", NOW, NOW, focus)).toBeNull();
+      expect(ribbonFor(timingOf(node({ estimate: "5d", started: "2026-10-14T09:00" }, "todo"), NOW), "todo", NOW, NOW, focus)).toBeNull();
+      // A doing node whose start is unknown has no run to draw; its card still shows what it did.
+      expect(ribbonFor(timingOf(node({ estimate: "5d" }, "doing"), NOW), "doing", NOW, NOW, focus)).toBeNull();
+    });
+  });
+
+  describe("the scene", () => {
+    const focus = { to: NOW, span: 30 * DAY };
+    const boxes = [
+      { key: "a", x: 0, y: 0, width: 240, height: 76 },
+      { key: "b", x: 0, y: 200, width: 240, height: 76 },
+      { key: "c", x: 400, y: 0, width: 240, height: 76 },
+    ];
+    const times = new Map([["a", NOW], ["b", NOW - 15 * DAY]]); // c has no time
+    const scene = depthScene(boxes, focus, (k) => times.get(k), (k) => (k === "a" ? { kind: "estimate", from: NOW - DAY, to: NOW - DAY + DAY, state: null, label: "1d" } : null));
+
+    it("lifts every card, dated or not, and gives the undated one the front plane", () => {
+      expect(scene.z.size).toBe(3);
+      expect(scene.z.get("a")).toBe(0);
+      expect(scene.z.get("b")).toBeCloseTo(140, 6);
+      expect(scene.z.get("c")).toBe(0);
+    });
+
+    it("rules a track for every dated card, dashed at each tick", () => {
+      expect(scene.tracks.map((t) => t.key).sort()).toEqual(["a", "b"]);
+      const [track] = scene.tracks;
+      expect(track!.dashes.length).toBeGreaterThan(3);
+      // The track runs in the depth direction: back along the projection, longer than it is tall.
+      expect(Math.abs(track!.to.y - track!.from.y)).toBeGreaterThan(Math.abs(track!.to.x - track!.from.x));
+    });
+
+    it("lays each ribbon on the ground below its card, with a drop line up to it", () => {
+      const [span] = scene.spans;
+      expect(scene.spans.length).toBe(1);
+      expect(span!.key).toBe("a");
+      expect(span!.points.length).toBe(4);
+      // Below the card, and anchored to its bottom edge.
+      expect(span!.points[0]!.y).toBeGreaterThan(76);
+      expect(span!.anchor.y).toBe(76);
+      // A quad, not a single point: the ribbon has a length across the axis.
+      expect(Math.abs(span!.points[2]!.y - span!.points[0]!.y)).toBeGreaterThan(4);
+    });
+
+    it("puts the ruler off the bottom-left corner, outside every card", () => {
+      const { ruler } = scene;
+      // Both ends stay below every card and left of the map's left edge: the draw is sheared, so
+      // the older end rides up and to the right of where it was placed, and the stand-off is what
+      // keeps that far end out of the map rather than letting it climb into the cards.
+      for (const end of [ruler.from, ruler.to]) {
+        expect(end.y).toBeGreaterThan(200 + 76);
+        expect(end.x).toBeLessThan(0);
+      }
+      expect(ruler.ticks.length).toBeGreaterThan(3);
+      expect(ruler.caption).toMatch(/^\d/);
+      // Nothing outside the map is drawn: the ruler and the spans all sit in positive depth.
+      for (const t of ruler.ticks) expect(t.z).toBeGreaterThanOrEqual(0);
+      for (const t of ruler.ticks) expect(t.z).toBeLessThanOrEqual(280);
+    });
   });
 });
