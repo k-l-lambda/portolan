@@ -17,7 +17,7 @@ import { DiffPanel } from "./DiffPanel.tsx";
 import { pointKey } from "./timelineLabels.ts";
 import { nodeKind } from "../../src/kinds.ts";
 import { byUrgency, timingOf } from "../../src/timing.ts";
-import type { TimedItem } from "./TimerChip.tsx";
+import { timerState, type TimedItem } from "./TimerChip.tsx";
 import { IconButton } from "./IconButton.tsx";
 import { EdgeLabelsIcon, ExpandAllIcon, LegendIcon, ResetViewIcon, SearchIcon, SourceIcon } from "./Icons.tsx";
 import { Legend } from "./Legend.tsx";
@@ -343,9 +343,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         ...cardTime(times.get(b.node.line), now),
         selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
         kindLetters: letters.get(nodeKind(b.node) ?? ""),
-        // Work in progress shows its running time, a finished run its actual time; otherwise the
-        // attributes are only a record (side panel).
-        timing: (() => { const t = timingOf(b.node, now); return t && (b.node.status === "doing" || t.closed) ? t : null; })(),
+        // Work in progress shows its running time, a finished run its actual time, and a todo an
+        // estimate; anything else keeps the attributes as a record (side panel).
+        timing: (() => { const t = timingOf(b.node, now); return timerState(t, b.node.status) ? t : null; })(),
         onStatus, onToggle, onStar,
       },
     }));

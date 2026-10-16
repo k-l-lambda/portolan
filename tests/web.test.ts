@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
 import { claimMarks, defaultCollapsed, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import { searchNodes } from "../web/src/search.ts";
+import { timerState } from "../web/src/TimerChip.tsx";
 
 describe("view helpers", () => {
   it("collapses subtrees without doing work by default", () => {
@@ -53,6 +54,22 @@ describe("view helpers", () => {
     expect([...defaultCollapsed(d.nodes)].sort()).toEqual(["archive", "group", "plain"]);
     const n = starredInside(d.nodes);
     expect([n.get("archive"), n.get("group"), n.get("key"), n.get("plain")]).toEqual([1, 1, 0, 0]);
+  });
+
+  it("decides which nodes carry a timer chip", () => {
+    const t = (o: Partial<{ estimate: number | null; started: number | null; finished: number | null; elapsed: number | null; closed: boolean; state: "ok" | "near" | "over" | null }>) => ({
+      estimate: null, started: null, finished: null, elapsed: null, closed: false, state: null, ...o,
+    });
+    // Doing compares, finished shows what it took, todo shows the estimate alone.
+    expect(timerState(t({ estimate: 7200, started: 0, elapsed: 600, state: "ok" }), "doing")).toBe("live");
+    expect(timerState(t({ estimate: 7200, started: 0, finished: 60, elapsed: 6000, closed: true }), "done")).toBe("closed");
+    expect(timerState(t({ estimate: 7200 }), "todo")).toBe("estimate");
+    // No chip: a todo without an estimate, a todo that also has a start, and non-work statuses.
+    expect(timerState(t({}), "todo")).toBeNull();
+    expect(timerState(t({ estimate: 7200, started: 0, elapsed: 600 }), "todo")).toBeNull();
+    expect(timerState(t({ estimate: 7200 }), "dropped")).toBeNull();
+    expect(timerState(t({ estimate: 7200 }), "idea")).toBeNull();
+    expect(timerState(null, "doing")).toBeNull();
   });
 
   it("shortens ids that repeat the parent id", () => {

@@ -1,6 +1,7 @@
 // Time on an item (spec 3.5) in the card's foot. While doing: how long the current run has taken
 // against its estimate, as a bar and text, green on time, amber nearly due, red over. Once it has
-// finished: only the actual time it took, with a check mark, no estimate and no bar.
+// finished: only the actual time it took, with a check mark, no estimate and no bar. A todo item
+// with an estimate shows the estimate alone: what the work is expected to take before it starts.
 
 import type { Timing } from "../../src/timing.ts";
 import { formatDuration, sharePercent } from "../../src/timing.ts";
@@ -25,6 +26,19 @@ export function timerText(t: Timing): string {
 export function timingRecord(t: Timing): string {
   return [t.estimate !== null ? `estimated ${formatDuration(t.estimate)}` : null, t.started !== null ? `started ${absoluteTime(t.started)}` : null,
     t.finished !== null ? `finished ${absoluteTime(t.finished)}` : null].filter(Boolean).join("; ");
+}
+
+/**
+ * What the card shows for a node at `status`: the chip only where there is something to say.
+ * Doing compares its run with the estimate, a finished run shows what it took, and a todo shows
+ * just the estimate. Anything else (a todo with no estimate, a dropped or idea item) shows none.
+ */
+export function timerState(timing: Timing | null, status: string | null): "live" | "closed" | "estimate" | null {
+  if (!timing) return null;
+  if (status === "doing") return "live";
+  if (timing.closed) return "closed";
+  if (status === "todo" && timing.estimate !== null && timing.elapsed === null) return "estimate";
+  return null;
 }
 
 export function TimerChip({ timing }: { timing: Timing }) {
