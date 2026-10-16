@@ -6,7 +6,9 @@ import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { DepthFloor } from "./DepthLayer.tsx";
-import { DEPTH_MAX, depthScene, nextFocus, project, projectPath, ribbonFor, sameFocus, type Focus } from "./depth.ts";
+import { HEADER_H, HEADER_W } from "./layout.ts";
+import type { Projected } from "./depth.ts";
+import { depthScene, elevationPx, nextFocus, projectPath, ribbonFor, sameFocus, type Focus } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -352,25 +354,32 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   /** The scene for the current window: where each card sits in depth, and the floor beneath it. */
   const scene = useMemo(() => (threeD && depthWin && layout
-    ? depthScene(layout.boxes, depthWin, timeOf, (key) => {
-      const box = layout.boxes.find((b) => b.key === key);
-      if (!box) return null;
-      const own = nodeTimes.get(box.node.line);
-      return ribbonFor(timingOf(box.node, now), box.node.status, own ?? depthWin.to, now, depthWin);
-    })
+    ? depthScene(
+      layout.boxes.map((b) => ({ ...b, label: plainTitle(b.node.title) })),
+      depthWin,
+      timeOf,
+      (key) => {
+        const box = layout.boxes.find((b) => b.key === key);
+        if (!box) return null;
+        const own = nodeTimes.get(box.node.line);
+        return ribbonFor(timingOf(box.node, now), box.node.status, own ?? depthWin.to, now);
+      },
+      (key) => layout.boxes.find((b) => b.key === key)?.container ?? false,
+    )
     : null), [threeD, depthWin, layout, timeOf, nodeTimes, now]);
 
-  // Where each card is drawn: its layout position, lifted by its own time. Farther cards fade, so
-  // depth reads even where two cards overlap; nothing is scaled, so handles stay on the outline.
-  const placed = useMemo(() => {
-    const out = new Map<string, { x: number; y: number; z: number; fog: number }>();
-    if (!layout) return out;
-    for (const b of layout.boxes) {
-      const z = scene?.z.get(b.key) ?? 0;
-      out.set(b.key, { ...project(b.x, b.y, z), z });
+  // Where each card is drawn, how big and how faded, all from the scene's own projection. In 3D a
+  // card's size depends on its distance from the eye, so it is scaled about its centre.
+  const placed = useMemo(() => scene?.at ?? new Map<string, Projected>(), [scene]);
+  /** Height above the ground of each card, for leaning the relation lines between them. */
+  const upOf = useMemo(() => {
+    const out = new Map<string, number>();
+    if (scene && depthWin) for (const b of layout?.boxes ?? []) {
+      const t = nodeTimes.get(b.node.line);
+      out.set(b.key, t === undefined || !scene ? 0 : elevationPx(t, depthWin, scene.view.height));
     }
     return out;
-  }, [layout, scene]);
+  }, [scene, depthWin, layout, nodeTimes]);
 
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
@@ -399,8 +408,28 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     setPendingFrame(null);
   }, [pendingFrame, layout, flow]);
 
+  // Switching the view on moves and resizes every card, so the scene is framed once it is built;
+  // otherwise the projection would push most of the map off the screen.
+  const [pendingScene, setPendingScene] = useState(false);
+  useEffect(() => { if (threeD) setPendingScene(true); }, [threeD]);
+  useEffect(() => {
+    if (!pendingScene || !scene) return;
+    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+    if (!pane) return;
+    // The scene's cards are framed, but the zoom is held inside a readable band: a large map should
+    // not open as a field of specks, and a small one should not open on a single card. The floor is
+    // what keeps the cards legible on a map too big to fit — the scene simply does not fit, and
+    // panning to the rest is better than reading none of it.
+    // Frame the whole scene: the fit decides, with no floor of its own. A map too wide to read at
+    // that zoom is panned and zoomed into like any other view; forcing a minimum zoom instead would
+    // push most of the map off the screen, which is worse than showing it small.
+    const target = fitZoom(scene.bounds, { width: pane.width, height: pane.height }, 0.06, 1.2);
+    flow.setCenter(target.x, target.y, { zoom: target.zoom, duration: 500 });
+    setPendingScene(false);
+  }, [pendingScene, scene, flow]);
+
   /** 3D stacking order per card: frames below every card, cards nearest in front. */
-  const z3d = useMemo(() => (scene ? cardZ(layout?.boxes ?? [], parents, scene.z) : new Map<string, number>()), [scene, layout, parents]);
+  const z3d = useMemo(() => (scene ? cardZ(layout?.boxes ?? [], parents, scene.at) : new Map<string, number>()), [scene, layout, parents]);
 
   const base = useMemo(() => {
     if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
@@ -411,16 +440,26 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const nodes: CardNode[] = boxes.map((b) => ({
       id: b.key,
       type: "card",
+      // In 3D a card is placed at its projected centre and scaled about it, so it keeps its shape
+      // while growing with nearness. `width`/`height` stay the layout's own, so xyflow's hit area
+      // and the flat view's measurements are unaffected.
       position: { x: placed.get(b.key)?.x ?? b.x, y: placed.get(b.key)?.y ?? b.y },
-      width: b.width,
-      height: b.height,
-      // In 3D the fog rides on the wrapper as a custom property, so the card's own stylesheet
-      // combines it with the status and focus opacities instead of one inline value overriding them.
-      style: scene ? ({ "--fog": `${placed.get(b.key)?.fog ?? 1}` } as CSSProperties) : undefined,
+      // In 3D a group is drawn as a header panel rather than as a frame around its children (they
+      // float at their own times), so its node takes the header's size and the scaling is composed
+      // from the projection instead of the layout's own box.
+      width: scene && b.container ? HEADER_W : b.width,
+      height: scene && b.container ? HEADER_H : b.height,
+      style: scene
+        ? ({
+          "--fog": `${placed.get(b.key)?.fog ?? 1}`,
+          "--scale": `${placed.get(b.key)?.scale ?? 1}`,
+          transformOrigin: "center",
+        } as CSSProperties)
+        : undefined,
       // Every rebuild (reload, new layout, the freshness tick) creates new node objects. Without
       // `measured`, xyflow drops their handle bounds and hides every edge until the cards are
       // measured again, so lines blinked out for a few frames. The size is known, so pass it.
-      measured: { width: b.width, height: b.height },
+      measured: { width: scene && b.container ? HEADER_W : b.width, height: scene && b.container ? HEADER_H : b.height },
       // Stacking, bottom to top:
       //   0..99    frame fills (FrameFill), by depth
       //   100      relation lines
@@ -429,13 +468,16 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       //   360      focused lines, drawn over everything except labels
       //   400      edge labels
       // So lines pass behind every title and control, yet stay visible inside frames.
-      // 3D draws cards nearest-first, so a far card passes behind a near one. A frame takes its own
-      // children's frontmost depth, so it stays around them instead of sinking to its own far edge.
+      // 3D draws cards nearest-first, so a far card passes behind a near one; a frame still sits
+      // below the cards it holds.
       zIndex: scene ? z3d.get(b.key)! : b.container ? 150 + b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
-        container: b.container,
+        // In the flat view a group is a transparent frame whose children are laid out inside it.
+        // In 3D its children float at their own times, so the group is a solid header panel and the
+        // group's extent is drawn as a rectangle on the ground instead.
+        container: b.container && !scene,
         ...cardTime(times.get(b.node.line), now),
         selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
         kindLetters: letters.get(nodeKind(b.node) ?? ""),
@@ -445,13 +487,16 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         onStatus, onToggle, onStar,
       },
     }));
-    const fills: CardNode[] = boxes.filter((b) => b.container).map((b) => {
-      const frame = nodes.find((n) => n.id === b.key)!;
-      // The fill sits at the bottom of the stack: card layers in 2D, and below every card in 3D,
-      // where it must still carry its own frame's projected position.
-      return { ...frame, id: fillId(b.key), type: "fill", zIndex: scene ? 1000 + b.depth : b.depth, selectable: false, focusable: false };
-    });
-    nodes.unshift(...fills);
+    if (!scene) {
+      // The flat view's frames are two layers: a fill below the lines and the frame above them.
+      // In 3D a group is a rectangle on the ground instead, drawn by DepthFloor, so neither layer
+      // is emitted here.
+      const fills: CardNode[] = boxes.filter((b) => b.container).map((b) => {
+        const frame = nodes.find((n) => n.id === b.key)!;
+        return { ...frame, id: fillId(b.key), type: "fill", zIndex: b.depth, selectable: false, focusable: false };
+      });
+      nodes.unshift(...fills);
+    }
     const edges: FlowEdge[] = layout.routes.map((e) => {
       const style = EDGE_STYLE[e.kind];
       // A labeled relates is directed (spec 5.1).
@@ -464,7 +509,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         // The label written in the Rhumb line, if this route draws one edge; only these repeat.
         data: {
           // A relation between two cards at different times leans with them.
-          points: scene ? projectPath(e.points, placed.get(e.source)?.z ?? 0, placed.get(e.target)?.z ?? 0) : e.points,
+          points: scene ? projectPath(scene.view, e.points, upOf.get(e.source) ?? 0, upOf.get(e.target) ?? 0) : e.points,
           arrow, written: e.count === 1 ? e.label : null,
         },
         className: style.className,
@@ -477,7 +522,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed, z3d]);
+  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed, z3d, upOf]);
 
   useEffect(() => {
     if (!pendingCenter || !layout) return;
@@ -873,12 +918,12 @@ function rememberAt(last: Map<string, { x: number; y: number }>, id: string, at:
 }
 
 /**
- * Stacking order for a card in the 3D view. A plain card takes its own depth, nearest drawn on top.
- * A frame takes the front-most depth anywhere inside it — the smallest `z`, since `z` grows with
- * age — so it stays around its own children instead of sinking behind a child whose header happens
- * to be dated later, and frames always sit below the cards they hold.
+ * Stacking order for a card in the 3D view. A plain card is drawn by its distance from the eye,
+ * nearest on top. A frame takes the nearest distance anywhere inside it, so it stays around its own
+ * children instead of sinking behind a child that happens to sit nearer the eye, and frames always
+ * stay below the cards they hold.
  */
-function cardZ(boxes: Box[], parents: Map<string, RhumbNode | null>, z: Map<string, number>): Map<string, number> {
+function cardZ(boxes: Box[], parents: Map<string, RhumbNode | null>, at: Map<string, { dist: number }>): Map<string, number> {
   const kids = new Map<string, string[]>();
   for (const b of boxes) {
     const p = parents.get(b.key);
@@ -886,22 +931,26 @@ function cardZ(boxes: Box[], parents: Map<string, RhumbNode | null>, z: Map<stri
     const pk = nodeKey(p);
     (kids.get(pk) ?? kids.set(pk, []).get(pk)!).push(b.key);
   }
-  const front = new Map<string, number>();
+  const near = new Map<string, number>();
   const visit = (key: string): number => {
-    const mine = z.get(key) ?? DEPTH_MAX;
+    const mine = at.get(key)?.dist ?? Number.POSITIVE_INFINITY;
     const below = (kids.get(key) ?? []).map(visit);
-    // The frame's interior is not rebuilt from the layout, so its own node's depth is the floor and
-    // its children's front-most depth wins.
     const value = below.length > 0 ? Math.min(mine, ...below) : mine;
-    front.set(key, value);
+    near.set(key, value);
     return value;
   };
   const out = new Map<string, number>();
   for (const b of boxes) {
     if (b.container) visit(b.key);
-    // Frame interiors stay clear of the card layers (2000+), so a card is never covered by a frame.
-    out.set(b.key, b.container ? 1500 + Math.round(DEPTH_MAX - (front.get(b.key) ?? DEPTH_MAX))
-      : 2000 + Math.round(DEPTH_MAX - (z.get(b.key) ?? 0)));
+    if (!b.container) {
+      // Nearer (smaller distance) draws higher. The distances are pixel-scale, so they are squashed
+      // into a band rather than used raw.
+      const d = at.get(b.key)?.dist ?? 0;
+      out.set(b.key, 2000 + Math.round(1e6 / Math.max(1, d)));
+    } else {
+      const d = near.get(b.key) ?? Number.POSITIVE_INFINITY;
+      out.set(b.key, 1500 + Math.round(1e6 / Math.max(1, d)));
+    }
   }
   return out;
 }

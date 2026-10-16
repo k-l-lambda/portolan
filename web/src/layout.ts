@@ -8,6 +8,9 @@ export const REPO_URL = "https://github.com/k-l-lambda/portolan";
 
 export const CARD_W = 240;
 export const CARD_H = 76;
+/** A group's header panel, which is all of a group that is drawn in the time-depth view. */
+export const HEADER_W = 216;
+export const HEADER_H = CARD_H;
 
 /** Stable key for a node: its ID, or its line when it has none. */
 export function nodeKey(node: RhumbNode): string {

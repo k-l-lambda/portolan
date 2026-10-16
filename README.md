@@ -96,11 +96,17 @@ Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, 
 
 ## The time-depth view
 
-The `3D` button in the toolbar tilts the map along a second axis for time. It is not a camera
-tilt: the flat layout stays exactly as it is, and each card is lifted off it by its own update
-time, older further back. Nothing is scaled, so cards stay readable and the relation lines still
-meet them, and because the projection moves points rather than transforming the pane, pan, zoom,
-the navigator and clicking all keep working as they do in 2D.
+The `3D` button in the toolbar gives the map a third dimension, with time as height. The layout
+lies on the ground — its x to the right, its y away — and *now* is the ground plane: work that has
+happened floats above it, a plan not yet started hangs below. Every card therefore sits at its own
+height. The scene is seen through a real perspective camera, pitched down and swung a little to
+one side, so the ground converges into a trapezoid and cards shrink and dim with distance; that
+change of viewpoint is what makes the picture read as a space rather than a map that was nudged.
+
+Because the camera is real, cards are scaled by their distance, and the scene is drawn far to near.
+The projection computes each point itself rather than transforming the panes — a CSS 3D transform
+on the flow's panes would tilt the pan and zoom maths with it — so pan, zoom, the navigator, the
+depth window and clicking all keep working exactly as they do in 2D.
 
 Under each timed card, on the ground, lies the stretch of time that work occupied:
 
@@ -110,10 +116,12 @@ Under each timed card, on the ground, lies the stretch of time that work occupie
 | Solid band, green / amber / red | Work in progress, from `started` to now, against its `estimate` |
 | Dashed outline | A todo's `estimate`: a plan, not a measurement |
 
-The depth ruler at the map's bottom-left labels the window in hours, days, months or years,
-whichever suits its span. The window follows the navigator's frame — the region on screen — so
-zooming into a stretch of the map brings its own times into view. Every timed card also carries a
-ruled track beneath it, so its depth can be read against its neighbours despite the tilt.
+The depth ruler stands at the map's left edge and rises from the ground into the past, labelling
+the window in hours, days, months or years, whichever suits its span. The window follows the
+navigator's frame — the region on screen — so zooming into a stretch of the map brings its own
+times into view. Every raised card drops a line to the ground beneath it, so its height can be
+read against the ruler, and every timed one carries a bar standing on the ground at the foot of
+that line: its own duration, to scale.
 
 ## Status
 
@@ -125,7 +133,7 @@ Portolan is experimental and changing quickly. What exists today:
 - A thread store for annotations in an append-only `.threads.jsonl` sidecar
 - A local server that serves the map, derived values and threads, and pushes file changes live
 - A first web view, with a mind map and a diary panel, still being built
-- A time-depth view: a 3D toggle that lifts each card off the map by its own time and lays the time each piece of work occupied on the ground beneath it
+- A time-depth view: a 3D toggle that puts time on a vertical axis under a perspective camera, each card floating at its own time with the stretch of time it occupied standing on the ground below it
 
 The server has no authentication and binds to `127.0.0.1` only. Do not expose it.
 

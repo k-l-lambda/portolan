@@ -559,41 +559,58 @@ a { color: var(--accent); }
 .diag-error .diag-code { color: var(--error); }
 .diag-warning .diag-code { color: var(--warning); }
 
-/* Time-depth view (the 3D toggle, see web/src/depth.ts). Cards are moved by the projection
-   itself, not by a transform on the pane, so xyflow's pan, zoom and hit testing stay flat and
-   correct; the ground plane and the ruler pan and zoom with the map because they are drawn in
-   map coordinates inside the flow's viewport portal. */
-.icon-text { font: 600 11px/1 system-ui, sans-serif; letter-spacing: 0.02em; }
+/* Time-depth view (the 3D toggle, see web/src/depth.ts). The map lies on the ground and each card
+   is lifted by its own time, seen through a real perspective camera. The cards are moved and scaled
+   by the projection itself, not by a transform on the pane, so xyflow's pan, zoom and hit testing
+   stay flat and correct; the ground and the ruler are drawn in map coordinates inside the flow's
+   viewport portal, so they pan and zoom with the map. */
 .floor-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
 .floor { overflow: visible; }
-/* A card fades with its depth, so a far card reads as far even where two overlap. The custom
-   property lets the card's own rules (status tint, focus dimming) keep working underneath. */
-.react-flow__node[style*="--fog"] { opacity: calc(var(--fog, 1) * 0.94); }
-.floor-grid line, .floor-track .track-line { stroke: var(--border); stroke-width: 1; }
-.floor-track .track-dash { stroke: var(--border); stroke-width: 1; opacity: 0.5; }
-.floor-track .track-dash.major { stroke: var(--muted); opacity: 1; }
+
+/* A card is drawn as a billboard facing the eye: scaled about its own centre by its distance, and
+   faded with it. xyflow's own transform places it, so the scale goes on the card inside. */
+.react-flow__node[style*="--scale"] .card { transform: scale(var(--scale, 1)); }
+.react-flow__node[style*="--scale"] { transition: opacity 0.15s ease; }
+.react-flow__node[style*="--fog"] { opacity: var(--fog, 1); }
+/* The relation lines and the scene furniture fade the same way, so a far card and the line to it
+   belong to the same distance. */
+.react-flow__edge { transition: opacity 0.15s ease; }
+
+/* The ground plane: a faint sheet under the scene, which is what makes the cards read as standing
+   above something rather than floating in a void. */
+.floor .ground { fill: color-mix(in srgb, var(--accent) 2%, transparent); stroke: color-mix(in srgb, var(--border) 80%, transparent); stroke-width: 1; }
+
+/* Drop lines from each raised card to its own footprint on the ground, so its height can be read. */
+.floor-drops .drop { stroke: color-mix(in srgb, var(--accent) 45%, transparent); stroke-width: 1; stroke-dasharray: 2 4; }
+
+/* A time bar standing on the ground: solid and coloured by outcome for what really happened, an
+   outline for a plan. The bar's height is the time it took, so the tall ones are the long jobs. */
+.floor-bar .bar-fill { fill: color-mix(in srgb, var(--muted) 22%, transparent); }
+.floor-bar .bar-edge { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.bar-label { fill: var(--text); font: 500 10px/1 ui-monospace, monospace; text-anchor: middle; }
+.floor-bar.actual { --st: var(--st-done); }
+.floor-bar.running { --st: var(--st-doing); }
+.floor-bar.running.timer-near { --st: var(--warning); }
+.floor-bar.running.timer-over { --st: var(--error); }
+.floor-bar.actual .bar-fill, .floor-bar.running .bar-fill { fill: color-mix(in srgb, var(--st) 55%, transparent); }
+.floor-bar.actual .bar-edge, .floor-bar.running .bar-edge { stroke: var(--st); }
+.floor-bar.estimate .bar-fill { fill: color-mix(in srgb, var(--st-todo) 14%, transparent); }
+.floor-bar.estimate .bar-edge { stroke: var(--muted); stroke-dasharray: 4 3; }
+.floor-bar.estimate .bar-label { fill: var(--muted); }
+
+/* A group's rectangle on the ground. Without a rule the polygon fills black, which turned the whole
+   plane under the map into a dark slab. Faint, so the map's shape is legible without competing with
+   the cards standing on it. */
+.floor-group .group-fill { fill: color-mix(in srgb, var(--accent) 3%, transparent); stroke: color-mix(in srgb, var(--accent) 22%, transparent); stroke-width: 1; stroke-dasharray: 6 4; }
+.group-label { fill: color-mix(in srgb, var(--muted) 85%, transparent); font: 600 11px/1 system-ui, sans-serif; text-anchor: middle; }
+
+/* The ruler stands at the older edge of the scene, its ticks on real calendar boundaries. */
 .floor-ruler .ruler-line { stroke: var(--muted); stroke-width: 1.4; }
 .floor-ruler .ruler-tick line { stroke: var(--muted); stroke-width: 1.2; }
-.floor-ruler .ruler-tick.major line { stroke: var(--text); stroke-width: 1.8; }
+.floor-ruler .ruler-tick.major line { stroke: var(--text); stroke-width: 2; }
 .ruler-label { fill: var(--muted); font: 500 10px/1 ui-monospace, monospace; }
-.ruler-tick.major .ruler-label { fill: var(--text); }
+.ruler-tick.major .ruler-label { fill: var(--text); font-weight: 600; }
 .ruler-caption { fill: var(--muted); font: 500 11px/1 system-ui, sans-serif; }
-/* A footprint on the ground: what the work really took is solid, a running run is coloured by its
-   estimate like the flat view's chip, and a plan is an outline, since a guess is not a measurement. */
-.floor-span .span-fill { fill: color-mix(in srgb, var(--muted) 22%, transparent); }
-.floor-span .span-edge { fill: none; stroke: var(--muted); stroke-width: 1.2; }
-.floor-span .drop { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 3; }
-.span-label { fill: var(--text); font: 500 10px/1 ui-monospace, monospace; text-anchor: middle; }
-.floor-span.actual { --st: var(--st-done); }
-.floor-span.running.timer-ok { --st: var(--st-doing); }
-.floor-span.running.timer-near { --st: var(--warning); }
-.floor-span.running.timer-over { --st: var(--error); }
-.floor-span.running { --st: var(--st-doing); }
-.floor-span.actual .span-fill, .floor-span.running .span-fill { fill: color-mix(in srgb, var(--st) 45%, transparent); }
-.floor-span.actual .span-edge, .floor-span.running .span-edge { stroke: var(--st); }
-.floor-span.estimate .span-fill { fill: color-mix(in srgb, var(--st-todo) 10%, transparent); }
-.floor-span.estimate .span-edge { stroke: var(--muted); stroke-dasharray: 4 3; }
-.floor-span.estimate .span-label { fill: var(--muted); }
 
 @media (max-width: 760px) {
   .search-input { width: 140px; }
