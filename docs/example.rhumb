@@ -18,13 +18,13 @@ title: Portolan
   - [/] Web view {star: true} ^ui
     - [x] Renderer spike {kind: spike} ^ui-spike
     - [x] Map layout ^ui-layout
-    - [ ] Status editing {priority: high} ^ui-edit
+    - [/] Status editing {priority: high} ^ui-edit
     - [!] Annotation panel ^ui-threads
       - Blocked: the thread format is not settled
   - [/] Readability study ^study
     - [x] Frames read faster than tree lines {kind: hypothesis, supported: true, replicated: true} ^frames-help
     - [x] Curved lines read better {kind: hypothesis, refuted: true} ^curves
-    - [ ] Agents keep the map current unprompted {kind: hypothesis} ^agents-unprompted
+    - [/] Agents keep the map current unprompted {kind: hypothesis} ^agents-unprompted
     - [x] Ten-reader trial {kind: experiment} ^trial
     - [x] Labels overlap past 30 edges {kind: finding, partial: true, contested: true} ^labels-overlap
   - [ ] Merge conflicts in shared maps {kind: risk} ^conflicts
@@ -50,3 +50,5 @@ labels-overlap from trial
 ui-layout relates labels-overlap: spreads labels apart
 release needs rhumb-fmt, ui-edit
 conflicts relates release: could delay
+edge-notes relates rhumb-spec: would change the grammar
+trial relates agents-unprompted: also watched for this

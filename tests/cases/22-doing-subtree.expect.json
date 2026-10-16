@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {"id": "root", "children": [
+      {"id": "active", "children": [
+        {"id": "work", "children": []},
+        {"id": "plan", "children": []}
+      ]},
+      {"id": "stopped", "children": [
+        {"id": "done", "children": []},
+        {"id": "plan2", "children": []}
+      ]},
+      {"id": "deep", "children": [
+        {"id": "done2", "children": [
+          {"id": "nested", "children": []}
+        ]}
+      ]},
+      {"id": "leafdoing", "children": []}
+    ]}
+  ],
+  "diagnostics": []
+}

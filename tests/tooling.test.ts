@@ -144,7 +144,26 @@ r needs gone
     expect(byId.i!.progress).toBeNull();
     expect(byId.r!.ready).toBe(true);
     expect(byId.b!.ready).toBe(true);
-    expect(d.diagnostics.map((x) => [x.code, x.line])).toEqual([["W007", 1], ["I003", 5], ["W008", 8], ["W006", 12]]);
+    // `i` is an idea beside two siblings and nothing links to it (I006).
+    expect(d.diagnostics.map((x) => [x.code, x.line])).toEqual([["W007", 1], ["I006", 4], ["I003", 5], ["W008", 8], ["W006", 12]]);
+  });
+
+  it("warns when a doing node has nothing doing below it", () => {
+    const doc = parse(`- [/] Root ^root
+  - [/] Active group ^active
+    - [/] Working ^work
+    - [ ] Planned ^plan
+  - [/] Stopped group ^stopped
+    - [x] Finished ^done
+    - [ ] Planned too ^plan2
+  - [/] Deeply active ^deep
+    - [x] Finished too ^done2
+      - [/] Nested working ^nested
+  - [/] Leaf doing ^leafdoing
+`);
+    // Only `stopped`: a doing node below anywhere counts, so a nested one keeps its ancestors quiet.
+    // `done2` is done with a doing child, which is W007 as well, and I006 flags the unrelated ones.
+    expect(derive(doc).diagnostics.map((x) => [x.code, x.line]).filter(([c]) => c !== "I006")).toEqual([["W018", 5], ["W007", 9]]);
   });
 });
 

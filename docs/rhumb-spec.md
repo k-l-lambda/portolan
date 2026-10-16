@@ -296,7 +296,9 @@ These values are computed by tools and never written to the file.
 - **Consistency checks**:
   - a done parent whose subtree still has todo, doing or blocked nodes: `W007`
   - a doing or done node with a `needs` target that is not done: `W008`
+  - a doing node with children, none of which is doing (directly or below): `W018` (the work below has stopped, or the status sits on the wrong node)
   - a todo parent with a doing or done child: `I003` (suggests changing the parent to doing)
+  - a node that no relation reaches or starts, and that is neither a top-level node nor an only child: `I006` (a forgotten item, or a missing edge)
 - **Parent status** is always written explicitly. 0.1 does not derive it, so the file never disagrees with what the UI shows.
 
 ## 7. Formatting (`rhumb fmt`)

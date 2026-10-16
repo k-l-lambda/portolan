@@ -58,7 +58,7 @@ describe("parse", () => {
     const doc = parse(source);
     expect(doc.diagnostics).toEqual([]);
     expect(doc.title).toBe("Portolan");
-    expect(doc.edges).toHaveLength(17);
+    expect(doc.edges).toHaveLength(19);
     // It shows every kind of mark the view draws: preset and custom kinds, verdicts and qualifiers.
     const attrs = JSON.stringify(doc.nodes);
     for (const k of ["decision", "question", "hypothesis", "experiment", "finding", "risk", "milestone", "survey", "spike"]) expect(attrs).toContain(`"kind":"${k}"`);

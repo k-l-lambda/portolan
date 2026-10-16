@@ -1,0 +1,11 @@
+- [/] Root ^root
+  - [/] Active group ^active
+    - [/] Working ^work
+    - [ ] Planned ^plan
+  - [/] Stopped group ^stopped
+    - [x] Finished ^done
+    - [ ] Planned too ^plan2
+  - [/] Deeply active ^deep
+    - [x] Finished too ^done2
+      - [/] Working too ^nested
+  - [/] Leaf doing ^leafdoing

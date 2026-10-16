@@ -171,6 +171,7 @@ threads-format from server
 - If work on an item was interrupted (it went back to `[ ]` or `[!]`, or sat untouched while you did other things) and you now resume it, re-estimate the work that remains and reset `started` to the restart. Do not keep the old start: the values describe the current run.
 - When you mark an item `[x]`, you may add `finished` (now, at the same precision as `started`); with both, the view shows how long it actually took. Keep `estimate` and `started` as they were. If a done item is reopened to `[/]`, remove `finished` (otherwise `I005`) and treat it as a restart: new `started`, new estimate.
 - Do not mark a parent `[x]` while its subtree has `[ ]`, `[/]` or `[!]` nodes (`W007`). Finish, drop (`[-]`) or move the open children first.
+- A `[/]` node with children needs at least one child doing below it (`W018`). When the work below a group stops, finish the group or move `[/]` to the child that is really being worked on.
 - Do not mark a node `[/]` or `[x]` while one of its `needs` targets is not done (`W008`). Either finish the dependency, or the edge is wrong and should be removed or changed to `relates`.
 - Use `[!]` only with a note that says what it is waiting for.
 - Never delete abandoned work. Set it to `[-]` and add a note with the reason. A dependency on a dropped node is `W006` and no longer blocks readiness; retarget or remove that edge.
@@ -308,6 +309,7 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | `needs` a dropped node | `W006` | retarget or remove the edge |
 | `[x]` parent with open children | `W007` | close or drop the children first |
 | `[/]`/`[x]` node whose `needs` target is not done | `W008` | fix the status or the edge |
+| `[/]` group with nothing doing below it | `W018` | finish the group, or set `[/]` on the child being worked on |
 | `^Upper_Case` or `^_handmade` ID | `W009` | lowercase kebab-case, no leading `_` |
 | `dates:` other than `git` or `links` | `W014` | use one of the two |
 | `estimate: 30`, `estimate: soon` | `W015` | a duration with units: `30m`, `2h`, `1h30m` |
@@ -318,8 +320,9 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | `supported: true` and `refuted: true` together | `W013` | keep the one verdict the evidence supports |
 | Claim flag on an item that is not a hypothesis or finding | `I004` | add `kind: hypothesis` or `kind: finding`, or drop the flag |
 | `[ ]` parent with started children | `I003` | set the parent to `[/]` |
+| Node with no relation at all among siblings | `I006` | add its `needs` / `relates` edge, or move it; top-level nodes and only children are exempt |
 
-This file triggers `W005`, `W006`, `W007`, `W008` and `I003`:
+This file triggers `W005`, `W006`, `W007`, `W008`, `W018` and `I003`:
 
 ```rhumb
 - [x] Release 1.0 ^release

@@ -52,8 +52,26 @@ export function derive(doc: RhumbDocument): Derived {
   };
   doc.nodes.forEach(count);
 
+  // Relation endpoints, for the isolated-node check below.
+  const linked = new Set<string>();
+  for (const e of doc.edges) { linked.add(e.from); linked.add(e.to); }
+  const related = (n: RhumbNode): boolean =>
+    (n.id !== null && linked.has(n.id)) || n.children.some(related);
+
   const hasOpenDescendant = (n: RhumbNode): boolean =>
     n.children.some((c) => OPEN.has(c.status ?? "") || hasOpenDescendant(c));
+
+  /** Some node strictly below `n` is doing. */
+  const hasDoingDescendant = (n: RhumbNode): boolean =>
+    n.children.some((c) => c.status === "doing" || hasDoingDescendant(c));
+
+  // Nodes the isolated check applies to: not a root, and one of several siblings.
+  const isolated = new Set<RhumbNode>();
+  const mark = (nodes: RhumbNode[], top: boolean) => nodes.forEach((n) => {
+    if (!top && nodes.length > 1 && !related(n)) isolated.add(n);
+    mark(n.children, false);
+  });
+  mark(doc.nodes, true);
 
   const nodes: NodeState[] = all.map((n) => {
     const deps = needs.get(n) ?? [];
@@ -64,8 +82,20 @@ export function derive(doc: RhumbDocument): Derived {
         diagnostics.push(diagnostic("W008", n.line, `"${n.id}" is ${n.status} but "${d.target.id}" is not done`));
       }
     }
+    // A doing node whose whole subtree has stopped: itself finished in effect, or the wrong node
+    // carries the status. Only warned when no descendant is doing either.
+    if (n.status === "doing" && n.children.length > 0 && !hasDoingDescendant(n)) {
+      diagnostics.push(diagnostic("W018", n.line, "Node is doing but nothing in its subtree is"));
+    }
     if (n.status === "done" && hasOpenDescendant(n)) {
       diagnostics.push(diagnostic("W007", n.line, "Node is done but its subtree still has open work"));
+    }
+    // A node no relation reaches or starts, among siblings that are not all like it, is likely a
+    // forgotten item or a missing edge. Top-level nodes and only children are left alone.
+    if (isolated.has(n)) {
+      diagnostics.push(diagnostic("I006", n.line, n.children.length > 0
+        ? `"${n.id ?? n.title}" and nothing below it has a relation to another node`
+        : `"${n.id ?? n.title}" has no relation to another node`));
     }
     if (n.status === "todo" && n.children.some((c) => c.status === "doing" || c.status === "done")) {
       diagnostics.push(diagnostic("I003", n.line, "Children have started; consider marking this node doing"));
