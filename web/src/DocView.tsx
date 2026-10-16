@@ -7,7 +7,7 @@ import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { DepthFloor } from "./DepthLayer.tsx";
 import { DEPTH_MAX, depthScene, nextFocus, project, projectPath, ribbonFor, sameFocus, type Focus } from "./depth.ts";
-import { layoutElk, type ElkResult } from "./elkLayout.ts";
+import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
@@ -399,6 +399,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     setPendingFrame(null);
   }, [pendingFrame, layout, flow]);
 
+  /** 3D stacking order per card: frames below every card, cards nearest in front. */
+  const z3d = useMemo(() => (scene ? cardZ(layout?.boxes ?? [], parents, scene.z) : new Map<string, number>()), [scene, layout, parents]);
+
   const base = useMemo(() => {
     if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
     const states = new Map(data.derived.map((s) => [s.line, s]));
@@ -428,7 +431,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       // So lines pass behind every title and control, yet stay visible inside frames.
       // 3D draws cards nearest-first, so a far card passes behind a near one. A frame takes its own
       // children's frontmost depth, so it stays around them instead of sinking to its own far edge.
-      zIndex: scene ? cardZ(b, placed, scene.z) : b.container ? 150 + b.depth : 200 + b.depth,
+      zIndex: scene ? z3d.get(b.key)! : b.container ? 150 + b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
@@ -474,7 +477,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed]);
+  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed, z3d]);
 
   useEffect(() => {
     if (!pendingCenter || !layout) return;
@@ -870,15 +873,35 @@ function rememberAt(last: Map<string, { x: number; y: number }>, id: string, at:
 }
 
 /**
- * Stacking order for a card in the 3D view. A plain card takes its own depth, nearest on top. A
- * frame takes the frontmost depth anywhere inside it, so it encloses its own children rather than
- * sinking to the depth of whatever node happens to represent it, and frames always stay below the
- * cards they hold. Depth 0 (the newest) is `DEPTH_MAX` in this scale, the farthest.
+ * Stacking order for a card in the 3D view. A plain card takes its own depth, nearest drawn on top.
+ * A frame takes the front-most depth anywhere inside it — the smallest `z`, since `z` grows with
+ * age — so it stays around its own children instead of sinking behind a child whose header happens
+ * to be dated later, and frames always sit below the cards they hold.
  */
-function cardZ(b: { key: string; container: boolean }, placed: Map<string, { z: number }>, z: Map<string, number>): number {
-  const key = b.key.split("::")[0]!;
-  if (!b.container) return 2000 + Math.round(DEPTH_MAX - (placed.get(key)?.z ?? 0));
-  const own = [...z].filter(([k]) => k === key || k.startsWith(`${key}-`) || k.includes(`${key}::`));
-  const front = own.length > 0 ? Math.min(...own.map(([, v]) => v)) : z.get(key) ?? DEPTH_MAX;
-  return 1500 + Math.round(DEPTH_MAX - front);
+function cardZ(boxes: Box[], parents: Map<string, RhumbNode | null>, z: Map<string, number>): Map<string, number> {
+  const kids = new Map<string, string[]>();
+  for (const b of boxes) {
+    const p = parents.get(b.key);
+    if (!p) continue;
+    const pk = nodeKey(p);
+    (kids.get(pk) ?? kids.set(pk, []).get(pk)!).push(b.key);
+  }
+  const front = new Map<string, number>();
+  const visit = (key: string): number => {
+    const mine = z.get(key) ?? DEPTH_MAX;
+    const below = (kids.get(key) ?? []).map(visit);
+    // The frame's interior is not rebuilt from the layout, so its own node's depth is the floor and
+    // its children's front-most depth wins.
+    const value = below.length > 0 ? Math.min(mine, ...below) : mine;
+    front.set(key, value);
+    return value;
+  };
+  const out = new Map<string, number>();
+  for (const b of boxes) {
+    if (b.container) visit(b.key);
+    // Frame interiors stay clear of the card layers (2000+), so a card is never covered by a frame.
+    out.set(b.key, b.container ? 1500 + Math.round(DEPTH_MAX - (front.get(b.key) ?? DEPTH_MAX))
+      : 2000 + Math.round(DEPTH_MAX - (z.get(b.key) ?? 0)));
+  }
+  return out;
 }
