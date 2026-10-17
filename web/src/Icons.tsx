@@ -90,3 +90,12 @@ export const ConnectionIcon = () => (
     <path d="M3 3a7.1 7.1 0 0 0 0 10M13 3a7.1 7.1 0 0 1 0 10" opacity=".55" />
   </Icon>
 );
+
+/** A triangle with an exclamation mark: something went wrong that is worth a look. */
+export const WarningIcon = () => (
+  <Icon>
+    <path d="M8 2.2 14.3 13.3H1.7z" />
+    <path d="M8 6.4v3.3" />
+    <circle cx="8" cy="11.6" r=".55" fill="currentColor" stroke="none" />
+  </Icon>
+);

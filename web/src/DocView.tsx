@@ -6,6 +6,7 @@ import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
+import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
 import { blendPose, depthScene, ease, flatPose, projectPath, ribbonFor, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
@@ -815,8 +816,6 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             </div>
           )}
         </div>
-        {notice && <span role="status" className="notice">{notice}</span>}
-        {layoutError && <span role="status" className="notice">{layoutError}</span>}
         <div className="legend-wrap" ref={legendWrap}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setLegendOpen(false); }}
           onKeyDown={(e) => { if (e.key === "Escape") setLegendOpen(false); }}>
@@ -834,8 +833,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           title={`Open ${file} as plain text in a new tab`}>
           <SourceIcon /> Source: <span className="source-file">{file.split("/").pop()}</span>
         </a>
-        {/* The live link to the server, at the bar's right end beside the time of the last reload. */}
+        {/* The map's state, at the bar's right end: any warning (its text in the icon's tooltip), the
+            time of the last reload, and the live link to the server. */}
         <span className="live-end">
+          <WarningNotice messages={[notice, layoutError].filter((m): m is string => !!m)}
+            onDismiss={() => (setNotice(null), setLayoutError(null))} />
           {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
           <ConnectionStatus />
         </span>
