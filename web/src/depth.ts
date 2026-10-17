@@ -614,6 +614,9 @@ export interface Bar extends Ribbon {
   points: Point[];
   /** Where the run stands now, for a run in progress: a mark across the bar. */
   nowAt?: [Point, Point];
+  /** The bar's projection on the floor, part by part: lines along the time axis under the bar,
+   *  from the older end to the newer, so a stretch of time can be read against the ruler. */
+  ground?: { track?: [Point, Point]; fill?: [Point, Point]; over?: [Point, Point] };
   labelAt: Point;
   title: string;
 }
@@ -631,6 +634,9 @@ export interface DepthScene {
   order: string[];
   /** A line from each card's foot straight down to the floor, so its moment can be read off it. */
   drops: { key: string; from: Point; to: Point }[];
+  /** Each item's projection on the floor: the line its panel stands on, across the item's width at
+   *  its own moment, from its left edge (`from`) to its right. Where an item's drop line lands. */
+  shadows: { key: string; from: Point; to: Point }[];
   bars: Bar[];
   floor: Floor;
   view: View;
@@ -645,7 +651,7 @@ const trackOf = (view: View, time: number | undefined) => axisU(time ?? view.foc
 const headerOf = (b: DepthBox) => ({ width: Math.min(HEADER_W, b.width), height: Math.min(HEADER_H, b.height) });
 
 /** The bar for a ribbon under a box, at the box's own centre across. */
-function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, lane = 0, pitch = 0, px = 0): Bar {
+function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, lane = 0, pitch = 0, px = 0, floorH?: number): Bar {
   const size = barSize(px);
   const at = (t: number, h: number) => {
     const q = projectPoint(view, { t, d: b.x + b.width / 2, h });
@@ -661,29 +667,38 @@ function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, l
   const top = foot - size.gap - lane * pitch, bot = top - size.h;
   const quad = ([t0, t1]: [number, number]) => [at(t0, top), at(t1, top), at(t1, bot), at(t0, bot)];
   const out: Pick<Bar, "track" | "fill" | "over" | "nowAt"> = {};
+  /** The same stretch on the floor, under the bar, when the floor's height is known. */
+  const onFloor = ([t0, t1]: [number, number]): [Point, Point] | undefined => (floorH === undefined ? undefined : [at(t0, floorH), at(t1, floorH)]);
+  const ground: NonNullable<Bar["ground"]> = {};
   let whole: [number, number];
   if (r.kind === "estimate") {
     whole = span(r.from, r.to);
     out.track = quad(whole);
+    ground.track = onFloor(whole);
   } else if (r.plan) {
     // A progress bar: the track is the plan; the run fills it from its start up to now, and any
     // of the run beyond the plan's end is overtime.
     const plan = span(r.plan.from, r.plan.to);
     const now = track(r.to);
+    const filled: [number, number] = [plan[0], Math.max(plan[0] + 1, Math.min(now, plan[1]))];
     out.track = quad(plan);
-    out.fill = quad([plan[0], Math.max(plan[0] + 1, Math.min(now, plan[1]))]);
-    if (now > plan[1]) out.over = quad([plan[1], now]);
+    out.fill = quad(filled);
+    ground.track = onFloor(plan);
+    ground.fill = onFloor(filled);
+    if (now > plan[1]) (out.over = quad([plan[1], now]), ground.over = onFloor([plan[1], now]));
     out.nowAt = [at(now, top + 3), at(now, bot - 3)];
     whole = [plan[0], Math.max(plan[1], now)];
   } else {
     whole = span(r.from, r.to);
     out.fill = quad(whole);
+    ground.fill = onFloor(whole);
     if (r.kind === "running") out.nowAt = [at(whole[1], top + 3), at(whole[1], bot - 3)];
   }
   const state = r.state === "over" ? " — over" : r.state === "near" ? " — nearly due" : "";
   const end = r.kind === "running" ? "now" : absoluteTime(r.to);
   return {
     ...r, key, ...out,
+    ...(floorH === undefined ? {} : { ground }),
     points: quad(whole),
     // At the bar's newer end, beside it rather than under it, so stacked lanes do not need room
     // for text between them; DepthFloor sets it off by a few screen pixels.
@@ -746,6 +761,7 @@ export function depthScene(
     return { x: q.x, y: q.y };
   };
   const drops: DepthScene["drops"] = [];
+  const shadows: DepthScene["shadows"] = [];
   const bars: Bar[] = [];
   for (const b of boxes) {
     const group = isGroup(b.key);
@@ -758,10 +774,12 @@ export function depthScene(
     if (r) {
       const lane = pose.lanes[b.key] ?? 0;
       const size = barSize(pose.px);
-      bars.push(barFor(view, box, foot, r, b.key, lane, pose.lanePitch, pose.px));
+      bars.push(barFor(view, box, foot, r, b.key, lane, pose.lanePitch, pose.px, pose.floorH));
       below = foot - size.gap - lane * pose.lanePitch - size.h;
     }
     // Only a card above the floor drops a line to it; the floor is under the frame's own cards.
+    // The line the panel stands on, across its whole width at its moment.
+    shadows.push({ key: b.key, from: at(p.t, b.x, pose.floorH), to: at(p.t, b.x + b.width, pose.floorH) });
     if (below > pose.floorH) drops.push({ key: b.key, from: at(p.t, b.x + w / 2, below), to: at(p.t, b.x + w / 2, pose.floorH) });
   }
 
@@ -769,7 +787,7 @@ export function depthScene(
     quad: [at(-TAIL * view.length, pose.ruler, pose.floorH), at((1 + TAIL) * view.length, pose.ruler, pose.floorH),
       at((1 + TAIL) * view.length, pose.floorFar, pose.floorH), at(-TAIL * view.length, pose.floorFar, pose.floorH)],
   };
-  return { panels, order, drops, bars, floor, view, pose };
+  return { panels, order, drops, shadows, bars, floor, view, pose };
 }
 
 /** Smallest window allowed, so a run of edits in one minute does not become a microscope. */

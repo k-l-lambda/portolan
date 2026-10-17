@@ -21,15 +21,18 @@ function BarTitle({ bar }: { bar: Bar }) {
 }
 
 /** The floor, ruler, outlines, drop lines and bars, at a zoom (for the ruler's tick density and text size). */
-export const DepthFloor = memo(function DepthFloor({ scene, zoom }: { scene: DepthScene; zoom: number }) {
-  const { bars, drops, floor } = scene;
+/** What the floor needs of an item beyond its geometry: its status and how fresh it is (0..1). */
+export interface FloorMark { status: string; fresh: number }
+
+export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks }: { scene: DepthScene; zoom: number; marks: Map<string, FloorMark> }) {
+  const { bars, drops, floor, shadows } = scene;
   const ticks = rulerTicks(scene, zoom);
   const line = rulerLine(scene);
   // One screen pixel in flow units: marks and text are sized in it, so they keep their screen size.
   const px = 1 / Math.max(0.05, zoom);
   const pts = [
     ...floor.quad, ...line.older, ...line.newer, ...ticks.flatMap((t) => [t.at, t.far]),
-    ...bars.flatMap((b) => b.points), ...drops.flatMap((d) => [d.from, d.to]),
+    ...bars.flatMap((b) => b.points), ...drops.flatMap((d) => [d.from, d.to]), ...shadows.flatMap((s) => [s.from, s.to]),
   ];
   const pad = 60 * px;
   const minX = Math.min(...pts.map((p) => p.x)) - pad, maxX = Math.max(...pts.map((p) => p.x)) + pad;
@@ -48,6 +51,30 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom }: { scene: Dep
           <g className="floor-grid">
             {ticks.map((t) => (
               <line key={t.time} className={t.major ? "major" : undefined} x1={t.at.x} y1={t.at.y} x2={t.far.x} y2={t.far.y} />
+            ))}
+          </g>
+          {/* Each item's projection on the floor, in its status colour: the line its panel stands
+              on, with a dot at its left end whose strength is the item's freshness, as the card's
+              left edge is. Under them, each timer bar's own projection along the time axis. */}
+          <g className="floor-shadows">
+            {shadows.map((sh) => {
+              const mk = marks.get(sh.key);
+              const style = { "--st": `var(--st-${mk?.status ?? "todo"})`, "--fresh": `${Math.round(20 + (mk?.fresh ?? 0) * 80)}%` } as CSSProperties;
+              return (
+                <g key={sh.key} className="floor-shadow" style={style}>
+                  <line x1={sh.from.x} y1={sh.from.y} x2={sh.to.x} y2={sh.to.y} />
+                  <circle cx={sh.from.x} cy={sh.from.y} r={2.1 * px} />
+                </g>
+              );
+            })}
+          </g>
+          <g className="floor-grounds">
+            {bars.map((b) => b.ground && (
+              <g key={b.key} className={`floor-ground ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
+                {b.ground.track && <line className="ground-track" x1={b.ground.track[0].x} y1={b.ground.track[0].y} x2={b.ground.track[1].x} y2={b.ground.track[1].y} />}
+                {b.ground.fill && <line className="ground-fill" x1={b.ground.fill[0].x} y1={b.ground.fill[0].y} x2={b.ground.fill[1].x} y2={b.ground.fill[1].y} />}
+                {b.ground.over && <line className="ground-over" x1={b.ground.over[0].x} y1={b.ground.over[0].y} x2={b.ground.over[1].x} y2={b.ground.over[1].y} />}
+              </g>
             ))}
           </g>
           <g className="floor-drops">

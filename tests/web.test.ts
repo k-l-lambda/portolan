@@ -820,6 +820,33 @@ rhumb: 0.1
       for (const d of scene.drops) expect(d.to.y, d.key).toBeGreaterThan(d.from.y);
     });
 
+    it("projects every item onto the floor, across its width at its own moment", () => {
+      expect(scene.shadows.map((x) => x.key).sort()).toEqual(["a", "b", "c"]);
+      const floorAt = (t: number, d: number) => projectPoint(scene.view, { t, d, h: p.floorH });
+      for (const sh of scene.shadows) {
+        const box = boxes.find((x) => x.key === sh.key)!, t = scene.panels.get(sh.key)!.t;
+        // From the item's left edge to its right, on the floor, at the panel's own moment.
+        expect(sh.from.x).toBeCloseTo(floorAt(t, box.x).x, 6);
+        expect(sh.from.y).toBeCloseTo(floorAt(t, box.x).y, 6);
+        expect(sh.to.x).toBeCloseTo(floorAt(t, box.x + box.width).x, 6);
+      }
+      // A card's drop line lands on its own projection.
+      const drop = scene.drops.find((d) => d.key === "b")!, sh = scene.shadows.find((x) => x.key === "b")!;
+      const cross = (sh.to.x - sh.from.x) * (drop.to.y - sh.from.y) - (sh.to.y - sh.from.y) * (drop.to.x - sh.from.x);
+      expect(Math.abs(cross) / Math.hypot(sh.to.x - sh.from.x, sh.to.y - sh.from.y)).toBeLessThan(1e-6);
+    });
+
+    it("projects a timer bar onto the floor along the time axis, under the bar", () => {
+      const bar = scene.bars.find((x) => x.key === "b")!;
+      expect(bar.ground?.fill).toBeDefined();
+      const [g0, g1] = bar.ground!.fill!;
+      // The same stretch of time as the bar: its ends under the bar's own ends.
+      expect(g0.x).toBeCloseTo(bar.points[0]!.x, 0);
+      expect(g1.x).toBeGreaterThan(g0.x);
+      // On the floor: below the bar.
+      expect(Math.min(g0.y, g1.y)).toBeGreaterThan(Math.max(...bar.points.map((q) => q.y)));
+    });
+
     it("runs a relation line through time between its two panels", () => {
       const path = [{ x: 140, y: 196 }, { x: 420, y: 196 }];
       const tb = scene.panels.get("b")!.t, tc = scene.panels.get("c")!.t;

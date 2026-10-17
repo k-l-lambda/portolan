@@ -18,6 +18,7 @@ import {
   type DepthBox, type DepthScene, type Point, type Pose,
 } from "../web/src/depth.ts";
 import { roundedPath } from "../web/src/geometry.ts";
+import { freshness } from "../web/src/time.ts";
 import { C, EDGE, esc, FONT, MONO, mix, renderMap, ST } from "./mapSvg.ts";
 
 process.env.TZ = "UTC";
@@ -190,6 +191,46 @@ const rulerParts = (["window", "older", "newer"] as const).map((part) => {
     + smil("x1", attrs(0, "x")) + smil("y1", attrs(0, "y")) + smil("x2", attrs(1, "x")) + smil("y2", attrs(1, "y")) + `</line>`;
 }).join("\n");
 
+// Each item's projection on the floor, in its status colour, with a freshness dot at its left end,
+// and each timer bar's projection along the time axis, as DepthFloor draws them.
+const lineAnim = (per: [Point, Point][]) => {
+  const v = (k: 0 | 1, a: "x" | "y") => per.map((q) => r1(shifted(q[k])[a]));
+  return { x1: v(0, "x"), y1: v(0, "y"), x2: v(1, "x"), y2: v(1, "y") };
+};
+const animLine = (per: [Point, Point][], attrs: string) => {
+  const a = lineAnim(per);
+  return `<line x1="${a.x1[0]}" y1="${a.y1[0]}" x2="${a.x2[0]}" y2="${a.y2[0]}" ${attrs}>`
+    + smil("x1", a.x1) + smil("y1", a.y1) + smil("x2", a.x2) + smil("y2", a.y2) + `</line>`;
+};
+const shadows = at3d.shadows.map((sh) => {
+  const b = byKey.get(sh.key)!;
+  const st = ST[b.node.status ?? "todo"];
+  const fresh = Math.round(20 + freshness(m.timeOf(b.node), NOW) * 80);
+  const per = scenes.map((sc) => {
+    const x = sc.shadows.find((q) => q.key === sh.key)!;
+    return [x.from, x.to] as [Point, Point];
+  });
+  const cx = per.map((q) => r1(shifted(q[0]).x)), cy = per.map((q) => r1(shifted(q[0]).y));
+  return animLine(per, `stroke="${mix(st, 55, C.bg)}" stroke-width="2" stroke-linecap="round"`)
+    + `<circle cx="${cx[0]}" cy="${cy[0]}" r="${r1(2.1 * px)}" fill="${mix(st, fresh, C.surface)}" stroke="${st}" stroke-width="1">${smil("cx", cx)}${smil("cy", cy)}</circle>`;
+}).join("\n");
+const grounds = at3d.bars.map((bar) => {
+  if (!bar.ground) return "";
+  const st = bar.kind === "actual" ? ST.done : bar.kind === "running"
+    ? (bar.state === "over" ? ERR : bar.state === "near" ? WARN : ST.done) : C.muted;
+  const per = scenes.map((sc) => sc.bars.find((x) => x.key === bar.key)!.ground!);
+  // A part a sample lacks (overtime before the axis has any length) is a zero-length line at the
+  // end of the fill, so it grows out of it.
+  const end = (g: NonNullable<typeof bar.ground>): [Point, Point] => {
+    const q = (g.fill ?? g.track)![1];
+    return [q, q];
+  };
+  const part = (k: "track" | "fill" | "over", attrs: string) => (bar.ground![k] ? animLine(per.map((g) => g[k] ?? end(g)), attrs) : "");
+  return part("track", bar.kind === "estimate" ? `stroke="${C.muted}" stroke-width="2" stroke-dasharray="4 3"` : `stroke="${mix(st, 45, C.bg)}" stroke-width="2"`)
+    + part("fill", `stroke="${mix(st, 80, C.bg)}" stroke-width="3"`)
+    + part("over", `stroke="${ERR}" stroke-width="3"`);
+}).join("\n");
+
 const drops = at3d.drops.map((d) => {
   const per = scenes.map((sc) => sc.drops.find((x) => x.key === d.key) ?? null);
   const v = (f: (q: { from: Point; to: Point }) => number) => per.map((q) => r1(q ? f({ from: shifted(q.from), to: shifted(q.to) }) : 0));
@@ -224,7 +265,7 @@ const bars = at3d.bars.map((bar) => {
   return `<g>${out.join("")}</g>`;
 }).join("\n");
 
-const floor = `<g class="show moving">${floorPoly}\n${grid.join("\n")}\n${drops}\n${bars}\n${rulerParts}\n${rulerMarks.join("\n")}</g>`;
+const floor = `<g class="show moving">${floorPoly}\n${grid.join("\n")}\n${shadows}\n${grounds}\n${drops}\n${bars}\n${rulerParts}\n${rulerMarks.join("\n")}</g>`;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}" role="img" aria-labelledby="t">
 <title id="t">${esc(m.doc.title ?? "Rhumb map")}: ${input.split("/").pop()} turning from the flat map into the time-depth view and back</title>

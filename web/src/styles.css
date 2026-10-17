@@ -625,6 +625,23 @@ a { color: var(--accent); }
 .floor-grid line { stroke: color-mix(in srgb, var(--border) 70%, transparent); stroke-width: 1; }
 .floor-grid line.major { stroke: color-mix(in srgb, var(--muted) 55%, transparent); }
 
+/* Each item's projection on the floor (DepthFloor): the line its panel stands on, in its status
+   colour, with a dot at its left end as strong as the card's left edge, which shows freshness. */
+.floor-shadow line { stroke: color-mix(in srgb, var(--st) 55%, transparent); stroke-width: 2; stroke-linecap: round; }
+.floor-shadow circle { fill: color-mix(in srgb, var(--st) var(--fresh, 100%), var(--surface)); stroke: var(--st); stroke-width: 1; }
+/* A timer bar's projection on the floor, along the time axis under the bar, in the bar's colours. */
+.floor-ground { --st: var(--st-todo); }
+.floor-ground.actual { --st: var(--st-done); }
+.floor-ground.running { --st: var(--st-doing); }
+.floor-ground.running.timer-ok { --st: var(--st-done); }
+.floor-ground.running.timer-near { --st: var(--warning); }
+.floor-ground.running.timer-over { --st: var(--error); }
+.floor-ground line { stroke-linecap: butt; }
+.floor-ground .ground-track { stroke: color-mix(in srgb, var(--st) 45%, transparent); stroke-width: 2; }
+.floor-ground.estimate .ground-track { stroke: var(--muted); stroke-dasharray: 4 3; }
+.floor-ground .ground-fill { stroke: color-mix(in srgb, var(--st) 80%, transparent); stroke-width: 3; }
+.floor-ground .ground-over { stroke: var(--error); stroke-width: 3; }
+
 /* A line from each panel's foot down to the floor, so its moment can be read off the ruler. */
 .floor-drops .drop { stroke: color-mix(in srgb, var(--accent) 35%, transparent); stroke-width: 1; stroke-dasharray: 2 4; }
 

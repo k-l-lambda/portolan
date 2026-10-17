@@ -7,7 +7,7 @@ import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { WarningNotice } from "./WarningNotice.tsx";
-import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
+import { DepthFloor, FlatMiniMap, HoverTitle, type FloorMark } from "./DepthLayer.tsx";
 import { blendPose, depthScene, ease, flatPose, nodeRibbon, projectPath, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
@@ -425,6 +425,16 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // A new layout (a group opened or closed, the file reloaded) moves the cards; the pose follows.
   useEffect(() => { if (threeD && !move.current) retarget(); }, [layout]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /** Each item's status and freshness, for its projection on the floor. */
+  const floorMarks = useMemo(() => {
+    const out = new Map<string, FloorMark>();
+    for (const b of layout?.boxes ?? []) {
+      const t = nodeTimes.get(b.node.line);
+      out.set(b.key, { status: b.node.status ?? "todo", fresh: t === undefined ? 0 : freshness(t, now) });
+    }
+    return out;
+  }, [layout, nodeTimes, now]);
 
   /** The scene in the pose on screen: a panel for each card at its own moment, and the floor. */
   const scene = useMemo(() => (pose && layout
@@ -880,7 +890,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onMoveEnd={onMoveEnd}
             proOptions={{ hideAttribution: false }}
           >
-            {scene && <DepthFloor scene={scene} zoom={zoom} />}
+            {scene && <DepthFloor scene={scene} zoom={zoom} marks={floorMarks} />}
             {scene && !moving && scene.pose.blend > 0.99 && hover?.kind === "node" && (() => {
               // A panel at 45° is foreshortened, so the hovered one also shows its title flat.
               const panel = scene.panels.get(hover.id);
