@@ -61,6 +61,7 @@
 <text x="76" y="34" font-size="14" font-weight="550" fill="#1d1d1b">Portolan</text>
 <path transform="translate(217 22) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="27" y="76" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^portolan</text>
+
 <rect x="94.38" y="66" width="112.62" height="14" rx="7" fill="#f0f0ec"/>
 <clipPath id="p-portolan"><rect x="94.38" y="66" width="112.62" height="14" rx="7"/></clipPath>
 <rect x="94.38" y="66" width="66.24705882352941" height="14" fill="#acc8b5" clip-path="url(#p-portolan)"/>
@@ -77,6 +78,7 @@
 <text x="767" y="269.1111111111111" font-size="14" font-weight="550" fill="#1d1d1b">Rhumb DSL</text>
 <path transform="translate(908 257.1111111111111) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="718" y="311.1111111111111" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^rhumb</text>
+
 <rect x="764.92" y="301.1111111111111" width="133.08000000000004" height="14" rx="7" fill="#f0f0ec"/>
 <clipPath id="p-rhumb"><rect x="764.92" y="301.1111111111111" width="133.08000000000004" height="14" rx="7"/></clipPath>
 <rect x="764.92" y="301.1111111111111" width="66.54000000000002" height="14" fill="#acc8b5" clip-path="url(#p-rhumb)"/>
@@ -93,6 +95,7 @@
 <text x="128" y="716" font-size="14" font-weight="550" fill="#1d1d1b">Web view</text>
 <path transform="translate(269 704) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="#b7791f" stroke="#b7791f" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="79" y="758" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^ui</text>
+
 <rect x="105.46000000000001" y="748" width="153.54" height="14" rx="7" fill="#f0f0ec"/>
 <clipPath id="p-ui"><rect x="105.46000000000001" y="748" width="153.54" height="14" rx="7"/></clipPath>
 <rect x="105.46000000000001" y="748" width="76.77" height="14" fill="#acc8b5" clip-path="url(#p-ui)"/>
@@ -109,6 +112,7 @@
 <text x="99" y="258" font-size="14" font-weight="550" fill="#1d1d1b">Readability study</text>
 <path transform="translate(240 246) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="50" y="300" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^study</text>
+
 <rect x="96.92" y="290" width="133.07999999999998" height="14" rx="7" fill="#f0f0ec"/>
 <clipPath id="p-study"><rect x="96.92" y="290" width="133.07999999999998" height="14" rx="7"/></clipPath>
 <rect x="96.92" y="290" width="106.46399999999998" height="14" fill="#acc8b5" clip-path="url(#p-study)"/>
@@ -125,8 +129,9 @@
 <text x="120.53999999999999" y="122" font-size="14" font-weight="550" fill="#1d1d1b">Prior-art survey</text>
 <path transform="translate(252 110) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="52" y="164" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^survey</text>
-<rect x="105.74000000000001" y="152" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
-<text x="111.74000000000001" y="164.5" font-size="11" fill="#6b6b66">1 link</text>
+<g transform="translate(105.74000000000001 155.5) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="119.74000000000001" y="164.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">1d8h</text>
+<rect x="150.78" y="152" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
+<text x="156.78" y="164.5" font-size="11" fill="#6b6b66">1 link</text>
 </g>
 <g>
 <rect x="305.5" y="100.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -138,6 +143,7 @@
 <text x="387" y="139.5" font-size="14" font-weight="550" fill="#1d1d1b">JSON</text>
 <path transform="translate(520 110) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="320" y="164" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^text-format</text>
+
 </g>
 <g opacity="0.6">
 <rect x="565.5" y="100.5" width="239" height="75" rx="8" fill="#f3f3f3" stroke="#d9d9d3"/>
@@ -149,6 +155,7 @@
 <text x="646" y="139.5" font-size="14" font-weight="550" fill="#1d1d1b" text-decoration="line-through">format</text>
 <path transform="translate(780 110) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="580" y="164" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^json-format</text>
+
 </g>
 <g>
 <rect x="946.5" y="875.7" width="239" height="75" rx="8" fill="#f0f0f0" stroke="#d9d9d3"/>
@@ -160,6 +167,7 @@
 <text x="1025" y="914.7" font-size="14" font-weight="550" fill="#1d1d1b">in shared maps</text>
 <path transform="translate(1161 885.2) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="961" y="939.2" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^conflicts</text>
+
 <rect x="1035.2" y="927.2" width="46.0076" height="18" rx="9" fill="#f0f0ec"/>
 <text x="1041.2" y="939.7" font-size="11" fill="#2e7d4f">ready</text>
 </g>
@@ -172,6 +180,7 @@
 <text x="1075" y="1149" font-size="14" font-weight="550" fill="#1d1d1b">Release 0.1</text>
 <path transform="translate(1211 1137) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="1011" y="1191" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^release</text>
+<g transform="translate(1071.56 1182.5) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="5.6"/><path d="M8 6.2V9l1.9 1.3M6.4 1.8h3.2"/></g><text x="1085.56" y="1191.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">est. 2d</text>
 </g>
 <g>
 <rect x="232.5" y="1127.5" width="239" height="75" rx="8" fill="#f0edf7" stroke="#d9d9d3" stroke-dasharray="5 3"/>
@@ -183,6 +192,7 @@
 <text x="290" y="1166.5" font-size="14" font-weight="550" fill="#1d1d1b">threads</text>
 <path transform="translate(447 1137) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="247" y="1191" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^threads-agent</text>
+
 </g>
 <g>
 <rect x="735.5" y="335.6111111111111" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -193,8 +203,9 @@
 <text x="797" y="357.1111111111111" font-size="14" font-weight="550" fill="#1d1d1b">Spec 0.1</text>
 <path transform="translate(950 345.1111111111111) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="750" y="399.1111111111111" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-spec</text>
-<rect x="803.74" y="387.1111111111111" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
-<text x="809.74" y="399.6111111111111" font-size="11" fill="#6b6b66">1 link</text>
+<g transform="translate(803.74 390.6111111111111) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="817.74" y="399.6111111111111" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">1d9h</text>
+<rect x="848.78" y="387.1111111111111" width="45.748" height="18" rx="9" fill="#f0f0ec"/>
+<text x="854.78" y="399.6111111111111" font-size="11" fill="#6b6b66">1 link</text>
 </g>
 <g>
 <rect x="869.5" y="441.6111111111111" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -205,6 +216,7 @@
 <text x="931" y="463.1111111111111" font-size="14" font-weight="550" fill="#1d1d1b">Parser</text>
 <path transform="translate(1084 451.1111111111111) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="884" y="505.1111111111111" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-parser</text>
+<g transform="translate(951.38 496.6111111111111) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="965.38" y="505.6111111111111" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">4d6h</text>
 </g>
 <g>
 <rect x="976.5" y="547.6111111111111" width="239" height="75" rx="8" fill="#f2e4d1" stroke="#d9d9d3"/>
@@ -215,6 +227,7 @@
 <text x="1040" y="569.1111111111111" font-size="14" font-weight="550" fill="#1d1d1b">Formatter</text>
 <path transform="translate(1191 557.1111111111111) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="991" y="611.1111111111111" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-fmt</text>
+<g transform="translate(1037.92 602.6111111111111) scale(0.6875)" fill="none" stroke="#9a5b00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="5.6"/><path d="M8 6.2V9l1.9 1.3M6.4 1.8h3.2"/></g><rect x="1051.92" y="605.6111111111111" width="26" height="5" rx="2.5" fill="#e1d5c2"/><rect x="1051.92" y="605.6111111111111" width="23.8" height="5" rx="2.5" fill="#9a5b00"/><text x="1080.92" y="611.6111111111111" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#9a5b00">2d18h/3d</text>
 </g>
 <g>
 <rect x="715.5" y="547.6111111111111" width="239" height="75" rx="8" fill="#f0f0f0" stroke="#d9d9d3"/>
@@ -226,8 +239,9 @@
 <text x="794" y="586.6111111111111" font-size="14" font-weight="550" fill="#1d1d1b">notes?</text>
 <path transform="translate(930 557.1111111111111) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="730" y="611.1111111111111" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^edge-notes</text>
-<rect x="811.02" y="599.1111111111111" width="46.0076" height="18" rx="9" fill="#f0f0ec"/>
-<text x="817.02" y="611.6111111111111" font-size="11" fill="#2e7d4f">ready</text>
+<g transform="translate(811.02 602.6111111111111) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="5.6"/><path d="M8 6.2V9l1.9 1.3M6.4 1.8h3.2"/></g><text x="825.02" y="611.6111111111111" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">est. 4h</text>
+<rect x="875.5899999999999" y="599.1111111111111" width="46.0076" height="18" rx="9" fill="#f0f0ec"/>
+<text x="881.5899999999999" y="611.6111111111111" font-size="11" fill="#2e7d4f">ready</text>
 </g>
 <g>
 <rect x="312.5" y="782.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -238,6 +252,7 @@
 <text x="395.54" y="804" font-size="14" font-weight="550" fill="#1d1d1b">Renderer spike</text>
 <path transform="translate(527 792) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="327" y="846" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-spike</text>
+<g transform="translate(387.56 837.5) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="401.56" y="846.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">10h</text>
 </g>
 <g>
 <rect x="336.5" y="888.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -248,6 +263,7 @@
 <text x="398" y="910" font-size="14" font-weight="550" fill="#1d1d1b">Map layout</text>
 <path transform="translate(551 898) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="351" y="952" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-layout</text>
+<g transform="translate(418.38 943.5) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="432.38" y="952.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">3d7h</text>
 </g>
 <g>
 <rect x="296.5" y="984.5" width="239" height="75" rx="8" fill="#f2e4d1" stroke="#d9d9d3"/>
@@ -258,6 +274,7 @@
 <text x="360" y="1006" font-size="14" font-weight="550" fill="#1d1d1b">Status editing</text>
 <path transform="translate(511 994) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="311" y="1048" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-edit</text>
+<g transform="translate(364.74 1039.5) scale(0.6875)" fill="none" stroke="#2e7d4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="5.6"/><path d="M8 6.2V9l1.9 1.3M6.4 1.8h3.2"/></g><rect x="378.74" y="1042.5" width="26" height="5" rx="2.5" fill="#cddbd0"/><rect x="378.74" y="1042.5" width="13.0" height="5" rx="2.5" fill="#2e7d4f"/><text x="407.74" y="1048.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#2e7d4f">2d/4d</text>
 </g>
 <g>
 <rect x="76.5" y="888.5" width="239" height="75" rx="8" fill="#f1d8d7" stroke="#d9d9d3"/>
@@ -269,6 +286,7 @@
 <text x="155" y="927.5" font-size="14" font-weight="550" fill="#1d1d1b">panel</text>
 <path transform="translate(291 898) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="91" y="952" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…-threads</text>
+
 </g>
 <g>
 <rect x="171.5" y="324.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -282,6 +300,7 @@
 <text x="186" y="388" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^frames-help</text>
 <g transform="translate(273.84000000000003 378) scale(0.875)" fill="none" stroke="#1d1d1b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6"/><path d="m5.5 8.2 1.8 1.8 3.3-3.6"/></g>
 <g transform="translate(289.84000000000003 378) scale(0.875)" fill="none" stroke="#1d1d1b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.7" y="4.7" width="8.9" height="8.9" rx="1.6"/><path d="M2.4 10.6V3.8a1.4 1.4 0 0 1 1.4-1.4h6.8"/><path d="m6.9 9.3 1.5 1.5 2.9-3.1"/></g>
+
 </g>
 <g>
 <rect x="431.5" y="324.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -294,6 +313,7 @@
 <path transform="translate(646 334) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="446" y="388" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^curves</text>
 <g transform="translate(499.74 378) scale(0.875)" fill="none" stroke="#1d1d1b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6"/><path d="m5.9 5.9 4.2 4.2m0-4.2-4.2 4.2"/></g>
+
 </g>
 <g>
 <rect x="211.5" y="450.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -304,6 +324,7 @@
 <text x="293" y="472" font-size="14" font-weight="550" fill="#1d1d1b">Ten-reader trial</text>
 <path transform="translate(426 460) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="226" y="514" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^trial</text>
+<g transform="translate(272.92 505.5) scale(0.6875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="m5.2 8.2 1.9 1.9 3.7-4"/></g><text x="286.92" y="514.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">1d8h</text>
 </g>
 <g>
 <rect x="47.5" y="556.5" width="239" height="75" rx="8" fill="#deeae3" stroke="#d9d9d3"/>
@@ -317,6 +338,7 @@
 <text x="62" y="620" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…bels-overlap</text>
 <g transform="translate(163.48000000000002 610) scale(0.875)" fill="none" stroke="#1d1d1b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6"/><path d="M8 2.4a5.6 5.6 0 0 1 0 11.2z" fill="#1d1d1b" stroke="none"/></g>
 <g transform="translate(179.48000000000002 610) scale(0.875)" fill="none" stroke="#1d1d1b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M5 5 2 8l3 3M11 5l3 3-3 3"/></g>
+
 </g>
 <g>
 <rect x="307.5" y="556.5" width="239" height="75" rx="8" fill="#f2e4d1" stroke="#d9d9d3"/>
@@ -329,6 +351,7 @@
 <path transform="translate(522 566) scale(0.62)" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="none" stroke="#a6a6a3" stroke-width="1.6" stroke-linejoin="round"/>
 <text x="322" y="620" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#6b6b66">^…s-unprompted</text>
 <g transform="translate(423.48 610) scale(0.875)" fill="none" stroke="#6b6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6" stroke-dasharray="2.1 2.3"/></g>
+<g transform="translate(442.48 611.5) scale(0.6875)" fill="none" stroke="#b3261e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="5.6"/><path d="M8 6.2V9l1.9 1.3M6.4 1.8h3.2"/></g><rect x="456.48" y="614.5" width="26" height="5" rx="2.5" fill="#e5ccc7"/><rect x="456.48" y="614.5" width="26.0" height="5" rx="2.5" fill="#b3261e"/><text x="485.48" y="620.5" font-size="10.5" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#b3261e">9d9h/7d</text>
 </g>
 <rect x="834.5684" y="422.1111111111111" width="50.8632" height="18" rx="4" fill="#ffffff" stroke="#8da7bf"/>
 <text x="860" y="435.1111111111111" font-size="11" font-weight="600" text-anchor="middle" fill="#1d1d1b">needs</text>

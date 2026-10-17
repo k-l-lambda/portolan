@@ -39,6 +39,7 @@
     "test": "vitest run",
     "build:pages": "npm run build:grammar && npm run build:web && node scripts/build-pages.ts docs/demo _site",
     "example:svg": "node scripts/example-svg.ts docs/example.rhumb docs/example.svg",
+    "example:anim": "node scripts/example-anim.ts docs/example.rhumb docs/example-3d.svg",
     "typecheck": "npm run build:grammar && tsc --noEmit && tsc --noEmit -p web",
     "portolan": "node src/cli.ts",
     "build:lib": "npm run build:grammar && tsc -p tsconfig.build.json && mkdir -p dist/generated && cp src/generated/line-parser.js src/generated/line-parser.d.ts dist/generated/",

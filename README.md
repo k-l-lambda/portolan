@@ -36,31 +36,31 @@ title: Portolan
 ---
 
 - [/] Portolan ^portolan
-  - [x] Prior-art survey {kind: survey} ^survey
+  - [x] Prior-art survey {kind: survey, estimate: 1d, started: 2026-10-01T09:00Z, finished: 2026-10-02T17:00Z} ^survey
     - Why: reuse what exists; only build the shared map that nothing else provides.
     - Closest pieces: [Backlog.md](https://github.com/MrLesk/Backlog.md), Beads, Plannotator
-  - [x] Plain text over JSON {kind: decision} ^text-format
+  - [x] Plain text over JSON {kind: decision, finished: 2026-10-03T12:00Z} ^text-format
     - Why: people and agents both edit the map by hand, and diffs must stay readable.
   - [/] Rhumb DSL {owner: claude} ^rhumb
-    - [x] Spec 0.1 ^rhumb-spec
+    - [x] Spec 0.1 {estimate: 2d, started: 2026-10-03T09:00Z, finished: 2026-10-04T18:00Z} ^rhumb-spec
       - [spec](https://github.com/k-l-lambda/portolan/blob/main/docs/rhumb-spec.md)
-    - [x] Parser {tags: [peggy, typescript]} ^rhumb-parser
-    - [/] Formatter ^rhumb-fmt
-    - [ ] Can edges carry notes? {kind: question} ^edge-notes
+    - [x] Parser {tags: [peggy, typescript], estimate: 3d, started: 2026-10-05T09:00Z, finished: 2026-10-09T15:00Z} ^rhumb-parser
+    - [/] Formatter {estimate: 3d, started: 2026-10-15T00:00Z} ^rhumb-fmt
+    - [ ] Can edges carry notes? {kind: question, estimate: 4h} ^edge-notes
   - [/] Web view {star: true} ^ui
-    - [x] Renderer spike {kind: spike} ^ui-spike
-    - [x] Map layout ^ui-layout
-    - [/] Status editing {priority: high} ^ui-edit
+    - [x] Renderer spike {kind: spike, estimate: 1d, started: 2026-10-06T09:00Z, finished: 2026-10-06T19:00Z} ^ui-spike
+    - [x] Map layout {estimate: 2d, started: 2026-10-10T09:00Z, finished: 2026-10-13T16:00Z} ^ui-layout
+    - [/] Status editing {priority: high, estimate: 4d, started: 2026-10-15T18:00Z} ^ui-edit
     - [!] Annotation panel ^ui-threads
       - Blocked: the thread format is not settled
   - [/] Readability study ^study
-    - [x] Frames read faster than tree lines {kind: hypothesis, supported: true, replicated: true} ^frames-help
-    - [x] Curved lines read better {kind: hypothesis, refuted: true} ^curves
-    - [/] Agents keep the map current unprompted {kind: hypothesis} ^agents-unprompted
-    - [x] Ten-reader trial {kind: experiment} ^trial
-    - [x] Labels overlap past 30 edges {kind: finding, partial: true, contested: true} ^labels-overlap
+    - [x] Frames read faster than tree lines {kind: hypothesis, supported: true, replicated: true, finished: 2026-10-08T17:00Z} ^frames-help
+    - [x] Curved lines read better {kind: hypothesis, refuted: true, finished: 2026-10-08T17:00Z} ^curves
+    - [/] Agents keep the map current unprompted {kind: hypothesis, estimate: 1w, started: 2026-10-08T09:00Z} ^agents-unprompted
+    - [x] Ten-reader trial {kind: experiment, estimate: 2d, started: 2026-10-07T09:00Z, finished: 2026-10-08T17:00Z} ^trial
+    - [x] Labels overlap past 30 edges {kind: finding, partial: true, contested: true, finished: 2026-10-09T11:00Z} ^labels-overlap
   - [ ] Merge conflicts in shared maps {kind: risk} ^conflicts
-  - [ ] Release 0.1 {kind: milestone, due: 2026-11-01} ^release
+  - [ ] Release 0.1 {kind: milestone, due: 2026-11-01, estimate: 2d} ^release
   - [?] Agent loop for threads ^threads-agent
   - [-] JSON map format ^json-format
     - Dropped: hard for people and agents to write by hand
@@ -95,6 +95,10 @@ The same map in the web view:
 Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, `[-]` dropped, `[!]` blocked, `[?]` idea) and a stable `^id`. Items without a checkbox are notes. Links are anchors into the diary or elsewhere. `{star: true}` marks a shared favorite; `{kind: hypothesis, refuted: true}` says what an item is and how the evidence for a claim stands; `{estimate: 2h, started: …, finished: …}` times work in progress and records how long it took. Lines like `a needs b` are edges: `needs` and `blocks` set the order of work, `relates` (with a label for domain meaning), `replaces` and `from` record the rest. Progress and readiness are derived by the tools, never stored in the file.
 
 ## The time-depth view
+
+<p align="center">
+  <img src="docs/example-3d.svg" alt="The example map turning from the flat view into the time-depth view and back: the cards swing into panels standing along a level time axis, with timer bars under the timed ones — solid for finished runs, progress bars for work in progress, dashed outlines for estimates — and a dated ruler along the floor" width="720">
+</p>
 
 The `3D` button in the toolbar turns time into a level axis running through the map, oldest on the
 left and newest on the right. Each card becomes a panel standing at its own moment, its face
@@ -179,4 +183,4 @@ Then open http://127.0.0.1:4310.
 - [docs/skill.md](docs/skill.md): guide for agents that maintain a Rhumb map
 - [docs/demo/](docs/demo): maps shown in the [live demo](https://k-l-lambda.github.io/portolan/); [portolan.rhumb](docs/demo/portolan.rhumb) is the map Portolan itself is developed with
 - [docs/changelog.md](docs/changelog.md): how Portolan was built, entry by entry; the project map links into it
-- [docs/example.rhumb](docs/example.rhumb): the example above; `pnpm example:svg` redraws [docs/example.svg](docs/example.svg) from it
+- [docs/example.rhumb](docs/example.rhumb): the example above; `pnpm example:svg` redraws [docs/example.svg](docs/example.svg) from it, and `pnpm example:anim` redraws the 2D/3D animation [docs/example-3d.svg](docs/example-3d.svg)
