@@ -151,3 +151,34 @@ export function claimMarks(node: RhumbNode): ClaimMark[] {
   const c = claimOf(node);
   return [...(c.verdict ? [c.verdict] : c.untested ? ["untested" as const] : []), ...c.qualifiers];
 }
+
+/**
+ * The viewport after folding or unfolding a node, so the node stays where it was on screen. A
+ * relayout moves boxes, the toggled one included, and without this the card just clicked could
+ * jump away or out of sight. The view is panned by however far the node's box moved, so its
+ * top-left corner (where its title and fold button are) stays under the pointer; if that would
+ * still leave the box's top `keep` pixels outside the pane, it is nudged back inside by `margin`.
+ */
+const MAX_W = 400;
+export function followToggle(
+  before: { x: number; y: number },
+  after: { x: number; y: number; width: number },
+  view: { x: number; y: number; zoom: number },
+  pane: { width: number; height: number },
+  keep = 76,
+  margin = 24,
+): { x: number; y: number; zoom: number } {
+  const k = view.zoom;
+  let x = view.x - (after.x - before.x) * k;
+  let y = view.y - (after.y - before.y) * k;
+  // The part that must stay in view: the box's top strip (a card, or a group's header), at most
+  // `MAX_W` wide, so a wide group is kept by its title end rather than by a far corner.
+  const w = Math.min(after.width, MAX_W) * k, h = keep * k;
+  const at = () => ({ left: after.x * k + x, top: after.y * k + y });
+  // Right and bottom first, then left and top, so a box bigger than the pane keeps its title end.
+  if (at().left + w > pane.width - margin) x -= at().left + w - (pane.width - margin);
+  if (at().left < margin) x += margin - at().left;
+  if (at().top + h > pane.height - margin) y -= at().top + h - (pane.height - margin);
+  if (at().top < margin) y += margin - at().top;
+  return { x, y, zoom: k };
+}

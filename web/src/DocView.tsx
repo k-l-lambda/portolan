@@ -9,7 +9,7 @@ import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
 import { blendPose, depthScene, ease, flatPose, projectPath, ribbonFor, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
+import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
@@ -178,8 +178,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     if (node.id) runEdit({ op: "set-attr", id: node.id, key: "star", value: starred(node) ? null : true });
   }, [runEdit]);
 
+  /** The node just folded or unfolded, so the view can keep it in place once the layout lands. */
+  const toggled = useRef<string | null>(null);
   const onToggle = useCallback((node: RhumbNode) => {
     const key = nodeKey(node);
+    toggled.current = key;
     setOverrides((prev) => new Map(prev).set(key, !collapsed.has(key)));
   }, [collapsed]);
 
@@ -320,6 +323,21 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
+  // After a fold or unfold, pan by however far the node's box moved, so it stays where it was on
+  // screen instead of jumping with the relayout (see `followToggle`). Kept out of the way of the
+  // other framings: a search, a history point or a node from the URL each centre their own target.
+  const prevLayout = useRef<ElkResult | null>(null);
+  useEffect(() => {
+    const before = prevLayout.current;
+    prevLayout.current = layout;
+    const key = toggled.current;
+    if (!layout || !before || !key) return;
+    toggled.current = null;
+    const a = before.boxes.find((b) => b.key === key), b = layout.boxes.find((x) => x.key === key);
+    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+    if (!a || !b || !pane) return;
+    flow.setViewport(followToggle(a, b, flow.getViewport(), pane));
+  }, [layout, flow]);
   const [layoutError, setLayoutError] = useState<string | null>(null);
   useEffect(() => {
     if (!data) return;

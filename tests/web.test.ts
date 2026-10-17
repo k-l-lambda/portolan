@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
 import { timingOf } from "../src/timing.ts";
-import { claimMarks, defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
+import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
   ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
@@ -105,6 +105,40 @@ describe("view helpers", () => {
 
   it("strips link syntax from titles", () => {
     expect(plainTitle("Survey [notes](diary:x#y) and `code` \\^x")).toBe("Survey notes and code ^x");
+  });
+});
+
+describe("following a fold", () => {
+  const pane = { width: 1000, height: 600 };
+  const onScreen = (b: { x: number; y: number }, v: { x: number; y: number; zoom: number }) => ({ x: b.x * v.zoom + v.x, y: b.y * v.zoom + v.y });
+
+  it("keeps the node where it was on screen when the relayout moves it", () => {
+    const view = { x: 100, y: 50, zoom: 0.5 };
+    const before = { x: 400, y: 300 }, after = { x: 900, y: -200, width: 240 };
+    const next = followToggle(before, after, view, pane);
+    expect(onScreen(after, next)).toEqual(onScreen(before, view));
+    expect(next.zoom).toBe(0.5);
+  });
+
+  it("leaves the view alone when the node did not move", () => {
+    const view = { x: 130, y: 20, zoom: 1.2 }; // the node is well inside the pane
+    expect(followToggle({ x: 10, y: 10 }, { x: 10, y: 10, width: 240 }, view, pane)).toEqual(view);
+  });
+
+  it("brings the node back inside when it was at or past the edge", () => {
+    // Clicked with its right half off screen: it is pulled in so its top strip shows.
+    const view = { x: 0, y: 0, zoom: 1 };
+    const next = followToggle({ x: 900, y: 580 }, { x: 900, y: 580, width: 240 }, view, pane);
+    const p = onScreen({ x: 900, y: 580 }, next);
+    expect(p.x + 240).toBeLessThanOrEqual(pane.width - 24 + 1e-9);
+    expect(p.y + 76).toBeLessThanOrEqual(pane.height - 24 + 1e-9);
+    const up = followToggle({ x: -50, y: -50 }, { x: -50, y: -50, width: 240 }, view, pane);
+    expect(onScreen({ x: -50, y: -50 }, up)).toEqual({ x: 24, y: 24 });
+  });
+
+  it("keeps a group wider than the pane by its title end", () => {
+    const next = followToggle({ x: 0, y: 0 }, { x: 0, y: 0, width: 5000 }, { x: -300, y: 0, zoom: 1 }, pane);
+    expect(onScreen({ x: 0, y: 0 }, next).x).toBe(24);
   });
 });
 
