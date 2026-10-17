@@ -607,20 +607,29 @@ a { color: var(--accent); }
 .floor-drops .drop { stroke: color-mix(in srgb, var(--accent) 35%, transparent); stroke-width: 1; stroke-dasharray: 2 4; }
 
 
-/* A time bar along the axis under its card: solid and coloured by outcome for what really happened,
-   an outline for a plan. Its length is the time it took, to the axis's own scale. */
-.floor-bar .bar-fill { fill: color-mix(in srgb, var(--muted) 22%, transparent); }
-.floor-bar .bar-edge { fill: none; stroke: var(--muted); stroke-width: 1.2; }
-.bar-label { fill: var(--text); font-family: ui-monospace, monospace; font-weight: 500; text-anchor: middle; }
+/* A timer bar along the time axis under its card, as the card's own timer chip says it:
+     done      the real run, solid in the done colour, start to finish;
+     doing     a progress bar: the plan as a track, the run solid along it to a "now" mark, and
+               any overtime past the plan's end in the error colour; green / amber / red by state;
+     otherwise the estimate, a dashed outline: a plan, not a measurement. */
+.floor-bar { --st: var(--st-todo); }
 .floor-bar.actual { --st: var(--st-done); }
 .floor-bar.running { --st: var(--st-doing); }
+.floor-bar.running.timer-ok { --st: var(--st-done); }
 .floor-bar.running.timer-near { --st: var(--warning); }
 .floor-bar.running.timer-over { --st: var(--error); }
-.floor-bar.actual .bar-fill, .floor-bar.running .bar-fill { fill: color-mix(in srgb, var(--st) 60%, transparent); }
-.floor-bar.actual .bar-edge, .floor-bar.running .bar-edge { stroke: var(--st); }
-.floor-bar.estimate .bar-fill { fill: color-mix(in srgb, var(--st-todo) 14%, transparent); }
-.floor-bar.estimate .bar-edge { stroke: var(--muted); stroke-dasharray: 4 3; }
-.floor-bar.estimate .bar-label { fill: var(--muted); }
+.floor-bar .bar-fill { fill: color-mix(in srgb, var(--st) 70%, transparent); stroke: var(--st); stroke-width: 1.2; }
+.floor-bar .bar-track { fill: color-mix(in srgb, var(--st) 10%, transparent); stroke: color-mix(in srgb, var(--st) 75%, var(--muted)); stroke-width: 1.2; }
+.floor-bar.estimate .bar-track { fill: color-mix(in srgb, var(--muted) 10%, transparent); stroke: var(--muted); stroke-dasharray: 4 3; }
+.floor-bar .bar-over { fill: color-mix(in srgb, var(--error) 60%, transparent); stroke: var(--error); stroke-width: 1.2; }
+/* An overdue run: the part inside the plan is paler, so where the plan ended — and how far past it
+   the run has gone — reads at a glance. */
+.floor-bar.running.timer-over .bar-fill { fill: color-mix(in srgb, var(--error) 28%, transparent); }
+.floor-bar.running.timer-over .bar-over { fill: color-mix(in srgb, var(--error) 85%, transparent); }
+.floor-bar .bar-now { stroke: var(--text); stroke-width: 2; }
+.bar-label { fill: var(--text); font-family: ui-monospace, monospace; font-weight: 600; text-anchor: start; }
+.floor-bar.estimate .bar-label { fill: var(--muted); font-weight: 500; }
+.floor-bar.running.timer-over .bar-label { fill: var(--error); }
 
 /* The ruler along the floor's near edge: solid over the window, dashed over the squeezed tails. */
 .floor-ruler .ruler-line { stroke: var(--muted); stroke-width: 1.6; }

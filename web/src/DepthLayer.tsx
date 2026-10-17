@@ -57,11 +57,14 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom }: { scene: Dep
           </g>
           <g className="floor-bars">
             {bars.map((b) => (
-              <g key={b.key} className={`floor-bar ${b.kind}${b.state ? ` timer-${b.state}` : ""}`}>
+              <g key={b.key} className={`floor-bar ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
                 <BarTitle bar={b} />
-                <polygon className="bar-fill" points={poly(b.points)} />
-                <polygon className="bar-edge" points={poly(b.points)} />
-                <text className="bar-label" x={b.labelAt.x} y={b.labelAt.y} style={{ fontSize: 10 * px }}>{b.label}</text>
+                {/* The planned stretch, an outline; the run, solid over it; any overtime past it. */}
+                {b.track && <polygon className="bar-track" points={poly(b.track)} />}
+                {b.fill && <polygon className="bar-fill" points={poly(b.fill)} />}
+                {b.over && <polygon className="bar-over" points={poly(b.over)} />}
+                {b.nowAt && <line className="bar-now" x1={b.nowAt[0].x} y1={b.nowAt[0].y} x2={b.nowAt[1].x} y2={b.nowAt[1].y} />}
+                <text className="bar-label" x={b.labelAt.x + 5 * px} y={b.labelAt.y} dominantBaseline="middle" style={{ fontSize: 10 * px }}>{b.label}</text>
               </g>
             ))}
           </g>

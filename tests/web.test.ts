@@ -541,35 +541,96 @@ describe("the 3D time-depth view", () => {
     });
   });
 
-  describe("time bars", () => {
-    it("draws a finished run as the time it really took", () => {
+  describe("timer bars", () => {
+    it("draws a done node by its real start and finish", () => {
       const r = ribbonFor(timingOf(node({ estimate: "3d", started: "2026-09-20", finished: "2026-09-24" }, "done"), NOW), "done", at(2026, 9, 20), NOW)!;
       expect(r.kind).toBe("actual");
       expect(r.from).toBe(at(2026, 9, 20));
       expect(r.to).toBe(at(2026, 9, 25) - 1); // a date-only finish means during that day
       expect(r.label).toBe("4d23h");
+      expect(r.detail).toBe("took 4d23h against 3d estimated");
+      expect(r.plan).toBeUndefined();
       const exact = ribbonFor(timingOf(node({ started: "2026-09-20T09:00", finished: "2026-09-20T11:30" }, "done"), NOW), "done", at(2026, 9, 20), NOW)!;
       expect(exact.label).toBe("2h30m");
+      // Done without both times is not a measurement, and an estimate is not drawn in its place.
+      expect(ribbonFor(timingOf(node({ estimate: "3d" }, "done"), NOW), "done", NOW, NOW)).toBeNull();
+      expect(ribbonFor(timingOf(node({ estimate: "3d", started: "2026-09-20" }, "done"), NOW), "done", NOW, NOW)).toBeNull();
     });
 
-    it("draws a running run from its start to now, coloured by its estimate", () => {
+    it("draws a doing node as a progress bar along its plan", () => {
       const r = ribbonFor(timingOf(node({ estimate: "5d", started: "2026-10-10" }, "doing"), NOW), "doing", NOW - 6 * DAY, NOW)!;
       expect(r.kind).toBe("running");
+      expect(r.from).toBe(at(2026, 10, 10));
       expect(r.to).toBe(NOW);
+      expect(r.plan).toEqual({ from: at(2026, 10, 10), to: at(2026, 10, 10) + 5 * DAY });
       expect(r.state).toBe("over");
-      expect(r.label).toBe("6d12h");
+      expect(r.label).toBe("6d12h/5d");
+      expect(r.detail).toBe("6d12h of 5d estimated (130%, 1d12h over)");
+      // Without an estimate it is the run alone; without a start, the estimate alone.
+      const bare = ribbonFor(timingOf(node({ started: "2026-10-16T09:00" }, "doing"), NOW), "doing", NOW, NOW)!;
+      expect(bare.plan).toBeUndefined();
+      expect(bare.label).toBe("3h");
+      const unstarted = ribbonFor(timingOf(node({ estimate: "5d" }, "doing"), NOW), "doing", NOW - DAY, NOW)!;
+      expect(unstarted.kind).toBe("estimate");
+      expect(unstarted.from).toBe(NOW - DAY);
     });
 
-    it("draws a todo's estimate from its own time forward, and nothing else", () => {
+    it("draws anything else with an estimate as that estimate, from its start if it has one", () => {
       const own = NOW - 20 * DAY;
       const r = ribbonFor(timingOf(node({ estimate: "10d" }, "todo"), NOW), "todo", own, NOW)!;
       expect(r.kind).toBe("estimate");
       expect(r.from).toBe(own);
       expect(r.to - r.from).toBe(10 * DAY);
+      expect(r.label).toBe("est. 10d"); // under two weeks, in days
+      const started = ribbonFor(timingOf(node({ estimate: "5d", started: "2026-10-14T09:00" }, "todo"), NOW), "todo", NOW, NOW)!;
+      expect(started.kind).toBe("estimate");
+      expect(started.from).toBe(at(2026, 10, 14, 9));
+      expect(ribbonFor(timingOf(node({ estimate: "2h" }, "todo"), NOW), "todo", NOW, NOW)!.kind).toBe("estimate");
       expect(ribbonFor(null, "todo", NOW, NOW)).toBeNull();
-      // A todo that has been started has a run to show instead of a pure estimate.
-      expect(ribbonFor(timingOf(node({ estimate: "5d", started: "2026-10-14T09:00" }, "todo"), NOW), "todo", NOW, NOW)).toBeNull();
-      expect(ribbonFor(timingOf(node({ estimate: "5d" }, "doing"), NOW), "doing", NOW, NOW)).toBeNull();
+      expect(ribbonFor(timingOf(node({ started: "2026-10-14" }, "todo"), NOW), "todo", NOW, NOW)).toBeNull();
+    });
+
+    describe("their shape", () => {
+      const boxes = [{ key: "k", x: 0, y: 0, width: 240, height: 76 }];
+      const focus = { to: NOW + DAY, span: 20 * DAY };
+      const scene = (r: ReturnType<typeof ribbonFor>) => {
+        const p = targetPose(boxes, { x: -100, y: -100, width: 600, height: 300 }, () => NOW - DAY, () => r, () => false, 1)!;
+        return depthScene(boxes, { ...p, focus }, () => NOW - DAY, () => r, () => false).bars[0]!;
+      };
+      const width = (q: { x: number }[]) => Math.abs(q[1]!.x - q[0]!.x);
+
+      it("fills a done run solid, with no track", () => {
+        const b = scene({ kind: "actual", from: NOW - 5 * DAY, to: NOW - 2 * DAY, state: null, label: "3d", detail: "took 3d" });
+        expect(b.fill).toBeDefined();
+        expect(b.track).toBeUndefined();
+        expect(b.nowAt).toBeUndefined();
+      });
+
+      it("draws an estimate as a track only", () => {
+        const b = scene({ kind: "estimate", from: NOW - 5 * DAY, to: NOW - 2 * DAY, state: null, label: "est. 3d", detail: "estimated 3d" });
+        expect(b.track).toBeDefined();
+        expect(b.fill).toBeUndefined();
+      });
+
+      it("fills a run in progress along its plan up to now", () => {
+        const b = scene({ kind: "running", from: NOW - 2 * DAY, to: NOW, plan: { from: NOW - 2 * DAY, to: NOW + 2 * DAY }, state: "ok", label: "2d/4d", detail: "" });
+        expect(b.track && b.fill && b.nowAt).toBeTruthy();
+        expect(b.over).toBeUndefined();
+        // Half the plan has run, so the fill is about half the track, ending at the now mark.
+        expect(width(b.fill!) / width(b.track!)).toBeGreaterThan(0.4);
+        expect(width(b.fill!) / width(b.track!)).toBeLessThan(0.6);
+        // The now mark stands at the fill's end (a hair inside it, so the mark sits on the bar).
+        expect(Math.abs(b.fill![1]!.x - b.nowAt![0].x)).toBeLessThan(0.5);
+      });
+
+      it("shows the overtime past the end of the plan", () => {
+        const b = scene({ kind: "running", from: NOW - 6 * DAY, to: NOW, plan: { from: NOW - 6 * DAY, to: NOW - 3 * DAY }, state: "over", label: "6d/3d", detail: "" });
+        expect(b.over).toBeDefined();
+        // The fill covers the plan; the overtime runs on from its end to now.
+        expect(b.fill![1]!.x).toBeCloseTo(b.track![1]!.x, 6);
+        expect(b.over![0]!.x).toBeCloseTo(b.track![1]!.x, 6);
+        expect(Math.abs(b.over![1]!.x - b.nowAt![0].x)).toBeLessThan(0.5);
+      });
     });
   });
 
@@ -581,7 +642,7 @@ describe("the 3D time-depth view", () => {
     ];
     const times = new Map([["a", NOW - 2 * DAY], ["b", NOW - 25 * DAY]]); // c has no time
     const timeOf = (k: string) => times.get(k);
-    const ribbonOf = (k: string) => (k === "b" ? { kind: "actual" as const, from: NOW - 27 * DAY, to: NOW - 25 * DAY, state: null, label: "2d" } : null);
+    const ribbonOf = (k: string) => (k === "b" ? { kind: "actual" as const, from: NOW - 27 * DAY, to: NOW - 25 * DAY, state: null, label: "2d", detail: "took 2d" } : null);
     const isGroup = (k: string) => k === "a";
     const p = targetPose(boxes, { x: -50, y: -50, width: 700, height: 400 }, timeOf, ribbonOf, isGroup, 1)!;
     const scene = depthScene(boxes, p, timeOf, ribbonOf, isGroup);

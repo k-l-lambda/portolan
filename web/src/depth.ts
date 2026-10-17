@@ -26,7 +26,7 @@
 // Everything here is pure — the camera, the window, the ticks and the bars all fall out of the
 // times and the layout — so it can be tested without a browser.
 
-import { formatDuration, type Timing } from "../../src/timing.ts";
+import { formatDuration, sharePercent, type Timing } from "../../src/timing.ts";
 import { HEADER_H, HEADER_W } from "./layout.ts";
 import { absoluteTime } from "./time.ts";
 
@@ -260,6 +260,12 @@ export interface Pose {
   floorH: number;
   ruler: number;
   floorFar: number;
+  /** Each timer bar's lane under its card (0 nearest), and the height between lanes: bars whose
+   *  stretches would cross on screen are stacked, as on a Gantt chart. */
+  lanes: Record<string, number>;
+  lanePitch: number;
+  /** One screen pixel in the scene's own units, as fitted: bars keep a least size on screen in it. */
+  px: number;
 }
 
 /** The view a pose puts the scene in. */
@@ -304,6 +310,11 @@ export function blendPose(a: Pose, b: Pose, s: number): Pose {
     floorH: lerp(a.floorH, b.floorH, s),
     ruler: lerp(a.ruler, b.ruler, s),
     floorFar: lerp(a.floorFar, b.floorFar, s),
+    // Lanes are whole numbers: they take the destination's at once. The floor layer is faded at
+    // the start of a move from the flat view, so the change is not seen there.
+    lanes: b.lanes,
+    lanePitch: lerp(a.lanePitch, b.lanePitch, s),
+    px: glerp(a.px, b.px, s),
   };
 }
 
@@ -422,41 +433,68 @@ function yearStart(year: number): number {
 
 export type RibbonKind = "actual" | "running" | "estimate";
 
-/** A stretch of time, drawn as a bar along the time axis under its card: what work took, is taking, or expects to. */
+/**
+ * A node's timer bar along the time axis, under its card: what the work took, how far it has run
+ * against its plan, or what it is expected to take.
+ */
 export interface Ribbon {
   kind: RibbonKind;
+  /** The solid part: the run itself, from its start to its finish or to now. For an estimate, the
+   *  planned stretch, drawn as an outline rather than solid. */
   from: number;
   to: number;
-  /** Against its estimate, so a running run carries the colour the flat view gives it. */
+  /** For a run in progress with an estimate: the planned stretch, from its start to start plus the
+   *  estimate, which the run is a progress bar along. */
+  plan?: { from: number; to: number };
+  /** Against its estimate, so a run in progress carries the colour the flat view gives it. */
   state: Timing["state"];
-  /** The duration written on it (`2h30m`), not a wall-clock pair. */
+  /** The text written on it, in the chip's own short form: `4d23h`, `40m/2h`, `est. 5w`. */
   label: string;
+  /** The longer form, for the bar's tooltip: `took 4d23h`, `40m of 2h estimated (33%)`. */
+  detail: string;
 }
 
-/** `took 2h30m`, `running 40m`, `estimate 5w` — the bar's own text. */
+/** The bar's tooltip text. */
 export function ribbonLabel(r: Ribbon): string {
-  const what = r.kind === "actual" ? "took" : r.kind === "running" ? "running" : "estimate";
-  return `${what} ${r.label}`;
+  return r.detail;
 }
 
 /**
- * The time a node occupies, as a span between two moments:
- *   - `actual`: a finished run, from its start to its finish — what it really took;
- *   - `running`: work in progress, from its start to now, coloured by its estimate;
- *   - `estimate`: a todo with an estimate and no start, a bar of that length from the node's own
- *     time forward. A plan is a guess rather than a measurement, so it is an outline.
- * Null when the node has nothing timed to show.
+ * The timer bar for a node, by what it is:
+ *   - done (or any closed run): its real start to its real finish, solid — what it really took.
+ *     A done node without both times draws nothing: its timing is not a measurement.
+ *   - doing: a progress bar. The solid run goes from its start to now, over a track of the planned
+ *     stretch (start to start plus the estimate); past the end of the track the run is overtime.
+ *     Without an estimate it is the run alone; without a start, the estimate alone.
+ *   - anything else with an estimate: an outline of that length, from its start if it has one,
+ *     else from the node's own time — a plan, not a measurement.
+ * Null when there is nothing timed to show.
  */
 export function ribbonFor(timing: Timing | null, status: string | null, own: number, now: number): Ribbon | null {
   if (!timing) return null;
-  if (status === "doing" && timing.started !== null) {
-    return { kind: "running", from: timing.started, to: now, state: timing.state, label: formatDuration(timing.elapsed ?? 0) };
+  const { estimate, started } = timing;
+  if (status === "doing" && started !== null) {
+    const elapsed = timing.elapsed ?? Math.max(0, now - started);
+    if (estimate === null) {
+      return { kind: "running", from: started, to: now, state: null, label: formatDuration(elapsed), detail: `running ${formatDuration(elapsed)}, no estimate` };
+    }
+    const pct = sharePercent(elapsed, estimate);
+    const over = elapsed > estimate ? `, ${formatDuration(elapsed - estimate)} over` : "";
+    return {
+      kind: "running", from: started, to: now, plan: { from: started, to: started + estimate }, state: timing.state,
+      label: `${formatDuration(elapsed)}/${formatDuration(estimate)}`,
+      detail: `${formatDuration(elapsed)} of ${formatDuration(estimate)} estimated (${pct}%${over})`,
+    };
   }
   if (timing.closed) {
-    return { kind: "actual", from: timing.started!, to: timing.finished!, state: null, label: formatDuration(timing.elapsed!) };
+    const took = formatDuration(timing.elapsed!);
+    const vs = estimate !== null ? ` against ${formatDuration(estimate)} estimated` : "";
+    return { kind: "actual", from: started!, to: timing.finished!, state: null, label: took, detail: `took ${took}${vs}` };
   }
-  if (status === "todo" && timing.estimate !== null && timing.started === null) {
-    return { kind: "estimate", from: own, to: own + timing.estimate, state: null, label: formatDuration(timing.estimate) };
+  if (status === "done") return null;
+  if (estimate !== null) {
+    const from = started ?? own;
+    return { kind: "estimate", from, to: from + estimate, state: null, label: `est. ${formatDuration(estimate)}`, detail: `estimated ${formatDuration(estimate)}` };
   }
   return null;
 }
@@ -500,16 +538,35 @@ export function axisTicks(focus: Focus, count: number): Tick[] {
 
 
 /** Height of a time bar, and its gap below the card it belongs to, in world pixels. */
-const BAR_H = 12;
+const BAR_H = 16;
 const BAR_GAP = 8;
 /** Narrowest a bar is drawn, so a minute's work on a year's axis is still a mark. */
 const BAR_MIN = 6;
+/** The least a bar is drawn on screen, in screen pixels, however far out the view is zoomed: a
+ *  bar in world units alone shrinks with the map, and on a large map at its fitted zoom a
+ *  16-unit bar is two pixels tall and an hour's work on a ten-day axis less than one wide. */
+const BAR_MIN_PX = { h: 7, w: 10, gap: 3 };
+/** A bar's thickness, least length and gap under its card, for a scene where a pixel is `px`. */
+const barSize = (px: number) => ({
+  h: Math.max(BAR_H, BAR_MIN_PX.h * px),
+  w: Math.max(BAR_MIN, BAR_MIN_PX.w * px),
+  gap: Math.max(BAR_GAP, BAR_MIN_PX.gap * px),
+});
 
-/** A time bar along the axis, just under its card: what the work took, is taking, or plans to. */
+/** A timer bar along the axis, just under its card: what the work took, is taking, or plans to. */
 export interface Bar extends Ribbon {
   key: string;
-  /** Screen quad: older-top, newer-top, newer-bottom, older-bottom. */
+  /** Screen quads, each older-top, newer-top, newer-bottom, older-bottom:
+   *  `track` the planned stretch (an estimate, or a run's plan), drawn as an outline;
+   *  `fill` the run itself, solid, up to the end of its plan;
+   *  `over` the part of a run past the end of its plan. */
+  track?: Point[];
+  fill?: Point[];
+  over?: Point[];
+  /** Every corner, for framing. */
   points: Point[];
+  /** Where the run stands now, for a run in progress: a mark across the bar. */
+  nowAt?: [Point, Point];
   labelAt: Point;
   title: string;
 }
@@ -541,19 +598,50 @@ const trackOf = (view: View, time: number | undefined) => axisU(time ?? view.foc
 const headerOf = (b: DepthBox) => ({ width: Math.min(HEADER_W, b.width), height: Math.min(HEADER_H, b.height) });
 
 /** The bar for a ribbon under a box, at the box's own centre across. */
-function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string): Bar {
+function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, lane = 0, pitch = 0, px = 0): Bar {
+  const size = barSize(px);
   const at = (t: number, h: number) => {
     const q = projectPoint(view, { t, d: b.x + b.width / 2, h });
     return { x: q.x, y: q.y };
   };
-  let t0 = axisU(r.from, view.focus) * view.length, t1 = axisU(r.to, view.focus) * view.length;
-  if (t1 - t0 < BAR_MIN) (t0 = (t0 + t1) / 2 - BAR_MIN / 2, t1 = t0 + BAR_MIN);
-  const top = foot - BAR_GAP, bot = top - BAR_H;
-  const state = r.state === "over" ? " (over)" : r.state === "near" ? " (nearly due)" : "";
+  const track = (time: number) => axisU(time, view.focus) * view.length;
+  /** A stretch along time, widened to the least length so a minute's work on a year's axis is a mark. */
+  const span = (from: number, to: number): [number, number] => {
+    let t0 = track(from), t1 = track(to);
+    if (t1 - t0 < size.w) (t0 = (t0 + t1) / 2 - size.w / 2, t1 = t0 + size.w);
+    return [t0, t1];
+  };
+  const top = foot - size.gap - lane * pitch, bot = top - size.h;
+  const quad = ([t0, t1]: [number, number]) => [at(t0, top), at(t1, top), at(t1, bot), at(t0, bot)];
+  const out: Pick<Bar, "track" | "fill" | "over" | "nowAt"> = {};
+  let whole: [number, number];
+  if (r.kind === "estimate") {
+    whole = span(r.from, r.to);
+    out.track = quad(whole);
+  } else if (r.plan) {
+    // A progress bar: the track is the plan; the run fills it from its start up to now, and any
+    // of the run beyond the plan's end is overtime.
+    const plan = span(r.plan.from, r.plan.to);
+    const now = track(r.to);
+    out.track = quad(plan);
+    out.fill = quad([plan[0], Math.max(plan[0] + 1, Math.min(now, plan[1]))]);
+    if (now > plan[1]) out.over = quad([plan[1], now]);
+    out.nowAt = [at(now, top + 3), at(now, bot - 3)];
+    whole = [plan[0], Math.max(plan[1], now)];
+  } else {
+    whole = span(r.from, r.to);
+    out.fill = quad(whole);
+    if (r.kind === "running") out.nowAt = [at(whole[1], top + 3), at(whole[1], bot - 3)];
+  }
+  const state = r.state === "over" ? " — over" : r.state === "near" ? " — nearly due" : "";
+  const end = r.kind === "running" ? "now" : absoluteTime(r.to);
   return {
-    ...r, key, points: [at(t0, top), at(t1, top), at(t1, bot), at(t0, bot)],
-    labelAt: at((t0 + t1) / 2, bot - 14),
-    title: `${ribbonLabel(r)}${state}\n${absoluteTime(r.from)} → ${absoluteTime(r.to)}`,
+    ...r, key, ...out,
+    points: quad(whole),
+    // At the bar's newer end, beside it rather than under it, so stacked lanes do not need room
+    // for text between them; DepthFloor sets it off by a few screen pixels.
+    labelAt: at(whole[1], (top + bot) / 2),
+    title: `${ribbonLabel(r)}${state}\n${absoluteTime(r.plan?.from ?? r.from)} → ${end}`,
   };
 }
 
@@ -621,9 +709,10 @@ export function depthScene(
     const r = ribbonOf(b.key);
     let below = foot;
     if (r) {
-      const bar = barFor(view, box, foot, r, b.key);
-      bars.push(bar);
-      below = foot - BAR_GAP - BAR_H;
+      const lane = pose.lanes[b.key] ?? 0;
+      const size = barSize(pose.px);
+      bars.push(barFor(view, box, foot, r, b.key, lane, pose.lanePitch, pose.px));
+      below = foot - size.gap - lane * pose.lanePitch - size.h;
     }
     // Only a card above the floor drops a line to it; the floor is under the frame's own cards.
     if (below > pose.floorH) drops.push({ key: b.key, from: at(p.t, b.x + w / 2, below), to: at(p.t, b.x + w / 2, pose.floorH) });
@@ -713,17 +802,17 @@ export function targetPose(
   const W = x1 - x0, H = y1 - y0;
   // The floor sits under the focus nodes by a gap kept in proportion to them, so a frame holding one
   // card does not spend most of its height on the space between the card and the ruler.
-  const floorH = -(y1 + Math.min(FLOOR_GAP, Math.max(16, H * 0.25)));
+  const gap = Math.min(FLOOR_GAP, Math.max(16, H * 0.25));
   const ruler = x0 - Math.min(RULER_GAP, Math.max(16, W * 0.1));
 
   // The scene at a length, unfitted.
-  const poseAt = (length: number): Pose => ({
+  const poseAt = (length: number, floorH: number, lanes: Record<string, number>, lanePitch: number, px: number): Pose => ({
     blend: 1, pitch: PITCH, azimuth: AZIMUTH, length,
     dist: Math.max(length, W, H, 600) * 3,
     sigma: 1,
     aim: { t: length / 2, d: (x0 + x1) / 2, h: floorH + EYE_RISE * Math.max(H, 200) },
     anchor: { x: 0, y: 0 },
-    focus, floorH, ruler, floorFar: x1,
+    focus, floorH, ruler, floorFar: x1, lanes, lanePitch, px,
   });
   // The focus nodes' 3D bounding box on screen: their panels and their bars. With `ruler`, its
   // height reaches down to the ruler too, so the ruler stays on screen under the cards it measures.
@@ -734,11 +823,11 @@ export function targetPose(
       const s = size(b), t = trackOf(view, timeOf(b.key));
       pts.push(...panelAt(view, b.x, b.y, t, s.width, s.height).quad);
       const r = ribbonOf(b.key);
-      if (r) pts.push(...barFor(view, { ...b, width: s.width }, footOf(b, isGroup(b.key)), r, b.key).points);
+      if (r) pts.push(...barFor(view, { ...b, width: s.width }, footOf(b, isGroup(b.key)), r, b.key, pose.lanes[b.key] ?? 0, pose.lanePitch, pose.px).points);
     }
     const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
     if (withRuler) {
-      for (const u of [0, 1]) ys.push(projectPoint(view, { t: u * pose.length, d: ruler, h: floorH }).y);
+      for (const u of [0, 1]) ys.push(projectPoint(view, { t: u * pose.length, d: ruler, h: pose.floorH }).y);
     }
     return { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs) - Math.min(...xs), height: Math.max(...ys) - Math.min(...ys) };
   };
@@ -750,31 +839,89 @@ export function targetPose(
   // The shape of the focus nodes' box grows wider with the length of time; find the length that
   // makes it the display's shape. Searched on a log scale, since the right length can be anything
   // from a fraction of the layout's width to many times it.
-  const aspect = (L: number) => {
-    const b = bounds(poseAt(L));
-    return b.width / Math.max(1e-6, b.height);
-  };
-  let lo = Math.max(100, W * MIN_TIME), hi = Math.max(lo * 4, (W + H) * 6);
-  let L: number;
-  if (aspect(lo) >= want) L = lo;
-  // A focus whose shape hardly changes with time — one card, or cards all of a moment — takes the
-  // shortest axis rather than the longest: lengthening it would only spread the ruler, not the cards.
-  else if (aspect(hi) <= want) L = aspect(hi) - aspect(lo) < 0.1 * want ? lo : hi;
-  else {
+  const fitLength = (floorH: number, lanes: Record<string, number>, pitch: number, px: number) => {
+    const aspect = (L: number) => {
+      const b = bounds(poseAt(L, floorH, lanes, pitch, px));
+      return b.width / Math.max(1e-6, b.height);
+    };
+    let lo = Math.max(100, W * MIN_TIME), hi = Math.max(lo * 4, (W + H) * 6);
+    if (aspect(lo) >= want) return lo;
+    // A focus whose shape hardly changes with time — one card, or cards all of a moment — takes the
+    // shortest axis rather than the longest: lengthening it would only spread the ruler, not the cards.
+    if (aspect(hi) <= want) return aspect(hi) - aspect(lo) < 0.1 * want ? lo : hi;
     for (let i = 0; i < 40; i++) {
       const m = Math.sqrt(lo * hi);
       if (aspect(m) < want) lo = m;
       else hi = m;
     }
-    L = Math.sqrt(lo * hi);
-  }
+    return Math.sqrt(lo * hi);
+  };
+  const fit = (pose: Pose) => {
+    const b = bounds(pose, true);
+    const sigma = Math.min(MAX_SIGMA, target.width / Math.max(1e-6, b.width), target.height / Math.max(1e-6, b.height));
+    const cx = rect.x + rect.width / 2, cy = rect.y + (rect.height - room) / 2;
+    return { ...pose, sigma, anchor: { x: cx - sigma * (b.x + b.width / 2), y: cy - sigma * (b.y + b.height / 2) } };
+  };
 
-  // Scale and place the scene so the focus nodes' box fills the frame, with the ruler under it.
-  const pose = poseAt(L);
-  const b = bounds(pose, true);
-  const sigma = Math.min(MAX_SIGMA, target.width / Math.max(1e-6, b.width), target.height / Math.max(1e-6, b.height));
-  const cx = rect.x + rect.width / 2, cy = rect.y + (rect.height - room) / 2;
-  return { ...pose, sigma, anchor: { x: cx - sigma * (b.x + b.width / 2), y: cy - sigma * (b.y + b.height / 2) } };
+  // First the scene without lanes, to learn its scale on screen; then the lanes, which depend on
+  // how wide each bar and its label come out there; then the scene again, with its floor below
+  // the lowest lane.
+  const floor0 = -(y1 + gap);
+  // Before the fit the scale is unknown; the flat view's own zoom is the first guess at a pixel.
+  const px0 = 1 / Math.max(1e-6, zoom);
+  const first = fit(poseAt(fitLength(floor0, {}, 0, px0), floor0, {}, 0, px0));
+  const px = 1 / Math.max(1e-6, first.sigma * zoom);
+  const bar = barSize(px);
+  const lanePitch = Math.max(bar.h + 4 * px, (LABEL_H + 4) * px);
+  const lanes = assignLanes(viewOf(first), boxes, ribbonOf, isGroup, px);
+  let lowest = floor0;
+  for (const b of boxes) {
+    const lane = lanes[b.key];
+    if (lane === undefined || !F.includes(b)) continue;
+    lowest = Math.min(lowest, footOf(b, isGroup(b.key)) - bar.gap - lane * lanePitch - bar.h - gap);
+  }
+  return fit(poseAt(fitLength(lowest, lanes, lanePitch, px), lowest, lanes, lanePitch, px));
+}
+
+/** Height of a bar's label on screen, and an estimate of its characters' width, in screen pixels. */
+const LABEL_H = 12;
+const LABEL_CH = 6.4;
+
+/**
+ * Lanes for the timer bars: under each row of cards, a bar whose stretch on screen, label
+ * included, would cross another's goes into the next lane down. Greedy by left edge, the usual
+ * interval partitioning, so bars that do not overlap share a lane. `px` is one screen pixel in the
+ * scene's own units, so a label's width is reckoned as it will be drawn.
+ */
+function assignLanes(
+  view: View, boxes: DepthBox[], ribbonOf: (key: string) => Ribbon | null, isGroup: (key: string) => boolean, px: number,
+): Record<string, number> {
+  const rows = new Map<number, { key: string; x0: number; x1: number }[]>();
+  for (const b of boxes) {
+    const r = ribbonOf(b.key);
+    if (!r) continue;
+    const group = isGroup(b.key);
+    const w = group ? headerOf(b).width : b.width;
+    const foot = footOf(b, group);
+    const bar = barFor(view, { ...b, width: w }, foot, r, b.key, 0, 0, px);
+    const xs = bar.points.map((p) => p.x);
+    // Its label stands beside its newer end.
+    const x1 = Math.max(...xs) + (6 + r.label.length * LABEL_CH) * px;
+    const row = Math.round(foot);
+    (rows.get(row) ?? rows.set(row, []).get(row)!).push({ key: b.key, x0: Math.min(...xs), x1 });
+  }
+  const out: Record<string, number> = {};
+  for (const items of rows.values()) {
+    items.sort((a, b) => a.x0 - b.x0);
+    const ends: number[] = [];
+    for (const it of items) {
+      let lane = ends.findIndex((e) => e + 4 * px <= it.x0);
+      if (lane < 0) (lane = ends.length, ends.push(0));
+      ends[lane] = it.x1;
+      out[it.key] = lane;
+    }
+  }
+  return out;
 }
 
 /** A tick on the ruler, placed: its mark on the ruler and its grid line across the floor. */
