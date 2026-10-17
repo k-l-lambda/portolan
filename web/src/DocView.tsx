@@ -10,7 +10,7 @@ import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
 import { blendPose, depthScene, ease, flatPose, nodeRibbon, projectPath, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
+import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
@@ -441,13 +441,23 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
   const [pendingFrame, setPendingFrame] = useState<Set<string> | null>(null);
-  const framePoint = useCallback((key: string) => {
-    const point = data?.timeline?.points.find((p) => pointKey(p) === key);
-    if (!point || point.nodes.length === 0) return;
-    const keys = new Set(point.nodes);
+  const frameNodes = useCallback((nodes: Iterable<string>) => {
+    const keys = new Set(nodes);
+    if (keys.size === 0) return;
     keys.forEach(reveal);
     setPendingFrame(keys);
-  }, [data, reveal]);
+  }, [reveal]);
+  const framePoint = useCallback((key: string) => {
+    const point = data?.timeline?.points.find((p) => pointKey(p) === key);
+    if (point) frameNodes(point.nodes);
+  }, [data, frameNodes]);
+  // Clicking a diagnostic frames what it is about in the same way: the node on its line, or both
+  // ends of a relation written there, and selects the node so its own panel opens.
+  const focusLine = useCallback((line: number) => {
+    const keys = nodesForLine(line, all, data?.doc.edges ?? []);
+    if (keys.length === 1) setSelected(keys[0]!);
+    frameNodes(keys);
+  }, [all, data, frameNodes]);
   useEffect(() => {
     if (!pendingFrame || !layout) return;
     const boxes = layout.boxes.filter((b) => pendingFrame.has(b.key));
@@ -905,6 +915,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           freshness={data.freshness}
           now={now}
           onSelectLine={selectLine}
+          onFocusLine={focusLine}
         />
         {!node && diffPoint && (() => {
           const p = data.timeline?.points.find((x) => pointKey(x) === diffPoint);

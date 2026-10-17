@@ -182,3 +182,29 @@ export function followToggle(
   if (at().top < margin) y += margin - at().top;
   return { x, y, zoom: k };
 }
+
+/**
+ * The nodes a line of the map is about, for framing them when a diagnostic on that line is
+ * clicked: the node written there (or whose note is), or both ends of a relation written there.
+ * Empty for a line about neither, such as the front matter, or a relation the parser dropped
+ * because it names an unknown ID (E007): the view never has that relation.
+ */
+export function nodesForLine(
+  line: number,
+  nodes: Map<string, Pick<RhumbNode, "id" | "line" | "notes">>,
+  edges: { from: string; to: string; line: number }[],
+): string[] {
+  for (const [key, n] of nodes) {
+    if (n.line === line || n.notes.some((x) => x.line === line)) return [key];
+  }
+  const byId = new Map([...nodes].filter(([, n]) => n.id).map(([key, n]) => [n.id!, key]));
+  const out = new Set<string>();
+  for (const e of edges) {
+    if (e.line !== line) continue;
+    for (const id of [e.from, e.to]) {
+      const key = byId.get(id);
+      if (key) out.add(key);
+    }
+  }
+  return [...out];
+}

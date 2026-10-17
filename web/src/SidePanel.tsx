@@ -19,6 +19,8 @@ interface Props {
   freshness: Freshness;
   now: number;
   onSelectLine: (line: number) => void;
+  /** Frame what a diagnostic's line is about, as clicking a history point frames its nodes. */
+  onFocusLine?: (line: number) => void;
   onStar: (node: RhumbNode) => void;
   /** Doing items with timing, most urgent first (shown with Diagnostics). */
   timed?: TimedItem[];
@@ -26,9 +28,10 @@ interface Props {
   onGoTo?: (key: string) => void;
 }
 
-export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onStar, timed = [], onGoTo }: Props) {
+export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onFocusLine, onStar, timed = [], onGoTo }: Props) {
+  const focus = onFocusLine ?? onSelectLine;
   if (!node) {
-    return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onSelectLine={onSelectLine}
+    return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onFocusLine={focus}
       timed={timed} onGoTo={onGoTo ?? ((key) => { const i = timed.find((t) => t.key === key); if (i) onSelectLine(i.line); })} />;
   }
   const updated = freshness.nodes.find((t) => t.line === node.line);
@@ -120,7 +123,7 @@ export function SidePanel({ file, node, state, diagnostics, freshness, now, onSe
           {node.anchors.map((a, i) => <AnchorView key={`${node.line}:${i}`} file={file} line={node.line} index={i} />)}
         </section>
       )}
-      {own.length > 0 && <DiagnosticList diagnostics={own} onSelectLine={onSelectLine} />}
+      {own.length > 0 && <DiagnosticList diagnostics={own} onFocusLine={focus} />}
     </aside>
   );
 }
@@ -160,8 +163,8 @@ function AnchorView({ file, line, index }: { file: string; line: number; index: 
   );
 }
 
-function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine, timed, onGoTo }: {
-  diagnostics: Diagnostic[]; freshness: Freshness; now: number; onSelectLine: (line: number) => void;
+function DiagnosticsPanel({ diagnostics, freshness, now, onFocusLine, timed, onGoTo }: {
+  diagnostics: Diagnostic[]; freshness: Freshness; now: number; onFocusLine: (line: number) => void;
   timed: TimedItem[]; onGoTo: (key: string) => void;
 }) {
   const at = (t: number) => (
@@ -199,17 +202,17 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onSelectLine, timed, on
       {diagnostics.length > 0 && timed.length > 0 && <h3>Problems</h3>}
       {diagnostics.length === 0
         ? <p className="muted">No problems. Select a node to see its notes and diary links.</p>
-        : <DiagnosticList diagnostics={diagnostics} onSelectLine={onSelectLine} />}
+        : <DiagnosticList diagnostics={diagnostics} onFocusLine={onFocusLine} />}
     </aside>
   );
 }
 
-function DiagnosticList({ diagnostics, onSelectLine }: { diagnostics: Diagnostic[]; onSelectLine: (line: number) => void }) {
+function DiagnosticList({ diagnostics, onFocusLine }: { diagnostics: Diagnostic[]; onFocusLine: (line: number) => void }) {
   return (
     <ul className="diags">
       {diagnostics.map((d, i) => (
         <li key={i}>
-          <button type="button" className={`diag diag-${d.level}`} onClick={() => onSelectLine(d.line)}>
+          <button type="button" className={`diag diag-${d.level}`} onClick={() => onFocusLine(d.line)}>
             <span className="diag-code">{d.code}</span> line {d.line}: {d.message}
           </button>
         </li>

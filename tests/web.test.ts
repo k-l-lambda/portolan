@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createRhumbServer, parse } from "../src/index.ts";
 import { timingOf } from "../src/timing.ts";
-import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
+import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
   innerRun, nodeRibbon, ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
@@ -105,6 +105,44 @@ describe("view helpers", () => {
 
   it("strips link syntax from titles", () => {
     expect(plainTitle("Survey [notes](diary:x#y) and `code` \\^x")).toBe("Survey notes and code ^x");
+  });
+});
+
+describe("what a diagnostic is about", () => {
+  const text = `---
+rhumb: 0.1
+---
+- [/] Release ^rel
+  - [x] Parser ^parser
+    - Why: notes count as the node's lines.
+  - [ ] Docs
+- [ ] Other ^other
+
+parser needs other
+rel relates ghost
+`;
+  const doc = parse(text);
+  const all = new Map<string, (typeof doc.nodes)[number]>();
+  const walk = (ns: typeof doc.nodes) => ns.forEach((n) => (all.set(nodeKey(n), n), walk(n.children)));
+  walk(doc.nodes);
+  const lineOf = (needle: string) => text.split("\n").findIndex((l) => l.includes(needle)) + 1;
+
+  it("is the node written on the line, or whose note is", () => {
+    expect(nodesForLine(lineOf("[x] Parser"), all, doc.edges)).toEqual(["parser"]);
+    expect(nodesForLine(lineOf("notes count"), all, doc.edges)).toEqual(["parser"]);
+    // A node without an ID is found by its line.
+    expect(nodesForLine(lineOf("[ ] Docs"), all, doc.edges)).toEqual([`line:${lineOf("[ ] Docs")}`]);
+  });
+
+  it("is both ends of a relation written on the line", () => {
+    expect(nodesForLine(lineOf("parser needs other"), all, doc.edges).sort()).toEqual(["other", "parser"]);
+  });
+
+  it("is nothing for a line about no node, or a relation the parser dropped", () => {
+    expect(nodesForLine(2, all, doc.edges)).toEqual([]);
+    // `ghost` names no node: the parser reports E007 on the line and keeps no relation.
+    expect(doc.diagnostics.some((d) => d.code === "E007" && d.line === lineOf("rel relates ghost"))).toBe(true);
+    expect(nodesForLine(lineOf("rel relates ghost"), all, doc.edges)).toEqual([]);
   });
 });
 
