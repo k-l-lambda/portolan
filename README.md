@@ -96,32 +96,37 @@ Each `- [ ]` item is a node with a status (`[ ]` todo, `[/]` doing, `[x]` done, 
 
 ## The time-depth view
 
-The `3D` button in the toolbar gives the map a third dimension, with time as height. The layout
-lies on the ground — its x to the right, its y away — and *now* is the ground plane: work that has
-happened floats above it, a plan not yet started hangs below. Every card therefore sits at its own
-height. The scene is seen through a real perspective camera, pitched down and swung a little to
-one side, so the ground converges into a trapezoid and cards shrink and dim with distance; that
-change of viewpoint is what makes the picture read as a space rather than a map that was nudged.
+The `3D` button in the toolbar turns time into a level axis running through the map, oldest on the
+left and newest on the right. Each card becomes a panel standing at its own moment, its face
+orthogonal to the time axis, with the flat layout kept whole inside every moment. The scene is seen
+through a perspective camera whose line of sight meets the time axis at about 45°, so panels are
+foreshortened and newer ones, nearer the eye, are drawn bigger. Hovering a panel shows its title
+flat.
 
-Because the camera is real, cards are scaled by their distance, and the scene is drawn far to near.
-The projection computes each point itself rather than transforming the panes — a CSS 3D transform
-on the flow's panes would tilt the pan and zoom maths with it — so pan, zoom, the navigator, the
-depth window and clicking all keep working exactly as they do in 2D.
+The navigator always draws the flat map, in 3D too, and its frame stays the flat view's camera,
+looking square on. The cards inside that frame (the focus nodes) decide the 3D view: their time
+span sets the time axis's offset, its length is chosen so the focus nodes' 3D bounding box has the
+display's shape, and the scene is placed so that box fills the screen. Panning or zooming, in the
+main view or on the navigator, moves that flat camera, and the 3D view follows the cards it now
+frames. A single outlier does not stretch the window: it stands in a squeezed tail beyond either
+end. Switching views is a camera move: the 3D view starts exactly on the flat view and turns into
+place, and leaving it turns back.
 
-Under each timed card, on the ground, lies the stretch of time that work occupied:
+Each panel is the card's own DOM carried onto its true perspective shape by a CSS `matrix3d`, so its
+text, buttons and click area all lie in the panel's plane. The flow's panes are never transformed,
+which is what keeps pan, zoom, the navigator and clicking working exactly as in 2D.
 
-| On the ground | Means |
+Under each timed card, a bar along the time axis shows the stretch of time that work occupied:
+
+| Under the card | Means |
 | --- | --- |
 | Solid band in the status colour | A finished run, from `started` to `finished` — what it really took |
 | Solid band, green / amber / red | Work in progress, from `started` to now, against its `estimate` |
 | Dashed outline | A todo's `estimate`: a plan, not a measurement |
 
-The depth ruler stands at the map's left edge and rises from the ground into the past, labelling
-the window in hours, days, months or years, whichever suits its span. The window follows the
-navigator's frame — the region on screen — so zooming into a stretch of the map brings its own
-times into view. Every raised card drops a line to the ground beneath it, so its height can be
-read against the ruler, and every timed one carries a bar standing on the ground at the foot of
-that line: its own duration, to scale.
+The ruler runs along the floor under the scene and labels the window in hours, days, months or
+years; its tick density follows its length on screen. A dashed line drops from each card to the
+floor, where a grid line from each tick lets its moment be read.
 
 ## Status
 
@@ -133,7 +138,7 @@ Portolan is experimental and changing quickly. What exists today:
 - A thread store for annotations in an append-only `.threads.jsonl` sidecar
 - A local server that serves the map, derived values and threads, and pushes file changes live
 - A first web view, with a mind map and a diary panel, still being built
-- A time-depth view: a 3D toggle that puts time on a vertical axis under a perspective camera, each card floating at its own time with the stretch of time it occupied standing on the ground below it
+- A time-depth view: a 3D toggle that runs time as a level axis through the map, each card a perspective panel standing at its own moment, with the time it occupied as a bar beneath it
 
 The server has no authentication and binds to `127.0.0.1` only. Do not expose it.
 

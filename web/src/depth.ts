@@ -1,59 +1,53 @@
-// The 3D view's geometry (the `3D` toggle in DocView): the map laid on the ground with time as
-// height, seen through a real perspective camera.
+// The 3D view's geometry (the `3D` toggle in DocView): time is a horizontal axis running through
+// the map, and every card is a real panel standing in its own moment.
 //
-//   * The ground plane is the map's own layout: its x to the right, its y away from the viewer.
-//   * Height above the ground is time. The ground is *now*; work that happened rises above it, and
-//     a plan that has not started stands below it. Every card therefore floats at its own height,
-//     which is what makes the picture read as a space rather than as a map that was nudged.
-//   * The eye sits above the ground, in front of the newest time and a little to one side, looking
-//     down at the middle of the scene. Its pitch tips the ground into a trapezoid and the
-//     perspective divide shrinks and converges the distance — the two things missing before, when
-//     this was a plain shear: nothing changed size with depth, and the offset ran parallel to the
-//     layout's own time ordering, so it looked like the same flat map.
+//   * World axes: `t` along time, `d` across (the layout's x) and `h` up (the layout's y, flipped).
+//     The flat layout is kept whole inside each moment: a card is the rectangle its layout box
+//     covers in the (d, h) plane, set at its own time along `t`. So a panel's face is orthogonal
+//     to the time axis, and two cards at the same time share one plane.
+//   * The eye stands to the newer side of the scene and a little above it, its line of sight at
+//     about 45° to the time axis. Time then runs roughly level across the screen, oldest on the
+//     left, newest nearest the eye on the right, and each panel is seen at an angle — foreshortened
+//     and converging, not a flat label. A card's title is shown flat on hover (DocView).
+//   * The flat view's camera decides everything. The cards inside its frame (what the navigator
+//     frames, the focus nodes) give the window: the stretch of time they span. The time axis is
+//     then given the length that makes the focus nodes' 3D bounding box the shape of the display,
+//     and the scene is scaled and placed so that box fills the frame (see `targetPose`). Times
+//     outside the window are not clamped onto its edge but squeezed into short tails.
+//   * A `Pose` is everything that places the scene. At `blend` 0 it is the flat view exactly —
+//     every card in one plane, seen square on, at 1:1 — so the change between 2D and 3D is a
+//     camera move from one pose to the other (`blendPose`), not a cut.
 //
-// Because the camera is real, a card's screen size depends on its distance, so each card carries a
-// `scale` and the scene is drawn far to near. The projection computes positions itself rather than
-// transforming the panes: a CSS 3D transform on the flow's panes would tilt the pan and zoom maths
-// with it, so dragging would stop following the pointer and the navigator would frame the wrong
-// region.
+// A panel's exact shape is the perspective image of its rectangle, which is a projective map of
+// the plane; it is written as a CSS `matrix3d` on the card itself (`Panel.matrix`). The flow's
+// panes are never given a 3D transform: that would tilt xyflow's pan and zoom maths with them, so
+// dragging would stop following the pointer and the navigator would frame the wrong region.
 //
 // Everything here is pure — the camera, the window, the ticks and the bars all fall out of the
 // times and the layout — so it can be tested without a browser.
 
 import { formatDuration, type Timing } from "../../src/timing.ts";
-import { CARD_H, CARD_W } from "./layout.ts";
+import { HEADER_H, HEADER_W } from "./layout.ts";
 import { absoluteTime } from "./time.ts";
 
-/**
- * Height the focused time span is given, as a share of the map's own size. Time has to be a real
- * dimension of the scene or the lift reads as a nudge: at a tenth of the map it disappears in the
- * layout, and much above half it dwarfs the map. The scene picks the height from its own extent
- * (see `makeView`), so a small map and a huge one both show time as a comparable axis.
- */
-export const ELEV_SHARE = 0.3;
-/** Bounds on that height, so a tiny map does not become a tower and a huge one a pancake. */
-const ELEV_MIN = 260;
-const ELEV_MAX_PX = 900;
-/** Opacity the farthest thing in the scene loses against the nearest. */
-const FOG = 0.62;
-/** Length of a tick mark across the ruler, and how far its label stands off. */
-export const TICK_LEN = 9;
-/** Screen distance wanted between two ticks, in world pixels at the aim point. */
-const TICK_GAP = 34;
 /** Seconds in a day and in a Julian year, as the map's duration form does. */
 const DAY = 86_400;
 const YEAR = 365 * DAY;
 /** A Date holds about ±273,000 years around 1970; past that, ticks are placed by arithmetic. */
 const DATE_MIN = -8.6e12;
 const DATE_MAX = 8.6e12;
+/** Screen distance wanted between two ruler ticks, in screen pixels. */
+export const TICK_GAP = 90;
+/** Opacity the farthest panel loses against the nearest. */
+const FOG = 0.55;
 
-/** The time window on show: `to` is the ground (now), `span` reaches up into the past. */
+/** The time window on show: `to` is its newest end, `span` how far back it reaches. */
 export interface Focus {
   to: number;
   span: number;
 }
 
-/** A region of the map, in layout coordinates. */
+/** A region of the map, in layout or flow coordinates. */
 export interface Rect {
   x: number;
   y: number;
@@ -66,11 +60,11 @@ export interface Point {
   y: number;
 }
 
-/** A point in the scene: `x` across, `y` away from the viewer, `up` is time. */
+/** A point in the scene: `t` along time, `d` across, `h` up. */
 export interface Point3 {
-  x: number;
-  y: number;
-  up: number;
+  t: number;
+  d: number;
+  h: number;
 }
 
 /** One laid-out card, as the projection takes it. */
@@ -80,194 +74,249 @@ export interface DepthBox {
   y: number;
   width: number;
   height: number;
-  /** A group's title, for the label on its ground rectangle. */
-  label?: string;
 }
 
-/** Where a point lands on screen, how big it is drawn, and how faded. */
+/** Where a point lands on screen, how big it is drawn there, and how far it is from the eye. */
 export interface Projected {
   x: number;
   y: number;
-  /** Size against the aim point: 1 there, larger nearer the eye, smaller further away. */
+  /** Size against the layout's own: 1 at 1:1. */
   scale: number;
-  /** Opacity against the nearest point in the scene, in [0, 1]. */
-  fog: number;
-  /** Distance from the eye, for sorting far to near. */
+  /** Distance from the eye along the line of sight. */
   dist: number;
 }
 
 /**
- * The camera. `pitch` tips the ground towards the viewer (0 looks along it edge-on, π/2 straight
- * down); `yaw` swings the eye to one side, so the scene is seen from a corner rather than square on;
- * `dist` is the eye's distance from the aim point and `f` its focal length in world pixels. The aim
- * point renders at a scale of `f / dist`, so `f = dist` puts the aim point at 1:1 and the flat
- * layout's own sizes carry into the 3D view.
+ * The camera. `pitch` is how far the line of sight dips below level, and `azimuth` its angle from
+ * the time axis seen from above, so the angle between the line of sight and the time axis is
+ * `acos(cos(azimuth)·cos(pitch))` — `SIGHT` by default. `dist` is the eye's distance from the aim
+ * point and `f` its focal length in world pixels; `f = dist` keeps the aim point at 1:1.
  */
 export interface Camera {
   pitch: number;
-  yaw: number;
+  azimuth: number;
   dist: number;
   f: number;
 }
 
-/** A camera plus what it is looking at; `projectPoint` needs nothing else. */
+/** A camera plus what it looks at, the length the window is given along time, and the fit. */
 export interface View {
   camera: Camera;
-  /** The world point the camera looks at. */
   aim: Point3;
-  /** Screen position of the aim point, so the scene keeps the layout's own coordinate frame. */
+  /** Screen position of the aim point, in flow coordinates. */
   anchor: Point;
-  /** World height given to the whole time window; the scale of the vertical axis. */
-  height: number;
+  /** The scale the scene is drawn at after the perspective, so it fills the flat view's frame. */
+  sigma: number;
+  /** World length of the focus window along `t`. */
+  length: number;
+  focus: Focus;
 }
 
-/** Pitch of the default camera: about 29° above the ground — low enough that height reads clearly
- *  against the ground, high enough to keep the layout legible. */
-export const PITCH = 0.5;
-/** Yaw of the default camera: about 23° to one side, enough to show the ground as a plane. */
-export const YAW = 0.4;
+/** Angle between the line of sight and the time axis, by default: 45°. */
+export const SIGHT = Math.PI / 4;
+/** The line of sight dips about 3.5° below level. The eye already stands near the floor, so the
+ *  floor is seen from above without help; every degree of pitch tilts the time axis by about as
+ *  much, so it is kept small for the axis to read as level. */
+export const PITCH = 0.06;
+/** The azimuth that, with `PITCH`, puts the line of sight at `SIGHT` to the time axis. */
+export const AZIMUTH = Math.acos(Math.cos(SIGHT) / Math.cos(PITCH));
+
+/** Gap between the lowest card and the floor, and between the floor's near edge and the ruler. */
+const FLOOR_GAP = 70;
+const RULER_GAP = 60;
+/** Height of the eye above the floor, as a share of the layout's height: enough to see the floor
+ *  as a sheet, low enough that the ruler on it stays level. */
+const EYE_RISE = 0.12;
+
+/** Share of the axis each tail takes for times outside the window, so they stay in order. */
+const TAIL = 0.12;
 
 /**
- * Height of a moment above the ground, in world pixels: 0 at the ground, rising into the past, and
- * negative for a time still in the future. A time well outside the window is held at the window's
- * own edge rather than shooting out of the scene.
+ * Position of a moment along the time axis: 0 at the window's oldest end, 1 at its newest. Inside
+ * the window it is linear; outside, it is squeezed into a tail of at most `TAIL` either side, so a
+ * card from the age of the dinosaurs on a map of last week still sits before it rather than miles
+ * off the screen or piled onto the window's edge.
  */
-export function elevationPx(time: number, focus: Focus, height: number = ELEV_MIN): number {
-  const up = (focus.to - time) / focus.span;
-  return Math.min(1, Math.max(-0.35, up)) * height;
+export function axisU(time: number, focus: Focus): number {
+  const u = (time - (focus.to - focus.span)) / focus.span;
+  if (u >= 0 && u <= 1) return u;
+  const over = u < 0 ? -u : u - 1;
+  const squeezed = TAIL * (1 - 1 / (1 + over / TAIL));
+  return u < 0 ? -squeezed : 1 + squeezed;
 }
 
-/** A moment at a given height, the inverse of `elevationPx` where it is not clamped. */
-export function timeAt(up: number, focus: Focus, height: number = ELEV_MIN): number {
-  return focus.to - (up / height) * focus.span;
-}
-
-/** The camera's own basis: the cosines and sines of its two angles. */
-const basis = (camera: Camera) => {
+/** The camera's own frame: forward along the line of sight, right and up across the screen. */
+function frame(camera: Camera) {
   const cp = Math.cos(camera.pitch), sp = Math.sin(camera.pitch);
-  const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
-  return { cp, sp, cy, sy };
-};
+  const ca = Math.cos(camera.azimuth), sa = Math.sin(camera.azimuth);
+  // The eye is on the newer side (+t), the small-d side and above, so it looks back along −t,
+  // across +d and down. Right is level and, with up, keeps a panel's text reading the right way
+  // round: its +d edge to the right, its top edge up. At pitch and azimuth 0 this is the flat
+  // view's own frame: right is the layout's x and up its −y.
+  return {
+    fwd: { t: -ca * cp, d: sa * cp, h: -sp },
+    right: { t: sa, d: ca, h: 0 },
+    up: { t: -ca * sp, d: sa * sp, h: cp },
+  };
+}
+
+const dot = (a: Point3, b: Point3) => a.t * b.t + a.d * b.d + a.h * b.h;
 
 /**
- * Perspective projection of a world point. Its shape is the point of the view: the two rotations
- * tip and turn the ground, and dividing by the distance from the eye is what makes things further
- * away both smaller and closer to the vanishing point.
- *
- * A point that would reach or pass the eye is held just in front of it rather than being allowed to
- * flip through to the far side, which would throw one card right across the screen.
+ * Perspective projection of a world point, then the fit: scaled by `sigma` about the aim point and
+ * placed at `anchor`. A point at or behind the eye is held just in front of it rather than
+ * flipping through to the far side, which would throw a card across the screen.
  */
 export function projectPoint(view: View, p: Point3): Projected {
-  const { camera, aim, anchor } = view;
-  const { cp, sp, cy, sy } = basis(camera);
-  const dx = p.x - aim.x, dy = p.y - aim.y, du = p.up - aim.up;
-  // The camera's own frame, from its two angles:
-  //   forward f = (sy·cp, cy·cp, −sp)   — towards the scene and downward by the pitch
-  //   right   r = (cy, −sy, 0)          — across, swung by the yaw
-  //   up      u = (sy·sp, cy·sp, cp)    — the screen's own up, tipped with the pitch
-  // A point's screen position is its offset from the aim point resolved on r and u, and its depth is
-  // the same offset along f. Getting the sign of the pitch term wrong here is what made the far
-  // ground draw below the near ground.
-  const rx = dx * cy - dy * sy;
-  const along = dx * sy + dy * cy;
-  const ry = along * sp + du * cp;
-  const into = along * cp - du * sp;
-  const eye = Math.max(camera.dist * 0.15, camera.dist + into);
-  const k = camera.f / eye;
-  // Fog rises with distance from the eye, normalised against the scene's own near and far reach, so
-  // the far end of the map really does fade and the near end does not.
-  const t = Math.min(1, Math.max(0, (eye - camera.dist * 0.55) / (camera.dist * 1.3)));
-  return { x: anchor.x + rx * k, y: anchor.y - ry * k, scale: k, fog: 1 - FOG * t, dist: eye };
+  const { camera, aim, anchor, sigma } = view;
+  const { fwd, right, up } = frame(camera);
+  const o = { t: p.t - aim.t, d: p.d - aim.d, h: p.h - aim.h };
+  const eye = Math.max(camera.dist * 0.15, camera.dist + dot(o, fwd));
+  const k = (sigma * camera.f) / eye;
+  return { x: anchor.x + dot(o, right) * k, y: anchor.y - dot(o, up) * k, scale: k, dist: eye };
 }
 
-/** The screen centre and scale of a card whose centre sits at `p`. */
-export function projectTopLeft(view: View, p: Point3, width: number, height: number): Projected {
-  const at = projectPoint(view, p);
-  // A card is drawn as a billboard facing the eye, so it is scaled about its own centre.
-  return { ...at, x: at.x - (width * at.scale) / 2, y: at.y - (height * at.scale) / 2 };
-}
-
-/**
- * A polyline whose ends are at different heights: each point is projected on its own, so a relation
- * between two cards at different times climbs or falls between them.
- */
-export function projectPath(view: View, points: Point[], upFrom: number, upTo: number): Point[] {
-  const last = points.length - 1;
-  return points.map((p, i) => {
-    const up = upFrom + (upTo - upFrom) * (last === 0 ? 0 : i / last);
-    const at = projectPoint(view, { x: p.x, y: p.y, up });
-    return { x: at.x, y: at.y };
-  });
-}
-
-/** Round windows the axis steps through, so the view holds still while panning. */
-const SPANS = [
-  300, 900, 3_600, 6 * 3_600, 12 * 3_600, DAY, 3 * DAY, 7 * DAY, 30 * DAY, 90 * DAY, YEAR,
-  5 * YEAR, 25 * YEAR, 100 * YEAR, 1e3 * YEAR, 1e4 * YEAR, 1e5 * YEAR, 1e6 * YEAR, 1e7 * YEAR, 1e8 * YEAR,
-];
-
-/** Smallest round span covering `raw` seconds. */
-export function niceSpan(raw: number): number {
-  return SPANS.find((s) => s >= raw) ?? SPANS[SPANS.length - 1]!;
-}
-
-/** How many ticks fit a run of `height` pixels at a readable spacing. */
-export function tickCount(height: number): number {
-  return Math.max(3, Math.floor(height / TICK_GAP));
-}
-/** Ticks at the default height, for callers that only want a rough figure. */
-export const TICK_COUNT = tickCount(ELEV_MIN);
-
-export function sameFocus(a: Focus | null, b: Focus | null): boolean {
-  return a === b || (!!a && !!b && a.to === b.to && a.span === b.span);
-}
-
-function overlaps(b: DepthBox, r: Rect): boolean {
-  return b.x + b.width >= r.x && b.x <= r.x + r.width && b.y + b.height >= r.y && b.y <= r.y + r.height;
+/** A card drawn as a panel standing in its own moment. */
+export interface Panel {
+  /** Screen corners: top-left, top-right, bottom-right, bottom-left. */
+  quad: Point[];
+  /** The quad's bounding box, which is where the card's node sits and how big it is. */
+  box: Rect;
+  /** The CSS `matrix3d(...)` that carries the card's own rectangle onto `quad`, from `box`'s corner. */
+  matrix: string;
+  /** Size the card is laid out at before the matrix: its layout box. */
+  width: number;
+  height: number;
+  /** Distance of the panel's centre from the eye. */
+  dist: number;
+  /** Opacity against the nearest panel, in [0, 1]. */
+  fog: number;
+  /** The panel's position along time, for leaning relation lines. */
+  t: number;
+  /** A group's header, the part of its frame that carries its title: where its hover title goes. */
+  header?: Point[];
 }
 
 /**
- * The time window to show, from the cards the navigator's frame holds — the region of the map on
- * screen, which is what the minimap draws its frame around.
- *
- * The window is quantised twice: to a round span, and to a whole step for its front edge, so panning
- * slides it a step at a time rather than rebuilding the scene every frame. `prev` is the window in
- * force and `prev2` the one before it; a candidate that merely repeats `prev2` is refused, which is
- * what stops the view and the visible set from chasing each other: the projection moves the cards,
- * and the moved cards would otherwise suggest yet another window.
- *
- * Null when the visible region holds no dated card, so the caller keeps the window it has.
+ * The panel for a rectangle `width` × `height` whose top-left corner is at layout (x, y), at world
+ * position `t` along time. The image of a plane under perspective is a projective map
+ * (u, v) ↦ ((a·u + b·v + c) / (g·u + h·v + 1), …), and that is exactly what a CSS `matrix3d` with a
+ * perspective row computes, so the card's own DOM — text, buttons, hit area — is drawn on the
+ * panel's true shape.
  */
-export function nextFocus(
-  boxes: DepthBox[],
-  timeOf: (key: string) => number | undefined,
-  rect: Rect,
-  prev: Focus | null,
-  prev2: Focus | null,
-): Focus | null {
-  const times: number[] = [];
-  for (const b of boxes) {
-    if (!overlaps(b, rect)) continue;
-    const t = timeOf(b.key);
-    if (t !== undefined) times.push(t);
-  }
-  if (times.length === 0) return null;
-  const newest = Math.max(...times);
-  const span = niceSpan(newest - Math.min(...times));
-  const step = span / TICK_COUNT;
-  const next: Focus = { to: Math.ceil(newest / step) * step, span };
-  if (prev && prev.span === next.span && Math.abs(prev.to - next.to) < step) return prev;
-  if (sameFocus(next, prev2)) return prev;
-  return next;
+export function panelAt(view: View, x: number, y: number, t: number, width: number, height: number): Omit<Panel, "fog"> {
+  const corner = (u: number, v: number) => projectPoint(view, { t, d: x + u, h: -(y + v) });
+  const quad = [corner(0, 0), corner(width, 0), corner(width, height), corner(0, height)].map((q) => ({ x: q.x, y: q.y }));
+  const xs = quad.map((q) => q.x), ys = quad.map((q) => q.y);
+  const box = { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs) - Math.min(...xs), height: Math.max(...ys) - Math.min(...ys) };
+
+  // Screen position of the card's local point (u, v), before the perspective divide:
+  //   X·w = X0 + Xu·u + Xv·v,  Y·w = Y0 + Yu·u + Yv·v,  w = W0 + Wu·u + Wv·v
+  // since a point's screen offset is σ·f·(o·right)/(dist + o·fwd) and o is linear in u and v.
+  const { camera, aim, anchor, sigma } = view;
+  const { fwd, right, up } = frame(camera);
+  const o0 = { t: t - aim.t, d: x - aim.d, h: -y - aim.h };
+  const ou = { t: 0, d: 1, h: 0 }, ov = { t: 0, d: 0, h: -1 };
+  const f = sigma * camera.f;
+  const W0 = camera.dist + dot(o0, fwd), Wu = dot(ou, fwd), Wv = dot(ov, fwd);
+  // Measured from the box's corner, which is where xyflow places the node.
+  const ax = anchor.x - box.x, ay = anchor.y - box.y;
+  const X0 = f * dot(o0, right) + ax * W0, Xu = f * dot(ou, right) + ax * Wu, Xv = f * dot(ov, right) + ax * Wv;
+  const Y0 = -f * dot(o0, up) + ay * W0, Yu = -f * dot(ou, up) + ay * Wu, Yv = -f * dot(ov, up) + ay * Wv;
+  // CSS matrix3d is column-major: columns are the images of x, y, z and the translation. Divided
+  // through by W0, so the matrix maps the card's corner with w = 1.
+  const n = (v: number) => Number((v / W0).toPrecision(9));
+  const m = [n(Xu), n(Yu), 0, n(Wu), n(Xv), n(Yv), 0, n(Wv), 0, 0, 1, 0, n(X0), n(Y0), 0, 1];
+  const centre = projectPoint(view, { t, d: x + width / 2, h: -(y + height / 2) });
+  return { quad, box, matrix: `matrix3d(${m.join(",")})`, width, height, dist: centre.dist, t };
 }
+
+/**
+ * Apply a `matrix3d` string to a local point, as the browser does: the check that the matrix and
+ * the quad agree, for the tests and for anyone reading a panel's maths.
+ */
+export function applyMatrix(matrix: string, u: number, v: number): Point {
+  const m = matrix.slice(9, -1).split(",").map(Number);
+  const w = m[3]! * u + m[7]! * v + m[15]!;
+  return { x: (m[0]! * u + m[4]! * v + m[12]!) / w, y: (m[1]! * u + m[5]! * v + m[13]!) / w };
+}
+
+/**
+ * Everything that places the scene, as numbers that can be blended. `blend` runs from 0, the flat
+ * view, to 1, the full 3D view: it turns the camera, lengthens time, and fades the floor in.
+ */
+export interface Pose {
+  blend: number;
+  pitch: number;
+  azimuth: number;
+  /** World length of the window along time. */
+  length: number;
+  dist: number;
+  sigma: number;
+  aim: Point3;
+  anchor: Point;
+  focus: Focus;
+  /** The floor's height, the ruler's place across it, and the floor's far edge. */
+  floorH: number;
+  ruler: number;
+  floorFar: number;
+}
+
+/** The view a pose puts the scene in. */
+export function viewOf(pose: Pose): View {
+  return {
+    camera: { pitch: pose.pitch, azimuth: pose.azimuth, dist: pose.dist, f: pose.dist },
+    aim: pose.aim, anchor: pose.anchor, sigma: pose.sigma, length: pose.length, focus: pose.focus,
+  };
+}
+
+/**
+ * The flat view as a pose: square on, time of no length, at 1:1, so every point lands on its own
+ * layout position. `like` lends it the window and the floor of the pose it leaves for or comes from,
+ * so blending the two changes only what has to change.
+ */
+export function flatPose(like: Pose): Pose {
+  return {
+    ...like, blend: 0, pitch: 0, azimuth: 0, length: 0, sigma: 1,
+    aim: { t: 0, d: like.aim.d, h: like.aim.h }, anchor: { x: like.aim.d, y: -like.aim.h },
+  };
+}
+
+const lerp = (a: number, b: number, s: number) => a + (b - a) * s;
+const glerp = (a: number, b: number, s: number) => (a > 0 && b > 0 ? a * Math.pow(b / a, s) : lerp(a, b, s));
+
+/**
+ * A pose between two, at `s` from 0 to 1. Lengths and scales are blended geometrically, so a move
+ * between a narrow window and a wide one zooms at an even rate rather than all at one end.
+ */
+export function blendPose(a: Pose, b: Pose, s: number): Pose {
+  const p3 = (p: Point3, q: Point3) => ({ t: lerp(p.t, q.t, s), d: lerp(p.d, q.d, s), h: lerp(p.h, q.h, s) });
+  return {
+    blend: lerp(a.blend, b.blend, s),
+    pitch: lerp(a.pitch, b.pitch, s),
+    azimuth: lerp(a.azimuth, b.azimuth, s),
+    length: a.length === 0 || b.length === 0 ? lerp(a.length, b.length, s) : glerp(a.length, b.length, s),
+    dist: glerp(a.dist, b.dist, s),
+    sigma: glerp(a.sigma, b.sigma, s),
+    aim: p3(a.aim, b.aim),
+    anchor: { x: lerp(a.anchor.x, b.anchor.x, s), y: lerp(a.anchor.y, b.anchor.y, s) },
+    focus: { to: lerp(a.focus.to, b.focus.to, s), span: glerp(a.focus.span, b.focus.span, s) },
+    floorH: lerp(a.floorH, b.floorH, s),
+    ruler: lerp(a.ruler, b.ruler, s),
+    floorFar: lerp(a.floorFar, b.floorFar, s),
+  };
+}
+
+/** Ease in and out, for camera moves. */
+export const ease = (s: number) => (s < 0.5 ? 4 * s * s * s : 1 - Math.pow(-2 * s + 2, 3) / 2);
 
 /** What a tick's label counts in; the coarsest unit that still separates its neighbours. */
 export type TickUnit = "hour" | "day" | "month" | "year";
 
 export interface Tick {
   time: number;
-  /** Height above the ground, for placing the tick. */
-  up: number;
+  /** Position along the time axis, 0 at the window's oldest end and 1 at its newest. */
+  u: number;
   label: string;
   /** A tick on a bigger boundary than its own step: drawn heavier, so the eye can count by it. */
   major: boolean;
@@ -371,48 +420,9 @@ function yearStart(year: number): number {
   return d.getFullYear() === year ? d.getTime() / 1000 : (year - 1970) * YEAR;
 }
 
-/**
- * Ticks up the ruler, newest (on the ground) first: the boundary crossed, its height, its text, and
- * whether it falls on a boundary bigger than its step. Steps are chosen so about `TICK_COUNT` of
- * them fit at a readable spacing, and each tick lands on a real calendar boundary, so the labels
- * read as dates rather than as an even division of the window.
- */
-export function axisTicks(focus: Focus, height: number = ELEV_MIN): Tick[] {
-  // The step whose tick count lands nearest the target, counting both ends. Comparing counts rather
-  // than ratios matters: a step that looks nearest in ratio can still put half again as many ticks
-  // on the axis as wanted, and they then crowd each other.
-  const target = tickCount(height);
-  const count = (step: number) => focus.span / step + 1;
-  const [step, unit] = STEPS.reduce((best, s) => (Math.abs(count(s[0]) - target) < Math.abs(count(best[0]) - target) ? s : best));
-  const oldest = focus.to - focus.span;
-  const out: Tick[] = [];
-  const add = (time: number, label: string, major: boolean) => {
-    // Only ticks inside the window: one beyond it would sit at the window's own edge and stack a
-    // second label on the last tick.
-    if (time > focus.to || time < oldest) return;
-    out.push({ time, up: elevationPx(time, focus, height), label, major });
-  };
-  if (unit === "year") {
-    const years = Math.max(1, Math.round(step / YEAR));
-    let i = 0;
-    for (let y = Math.floor((1970 + focus.to / YEAR) / years) * years; out.length < 60; y -= years, i++) {
-      const time = yearStart(y);
-      if (time < oldest - step) break;
-      // Every fifth tick drawn heavier. Keying it to a named boundary instead would make every tick
-      // major whenever the step divides that boundary, and the mark would then carry no information.
-      add(time, yearLabel(y), i % 5 === 0);
-    }
-  } else {
-    for (let t = alignDown(focus.to, step, unit); t >= oldest && out.length < 60; t = alignDown(t - 1, step, unit)) {
-      add(t, labelOf(t, unit, step, focus.span / DAY), isMajor(t, unit));
-    }
-  }
-  return out;
-}
-
 export type RibbonKind = "actual" | "running" | "estimate";
 
-/** A stretch of time, drawn as a bar standing on the ground: what work took, is taking, or expects to. */
+/** A stretch of time, drawn as a bar along the time axis under its card: what work took, is taking, or expects to. */
 export interface Ribbon {
   kind: RibbonKind;
   from: number;
@@ -433,8 +443,8 @@ export function ribbonLabel(r: Ribbon): string {
  * The time a node occupies, as a span between two moments:
  *   - `actual`: a finished run, from its start to its finish — what it really took;
  *   - `running`: work in progress, from its start to now, coloured by its estimate;
- *   - `estimate`: a todo with an estimate and no start, standing as a bar of that length from the
- *     node's own time forward. A plan is a guess rather than a measurement, so it is an outline.
+ *   - `estimate`: a todo with an estimate and no start, a bar of that length from the node's own
+ *     time forward. A plan is a guess rather than a measurement, so it is an outline.
  * Null when the node has nothing timed to show.
  */
 export function ribbonFor(timing: Timing | null, status: string | null, own: number, now: number): Ribbon | null {
@@ -451,220 +461,364 @@ export function ribbonFor(timing: Timing | null, status: string | null, own: num
   return null;
 }
 
-/** Width of a time bar across the ground, in world pixels. */
-const BAR_W = 26;
 /**
- * A bar's height is a share of the window's own height, so its proportions mean something: a bar
- * filling the window is work spanning the whole window. Linear would make a hundred-year job tower
- * over a day's work and push it off the screen, so a bar is drawn to the square root of its share.
- * Lengths stay clearly ordered — twice the time is still taller — while a short job stays visible
- * beside a long one. The label carries the actual figure, so nothing depends on reading the height.
+ * Ticks along the time axis, newest first: the boundary crossed, its position, its text, and
+ * whether it falls on a boundary bigger than its step. About `count` of them are placed, each on
+ * a real calendar boundary, so the labels read as dates rather than as an even division of the window.
  */
-const barHeight = (share: number, height: number) => Math.max(2, Math.sqrt(Math.min(1, Math.max(0, share))) * height);
-/** Size of a group's header card, which is all of a group that floats in this view. */
-const HEADER_W = CARD_W - 24;
-const HEADER_H = CARD_H;
+export function axisTicks(focus: Focus, count: number): Tick[] {
+  // The step whose tick count lands nearest the target, counting both ends. Comparing counts rather
+  // than ratios matters: a step that looks nearest in ratio can still put half again as many ticks
+  // on the axis as wanted, and they then crowd each other.
+  const target = Math.max(2, count);
+  const n = (step: number) => focus.span / step + 1;
+  const [step, unit] = STEPS.reduce((best, s) => (Math.abs(n(s[0]) - target) < Math.abs(n(best[0]) - target) ? s : best));
+  const oldest = focus.to - focus.span;
+  const out: Tick[] = [];
+  const add = (time: number, label: string, major: boolean) => {
+    // Only ticks inside the window: one beyond it would sit in a squeezed tail and crowd the edge.
+    if (time > focus.to || time < oldest) return;
+    out.push({ time, u: axisU(time, focus), label, major });
+  };
+  if (unit === "year") {
+    const years = Math.max(1, Math.round(step / YEAR));
+    let i = 0;
+    for (let y = Math.floor((1970 + focus.to / YEAR) / years) * years; out.length < 60; y -= years, i++) {
+      const time = yearStart(y);
+      if (time < oldest - step) break;
+      // Every fifth tick drawn heavier. Keying it to a named boundary instead would make every tick
+      // major whenever the step divides that boundary, and the mark would then carry no information.
+      add(time, yearLabel(y), i % 5 === 0);
+    }
+  } else {
+    for (let t = alignDown(focus.to, step, unit); t >= oldest && out.length < 60; t = alignDown(t - 1, step, unit)) {
+      add(t, labelOf(t, unit, step, focus.span / DAY), isMajor(t, unit));
+    }
+  }
+  return out;
+}
 
-/** A time bar standing above its card's ground point: where it stands, how tall, and what it holds. */
+
+/** Height of a time bar, and its gap below the card it belongs to, in world pixels. */
+const BAR_H = 12;
+const BAR_GAP = 8;
+/** Narrowest a bar is drawn, so a minute's work on a year's axis is still a mark. */
+const BAR_MIN = 6;
+
+/** A time bar along the axis, just under its card: what the work took, is taking, or plans to. */
 export interface Bar extends Ribbon {
   key: string;
-  /** The bar's footprint on the ground. */
-  at: Point;
-  upFrom: number;
-  upTo: number;
-  /** Screen quad: bottom-left, bottom-right, top-right, top-left. */
+  /** Screen quad: older-top, newer-top, newer-bottom, older-bottom. */
   points: Point[];
   labelAt: Point;
   title: string;
 }
 
-/** The ruler standing at the older edge of the scene: ticked, labelled, and read against the bars. */
-export interface Ruler {
-  /** Foot of the ruler, on the ground. */
-  foot: Point;
-  ticks: (Tick & { at: Point; labelAt: Point })[];
-  /** The window as a duration, written at the foot. */
-  caption: string;
-  captionAt: Point;
+/** The floor's screen corners: oldest-near, newest-near, newest-far, oldest-far. */
+export interface Floor {
+  quad: Point[];
 }
 
-/**
- * A group's footprint on the ground: the rectangle the group occupies, laid flat. Groups are a
- * flat affordance — their children float at their own times, so no single box can enclose them —
- * so in this view a group is drawn where it sits on the map rather than floating as a panel.
- */
-export interface Footprint {
-  key: string;
-  points: Point[];
-  /** Centre of the rectangle, for the group's label. */
-  labelAt: Point;
-  label: string;
-}
-
-/** Everything the 3D view draws beyond the cards and the lines, all in map coordinates. */
+/** Everything the 3D view draws. */
 export interface DepthScene {
-  /** Where each card is drawn and how big, keyed by node key. */
-  at: Map<string, Projected>;
+  /** Each card's panel, by node key. A group's panel is its whole frame. */
+  panels: Map<string, Panel>;
   /** Node keys far to near, for the stacking order. */
   order: string[];
-  /** A line from each raised card straight down to the ground, so its height can be read. */
+  /** A line from each card's foot straight down to the floor, so its moment can be read off it. */
   drops: { key: string; from: Point; to: Point }[];
   bars: Bar[];
-  ruler: Ruler;
-  /** Group rectangles, laid flat on the ground. */
-  footprints: Footprint[];
-  /** The ground plane's four screen corners. */
-  ground: Point[];
+  floor: Floor;
   view: View;
-  /** Screen bounds of everything drawn, so the caller can frame the whole scene. */
-  bounds: Rect;
+  pose: Pose;
 }
 
-/**
- * Where the eye sits for a scene of this size, and what it looks at. The distance grows with the
- * scene, so a large map is not swallowed by the perspective and a small one is not flattened by it;
- * `f = dist` puts the aim point at a scale of 1, so cards keep their layout size at the middle.
- */
-export function makeView(boxes: DepthBox[]): View {
-  const xs = boxes.map((b) => b.x), ys = boxes.map((b) => b.y);
-  const right = boxes.map((b) => b.x + b.width), bottom = boxes.map((b) => b.y + b.height);
-  const extent = boxes.length
-    ? Math.max(Math.max(...bottom) - Math.min(...ys), Math.max(...right) - Math.min(...xs), 900)
-    : 900;
-  // Time's height is set from the map's own size, so the vertical axis stays comparable to the
-  // ground whatever the map's scale, and bounded so neither extreme gets silly.
-  const height = Math.min(ELEV_MAX_PX, Math.max(ELEV_MIN, extent * ELEV_SHARE));
-  const aim: Point3 = {
-    x: boxes.length ? (Math.min(...xs) + Math.max(...right)) / 2 : 0,
-    y: boxes.length ? (Math.min(...ys) + Math.max(...bottom)) / 2 : 0,
-    up: height / 2,
+/** A card's world position along time: its own moment, or the window's newest end without one. */
+const trackOf = (view: View, time: number | undefined) => axisU(time ?? view.focus.to, view.focus) * view.length;
+
+/** Width and height a box is drawn at in the 3D view: a group's frame, but only its header counts
+ *  as its card when choosing what is framed. */
+const headerOf = (b: DepthBox) => ({ width: Math.min(HEADER_W, b.width), height: Math.min(HEADER_H, b.height) });
+
+/** The bar for a ribbon under a box, at the box's own centre across. */
+function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string): Bar {
+  const at = (t: number, h: number) => {
+    const q = projectPoint(view, { t, d: b.x + b.width / 2, h });
+    return { x: q.x, y: q.y };
   };
-  // A fairly close eye: the nearer the eye, the stronger the perspective, so near cards grow and the
-  // far end shrinks. Too far back and the scene flattens into an angled plan view.
-  const dist = extent * 0.95;
-  return { camera: { pitch: PITCH, yaw: YAW, dist, f: dist }, aim, anchor: { x: aim.x, y: aim.y }, height };
+  let t0 = axisU(r.from, view.focus) * view.length, t1 = axisU(r.to, view.focus) * view.length;
+  if (t1 - t0 < BAR_MIN) (t0 = (t0 + t1) / 2 - BAR_MIN / 2, t1 = t0 + BAR_MIN);
+  const top = foot - BAR_GAP, bot = top - BAR_H;
+  const state = r.state === "over" ? " (over)" : r.state === "near" ? " (nearly due)" : "";
+  return {
+    ...r, key, points: [at(t0, top), at(t1, top), at(t1, bot), at(t0, bot)],
+    labelAt: at((t0 + t1) / 2, bot - 14),
+    title: `${ribbonLabel(r)}${state}\n${absoluteTime(r.from)} → ${absoluteTime(r.to)}`,
+  };
 }
 
+/** Where a box's own foot is: the bottom of a card, the bottom of a group's header. */
+const footOf = (b: DepthBox, group: boolean) => -(b.y + (group ? headerOf(b).height : b.height));
+
 /**
- * The scene for a window: where every card is drawn and how big, the group rectangles on the ground,
- * the time bars standing on it, each raised card's drop line, and the ruler.
+ * The scene in a pose: a panel for every card at its own moment, the bars under the timed ones, a
+ * drop line from each card to the floor, and the floor itself.
  *
- * `timeOf` gives a card's position in time (its update time); a card with no time stands on the
- * ground, since the ruler has nothing to say about when it happened. A group is not floated: its
- * children rise to their own times, so no one panel can hold them, and the group is drawn as a
- * rectangle on the ground instead — which is also what gives the ground a meaning, the map's own
- * shape, with time rising out of it.
+ * `timeOf` gives a card's moment (its update time); a card without one stands at the window's
+ * newest end. A group is drawn as its whole frame at the group's own moment, as in the flat view:
+ * its children stand at their own moments, in front of or behind it.
  */
 export function depthScene(
   boxes: DepthBox[],
-  focus: Focus,
+  pose: Pose,
   timeOf: (key: string) => number | undefined,
   ribbonOf: (key: string) => Ribbon | null,
-  /** True for a group, whose children are drawn instead of it and which lies on the ground. */
   isGroup: (key: string) => boolean,
 ): DepthScene {
-  const view = makeView(boxes);
-  const at = new Map<string, Projected>();
-  const drops: { key: string; from: Point; to: Point }[] = [];
-  const bars: Bar[] = [];
-  const footprints: Footprint[] = [];
-  const up = new Map<string, number>();
+  const view = viewOf(pose);
+  const raw = new Map<string, Omit<Panel, "fog">>();
   for (const b of boxes) {
-    const t = timeOf(b.key);
-    up.set(b.key, t === undefined ? 0 : elevationPx(t, focus, view.height));
+    const t = trackOf(view, timeOf(b.key));
+    const p = panelAt(view, b.x, b.y, t, b.width, b.height);
+    if (isGroup(b.key)) {
+      const h = headerOf(b);
+      p.header = panelAt(view, b.x, b.y, t, h.width, h.height).quad;
+    }
+    raw.set(b.key, p);
   }
-  // The ruler stands off the map's older edge, where it cannot cover a card.
-  const rulerFoot: Point = boxes.length
-    ? { x: Math.min(...boxes.map((b) => b.x)) - 150, y: Math.max(...boxes.map((b) => b.y + b.height)) }
-    : { x: 0, y: 0 };
-  const ground = (p: Point) => {
-    const q = projectPoint(view, { x: p.x, y: p.y, up: 0 });
+
+  // Fog by distance, normalised against the scene's own nearest and farthest panel, and faded in
+  // with the blend: in the flat pose every panel is at the same distance and none is fogged.
+  const dists = [...raw.values()].map((p) => p.dist);
+  const near = Math.min(...dists), far = Math.max(...dists);
+  const panels = new Map<string, Panel>();
+  for (const [k, p] of raw) {
+    const fog = far > near ? 1 - FOG * pose.blend * ((p.dist - near) / (far - near)) : 1;
+    panels.set(k, { ...p, fog });
+  }
+  // Far to near. Ties (the flat pose, where every panel is equally far) fall back to the flat
+  // view's own order: frames below cards, outer frames below inner ones.
+  const index = new Map(boxes.map((b, i) => [b.key, i]));
+  const order = [...panels.entries()].sort((a, b) => {
+    const d = b[1].dist - a[1].dist;
+    if (Math.abs(d) > 1e-6) return d;
+    const ga = isGroup(a[0]) ? 0 : 1, gb = isGroup(b[0]) ? 0 : 1;
+    return ga - gb || index.get(a[0])! - index.get(b[0])!;
+  }).map(([k]) => k);
+
+  const at = (t: number, d: number, h: number) => {
+    const q = projectPoint(view, { t, d, h });
     return { x: q.x, y: q.y };
   };
-
+  const drops: DepthScene["drops"] = [];
+  const bars: Bar[] = [];
   for (const b of boxes) {
     const group = isGroup(b.key);
-    // A group lies on the ground as a rectangle; a card floats above it as a billboard.
-    if (group) {
-      const corners = [ground({ x: b.x, y: b.y }), ground({ x: b.x + b.width, y: b.y }),
-        ground({ x: b.x + b.width, y: b.y + b.height }), ground({ x: b.x, y: b.y + b.height })];
-      const c = ground({ x: b.x + b.width / 2, y: b.y + b.height / 2 });
-      footprints.push({ key: b.key, points: corners, labelAt: c, label: b.label ?? "" });
-      // Its header rides above the ground at the group's own time, so a group can still be read,
-      // clicked and folded where it belongs in time.
-      const hc: Point3 = { x: b.x + HEADER_W / 2, y: b.y + HEADER_H / 2, up: up.get(b.key)! + HEADER_H / 2 };
-      at.set(b.key, projectTopLeft(view, hc, HEADER_W, HEADER_H));
-    } else {
-      const centre: Point3 = { x: b.x + b.width / 2, y: b.y + b.height / 2, up: up.get(b.key)! + b.height / 2 };
-      at.set(b.key, projectTopLeft(view, centre, b.width, b.height));
-    }
-    const u = up.get(b.key)!;
-    // A line straight down to the ground, so a card's height reads against the ruler; a group's
-    // header gets one too, since it is the group's own time.
-    if (u > 0) {
-      const p = at.get(b.key)!;
-      const w = group ? HEADER_W : b.width, h = group ? HEADER_H : b.height;
-      const g = ground({ x: group ? b.x + HEADER_W / 2 : b.x + b.width / 2, y: group ? b.y + HEADER_H / 2 : b.y + b.height / 2 });
-      drops.push({ key: b.key, from: { x: p.x + (w * p.scale) / 2, y: p.y + (h * p.scale) / 2 }, to: g });
-    }
+    const p = panels.get(b.key)!;
+    const w = group ? headerOf(b).width : b.width;
+    const box = { ...b, width: w };
+    const foot = footOf(b, group);
     const r = ribbonOf(b.key);
-    if (!r) continue;
-    // The bar rises from the ground to the height of its own length, drawn on the square-root scale
-    // above. A plan's own start is the ground, so a todo's bar is its estimate alone.
-    const span = focus.span;
-    const lo = 0;
-    const hi = barHeight(Math.abs(r.to - r.from) / span, view.height);
-    const half = BAR_W / 2;
-    const gx = group ? b.x + HEADER_W / 2 : b.x + b.width / 2;
-    const gy = group ? b.y + HEADER_H / 2 : b.y + b.height / 2;
-    const corner = (dx: number, h: number) => {
-      const q = projectPoint(view, { x: gx + dx, y: gy, up: h });
-      return { x: q.x, y: q.y };
-    };
-    const points = [corner(-half, lo), corner(half, lo), corner(half, hi), corner(-half, hi)];
-    const state = r.state === "over" ? " (over)" : r.state === "near" ? " (nearly due)" : "";
-    bars.push({
-      ...r, key: b.key, at: { x: gx, y: gy }, upFrom: lo, upTo: hi, points,
-      labelAt: { x: (points[0]!.x + points[2]!.x) / 2, y: (points[0]!.y + points[2]!.y) / 2 + 4 },
-      title: `${ribbonLabel(r)}${state}\n${absoluteTime(r.from)} → ${absoluteTime(r.to)}`,
-    });
+    let below = foot;
+    if (r) {
+      const bar = barFor(view, box, foot, r, b.key);
+      bars.push(bar);
+      below = foot - BAR_GAP - BAR_H;
+    }
+    // Only a card above the floor drops a line to it; the floor is under the frame's own cards.
+    if (below > pose.floorH) drops.push({ key: b.key, from: at(p.t, b.x + w / 2, below), to: at(p.t, b.x + w / 2, pose.floorH) });
   }
 
-  // Far to near, so a nearer card is drawn over a farther one.
-  const order = [...at.entries()].sort((a, b) => b[1].dist - a[1].dist).map(([k]) => k);
+  const floor: Floor = {
+    quad: [at(-TAIL * view.length, pose.ruler, pose.floorH), at((1 + TAIL) * view.length, pose.ruler, pose.floorH),
+      at((1 + TAIL) * view.length, pose.floorFar, pose.floorH), at(-TAIL * view.length, pose.floorFar, pose.floorH)],
+  };
+  return { panels, order, drops, bars, floor, view, pose };
+}
 
-  const ticks = axisTicks(focus, view.height);
-  const ruler: Ruler = {
-    foot: rulerFoot,
-    ticks: ticks.map((t) => {
-      const q = projectPoint(view, { x: rulerFoot.x, y: rulerFoot.y, up: t.up });
-      return { ...t, at: q, labelAt: { x: q.x - TICK_LEN - 6, y: q.y - 2 } };
-    }),
-    caption: formatDuration(Math.max(0, focus.span)),
-    captionAt: ground(rulerFoot),
+/** Smallest window allowed, so a run of edits in one minute does not become a microscope. */
+const MIN_SPAN = 600;
+/** Share of the moments the window must hold; the rest may fall into the squeezed tails. */
+const KEEP = 0.85;
+
+/**
+ * The window that frames these moments: the shortest stretch of time holding `KEEP` of them, with
+ * a small margin each side so the outermost cards are not cut by the display's edge. Taking the
+ * shortest such stretch rather than oldest-to-newest is what keeps one outlier from ruining the
+ * view: a map of this century with one card dated to the Stone Age would otherwise spend the whole
+ * axis on the gap between them, and pile every other card onto its newest end. The outliers still
+ * stand in order, in the tails. Null for no moments.
+ */
+export function fitFocus(times: number[]): Focus | null {
+  if (times.length === 0) return null;
+  const sorted = [...times].sort((a, b) => a - b);
+  const m = sorted.length <= 4 ? sorted.length : Math.ceil(sorted.length * KEEP);
+  let i0 = 0;
+  for (let i = 1; i + m - 1 < sorted.length; i++) {
+    if (sorted[i + m - 1]! - sorted[i]! < sorted[i0 + m - 1]! - sorted[i0]!) i0 = i;
+  }
+  const lo = sorted[i0]!, hi = sorted[i0 + m - 1]!;
+  const span = Math.max(MIN_SPAN, (hi - lo) * 1.1);
+  return { to: (lo + hi) / 2 + span / 2, span };
+}
+
+/**
+ * The focus nodes: the cards the flat view's frame `rect` holds, as the navigator frames them. A
+ * card counts when its centre is inside; a group when its header's is, since a group's frame can
+ * reach far outside the region that holds its title.
+ */
+export function focusNodes(boxes: DepthBox[], rect: Rect, isGroup: (key: string) => boolean): DepthBox[] {
+  return boxes.filter((b) => {
+    const h = isGroup(b.key) ? headerOf(b) : b;
+    const cx = b.x + h.width / 2, cy = b.y + h.height / 2;
+    return cx >= rect.x && cx <= rect.x + rect.width && cy >= rect.y && cy <= rect.y + rect.height;
+  });
+}
+
+/** Room kept round the fitted scene, as a share of the frame, and for the ruler's labels below it. */
+const FIT_PAD = 0.06;
+const LABEL_ROOM = 26;
+/** The time axis is never shorter than this share of the focus nodes' own width. */
+const MIN_TIME = 0.8;
+/** The most the fit enlarges the scene. A frame holding one or two cards would otherwise blow them
+ *  up to fill the screen, several times the size the flat view shows them at; capped, they keep
+ *  the display's shape and stay centred, a little larger than flat. */
+const MAX_SIGMA = 1.6;
+
+/**
+ * The 3D pose for a flat view's frame. The focus nodes inside `rect` give the window (the time
+ * they span) and so the time axis's offset; the axis's length is then the one that makes the
+ * focus nodes' 3D bounding box the shape of the display, and the scene is scaled and placed so that
+ * box fills `rect`. `zoom` is the flat view's, so the ruler's labels get their room on screen.
+ *
+ * Null when the frame holds no card, so the caller keeps the pose it has.
+ */
+export function targetPose(
+  boxes: DepthBox[],
+  rect: Rect,
+  timeOf: (key: string) => number | undefined,
+  ribbonOf: (key: string) => Ribbon | null,
+  isGroup: (key: string) => boolean,
+  zoom = 1,
+): Pose | null {
+  const F = focusNodes(boxes, rect, isGroup);
+  if (F.length === 0) return null;
+  const dated = F.map((b) => timeOf(b.key)).filter((t): t is number => t !== undefined);
+  const all = boxes.map((b) => timeOf(b.key)).filter((t): t is number => t !== undefined);
+  const focus = fitFocus(dated.length ? dated : all) ?? { to: Date.now() / 1000, span: DAY };
+
+  const size = (b: DepthBox) => (isGroup(b.key) ? headerOf(b) : b);
+  const x0 = Math.min(...F.map((b) => b.x)), x1 = Math.max(...F.map((b) => b.x + size(b).width));
+  const y0 = Math.min(...F.map((b) => b.y)), y1 = Math.max(...F.map((b) => b.y + size(b).height));
+  const W = x1 - x0, H = y1 - y0;
+  // The floor sits under the focus nodes by a gap kept in proportion to them, so a frame holding one
+  // card does not spend most of its height on the space between the card and the ruler.
+  const floorH = -(y1 + Math.min(FLOOR_GAP, Math.max(16, H * 0.25)));
+  const ruler = x0 - Math.min(RULER_GAP, Math.max(16, W * 0.1));
+
+  // The scene at a length, unfitted.
+  const poseAt = (length: number): Pose => ({
+    blend: 1, pitch: PITCH, azimuth: AZIMUTH, length,
+    dist: Math.max(length, W, H, 600) * 3,
+    sigma: 1,
+    aim: { t: length / 2, d: (x0 + x1) / 2, h: floorH + EYE_RISE * Math.max(H, 200) },
+    anchor: { x: 0, y: 0 },
+    focus, floorH, ruler, floorFar: x1,
+  });
+  // The focus nodes' 3D bounding box on screen: their panels and their bars. With `ruler`, its
+  // height reaches down to the ruler too, so the ruler stays on screen under the cards it measures.
+  const bounds = (pose: Pose, withRuler = false) => {
+    const view = viewOf(pose);
+    const pts: Point[] = [];
+    for (const b of F) {
+      const s = size(b), t = trackOf(view, timeOf(b.key));
+      pts.push(...panelAt(view, b.x, b.y, t, s.width, s.height).quad);
+      const r = ribbonOf(b.key);
+      if (r) pts.push(...barFor(view, { ...b, width: s.width }, footOf(b, isGroup(b.key)), r, b.key).points);
+    }
+    const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
+    if (withRuler) {
+      for (const u of [0, 1]) ys.push(projectPoint(view, { t: u * pose.length, d: ruler, h: floorH }).y);
+    }
+    return { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs) - Math.min(...xs), height: Math.max(...ys) - Math.min(...ys) };
   };
 
-  // The visible ground: the layout's own extent, at the window's older end.
-  // The ground is margin-ed in from the layout's own extent, not padded out to it: it is a reference
-  // plane, and stretching it to the corners of the map only pulls the framing zoom further out.
-  const x0 = boxes.length ? Math.min(...boxes.map((b) => b.x)) + 40 : -300;
-  const x1 = boxes.length ? Math.max(...boxes.map((b) => b.x + b.width)) - 40 : 300;
-  const y0 = boxes.length ? Math.min(...boxes.map((b) => b.y)) + 40 : -300;
-  const y1 = boxes.length ? Math.max(...boxes.map((b) => b.y + b.height)) - 40 : 300;
-  const groundQuad = [ground({ x: x0, y: y0 }), ground({ x: x1, y: y0 }), ground({ x: x1, y: y1 }), ground({ x: x0, y: y1 })];
+  // The ruler's labels need room below it on screen, which is a fixed number of screen pixels.
+  const room = LABEL_ROOM / Math.max(0.02, zoom);
+  const target = { width: rect.width * (1 - 2 * FIT_PAD), height: rect.height * (1 - 2 * FIT_PAD) - room };
+  const want = target.width / Math.max(1, target.height);
+  // The shape of the focus nodes' box grows wider with the length of time; find the length that
+  // makes it the display's shape. Searched on a log scale, since the right length can be anything
+  // from a fraction of the layout's width to many times it.
+  const aspect = (L: number) => {
+    const b = bounds(poseAt(L));
+    return b.width / Math.max(1e-6, b.height);
+  };
+  let lo = Math.max(100, W * MIN_TIME), hi = Math.max(lo * 4, (W + H) * 6);
+  let L: number;
+  if (aspect(lo) >= want) L = lo;
+  // A focus whose shape hardly changes with time — one card, or cards all of a moment — takes the
+  // shortest axis rather than the longest: lengthening it would only spread the ruler, not the cards.
+  else if (aspect(hi) <= want) L = aspect(hi) - aspect(lo) < 0.1 * want ? lo : hi;
+  else {
+    for (let i = 0; i < 40; i++) {
+      const m = Math.sqrt(lo * hi);
+      if (aspect(m) < want) lo = m;
+      else hi = m;
+    }
+    L = Math.sqrt(lo * hi);
+  }
 
-  // Bounds for framing the view: the cards and their bars only. The ground and the ruler are made
-  // to overflow the frame on purpose — including them would pull the zoom far enough out that a
-  // card is a few pixels tall. The boxes are taken in the same header size the cards are drawn at.
-  const all = [
-    ...[...at.entries()].map(([k, p]) => {
-      const box = boxes.find((b) => b.key === k)!;
-      const w = isGroup(k) ? HEADER_W : box.width, h = isGroup(k) ? HEADER_H : box.height;
-      return [{ x: p.x, y: p.y }, { x: p.x + w * p.scale, y: p.y + h * p.scale }];
-    }).flat(),
-    ...bars.flatMap((b) => b.points),
-  ];
-  const minX = Math.min(...all.map((p) => p.x)), maxX = Math.max(...all.map((p) => p.x));
-  const minY = Math.min(...all.map((p) => p.y)), maxY = Math.max(...all.map((p) => p.y));
-  return { at, order, drops, bars, ruler, footprints, ground: groundQuad, view, bounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY } };
+  // Scale and place the scene so the focus nodes' box fills the frame, with the ruler under it.
+  const pose = poseAt(L);
+  const b = bounds(pose, true);
+  const sigma = Math.min(MAX_SIGMA, target.width / Math.max(1e-6, b.width), target.height / Math.max(1e-6, b.height));
+  const cx = rect.x + rect.width / 2, cy = rect.y + (rect.height - room) / 2;
+  return { ...pose, sigma, anchor: { x: cx - sigma * (b.x + b.width / 2), y: cy - sigma * (b.y + b.height / 2) } };
+}
+
+/** A tick on the ruler, placed: its mark on the ruler and its grid line across the floor. */
+export interface RulerTick extends Tick {
+  at: Point;
+  far: Point;
+}
+
+/**
+ * The ruler's ticks at a zoom. Their spacing is set in screen pixels, so a ruler drawn longer on
+ * screen carries finer ticks — months into days, days into hours.
+ */
+export function rulerTicks(scene: DepthScene, zoom: number): RulerTick[] {
+  const { view, pose } = scene;
+  const a = projectPoint(view, { t: 0, d: pose.ruler, h: pose.floorH });
+  const b = projectPoint(view, { t: view.length, d: pose.ruler, h: pose.floorH });
+  const px = Math.hypot(b.x - a.x, b.y - a.y) * zoom;
+  return axisTicks(view.focus, Math.min(60, Math.round(px / TICK_GAP))).map((tick) => {
+    const t = tick.u * view.length;
+    const p = projectPoint(view, { t, d: pose.ruler, h: pose.floorH });
+    const q = projectPoint(view, { t, d: pose.floorFar, h: pose.floorH });
+    return { ...tick, at: { x: p.x, y: p.y }, far: { x: q.x, y: q.y } };
+  });
+}
+
+/** The ruler's line: the window itself, and the squeezed tails either side of it. */
+export function rulerLine(scene: DepthScene): { window: [Point, Point]; older: [Point, Point]; newer: [Point, Point] } {
+  const { view, pose } = scene;
+  const at = (u: number) => {
+    const p = projectPoint(view, { t: u * view.length, d: pose.ruler, h: pose.floorH });
+    return { x: p.x, y: p.y };
+  };
+  return { window: [at(0), at(1)], older: [at(-TAIL), at(0)], newer: [at(1), at(1 + TAIL)] };
+}
+
+/**
+ * A relation line between two cards at different moments: each point is placed in the plane of a
+ * moment between the two, so the line runs through time from one panel to the other.
+ */
+export function projectPath(view: View, points: Point[], tFrom: number, tTo: number): Point[] {
+  const last = points.length - 1;
+  return points.map((p, i) => {
+    const t = tFrom + (tTo - tFrom) * (last === 0 ? 0 : i / last);
+    const at = projectPoint(view, { t, d: p.x, h: -p.y });
+    return { x: at.x, y: at.y };
+  });
 }

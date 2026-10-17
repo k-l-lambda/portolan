@@ -452,6 +452,8 @@ a { color: var(--accent); }
 .mini.status-blocked { fill: var(--st-blocked); }
 .mini.status-idea { fill: var(--st-idea); }
 .mini.status-dropped { fill: var(--st-dropped); }
+/* A group is drawn as a faint outline, so the cards inside it show on the navigator. */
+.mini.mini-group { fill-opacity: 0.18; stroke: currentColor; stroke-opacity: 0.35; stroke-width: 2; vector-effect: non-scaling-stroke; color: var(--muted); }
 
 .panel {
   width: 380px; flex: none; overflow: auto; padding: 14px 16px;
@@ -559,58 +561,74 @@ a { color: var(--accent); }
 .diag-error .diag-code { color: var(--error); }
 .diag-warning .diag-code { color: var(--warning); }
 
-/* Time-depth view (the 3D toggle, see web/src/depth.ts). The map lies on the ground and each card
-   is lifted by its own time, seen through a real perspective camera. The cards are moved and scaled
-   by the projection itself, not by a transform on the pane, so xyflow's pan, zoom and hit testing
-   stay flat and correct; the ground and the ruler are drawn in map coordinates inside the flow's
-   viewport portal, so they pan and zoom with the map. */
+/* Time-depth view (the 3D toggle, see web/src/depth.ts). Time is a level axis through the map and
+   each card is a panel standing at its own moment, its face orthogonal to the axis. The panes are
+   never transformed, so xyflow's pan, zoom and hit testing stay flat and correct; each card carries
+   its own perspective matrix instead, and the floor and ruler are drawn in flow coordinates inside
+   the viewport portal, so they pan and zoom with the panels. */
 .floor-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
 .floor { overflow: visible; }
+.floor * { vector-effect: non-scaling-stroke; }
 
-/* A card is drawn as a billboard facing the eye: scaled about its own centre by its distance, and
-   faded with it. xyflow's own transform places it, so the scale goes on the card inside. */
-.react-flow__node[style*="--scale"] .card { transform: scale(var(--scale, 1)); }
-.react-flow__node[style*="--scale"] { transition: opacity 0.15s ease; }
-.react-flow__node[style*="--fog"] { opacity: var(--fog, 1); }
-/* The relation lines and the scene furniture fade the same way, so a far card and the line to it
-   belong to the same distance. */
-.react-flow__edge { transition: opacity 0.15s ease; }
+/* A panel: the node is the bounding box of its image, and the card inside is laid out at its own
+   size and carried onto the panel's true shape by its matrix. Only the card takes the pointer, so
+   the empty corners of the box do not swallow clicks meant for the panel behind. */
+/* xyflow sets pointer-events inline on nodes, hence !important. */
+.react-flow__node.panel3d { pointer-events: none !important; }
+.react-flow__node.panel3d > .card, .react-flow__node.panel3d .card {
+  position: absolute; left: 0; top: 0; width: var(--w); height: var(--h);
+  transform-origin: 0 0; transform: var(--m); pointer-events: auto;
+  opacity: var(--fog, 1); backface-visibility: hidden;
+}
+/* A frame stays a frame in 3D: its body passes the pointer to the cards behind and in front of it,
+   and only its header takes it. Its fill never does. */
+.react-flow__node.panel3d .card.container, .react-flow__node.panel3d .card.frame-fill { pointer-events: none; }
+.react-flow__node.panel3d .card.container .card-header { pointer-events: auto; }
 
-/* The ground plane: a faint sheet under the scene, which is what makes the cards read as standing
-   above something rather than floating in a void. */
-.floor .ground { fill: color-mix(in srgb, var(--accent) 2%, transparent); stroke: color-mix(in srgb, var(--border) 80%, transparent); stroke-width: 1; }
+/* The navigator: the flat map, in 3D too (FlatMiniMap). */
+.flat-minimap svg { cursor: grab; touch-action: none; display: block; }
+.flat-minimap svg:active { cursor: grabbing; }
 
-/* Drop lines from each raised card to its own footprint on the ground, so its height can be read. */
-.floor-drops .drop { stroke: color-mix(in srgb, var(--accent) 45%, transparent); stroke-width: 1; stroke-dasharray: 2 4; }
+/* The hovered panel's title, flat and at its natural size, above the panel. */
+.hover-title {
+  position: absolute; z-index: 10; transform: translate(-50%, calc(-100% - 8px)); pointer-events: none;
+  max-width: 360px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--surface); color: var(--text); box-shadow: 0 4px 14px rgb(0 0 0 / 0.18);
+}
+.hover-title-text { font: 600 13px/1.35 system-ui, sans-serif; }
+.hover-title-sub { margin-top: 2px; color: var(--muted); font: 500 11px/1.2 ui-monospace, monospace; }
 
-/* A time bar standing on the ground: solid and coloured by outcome for what really happened, an
-   outline for a plan. The bar's height is the time it took, so the tall ones are the long jobs. */
+/* The floor under the scene, with a grid line across it at each tick. */
+.floor .ground { fill: color-mix(in srgb, var(--accent) 3%, transparent); stroke: color-mix(in srgb, var(--border) 80%, transparent); stroke-width: 1; }
+.floor-grid line { stroke: color-mix(in srgb, var(--border) 70%, transparent); stroke-width: 1; }
+.floor-grid line.major { stroke: color-mix(in srgb, var(--muted) 55%, transparent); }
+
+/* A line from each panel's foot down to the floor, so its moment can be read off the ruler. */
+.floor-drops .drop { stroke: color-mix(in srgb, var(--accent) 35%, transparent); stroke-width: 1; stroke-dasharray: 2 4; }
+
+
+/* A time bar along the axis under its card: solid and coloured by outcome for what really happened,
+   an outline for a plan. Its length is the time it took, to the axis's own scale. */
 .floor-bar .bar-fill { fill: color-mix(in srgb, var(--muted) 22%, transparent); }
 .floor-bar .bar-edge { fill: none; stroke: var(--muted); stroke-width: 1.2; }
-.bar-label { fill: var(--text); font: 500 10px/1 ui-monospace, monospace; text-anchor: middle; }
+.bar-label { fill: var(--text); font-family: ui-monospace, monospace; font-weight: 500; text-anchor: middle; }
 .floor-bar.actual { --st: var(--st-done); }
 .floor-bar.running { --st: var(--st-doing); }
 .floor-bar.running.timer-near { --st: var(--warning); }
 .floor-bar.running.timer-over { --st: var(--error); }
-.floor-bar.actual .bar-fill, .floor-bar.running .bar-fill { fill: color-mix(in srgb, var(--st) 55%, transparent); }
+.floor-bar.actual .bar-fill, .floor-bar.running .bar-fill { fill: color-mix(in srgb, var(--st) 60%, transparent); }
 .floor-bar.actual .bar-edge, .floor-bar.running .bar-edge { stroke: var(--st); }
 .floor-bar.estimate .bar-fill { fill: color-mix(in srgb, var(--st-todo) 14%, transparent); }
 .floor-bar.estimate .bar-edge { stroke: var(--muted); stroke-dasharray: 4 3; }
 .floor-bar.estimate .bar-label { fill: var(--muted); }
 
-/* A group's rectangle on the ground. Without a rule the polygon fills black, which turned the whole
-   plane under the map into a dark slab. Faint, so the map's shape is legible without competing with
-   the cards standing on it. */
-.floor-group .group-fill { fill: color-mix(in srgb, var(--accent) 3%, transparent); stroke: color-mix(in srgb, var(--accent) 22%, transparent); stroke-width: 1; stroke-dasharray: 6 4; }
-.group-label { fill: color-mix(in srgb, var(--muted) 85%, transparent); font: 600 11px/1 system-ui, sans-serif; text-anchor: middle; }
-
-/* The ruler stands at the older edge of the scene, its ticks on real calendar boundaries. */
-.floor-ruler .ruler-line { stroke: var(--muted); stroke-width: 1.4; }
+/* The ruler along the floor's near edge: solid over the window, dashed over the squeezed tails. */
+.floor-ruler .ruler-line { stroke: var(--muted); stroke-width: 1.6; }
+.floor-ruler .ruler-tail { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: 0.7; }
 .floor-ruler .ruler-tick line { stroke: var(--muted); stroke-width: 1.2; }
 .floor-ruler .ruler-tick.major line { stroke: var(--text); stroke-width: 2; }
-.ruler-label { fill: var(--muted); font: 500 10px/1 ui-monospace, monospace; }
+.ruler-label { fill: var(--muted); font-family: ui-monospace, monospace; font-weight: 500; }
 .ruler-tick.major .ruler-label { fill: var(--text); font-weight: 600; }
-.ruler-caption { fill: var(--muted); font: 500 11px/1 system-ui, sans-serif; }
 
 @media (max-width: 760px) {
   .search-input { width: 140px; }

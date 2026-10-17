@@ -1,16 +1,14 @@
 import {
-  Background, Controls, MarkerType, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
+  Background, Controls, MarkerType, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
-import { DepthFloor } from "./DepthLayer.tsx";
-import { HEADER_H, HEADER_W } from "./layout.ts";
-import type { Projected } from "./depth.ts";
-import { depthScene, elevationPx, nextFocus, projectPath, ribbonFor, sameFocus, type Focus } from "./depth.ts";
+import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
+import { blendPose, depthScene, ease, flatPose, projectPath, ribbonFor, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
-import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, starred, starredInside, unfoldStarted } from "./layout.ts";
+import { defaultCollapsed, fitZoom, kindLetters, nodeKey, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
 import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
@@ -305,16 +303,19 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     }
   };
 
-  // The 3D view lifts each card by its own time (see depth.ts). The window it shows comes from the
-  // region the navigator's frame holds, so the depth follows whatever the map is showing.
+  // The 3D view stands each card in its own moment along a level time axis (see depth.ts). The
+  // flat view's camera is kept throughout: the navigator always shows it, and the cards inside its
+  // frame — the focus nodes — decide the 3D pose. Changing between the views moves the camera
+  // from one pose to the other, starting from the flat view itself.
   const [threeD, setThreeD] = useState(false);
-  const [depthWin, setDepthWin] = useState<Focus | null>(null);
-  const prevFocus = useRef<Focus | null>(null);
-  const prev2Focus = useRef<Focus | null>(null);
-  const [view, setView] = useState<{ x: number; y: number; zoom: number } | null>(null);
-  useEffect(() => {
-    setDepthWin(null); prevFocus.current = null; prev2Focus.current = null; setView(null);
-  }, [file]);
+  /** The pose on screen, null in the flat view; and the move in progress, if any. */
+  const [pose, setPose] = useState<Pose | null>(null);
+  const move = useRef<{ from: Pose; to: Pose; start: number; ms: number; done?: () => void } | null>(null);
+  const raf = useRef(0);
+  const [moving, setMoving] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  /** Whether the navigator is being dragged: its frame moves continuously, and the pose follows at the end. */
+  const miniDrag = useRef(false);
 
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
@@ -338,48 +339,83 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     return box ? nodeTimes.get(box.node.line) : undefined;
   }, [layout, nodeTimes]);
 
-  // The window the depth axis shows, from the region the navigator's frame holds: the visible part
-  // of the map. Recomputing it needs a settled viewport, so it waits for the pan or zoom to end.
-  useEffect(() => {
-    if (!threeD) return;
+  const isGroup = useCallback((key: string) => layout?.boxes.find((b) => b.key === key)?.container ?? false, [layout]);
+  const ribbonOf = useCallback((key: string) => {
+    const box = layout?.boxes.find((b) => b.key === key);
+    if (!box) return null;
+    return ribbonFor(timingOf(box.node, now), box.node.status, nodeTimes.get(box.node.line) ?? now, now);
+  }, [layout, nodeTimes, now]);
+
+  /** The 3D pose for the flat view's frame as it is now. Null when the frame holds no card. */
+  const poseFor = useCallback((v = flow.getViewport()): Pose | null => {
     const pane = document.querySelector(".canvas")?.getBoundingClientRect();
-    if (!view || !pane) return;
-    const rect = { x: -view.x / view.zoom, y: -view.y / view.zoom, width: pane.width / view.zoom, height: pane.height / view.zoom };
-    const found = nextFocus(layout?.boxes ?? [], timeOf, rect, prevFocus.current, prev2Focus.current);
-    if (!found || sameFocus(found, depthWin)) return;
-    prev2Focus.current = prevFocus.current;
-    prevFocus.current = found;
-    setDepthWin(found);
-  }, [threeD, view, layout, timeOf, depthWin]);
+    if (!pane || !layout) return null;
+    const rect = { x: -v.x / v.zoom, y: -v.y / v.zoom, width: pane.width / v.zoom, height: pane.height / v.zoom };
+    return targetPose(layout.boxes, rect, timeOf, ribbonOf, isGroup, v.zoom);
+  }, [flow, layout, timeOf, ribbonOf, isGroup]);
+  const poseForRef = useRef(poseFor);
+  poseForRef.current = poseFor;
+  const poseRef = useRef<Pose | null>(null);
+  poseRef.current = pose;
 
-  /** The scene for the current window: where each card sits in depth, and the floor beneath it. */
-  const scene = useMemo(() => (threeD && depthWin && layout
-    ? depthScene(
-      layout.boxes.map((b) => ({ ...b, label: plainTitle(b.node.title) })),
-      depthWin,
-      timeOf,
-      (key) => {
-        const box = layout.boxes.find((b) => b.key === key);
-        if (!box) return null;
-        const own = nodeTimes.get(box.node.line);
-        return ribbonFor(timingOf(box.node, now), box.node.status, own ?? depthWin.to, now);
-      },
-      (key) => layout.boxes.find((b) => b.key === key)?.container ?? false,
-    )
-    : null), [threeD, depthWin, layout, timeOf, nodeTimes, now]);
+  /** Move the camera from where it is to `to`, eased, then call `done`. */
+  const moveTo = useCallback((to: Pose, ms: number, done?: () => void) => {
+    const from = poseRef.current ?? flatPose(to);
+    cancelAnimationFrame(raf.current);
+    move.current = { from, to, start: performance.now(), ms, done };
+    setMoving(true);
+    const step = () => {
+      const m = move.current;
+      if (!m) return;
+      const s = Math.min(1, (performance.now() - m.start) / m.ms);
+      setPose(blendPose(m.from, m.to, ease(s)));
+      if (s < 1) raf.current = requestAnimationFrame(step);
+      else (move.current = null, setMoving(false), m.done?.());
+    };
+    raf.current = requestAnimationFrame(step);
+  }, []);
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+  useEffect(() => { cancelAnimationFrame(raf.current); move.current = null; setMoving(false); setPose(null); setThreeD(false); }, [file]);
 
-  // Where each card is drawn, how big and how faded, all from the scene's own projection. In 3D a
-  // card's size depends on its distance from the eye, so it is scaled about its centre.
-  const placed = useMemo(() => scene?.at ?? new Map<string, Projected>(), [scene]);
-  /** Height above the ground of each card, for leaning the relation lines between them. */
-  const upOf = useMemo(() => {
-    const out = new Map<string, number>();
-    if (scene && depthWin) for (const b of layout?.boxes ?? []) {
-      const t = nodeTimes.get(b.node.line);
-      out.set(b.key, t === undefined || !scene ? 0 : elevationPx(t, depthWin, scene.view.height));
+  /** In 3D: move the camera to the pose for the flat view's frame, if it frames any card. */
+  const retarget = useCallback((v?: { x: number; y: number; zoom: number }) => {
+    if (!threeD) return;
+    const to = poseForRef.current(v);
+    if (to) moveTo(to, 450);
+  }, [threeD, moveTo]);
+
+  const toggle3D = useCallback(() => {
+    if (!threeD) {
+      const to = poseFor();
+      if (!to) return;
+      // From the flat view itself: every card where it is, so the move starts without a jump.
+      poseRef.current = flatPose(to);
+      setPose(poseRef.current);
+      setThreeD(true);
+      moveTo(to, 900);
+    } else {
+      const from = poseRef.current;
+      setThreeD(false);
+      if (!from) return setPose(null);
+      // Back to the flat view the navigator has kept all along, then to the flat cards themselves.
+      moveTo(flatPose(from), 700, () => setPose(null));
     }
-    return out;
-  }, [scene, depthWin, layout, nodeTimes]);
+  }, [threeD, poseFor, moveTo]);
+
+  // A new layout (a group opened or closed, the file reloaded) moves the cards; the pose follows.
+  useEffect(() => { if (threeD && !move.current) retarget(); }, [layout]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /** The scene in the pose on screen: a panel for each card at its own moment, and the floor. */
+  const scene = useMemo(() => (pose && layout
+    ? depthScene(layout.boxes, pose, timeOf, ribbonOf, isGroup)
+    : null), [pose, layout, timeOf, ribbonOf, isGroup]);
+
+  // After a pan or zoom of the flat view's camera — the main view or the navigator — the 3D pose
+  // follows the cards its frame now holds. The ruler's density follows the zoom.
+  const onMoveEnd = useCallback((_e: unknown, v: { x: number; y: number; zoom: number }) => {
+    setZoom(v.zoom);
+    if (!miniDrag.current) retarget(v);
+  }, [retarget]);
 
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
@@ -408,31 +444,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     setPendingFrame(null);
   }, [pendingFrame, layout, flow]);
 
-  // Switching the view on moves and resizes every card, so the scene is framed once it is built;
-  // otherwise the projection would push most of the map off the screen.
-  const [pendingScene, setPendingScene] = useState(false);
-  useEffect(() => { if (threeD) setPendingScene(true); }, [threeD]);
-  useEffect(() => {
-    if (!pendingScene || !scene) return;
-    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
-    if (!pane) return;
-    // The scene's cards are framed, but the zoom is held inside a readable band: a large map should
-    // not open as a field of specks, and a small one should not open on a single card. The floor is
-    // what keeps the cards legible on a map too big to fit — the scene simply does not fit, and
-    // panning to the rest is better than reading none of it.
-    // Frame the whole scene: the fit decides, with no floor of its own. A map too wide to read at
-    // that zoom is panned and zoomed into like any other view; forcing a minimum zoom instead would
-    // push most of the map off the screen, which is worse than showing it small.
-    const target = fitZoom(scene.bounds, { width: pane.width, height: pane.height }, 0.06, 1.2);
-    flow.setCenter(target.x, target.y, { zoom: target.zoom, duration: 500 });
-    setPendingScene(false);
-  }, [pendingScene, scene, flow]);
-
-  /** 3D stacking order per card: frames below every card, cards nearest in front. */
-  const z3d = useMemo(() => (scene ? cardZ(layout?.boxes ?? [], parents, scene.at) : new Map<string, number>()), [scene, layout, parents]);
-
   const base = useMemo(() => {
     if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
+    const panelOf = (key: string) => scene?.panels.get(key);
+    const rank = new Map((scene?.order ?? []).map((k, i) => [k, i]));
     const states = new Map(data.derived.map((s) => [s.line, s]));
     const times = new Map(data.freshness.nodes.map((t) => [t.line, t]));
     // Containers first and deeper boxes later, so children draw on top of their container.
@@ -440,26 +455,25 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const nodes: CardNode[] = boxes.map((b) => ({
       id: b.key,
       type: "card",
-      // In 3D a card is placed at its projected centre and scaled about it, so it keeps its shape
-      // while growing with nearness. `width`/`height` stay the layout's own, so xyflow's hit area
-      // and the flat view's measurements are unaffected.
-      position: { x: placed.get(b.key)?.x ?? b.x, y: placed.get(b.key)?.y ?? b.y },
-      // In 3D a group is drawn as a header panel rather than as a frame around its children (they
-      // float at their own times), so its node takes the header's size and the scaling is composed
-      // from the projection instead of the layout's own box.
-      width: scene && b.container ? HEADER_W : b.width,
-      height: scene && b.container ? HEADER_H : b.height,
-      style: scene
+      // In 3D the node is the bounding box of the card's panel, and the card inside it is laid out at
+      // its own size and carried onto the panel's true shape by the panel's matrix (depth.ts), so its
+      // text, buttons and hit area are all drawn in the panel's plane.
+      position: panelOf(b.key) ? { x: panelOf(b.key)!.box.x, y: panelOf(b.key)!.box.y } : { x: b.x, y: b.y },
+      width: panelOf(b.key)?.box.width ?? b.width,
+      height: panelOf(b.key)?.box.height ?? b.height,
+      className: panelOf(b.key) ? "panel3d" : undefined,
+      style: panelOf(b.key)
         ? ({
-          "--fog": `${placed.get(b.key)?.fog ?? 1}`,
-          "--scale": `${placed.get(b.key)?.scale ?? 1}`,
-          transformOrigin: "center",
+          "--m": panelOf(b.key)!.matrix,
+          "--w": `${panelOf(b.key)!.width}px`,
+          "--h": `${panelOf(b.key)!.height}px`,
+          "--fog": `${panelOf(b.key)!.fog}`,
         } as CSSProperties)
         : undefined,
       // Every rebuild (reload, new layout, the freshness tick) creates new node objects. Without
       // `measured`, xyflow drops their handle bounds and hides every edge until the cards are
       // measured again, so lines blinked out for a few frames. The size is known, so pass it.
-      measured: { width: scene && b.container ? HEADER_W : b.width, height: scene && b.container ? HEADER_H : b.height },
+      measured: { width: panelOf(b.key)?.box.width ?? b.width, height: panelOf(b.key)?.box.height ?? b.height },
       // Stacking, bottom to top:
       //   0..99    frame fills (FrameFill), by depth
       //   100      relation lines
@@ -468,16 +482,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       //   360      focused lines, drawn over everything except labels
       //   400      edge labels
       // So lines pass behind every title and control, yet stay visible inside frames.
-      // 3D draws cards nearest-first, so a far card passes behind a near one; a frame still sits
-      // below the cards it holds.
-      zIndex: scene ? z3d.get(b.key)! : b.container ? 150 + b.depth : 200 + b.depth,
+      // 3D draws panels far to near, so a nearer panel covers a farther one.
+      zIndex: scene ? 2000 + (rank.get(b.key) ?? 0) : b.container ? 150 + b.depth : 200 + b.depth,
       draggable: false,
       data: {
         node: b.node, parentId: parents.get(b.key)?.id ?? null, state: states.get(b.node.line), hidden: b.hidden,
-        // In the flat view a group is a transparent frame whose children are laid out inside it.
-        // In 3D its children float at their own times, so the group is a solid header panel and the
-        // group's extent is drawn as a rectangle on the ground instead.
-        container: b.container && !scene,
+        // A group is a transparent frame, in 3D as in the flat view: its children stand at their own
+        // moments, in front of or behind its plane, and show through it.
+        container: b.container,
         ...cardTime(times.get(b.node.line), now),
         selected: b.key === selected, collapsed: collapsed.has(b.key), starsInside: stars.get(b.key) ?? 0,
         kindLetters: letters.get(nodeKind(b.node) ?? ""),
@@ -487,13 +499,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         onStatus, onToggle, onStar,
       },
     }));
-    if (!scene) {
-      // The flat view's frames are two layers: a fill below the lines and the frame above them.
-      // In 3D a group is a rectangle on the ground instead, drawn by DepthFloor, so neither layer
-      // is emitted here.
+    // The flat view's frames are two layers: a fill below the lines and the frame above them. In 3D
+    // the fill fades out as the camera turns — an opaque sheet would hide the cards behind it — so
+    // the move starts from the flat view exactly and ends with frames that are borders only.
+    const fade = scene ? 1 - scene.pose.blend : 1;
+    if (fade > 0.001) {
       const fills: CardNode[] = boxes.filter((b) => b.container).map((b) => {
         const frame = nodes.find((n) => n.id === b.key)!;
-        return { ...frame, id: fillId(b.key), type: "fill", zIndex: b.depth, selectable: false, focusable: false };
+        const style = frame.style ? ({ ...frame.style, "--fog": `${fade}` } as CSSProperties) : undefined;
+        return { ...frame, style, id: fillId(b.key), type: "fill", zIndex: b.depth, selectable: false, focusable: false };
       });
       nodes.unshift(...fills);
     }
@@ -508,8 +522,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         type: "polyline",
         // The label written in the Rhumb line, if this route draws one edge; only these repeat.
         data: {
-          // A relation between two cards at different times leans with them.
-          points: scene ? projectPath(scene.view, e.points, upOf.get(e.source) ?? 0, upOf.get(e.target) ?? 0) : e.points,
+          // A relation between two cards at different moments runs through time between them.
+          points: scene ? projectPath(scene.view, e.points, panelOf(e.source)?.t ?? 0, panelOf(e.target)?.t ?? 0) : e.points,
           arrow, written: e.count === 1 ? e.label : null,
         },
         className: style.className,
@@ -522,7 +536,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       };
     });
     return { nodes, edges };
-  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene, placed, z3d, upOf]);
+  }, [data, layout, collapsed, parents, selected, now, stars, letters, onStatus, onToggle, onStar, scene]);
 
   useEffect(() => {
     if (!pendingCenter || !layout) return;
@@ -697,8 +711,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           <IconButton icon={<EdgeLabelsIcon />} label={allLabels ? "Hide edge labels" : "Show all edge labels"}
             pressed={allLabels} onClick={() => setAllLabels((v) => !v)} />
           <IconButton icon={<View3DIcon />} pressed={threeD}
-            label={threeD ? "Leave the time-depth view" : "Time-depth view: lift each card off the map by its own time and lay each node's time on the ground beneath it"}
-            onClick={() => setThreeD((v) => !v)}>
+            label={threeD ? "Leave the time-depth view" : "Time-depth view: time as a level axis, each card a panel standing at its own moment"}
+            onClick={toggle3D}>
             <span className="icon-text">3D</span>
           </IconButton>
         </div>
@@ -826,18 +840,29 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onEdgeMouseEnter={(e, ed) => { if (!fromLabel(e)) setHover({ kind: "edge", id: ed.id }); }}
             onEdgeMouseLeave={() => setHover(null)}
             onPaneClick={() => setSelected(null)}
-            // The last settled pan or zoom; in 3D it picks the window the depth axis covers.
-            onMoveEnd={(_e, v) => setView({ x: v.x, y: v.y, zoom: v.zoom })}
+            // The last settled pan or zoom: the ruler's density, and in 3D a deep zoom refocuses.
+            onMoveEnd={onMoveEnd}
             proOptions={{ hideAttribution: false }}
           >
-            {scene && <DepthFloor scene={scene} />}
+            {scene && <DepthFloor scene={scene} zoom={zoom} />}
+            {scene && !moving && scene.pose.blend > 0.99 && hover?.kind === "node" && (() => {
+              // A panel at 45° is foreshortened, so the hovered one also shows its title flat.
+              const panel = scene.panels.get(hover.id);
+              const box = layout?.boxes.find((b) => b.key === hover.id);
+              if (!panel || !box) return null;
+              const t = nodeTimes.get(box.node.line);
+              const sub = [box.node.id ? shortId(box.node.id, null, 24) : "", t !== undefined ? absoluteTime(t) : ""].filter(Boolean).join(" · ");
+              return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} />;
+            })()}
             <Background gap={24} />
             <Controls showInteractive={false} />
-            <MiniMap pannable zoomable nodeClassName={(n) => {
-              if (n.type === "fill") return "mini-hidden";
-              const d = n.data as CardNode["data"];
-              return `mini status-${d.node.status ?? "todo"}${starred(d.node) ? " mini-star" : ""}`;
-            }} />
+            {/* The navigator always draws the flat map and the flat view's frame, in 3D as well:
+                that frame is the camera whose cards decide the 3D pose. */}
+            <FlatMiniMap
+              boxes={layout?.boxes ?? []}
+              classOf={(b) => `mini status-${b.node.status ?? "todo"}${b.container ? " mini-group" : ""}${starred(b.node) ? " mini-star" : ""}`}
+              onDrag={(on) => { miniDrag.current = on; if (!on) retarget(); }}
+            />
           </ReactFlow>
         </div>
         <div className="side">
@@ -915,42 +940,4 @@ function useOutsidePress(ref: RefObject<HTMLElement | null>, open: boolean, clos
 function rememberAt(last: Map<string, { x: number; y: number }>, id: string, at: { x: number; y: number } | undefined) {
   if (at) last.set(id, at);
   return at ?? last.get(id);
-}
-
-/**
- * Stacking order for a card in the 3D view. A plain card is drawn by its distance from the eye,
- * nearest on top. A frame takes the nearest distance anywhere inside it, so it stays around its own
- * children instead of sinking behind a child that happens to sit nearer the eye, and frames always
- * stay below the cards they hold.
- */
-function cardZ(boxes: Box[], parents: Map<string, RhumbNode | null>, at: Map<string, { dist: number }>): Map<string, number> {
-  const kids = new Map<string, string[]>();
-  for (const b of boxes) {
-    const p = parents.get(b.key);
-    if (!p) continue;
-    const pk = nodeKey(p);
-    (kids.get(pk) ?? kids.set(pk, []).get(pk)!).push(b.key);
-  }
-  const near = new Map<string, number>();
-  const visit = (key: string): number => {
-    const mine = at.get(key)?.dist ?? Number.POSITIVE_INFINITY;
-    const below = (kids.get(key) ?? []).map(visit);
-    const value = below.length > 0 ? Math.min(mine, ...below) : mine;
-    near.set(key, value);
-    return value;
-  };
-  const out = new Map<string, number>();
-  for (const b of boxes) {
-    if (b.container) visit(b.key);
-    if (!b.container) {
-      // Nearer (smaller distance) draws higher. The distances are pixel-scale, so they are squashed
-      // into a band rather than used raw.
-      const d = at.get(b.key)?.dist ?? 0;
-      out.set(b.key, 2000 + Math.round(1e6 / Math.max(1, d)));
-    } else {
-      const d = near.get(b.key) ?? Number.POSITIVE_INFINITY;
-      out.set(b.key, 1500 + Math.round(1e6 / Math.max(1, d)));
-    }
-  }
-  return out;
 }
