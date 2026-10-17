@@ -8,7 +8,7 @@ import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse }
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
-import { blendPose, depthScene, ease, flatPose, projectPath, ribbonFor, targetPose, type Pose } from "./depth.ts";
+import { blendPose, depthScene, ease, flatPose, nodeRibbon, projectPath, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -363,7 +363,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const ribbonOf = useCallback((key: string) => {
     const box = layout?.boxes.find((b) => b.key === key);
     if (!box) return null;
-    return ribbonFor(timingOf(box.node, now), box.node.status, nodeTimes.get(box.node.line) ?? now, now);
+    // `hidden` counts what a folded box holds, so it says the box is folded in this very layout.
+    return nodeRibbon(box.node, box.hidden > 0, nodeTimes.get(box.node.line) ?? now, now);
   }, [layout, nodeTimes, now]);
 
   /** The 3D pose for the flat view's frame as it is now. Null when the frame holds no card. */

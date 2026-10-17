@@ -644,6 +644,10 @@ a { color: var(--accent); }
 .floor-bar .bar-track { fill: color-mix(in srgb, var(--st) 10%, transparent); stroke: color-mix(in srgb, var(--st) 75%, var(--muted)); stroke-width: 1.2; }
 .floor-bar.estimate .bar-track { fill: color-mix(in srgb, var(--muted) 10%, transparent); stroke: var(--muted); stroke-dasharray: 4 3; }
 .floor-bar .bar-over { fill: color-mix(in srgb, var(--error) 60%, transparent); stroke: var(--error); stroke-width: 1.2; }
+/* A folded done node's run read from the work inside it: the done colour, but paler and with a
+   dashed edge, since it is a span of its items' work rather than a measurement of its own. */
+.floor-bar.actual.inferred .bar-fill { fill: color-mix(in srgb, var(--st) 30%, transparent); stroke-dasharray: 5 2; }
+.floor-bar.actual.inferred .bar-label { font-weight: 500; }
 /* An overdue run: the part inside the plan is paler, so where the plan ended — and how far past it
    the run has gone — reads at a glance. */
 .floor-bar.running.timer-over .bar-fill { fill: color-mix(in srgb, var(--error) 28%, transparent); }

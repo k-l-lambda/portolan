@@ -9,7 +9,7 @@ import { timingOf } from "../src/timing.ts";
 import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
-  ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
+  innerRun, nodeRibbon, ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
 } from "../web/src/depth.ts";
 import { searchNodes } from "../web/src/search.ts";
 import { timerState } from "../web/src/timerState.ts";
@@ -622,6 +622,65 @@ describe("the 3D time-depth view", () => {
       expect(ribbonFor(timingOf(node({ estimate: "2h" }, "todo"), NOW), "todo", NOW, NOW)!.kind).toBe("estimate");
       expect(ribbonFor(null, "todo", NOW, NOW)).toBeNull();
       expect(ribbonFor(timingOf(node({ started: "2026-10-14" }, "todo"), NOW), "todo", NOW, NOW)).toBeNull();
+    });
+
+    describe("a folded done node without times of its own", () => {
+      const map = parse(`---
+rhumb: 0.1
+---
+- [x] Release ^rel
+  - [x] Parser {started: 2026-10-08T09:00, finished: 2026-10-09T18:00} ^parser
+  - [x] Docs ^docs
+    - [x] Guide {started: 2026-10-11T10:00, finished: 2026-10-12T12:00} ^guide
+    - [x] Notes ^notes
+  - [-] Dropped {started: 2026-10-06T09:00, finished: 2026-10-06T12:00} ^dropped
+  - [/] Polish {started: 2026-10-13T09:00} ^polish
+- [x] Bare ^bare
+  - [x] Untimed child ^untimed
+- [x] Half {started: 2026-10-07T09:00} ^half
+  - [x] Late child {started: 2026-10-08T09:00, finished: 2026-10-10T18:00} ^late
+`);
+      const find = (id: string, ns = map.nodes): (typeof map.nodes)[number] | undefined => {
+        for (const n of ns) { if (n.id === id) return n; const c = find(id, n.children); if (c) return c; }
+      };
+
+      it("spans its work: the earliest start to the latest finish, however deep", () => {
+        const inner = innerRun(find("rel")!, NOW)!;
+        // The dropped item's run counts (it was closed), the running one does not (it has no finish).
+        expect(inner.count).toBe(3);
+        expect(inner.from).toBe(at(2026, 10, 6, 9));
+        expect(inner.to).toBe(at(2026, 10, 12, 12));
+        const r = nodeRibbon(find("rel")!, true, NOW, NOW)!;
+        expect(r.kind).toBe("actual");
+        expect(r.inferred).toBe(3);
+        expect([r.from, r.to]).toEqual([inner.from, inner.to]);
+        expect(r.label).toBe("6d3h · 3 inside");
+        expect(r.detail).toBe("took 6d3h, read from the 3 timed items inside");
+      });
+
+      it("only when folded: unfolded, its children draw their own bars", () => {
+        expect(nodeRibbon(find("rel")!, false, NOW, NOW)).toBeNull();
+      });
+
+      it("keeps a time of its own and reads only the missing end from inside", () => {
+        const r = nodeRibbon(find("half")!, true, NOW, NOW)!;
+        expect(r.from).toBe(at(2026, 10, 7, 9));
+        expect(r.to).toBe(at(2026, 10, 10, 18));
+        expect(r.inferred).toBe(1);
+      });
+
+      it("draws nothing when nothing inside has a finished run", () => {
+        expect(innerRun(find("bare")!, NOW)).toBeNull();
+        expect(nodeRibbon(find("bare")!, true, NOW, NOW)).toBeNull();
+      });
+
+      it("leaves a node with a run of its own, and any status but done, as they were", () => {
+        const parser = nodeRibbon(find("parser")!, true, NOW, NOW)!;
+        expect(parser.inferred).toBeUndefined();
+        expect(parser.label).toBe("1d9h");
+        const todo = parse("---\nrhumb: 0.1\n---\n- [ ] Plan ^plan\n  - [x] Step {started: 2026-10-08T09:00, finished: 2026-10-09T09:00} ^step\n").nodes[0]!;
+        expect(nodeRibbon(todo, true, NOW, NOW)).toBeNull();
+      });
     });
 
     describe("their shape", () => {

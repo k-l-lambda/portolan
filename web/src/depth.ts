@@ -26,7 +26,8 @@
 // Everything here is pure — the camera, the window, the ticks and the bars all fall out of the
 // times and the layout — so it can be tested without a browser.
 
-import { formatDuration, sharePercent, type Timing } from "../../src/timing.ts";
+import { formatDuration, sharePercent, timingOf, type Timing } from "../../src/timing.ts";
+import type { RhumbNode } from "../../src/types.ts";
 import { HEADER_H, HEADER_W } from "./layout.ts";
 import { absoluteTime } from "./time.ts";
 
@@ -452,6 +453,9 @@ export interface Ribbon {
   label: string;
   /** The longer form, for the bar's tooltip: `took 4d23h`, `40m of 2h estimated (33%)`. */
   detail: string;
+  /** For a folded done node without its own times: how many timed items inside it the run was
+   *  read from. Its bar is then a span of their work, not a measurement of its own. */
+  inferred?: number;
 }
 
 /** The bar's tooltip text. */
@@ -497,6 +501,49 @@ export function ribbonFor(timing: Timing | null, status: string | null, own: num
     return { kind: "estimate", from, to: from + estimate, state: null, label: `est. ${formatDuration(estimate)}`, detail: `estimated ${formatDuration(estimate)}` };
   }
   return null;
+}
+
+/**
+ * The span of finished work inside a node: from the earliest start to the latest finish among its
+ * descendants that have both (any status other than doing, as `timingOf` counts a closed run).
+ * Every descendant counts, however deep, so a folded group holding folded groups still spans all
+ * of its work. Null when nothing inside has a finished run.
+ */
+export function innerRun(node: Pick<RhumbNode, "children">, now: number): { from: number; to: number; count: number } | null {
+  let from = Infinity, to = -Infinity, count = 0;
+  const walk = (ns: Pick<RhumbNode, "children" | "attrs" | "status">[]) => {
+    for (const n of ns) {
+      const t = timingOf(n, now);
+      if (t?.closed) (from = Math.min(from, t.started!), to = Math.max(to, t.finished!), count++);
+      walk(n.children);
+    }
+  };
+  walk(node.children);
+  return count ? { from, to, count } : null;
+}
+
+/**
+ * A node's timer bar, as `ribbonFor` gives it, with one addition: a done node that is folded and
+ * has no times of its own takes its start and finish from the work inside it (`innerRun`). A time
+ * it does have is kept, and only the missing end is read from inside. Folded only: an unfolded
+ * group's children are drawn with their own bars, and a bar for the group would repeat them.
+ */
+export function nodeRibbon(node: RhumbNode, folded: boolean, own: number, now: number): Ribbon | null {
+  const timing = timingOf(node, now);
+  const r = ribbonFor(timing, node.status, own, now);
+  if (r || node.status !== "done" || !folded || timing?.closed) return r;
+  const inner = innerRun(node, now);
+  if (!inner) return null;
+  const from = timing?.started ?? inner.from, to = timing?.finished ?? inner.to;
+  if (to < from) return null;
+  const took = formatDuration(to - from);
+  const items = `${inner.count} timed item${inner.count === 1 ? "" : "s"} inside`;
+  const vs = timing?.estimate != null ? ` against ${formatDuration(timing.estimate)} estimated` : "";
+  return {
+    kind: "actual", from, to, state: null, inferred: inner.count,
+    label: `${took} · ${inner.count} inside`,
+    detail: `took ${took}${vs}, read from the ${items}`,
+  };
 }
 
 /**

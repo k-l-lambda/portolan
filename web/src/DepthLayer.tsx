@@ -57,7 +57,7 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom }: { scene: Dep
           </g>
           <g className="floor-bars">
             {bars.map((b) => (
-              <g key={b.key} className={`floor-bar ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
+              <g key={b.key} className={`floor-bar ${b.kind}${b.plan ? " progress" : ""}${b.inferred ? " inferred" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
                 <BarTitle bar={b} />
                 {/* The planned stretch, an outline; the run, solid over it; any overtime past it. */}
                 {b.track && <polygon className="bar-track" points={poly(b.track)} />}
