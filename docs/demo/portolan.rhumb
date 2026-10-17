@@ -72,6 +72,14 @@ title: Portolan
       - Eleven preset kinds have their own icons; any other kind shows its shortest distinct letters in the map.
       - A claim's verdict is a flag such as `{refuted: true}`, kept apart from the item's status; at most one verdict holds.
       - [icon design](../changelog.md#11-preset-kinds-and-8-claim-icons-on-the-16-px-toolbar-grid-claim-states-became-boolean-attributes-like-star); [implementation](../changelog.md#kind--and-claim-flags-in-the-parser-spec-cards-legend-and-search-portolan-976233a)
+    - [x] Doing and isolated checks {tags: [time]} ^rhumb-liveness
+      - Why: a status that no longer matches the work below it, and an item no relation reaches, are both easy to miss by reading.
+      - A doing group with nothing doing below it is `W018`; an isolated node among siblings is `I006`.
+      - [the two checks](../changelog.md#w018-for-a-doing-group-with-nothing-doing-below-it-i006-for-an-isolated-node-portolan-49816fa)
+    - [x] Timing {tags: [time]} ^rhumb-timing
+      - Why: agents work for hours on one item, and people want to see whether it is on track without asking.
+      - An item can carry an estimate, when its current run started and when it finished; these are rough working figures.
+      - [timing attributes](../changelog.md#estimate-2h-started-2026-10-15t09300800-doing-cards-show-elapsed-against-estimate-green--amber-from-80--red-over); [finished and check report](../changelog.md#finished-and-actual-times-years-in-durations-a-timing-report-from-check-real-mission-times-in-the-demo-portolan-5ac7e78)
     - [?] Cross-map references {tags: [links]} ^rhumb-xref
       - Why: training, data and evaluation maps should share one model or dataset item instead of copying it.
       - Waiting until a second map really shares items with this one.
@@ -98,7 +106,7 @@ title: Portolan
     - Why: one local process serves every map in a folder and applies changes from people and agents without one overwriting another.
     - It only accepts connections from this machine, because it has no login.
     - [edit API and server](../changelog.md#edit-api-derive-anchor-resolver-threads-store-local-server-and-cli-landed-as-portolan-5a0a5d5-agent-guide-and-readme-written-by-subagents)
-  - [/] Web view ^ui
+  - [ ] Web view ^ui
     - Why: the user asked for a visual, interactive page that shows relations, progress and plans across the agent's work.
     - [x] Renderer choice {kind: decision} ^ui-spike
       - Why: the view must draw nested items and the relations between them, so the toolkit had to handle both.
@@ -115,6 +123,10 @@ title: Portolan
       - Pointing at a card shows its whole title without moving or resizing the card.
       - Only branches with work in progress open by default; starred items no longer keep a branch open.
       - [default folding](../changelog.md#history-life-primates-needs-history-life-neocortex-stars-no-longer-keep-a-branch-open-portolan-5e0aa8b-869c143)
+    - [x] Folds stay put ^ui-fold-follow
+      - Why: folding or unfolding relays the map out, and the card just clicked could jump away or out of sight.
+      - Folding or unfolding an item pans the view so it stays where it was on screen.
+      - [folds stay put](../changelog.md#the-view-is-panned-by-however-far-the-nodes-box-moved-in-the-relayout-then-nudged-inside-the-pane-portolan-94a2f5e)
     - [x] Hover focus {tags: [lines]} ^ui-hover
       - Why: with every relation drawn at once, lines and their text piled up; pointing at an item should pick out just its connections.
       - [hover focus](../changelog.md#hover-focus-portolan-c3c86c2-10-08-evening-then-nested-containers-laid-out-by-elk-3b74937)
@@ -155,6 +167,14 @@ title: Portolan
       - [hot reload](../changelog.md#per-directory-watchers-plus-a-2-s-rescan-recreated-files-no-longer-go-silent-portolan-05b336e)
       - Lines stay on screen while the map reloads; they used to blink out for a moment.
       - [lines blinking on reload](../changelog.md#every-line-blinked-out-for-about-200-ms-twice-per-reload-nodes-now-carry-their-measured-size-portolan-ad106cf)
+    - [x] Connection status ^ui-connection
+      - Why: when the server stopped, the page still looked live while edits failed and changes on disk stopped arriving.
+      - An icon at the control bar's right end shows whether the live link to the server is up, says so in words when it is lost, and tests it on a click.
+      - [silent drops](../changelog.md#it-did-not-the-page-looked-live-while-edits-failed-checked-by-killing-a-scratch-server-under-an-open-page); [connection status](../changelog.md#one-shared-event-stream-with-a-status-and-an-icon-that-tests-it-on-a-click-portolan-0192cb4)
+    - [x] Warnings as an icon ^ui-warnings
+      - Why: messages written onto the control bar pushed the controls about.
+      - A failed reload, edit or layout shows as a warning triangle whose tooltip carries the message.
+      - [warnings as an icon](../changelog.md#a-failed-reload-edit-or-layout-is-now-one-amber-warning-triangle-its-text-in-the-tooltip-portolan-75ba5b8)
     - [x] Freshness view {tags: [time]} ^ui-freshness
       - Why: on a large map, people need to spot active and neglected areas without reading dates.
       - A card's left edge is brighter the more recently its line or its dated diary entry changed.
@@ -186,9 +206,37 @@ title: Portolan
     - [x] History rail {tags: [time]} ^ui-history
       - Why: people want to see when a map changed and which items each change touched, without leaving the view.
       - Beside Diagnostics, each commit is a dot with its age; pointing at one highlights the items it changed. A map without commits shows its linked dates.
+      - Clicking a point frames the items it changed, with the zoom capped so one small item does not fill the view.
+      - [frame on click](../changelog.md#clicking-a-rail-dot-opens-the-groups-above-the-changed-nodes-and-fits-the-view-to-their-box-zoom-capped-at-about-11-portolan-f731362)
       - [history rail](../changelog.md#an-88-px-rail-at-the-far-right-next-to-diagnostics-commits-from-the-server-nodes-highlighted-on-hover-portolan-2513c2b)
       - Pointing at a commit opens its diff under Diagnostics, colored like a diff, until another dot or Close.
       - [diff panel](../changelog.md#diff-panel-under-diagnostics-pinned-to-the-last-hovered-point-diffs-computed-by-the-server-from-the-revision-texts-portolan-c2318bf)
+    - [x] Timers {tags: [time]} ^ui-timers
+      - Why: work in progress should show at a glance whether it is on time, nearly due or over.
+      - Doing cards show the time since the start against the estimate, finished ones the time they took; Diagnostics lists timed work, most urgent first.
+      - [timer chips](../changelog.md#estimate-2h-started-2026-10-15t09300800-doing-cards-show-elapsed-against-estimate-green--amber-from-80--red-over); [in-progress list](../changelog.md#an-in-progress-list-under-the-panels-dates-most-urgent-first-each-row-a-bar-of-elapsed-against-estimate)
+      - A todo with an estimate shows what the work is expected to take before it starts.
+      - [estimate on todos](../changelog.md#a-todo-with-an-estimate-and-no-start-shows-est-30y-as-a-grey-chip-portolan-faf49cd)
+    - [x] Time-depth view {tags: [time]} ^ui-depth
+      - Why: the map is laid out in time order already, but a flat plane cannot show how long a piece of work took or how far back an item's plan reaches.
+      - A toolbar toggle gives the map time as a third dimension; the first cut lifted each item by its time over the flat map.
+      - [time-depth view](../changelog.md#time-as-height-under-a-real-perspective-camera-the-gauge-on-the-ground-the-cards-floating-at-their-own-times-and-the-projection-done-in-points-so-pan-zoom-clicking-and-the-navigator-keep-working-portolan-1366444-b9fc359--the-perspective-rework)
+      - [x] Panels on a level time axis {tags: [time]} ^ui-depth-panels
+        - Why: lifted cards still faced the viewer square on, so the view did not read as 3D; each item has to stand in space at its own moment.
+        - Time runs level through the map; each item is a perspective panel orthogonal to it, seen at 45°, and pointing at one shows its title flat.
+        - [panels on a level axis](../changelog.md#time-runs-level-through-the-map-and-every-card-is-a-perspective-panel-at-its-own-moment-drawn-by-a-per-card-matrix3d-portolan-1609387)
+      - [x] The navigator decides the 3D view {tags: [time]} ^ui-depth-pose
+        - Why: the 3D view needs a fixed point of reference, and switching views should not lose one's place.
+        - The navigator keeps the flat map; the items in its frame set the time axis's offset and length so they fill the screen, and switching is a camera move from the flat view.
+        - [navigator decides the pose](../changelog.md#a-flat-navigator-a-pose-fitted-to-the-focus-nodes-and-a-camera-move-that-starts-on-the-flat-view-to-the-pixel)
+      - [x] Timer bars {tags: [time]} ^ui-depth-bars
+        - Why: how long work took or is taking is what a time axis is for.
+        - Done items by their real start and finish, doing ones as a progress bar against the estimate, others by their estimate; bars that would cross are stacked.
+        - [timer bars](../changelog.md#three-kinds-of-bar-by-status-stacked-into-lanes-where-they-cross-with-a-least-size-on-screen-portolan-0893051)
+      - [x] Bars for folded work {tags: [time]} ^ui-depth-inferred
+        - Why: a folded release with no times of its own showed nothing of how long it took.
+        - A folded done item without times of its own takes its bar from the work inside it.
+        - [inferred runs](../changelog.md#folded-done-nodes-take-their-run-from-the-earliest-start-to-the-latest-finish-inside-them-portolan-3c8722c)
     - [x] Compass-rose icon ^ui-favicon
       - Why: the app had no icon; a portolan compass rose ties the browser tab and the README to the project's name.
       - [favicon](../changelog.md#16-point-portolan-compass-rose-on-a-navy-tile-also-the-readme-logo-portolan-2dfaf35)
@@ -264,6 +312,16 @@ ui-layout needs ui-tree, ui-freshness: items are ordered by when they changed
 ui-labels needs ui-layout
 ui-star needs rhumb-star, ui-edit
 ui-search needs ui-tree
+rhumb-liveness needs rhumb-derive, rhumb-check
+rhumb-timing needs rhumb-parser
+ui-timers needs ui-tree, rhumb-timing
+ui-depth needs ui-timers, ui-history
+ui-depth-pose needs ui-depth-panels
+ui-depth-bars needs ui-depth-panels, ui-timers
+ui-depth-inferred needs ui-depth-bars
+ui-connection needs hot-reload
+ui-warnings needs ui-edit
+ui-fold-follow needs ui-tree
 ui-history needs ui-freshness, ui-diary
 ui-recent needs ui-index
 ui-copy needs ui-diary
