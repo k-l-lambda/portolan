@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import type { NodeTime } from "../../src/history.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
 import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
+import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle } from "./DepthLayer.tsx";
 import { blendPose, depthScene, ease, flatPose, projectPath, ribbonFor, targetPose, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
@@ -815,7 +816,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           title={`Open ${file} as plain text in a new tab`}>
           <SourceIcon /> Source: <span className="source-file">{file.split("/").pop()}</span>
         </a>
-        {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
+        {/* The live link to the server, at the bar's right end beside the time of the last reload. */}
+        <span className="live-end">
+          {reloadedAt && <span className="muted reloaded" aria-live="polite">updated {reloadedAt}</span>}
+          <ConnectionStatus />
+        </span>
       </div>
       <div className="doc-body">
         <div className="canvas">

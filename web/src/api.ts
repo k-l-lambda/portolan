@@ -110,27 +110,122 @@ export const api = {
     call<AnchorResponse>(STATIC !== null ? staticPath("anchor", file, line, index) : `/api/anchor?${q(file)}&node=${line}&index=${index}`),
 };
 
-/**
- * Subscribes to server file events; returns an unsubscribe function. EventSource reconnects
- * by itself after a server restart; `reconnect` fires then so callers can refetch whatever
- * changed while the connection was down.
- */
-export function onServerEvents(handlers: {
+/** The live connection to the server: up, being tested, or lost. */
+export type ConnectionStatus = "online" | "checking" | "offline";
+export interface ConnectionState {
+  status: ConnectionStatus;
+  /** When the status last changed, in ms since the epoch. */
+  since: number;
+  /** Set after a test the user asked for, with when it finished and whether the server answered. */
+  test?: { at: number; ok: boolean };
+}
+
+interface Handlers {
   change?: (data: { file: string; version: string }) => void;
   files?: () => void;
   /** A repository HEAD moved: blame times may have changed without a content change. */
   history?: () => void;
   reconnect?: () => void;
-}): () => void {
+}
+
+/** How long a test waits for the server's greeting before calling the connection lost. */
+const TEST_TIMEOUT = 5_000;
+/** How soon a stream the browser has given up on is opened again. */
+const REOPEN_AFTER = 5_000;
+
+/**
+ * One event stream for the whole page, shared by every view and by the status icon. The server
+ * greets each new stream with `hello`; that is what "online" means. EventSource retries by itself
+ * when a running server drops it, and is reopened here when the browser gives up (a proxy error,
+ * say), so the page comes back on its own when the server does.
+ */
+const live = (() => {
+  const subs = new Set<Handlers>();
+  const watchers = new Set<(s: ConnectionState) => void>();
+  let state: ConnectionState = { status: "checking", since: Date.now() };
+  let source: EventSource | null = null;
+  let greeted = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let testing = false;
+
+  const set = (next: Partial<ConnectionState>) => {
+    const status = next.status ?? state.status;
+    state = { ...state, ...next, since: status !== state.status ? Date.now() : state.since };
+    watchers.forEach((w) => w(state));
+  };
+  const open = () => {
+    source?.close();
+    clearTimeout(timer);
+    const es = new EventSource("/api/events");
+    source = es;
+    es.addEventListener("hello", () => {
+      if (source !== es) return;
+      clearTimeout(timer);
+      // A greeting after an earlier one is a reconnection: the views refetch what they show.
+      if (greeted) subs.forEach((h) => h.reconnect?.());
+      greeted = true;
+      set({ status: "online", ...(testing ? { test: { at: Date.now(), ok: true } } : {}) });
+      testing = false;
+    });
+    es.addEventListener("error", () => {
+      if (source !== es) return;
+      // A test ends on the first failure; ordinary retries carry on behind it.
+      set({ status: "offline", ...(testing ? { test: { at: Date.now(), ok: false } } : {}) });
+      testing = false;
+      if (es.readyState === EventSource.CLOSED) {
+        clearTimeout(timer);
+        timer = setTimeout(() => source === es && open(), REOPEN_AFTER);
+      }
+    });
+    es.addEventListener("change", (e) => subs.forEach((h) => h.change?.(JSON.parse((e as MessageEvent).data))));
+    es.addEventListener("files", () => subs.forEach((h) => h.files?.()));
+    es.addEventListener("history", () => subs.forEach((h) => h.history?.()));
+  };
+  const ensure = () => { if (!source) open(); };
+
+  return {
+    subscribe(h: Handlers) {
+      subs.add(h);
+      ensure();
+      return () => { subs.delete(h); };
+    },
+    watch(w: (s: ConnectionState) => void) {
+      watchers.add(w);
+      ensure();
+      w(state);
+      return () => { watchers.delete(w); };
+    },
+    /** Drop the stream and open a fresh one: the server answers within the timeout, or it is down. */
+    test() {
+      testing = true;
+      set({ status: "checking" });
+      open();
+      const es = source;
+      timer = setTimeout(() => {
+        if (source !== es || !testing) return;
+        testing = false;
+        set({ status: "offline", test: { at: Date.now(), ok: false } });
+      }, TEST_TIMEOUT);
+    },
+  };
+})();
+
+/**
+ * Subscribes to server file events; returns an unsubscribe function. `reconnect` fires when the
+ * stream comes back after a drop, so callers can refetch whatever they show.
+ */
+export function onServerEvents(handlers: Handlers): () => void {
   if (STATIC !== null) return () => {}; // a static export never changes
-  const source = new EventSource("/api/events");
-  let connected = false;
-  source.addEventListener("hello", () => {
-    if (connected) handlers.reconnect?.();
-    connected = true;
-  });
-  if (handlers.change) source.addEventListener("change", (e) => handlers.change!(JSON.parse((e as MessageEvent).data)));
-  if (handlers.files) source.addEventListener("files", () => handlers.files!());
-  if (handlers.history) source.addEventListener("history", () => handlers.history!());
-  return () => source.close();
+  return live.subscribe(handlers);
+}
+
+/** Follows the connection's status; returns an unsubscribe function. Null on a static export. */
+export function watchConnection(watcher: (s: ConnectionState) => void): (() => void) | null {
+  if (STATIC !== null) return null;
+  return live.watch(watcher);
+}
+
+/** Tests the connection now: a fresh stream, which the server must greet within a few seconds. */
+export function testConnection(): void {
+  if (STATIC === null) live.test();
 }

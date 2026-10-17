@@ -89,6 +89,19 @@ a { color: var(--accent); }
 .repo-link:hover { color: var(--text); background: var(--surface-2); }
 .repo-link .icon { width: 18px; height: 18px; }
 .crumbs { display: flex; align-items: center; gap: 4px; min-width: 0; color: var(--muted); }
+/* The server connection (ConnectionStatus): green while the live stream is up, pulsing while a test
+   runs, red with a word when it is lost. */
+.conn { display: inline-flex; align-items: center; }
+.conn-btn { border-color: transparent; background: transparent; }
+.conn-online .conn-btn { color: var(--st-done); }
+.conn-checking .conn-btn { color: var(--accent); }
+.conn-checking .conn-btn .icon { animation: conn-pulse 0.9s ease-in-out infinite; }
+.conn-offline .conn-btn { color: var(--error); border-color: color-mix(in srgb, var(--error) 45%, transparent); background: color-mix(in srgb, var(--error) 8%, transparent); }
+.conn-text { font: 600 12px/1 system-ui, sans-serif; }
+@keyframes conn-pulse { 50% { opacity: 0.35; } }
+/* Near the window's right edge, so its tooltip opens leftward rather than off the screen. */
+.conn-btn[data-tip]::after { left: auto; right: 0; transform: translate(0, -2px); white-space: normal; width: max-content; max-width: 320px; }
+.conn-btn[data-tip]:hover::after, .conn-btn[data-tip]:focus-visible::after { transform: translate(0, 0); }
 .recent-wrap { position: relative; min-width: 0; }
 .crumb-btn {
   display: inline-flex; align-items: center; gap: 4px; max-width: 60vw; padding: 2px 6px;
@@ -161,7 +174,9 @@ a { color: var(--accent); }
 }
 .doc-title { font-size: 16px; margin: 0; }
 .notice { color: var(--warning); font-size: 12px; }
-.reloaded { font-size: 12px; margin-left: auto; }
+.reloaded { font-size: 12px; }
+/* The reload time and the connection icon, kept together at the control bar's right end. */
+.live-end { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
 .btn {
   font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 6px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer;
@@ -422,6 +437,7 @@ a { color: var(--accent); }
 .edge-label.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
 @media (prefers-reduced-motion: reduce) {
   .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden, .card, .rail-dot { transition: none; }
+  .conn-checking .conn-btn .icon { animation: none; }
 }
 /* Hovering a label itself also shows its whole text. It widens in place around its centre and
    rises above neighbouring labels; it does not move, so it cannot slip out from under the cursor. */
@@ -646,3 +662,6 @@ a { color: var(--accent); }
   .side-main { width: auto; flex: 1; min-width: 0; border-left: 0; }
   .panel { width: auto; flex: 1; min-width: 0; border-left: 0; }
 }
+
+/* Read by screen readers, not drawn. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

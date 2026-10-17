@@ -81,3 +81,12 @@ export const View3DIcon = () => (
     <path d="M5.4 5.5 8 4.7l2.6.8L8 6.3z" opacity=".3" />
   </Icon>
 );
+
+/** A point sending out waves: the live connection to the server. */
+export const ConnectionIcon = () => (
+  <Icon>
+    <circle cx="8" cy="8" r="1.7" fill="currentColor" stroke="none" />
+    <path d="M5.2 5.2a4 4 0 0 0 0 5.6M10.8 5.2a4 4 0 0 1 0 5.6" />
+    <path d="M3 3a7.1 7.1 0 0 0 0 10M13 3a7.1 7.1 0 0 1 0 10" opacity=".55" />
+  </Icon>
+);
