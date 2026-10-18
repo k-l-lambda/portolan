@@ -679,7 +679,7 @@ a { color: var(--accent); }
 .floor-bar.running.timer-over .bar-fill { fill: color-mix(in srgb, var(--error) 28%, transparent); }
 .floor-bar.running.timer-over .bar-over { fill: color-mix(in srgb, var(--error) 85%, transparent); }
 .floor-bar .bar-now { stroke: var(--text); stroke-width: 2; }
-.bar-label { fill: var(--text); font-family: ui-monospace, monospace; font-weight: 600; text-anchor: start; }
+.bar-label { fill: var(--text); font-family: ui-monospace, monospace; font-weight: 600; }
 .floor-bar.estimate .bar-label { fill: var(--muted); font-weight: 500; }
 .floor-bar.running.timer-over .bar-label { fill: var(--error); }
 

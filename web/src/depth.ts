@@ -146,6 +146,15 @@ export function axisU(time: number, focus: Focus): number {
   return u < 0 ? -squeezed : 1 + squeezed;
 }
 
+/**
+ * Position along the time axis on the window's own scale, with no squeezing: 0 at the oldest end,
+ * 1 at the newest, and beyond either end in proportion. Timer bars use it, so a bar is the true
+ * length of its stretch of time even where it runs out of the window, and off the screen.
+ */
+export function linearU(time: number, focus: Focus): number {
+  return (time - (focus.to - focus.span)) / focus.span;
+}
+
 /** The camera's own frame: forward along the line of sight, right and up across the screen. */
 function frame(camera: Camera) {
   const cp = Math.cos(camera.pitch), sp = Math.sin(camera.pitch);
@@ -652,12 +661,18 @@ const headerOf = (b: DepthBox) => ({ width: Math.min(HEADER_W, b.width), height:
 
 /** The bar for a ribbon under a box, at the box's own centre across. */
 function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, lane = 0, pitch = 0, px = 0, floorH?: number): Bar {
+  // A bar is drawn to the true scale of the window, not squeezed into its tails like the panels'
+  // moments: a plan of eight days on a two-day window is four windows long, and runs off screen.
   const size = barSize(px);
   const at = (t: number, h: number) => {
     const q = projectPoint(view, { t, d: b.x + b.width / 2, h });
     return { x: q.x, y: q.y };
   };
-  const track = (time: number) => axisU(time, view.focus) * view.length;
+  // The newest a bar may reach: a little in front of the eye, where the newer end of time passes it.
+  // Clipped there rather than drawn through the eye, where the projection turns inside out.
+  const { fwd } = frame(view.camera);
+  const nearest = fwd.t < 0 ? view.aim.t + (view.camera.dist * 0.85) / -fwd.t : Infinity;
+  const track = (time: number) => Math.min(nearest, linearU(time, view.focus) * view.length);
   /** A stretch along time, widened to the least length so a minute's work on a year's axis is a mark. */
   const span = (from: number, to: number): [number, number] => {
     let t0 = track(from), t1 = track(to);
@@ -879,8 +894,10 @@ export function targetPose(
     anchor: { x: 0, y: 0 },
     focus, floorH, ruler, floorFar: x1, lanes, lanePitch, px,
   });
-  // The focus nodes' 3D bounding box on screen: their panels and their bars. With `ruler`, its
-  // height reaches down to the ruler too, so the ruler stays on screen under the cards it measures.
+  // The focus nodes' 3D bounding box on screen: their panels, and their bars as far as they are
+  // under the panels; a bar is its true length and may run far off the frame, which is allowed,
+  // so only its height is counted. With `ruler`, its height reaches down to the ruler too, so the
+  // ruler stays on screen under the cards it measures.
   const bounds = (pose: Pose, withRuler = false) => {
     const view = viewOf(pose);
     const pts: Point[] = [];
@@ -888,7 +905,16 @@ export function targetPose(
       const s = size(b), t = trackOf(view, timeOf(b.key));
       pts.push(...panelAt(view, b.x, b.y, t, s.width, s.height).quad);
       const r = ribbonOf(b.key);
-      if (r) pts.push(...barFor(view, { ...b, width: s.width }, footOf(b, isGroup(b.key)), r, b.key, pose.lanes[b.key] ?? 0, pose.lanePitch, pose.px).points);
+      if (r) {
+        // The bar's height where it stands under its own card: its far end, true to scale, may be
+        // anywhere — even beside the eye, where it would project far down the screen.
+        const size = barSize(pose.px);
+        const top = footOf(b, isGroup(b.key)) - size.gap - (pose.lanes[b.key] ?? 0) * pose.lanePitch;
+        for (const h of [top, top - size.h]) {
+          const q = projectPoint(view, { t, d: b.x + s.width / 2, h });
+          pts.push({ x: q.x, y: q.y });
+        }
+      }
     }
     const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
     if (withRuler) {
@@ -938,7 +964,7 @@ export function targetPose(
   const px = 1 / Math.max(1e-6, first.sigma * zoom);
   const bar = barSize(px);
   const lanePitch = Math.max(bar.h + 4 * px, (LABEL_H + 4) * px);
-  const lanes = assignLanes(viewOf(first), boxes, ribbonOf, isGroup, px);
+  const lanes = assignLanes(viewOf(first), boxes, ribbonOf, isGroup, px, rect);
   let lowest = floor0;
   for (const b of boxes) {
     const lane = lanes[b.key];
@@ -960,6 +986,7 @@ const LABEL_CH = 6.4;
  */
 function assignLanes(
   view: View, boxes: DepthBox[], ribbonOf: (key: string) => Ribbon | null, isGroup: (key: string) => boolean, px: number,
+  rect?: Rect,
 ): Record<string, number> {
   const rows = new Map<number, { key: string; x0: number; x1: number }[]>();
   for (const b of boxes) {
@@ -970,10 +997,15 @@ function assignLanes(
     const foot = footOf(b, group);
     const bar = barFor(view, { ...b, width: w }, foot, r, b.key, 0, 0, px);
     const xs = bar.points.map((p) => p.x);
-    // Its label stands beside its newer end.
-    const x1 = Math.max(...xs) + (6 + r.label.length * LABEL_CH) * px;
+    // Only the part on screen can cross another bar; a bar running far off it would otherwise
+    // push every bar in its row into lanes of their own. Its label stands beside its newer end,
+    // or at the screen's edge when that end is off it.
+    const lo = rect ? rect.x : -Infinity, hi = rect ? rect.x + rect.width : Infinity;
+    const x0 = Math.max(lo, Math.min(...xs));
+    const x1 = Math.min(hi, Math.max(...xs) + (6 + r.label.length * LABEL_CH) * px);
+    if (x1 < x0) continue;
     const row = Math.round(foot);
-    (rows.get(row) ?? rows.set(row, []).get(row)!).push({ key: b.key, x0: Math.min(...xs), x1 });
+    (rows.get(row) ?? rows.set(row, []).get(row)!).push({ key: b.key, x0, x1 });
   }
   const out: Record<string, number> = {};
   for (const items of rows.values()) {

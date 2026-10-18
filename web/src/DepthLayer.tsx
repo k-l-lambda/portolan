@@ -103,7 +103,6 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks, focus, 
                 {b.fill && <polygon className="bar-fill" points={poly(b.fill)} />}
                 {b.over && <polygon className="bar-over" points={poly(b.over)} />}
                 {b.nowAt && <line className="bar-now" x1={b.nowAt[0].x} y1={b.nowAt[0].y} x2={b.nowAt[1].x} y2={b.nowAt[1].y} />}
-                <text className="bar-label" x={b.labelAt.x + 5 * px} y={b.labelAt.y} dominantBaseline="middle" style={{ fontSize: 10 * px }}>{b.label}</text>
               </g>
             ))}
           </g>
@@ -120,11 +119,46 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks, focus, 
               </g>
             ))}
           </g>
+          <BarLabels bars={bars} px={px} />
         </svg>
       </div>
     </ViewportPortal>
   );
 });
+
+/**
+ * The bars' labels, beside each bar's newer end. A bar is drawn to true scale and can run off the
+ * screen, so a label whose end is off it stands at the screen's edge instead, on the bar's own
+ * line. Kept apart from DepthFloor, since it follows every pan while the rest need not.
+ */
+function BarLabels({ bars, px }: { bars: Bar[]; px: number }) {
+  const [tx, , k] = useStore((st) => st.transform);
+  const fw = useStore((st) => st.width);
+  const left = -tx / k, right = (fw - tx) / k;
+  return (
+    <g className="floor-bar-labels">
+      {bars.map((b) => {
+        // The bar's midline: from the middle of its older edge to the middle of its newer one.
+        const [p0, p1, p2, p3] = b.points as [Point, Point, Point, Point];
+        const a = { x: (p0.x + p3.x) / 2, y: (p0.y + p3.y) / 2 }, z = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+        const room = (6 + b.label.length * 6.4) * px;
+        let x = z.x + 5 * px, y = z.y, anchor: "start" | "end" = "start";
+        if (z.x + room > right) {
+          // Its newer end is off the right of the screen: the label ends at the edge, on the bar.
+          x = Math.max(a.x, right - 6 * px);
+          y = a.y + ((z.y - a.y) * (x - a.x)) / Math.max(1e-6, z.x - a.x) - 12 * px;
+          anchor = "end";
+        }
+        if (z.x < left) return null;
+        return (
+          <g key={b.key} className={`floor-bar ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
+            <text className="bar-label" x={x} y={y} dominantBaseline="middle" textAnchor={anchor} style={{ fontSize: 10 * px }}>{b.label}</text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
 
 /**
  * The hovered panel's title, flat and at its natural size, just above the panel. It is drawn in

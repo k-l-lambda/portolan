@@ -9,7 +9,7 @@ import { timingOf } from "../src/timing.ts";
 import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
-  innerRun, nodeRibbon, ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
+  innerRun, linearU, nodeRibbon, ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
 } from "../web/src/depth.ts";
 import { searchNodes } from "../web/src/search.ts";
 import { timerState } from "../web/src/timerState.ts";
@@ -729,6 +729,33 @@ rhumb: 0.1
         return depthScene(boxes, { ...p, focus }, () => NOW - DAY, () => r, () => false).bars[0]!;
       };
       const width = (q: { x: number }[]) => Math.abs(q[1]!.x - q[0]!.x);
+
+      it("is the true length of its time, even where it runs out of the window", () => {
+        // A plan of eight days from inside a two-day window: four windows long, not squeezed.
+        const win = { to: NOW + 6 * HOUR, span: 2 * DAY };
+        const r = { kind: "running" as const, from: NOW - HOUR, to: NOW, plan: { from: NOW - HOUR, to: NOW - HOUR + 8 * DAY }, state: "ok" as const, label: "1h/8d", detail: "" };
+        const p = targetPose(boxes, { x: -100, y: -100, width: 600, height: 300 }, () => NOW - DAY, () => r, () => false, 1)!;
+        const sc = depthScene(boxes, { ...p, focus: win }, () => NOW - DAY, () => r, () => false);
+        const g = sc.bars[0]!.ground!;
+        // Measured on the floor in world terms: the track's ends sit at the plan's own moments.
+        const v = sc.view;
+        const at = (time: number) => projectPoint(v, { t: linearU(time, win) * v.length, d: boxes[0]!.x + boxes[0]!.width / 2, h: sc.pose.floorH });
+        expect(g.track![0].x).toBeCloseTo(at(r.plan.from).x, 4);
+        expect(g.track![1].x).toBeCloseTo(at(r.plan.to).x, 4);
+        // And the run is to the same scale: one hour of the eight days, not a fixed share.
+        expect(linearU(r.plan.to, win) - linearU(r.plan.from, win)).toBeCloseTo(4, 9);
+      });
+
+      it("may run off the frame without moving the framing", () => {
+        const frame = { x: -100, y: -100, width: 600, height: 300 };
+        const short = { kind: "actual" as const, from: NOW - 2 * DAY, to: NOW - DAY, state: null, label: "1d", detail: "" };
+        const long = { kind: "estimate" as const, from: NOW - DAY, to: NOW + 300 * DAY, state: null, label: "est. 300d", detail: "" };
+        const a = targetPose(boxes, frame, () => NOW - DAY, () => short, () => false, 1)!;
+        const b = targetPose(boxes, frame, () => NOW - DAY, () => long, () => false, 1)!;
+        // The cards decide the fit: a bar 300 days long shrinks nothing.
+        expect(b.sigma).toBeCloseTo(a.sigma, 6);
+        expect(b.length).toBeCloseTo(a.length, 6);
+      });
 
       it("fills a done run solid, with no track", () => {
         const b = scene({ kind: "actual", from: NOW - 5 * DAY, to: NOW - 2 * DAY, state: null, label: "3d", detail: "took 3d" });
