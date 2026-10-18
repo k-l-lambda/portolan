@@ -259,8 +259,20 @@ const bars = at3d.bars.map((bar) => {
     out.push(`<line x1="${r1(nx[0]![0]!.x)}" y1="${r1(nx[0]![0]!.y)}" x2="${r1(nx[0]![1]!.x)}" y2="${r1(nx[0]![1]!.y)}" stroke="${C.text}" stroke-width="2">`
       + smil("x1", nx.map((q) => r1(q[0]!.x))) + smil("y1", nx.map((q) => r1(q[0]!.y))) + smil("x2", nx.map((q) => r1(q[1]!.x))) + smil("y2", nx.map((q) => r1(q[1]!.y))) + `</line>`);
   }
-  const lx = per.map((b) => r1(b.labelAt.x - VX + 5 * px)), ly = per.map((b) => r1(b.labelAt.y - VY));
-  out.push(`<text x="${lx[0]}" y="${ly[0]}" dominant-baseline="middle" font-size="${r1(10 * px)}" font-family="${MONO}" font-weight="${bar.kind === "estimate" ? 500 : 600}" fill="${overdue ? ERR : bar.kind === "estimate" ? C.muted : C.text}">${esc(bar.label)}`
+  // Beside the bar's newer end; when that end is past the image's right edge (a bar is drawn to
+  // true scale, so it can be), at the edge on the bar's own line instead, as the app's BarLabels does.
+  const room = (6 + bar.label.length * 6.4) * px;
+  const place = per.map((b) => {
+    const [p0, p1, p2, p3] = b.points.map(shifted) as [Point, Point, Point, Point];
+    const a = { x: (p0.x + p3.x) / 2, y: (p0.y + p3.y) / 2 }, z = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+    if (z.x + room <= W) return { x: z.x + 5 * px, y: z.y, end: false };
+    const x = Math.max(a.x, W - 6 * px);
+    return { x, y: a.y + ((z.y - a.y) * (x - a.x)) / Math.max(1e-6, z.x - a.x) - 12 * px, end: true };
+  });
+  const lx = place.map((q) => r1(q.x)), ly = place.map((q) => r1(q.y));
+  // The anchor cannot be animated smoothly; take the one the 3D view needs, where the label is read.
+  const anchor = place[STEPS + 1]!.end ? "end" : "start";
+  out.push(`<text x="${lx[0]}" y="${ly[0]}" dominant-baseline="middle" text-anchor="${anchor}" font-size="${r1(10 * px)}" font-family="${MONO}" font-weight="${bar.kind === "estimate" ? 500 : 600}" fill="${overdue ? ERR : bar.kind === "estimate" ? C.muted : C.text}">${esc(bar.label)}`
     + smil("x", lx) + smil("y", ly) + `</text>`);
   return `<g>${out.join("")}</g>`;
 }).join("\n");
