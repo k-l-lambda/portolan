@@ -66,7 +66,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const [overrides, setOverrides] = useState<Map<string, boolean>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
   // Hovered node or edge; falls back to the selected node so keyboard and touch users get the same focus.
-  const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string } | null>(null);
+  // `floor`: the hover came from the node's projection on the 3D view's floor, so its title shows there.
+  const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string; floor?: boolean } | null>(null);
   const [allLabels, setAllLabels] = useState(false);
   // Last placed position of each label, so a label fades out where it was shown.
   const lastLabelAt = useRef(new Map<string, { x: number; y: number }>());
@@ -426,6 +427,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // A new layout (a group opened or closed, the file reloaded) moves the cards; the pose follows.
   useEffect(() => { if (threeD && !move.current) retarget(); }, [layout]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Pointing at a projection on the floor is pointing at its item (and its card lifts with it,
+  // since the pointer is not on the card for the plain :hover rule to do it).
+  // Its title shows where the pointer met the projection: a group's can be long, and its middle far off.
+  const [floorAt, setFloorAt] = useState<{ x: number; y: number } | null>(null);
+  const onFloorHover = useCallback((key: string | null, client?: { x: number; y: number }) => {
+    setFloorAt(client ? flow.screenToFlowPosition(client) : null);
+    setHover(key ? { kind: "node", id: key, floor: true } : null);
+  }, [flow]);
+
   /** Each item's status and freshness, for its projection on the floor. */
   const floorMarks = useMemo(() => {
     const out = new Map<string, FloorMark>();
@@ -613,7 +623,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
-  const { nodes, edges, focusCss } = useMemo(() => {
+  const { nodes, edges, focusCss, focusSet } = useMemo(() => {
     // Focus set: the hovered node, else the nodes a hovered history point changed, else the
     // search matches (for both, only they and the edges between them light up), else the
     // selected node, else (with "Highlight starred") every starred node. A node in a collapsed
@@ -712,9 +722,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     // Dimming is a stylesheet keyed by node ID instead (see focusCss).
     // While hovering, the cards the highlight reaches lift a little; the hovered card itself lifts
     // more through plain :hover CSS, so it is left out here.
-    const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id)))
+    const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id && !hover.floor)))
       : point ? railNodes : new Set<string>();
-    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near) };
+    // The floor's projections follow the cards: a focused card's projection lights up, the rest dim.
+    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null };
   }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, data]);
 
   const selectLine = useCallback((line: number) => {
@@ -890,7 +901,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onMoveEnd={onMoveEnd}
             proOptions={{ hideAttribution: false }}
           >
-            {scene && <DepthFloor scene={scene} zoom={zoom} marks={floorMarks} />}
+            {scene && <DepthFloor scene={scene} zoom={zoom} marks={floorMarks} focus={focusSet} hovered={hover?.kind === "node" ? hover.id : null}
+              onHover={onFloorHover} />}
             {scene && !moving && scene.pose.blend > 0.99 && hover?.kind === "node" && (() => {
               // A panel at 45° is foreshortened, so the hovered one also shows its title flat.
               const panel = scene.panels.get(hover.id);
@@ -898,7 +910,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
               if (!panel || !box) return null;
               const t = nodeTimes.get(box.node.line);
               const sub = [box.node.id ? shortId(box.node.id, null, 24) : "", t !== undefined ? absoluteTime(t) : ""].filter(Boolean).join(" · ");
-              return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} />;
+              // Pointed at on the floor, the title shows there, where the pointer met the projection.
+              return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} at={hover.floor ? floorAt ?? undefined : undefined} />;
             })()}
             <Background gap={24} />
             <Controls showInteractive={false} />

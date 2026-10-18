@@ -24,8 +24,17 @@ function BarTitle({ bar }: { bar: Bar }) {
 /** What the floor needs of an item beyond its geometry: its status and how fresh it is (0..1). */
 export interface FloorMark { status: string; fresh: number }
 
-export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks }: { scene: DepthScene; zoom: number; marks: Map<string, FloorMark> }) {
+/**
+ * `focus` is the set of items the view highlights (null when nothing is): their projections light
+ * up and every other one dims, as the cards do. Pointing at an item's projection is pointing at
+ * the item: `onHover` reports it, and the view highlights the item and shows its title.
+ */
+export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks, focus, hovered, onHover }: {
+  scene: DepthScene; zoom: number; marks: Map<string, FloorMark>;
+  focus: Set<string> | null; hovered: string | null; onHover: (key: string | null, client?: Point) => void;
+}) {
   const { bars, drops, floor, shadows } = scene;
+  const lit = (key: string) => (focus === null ? "" : focus.has(key) ? (key === hovered ? " lit hovered" : " lit") : " dim");
   const ticks = rulerTicks(scene, zoom);
   const line = rulerLine(scene);
   // One screen pixel in flow units: marks and text are sized in it, so they keep their screen size.
@@ -61,16 +70,19 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks }: { sce
               const mk = marks.get(sh.key);
               const style = { "--st": `var(--st-${mk?.status ?? "todo"})`, "--fresh": `${Math.round(20 + (mk?.fresh ?? 0) * 80)}%` } as CSSProperties;
               return (
-                <g key={sh.key} className="floor-shadow" style={style}>
+                <g key={sh.key} className={`floor-shadow${lit(sh.key)}`} style={style}
+                  onMouseEnter={(e) => onHover(sh.key, { x: e.clientX, y: e.clientY })} onMouseLeave={() => onHover(null)}>
                   <line x1={sh.from.x} y1={sh.from.y} x2={sh.to.x} y2={sh.to.y} />
                   <circle cx={sh.from.x} cy={sh.from.y} r={2.1 * px} />
+                  {/* A wider invisible line along it, so the pointer need not land on a 2 px stroke. */}
+                  <line className="shadow-hit" x1={sh.from.x} y1={sh.from.y} x2={sh.to.x} y2={sh.to.y} />
                 </g>
               );
             })}
           </g>
           <g className="floor-grounds">
             {bars.map((b) => b.ground && (
-              <g key={b.key} className={`floor-ground ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}`}>
+              <g key={b.key} className={`floor-ground ${b.kind}${b.plan ? " progress" : ""}${b.state ? ` timer-${b.state}` : ""}${lit(b.key)}`}>
                 {b.ground.track && <line className="ground-track" x1={b.ground.track[0].x} y1={b.ground.track[0].y} x2={b.ground.track[1].x} y2={b.ground.track[1].y} />}
                 {b.ground.fill && <line className="ground-fill" x1={b.ground.fill[0].x} y1={b.ground.fill[0].y} x2={b.ground.fill[1].x} y2={b.ground.fill[1].y} />}
                 {b.ground.over && <line className="ground-over" x1={b.ground.over[0].x} y1={b.ground.over[0].y} x2={b.ground.over[1].x} y2={b.ground.over[1].y} />}
@@ -118,12 +130,13 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks }: { sce
  * The hovered panel's title, flat and at its natural size, just above the panel. It is drawn in
  * screen space, outside the viewport transform, so it reads the same at any zoom and angle.
  */
-export function HoverTitle({ panel, title, sub }: { panel: Panel; title: string; sub: string }) {
+export function HoverTitle({ panel, title, sub, at }: { panel: Panel; title: string; sub: string; at?: Point }) {
   const { x, y, zoom } = useViewport();
-  // Above a group's header rather than its whole frame, which can reach far past the title.
+  // Above a group's header rather than its whole frame, which can reach far past the title; or at
+  // `at` (flow coordinates), such as the projection on the floor that is being pointed at.
   const q = panel.header ?? panel.quad;
-  const left = ((q[0]!.x + q[1]!.x) / 2) * zoom + x;
-  const top = Math.min(q[0]!.y, q[1]!.y) * zoom + y;
+  const left = (at ? at.x : (q[0]!.x + q[1]!.x) / 2) * zoom + x;
+  const top = (at ? at.y : Math.min(q[0]!.y, q[1]!.y)) * zoom + y;
   return (
     <div className="hover-title" style={{ left, top }} role="tooltip">
       <div className="hover-title-text">{title}</div>

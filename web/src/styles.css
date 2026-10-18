@@ -629,6 +629,15 @@ a { color: var(--accent); }
    colour, with a dot at its left end as strong as the card's left edge, which shows freshness. */
 .floor-shadow line { stroke: color-mix(in srgb, var(--st) 55%, transparent); stroke-width: 2; stroke-linecap: round; }
 .floor-shadow circle { fill: color-mix(in srgb, var(--st) var(--fresh, 100%), var(--surface)); stroke: var(--st); stroke-width: 1; }
+/* The floor layer passes the pointer through; a projection takes it on a wider invisible line. */
+.floor-shadow .shadow-hit { stroke: transparent; stroke-width: 10; pointer-events: stroke; cursor: default; }
+/* Following the cards' focus: a highlighted item's projections light up, the rest dim. */
+.floor-shadow, .floor-ground { transition: opacity 0.2s ease; }
+.floor-shadow.dim, .floor-ground.dim { opacity: 0.22; }
+.floor-shadow.lit line:not(.shadow-hit) { stroke: var(--st); stroke-width: 3; }
+.floor-shadow.lit circle { stroke-width: 1.5; }
+.floor-shadow.hovered line:not(.shadow-hit) { stroke-width: 4; }
+.floor-ground.lit line { stroke-width: 4; }
 /* A timer bar's projection on the floor, along the time axis under the bar, in the bar's colours. */
 .floor-ground { --st: var(--st-todo); }
 .floor-ground.actual { --st: var(--st-done); }
