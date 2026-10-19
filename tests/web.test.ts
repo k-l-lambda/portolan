@@ -515,6 +515,22 @@ describe("the 3D time-depth view", () => {
       }
     });
 
+    it("fits the focus nodes into the region the 3D view shows, which may not be the frame", () => {
+      // The navigator's frame picks the cards; the 3D view, panned and zoomed on its own, shows
+      // another region, and they are fitted into that one.
+      const frame = { x: 250, y: 100, width: 600, height: 300 };
+      const screen = { x: 2000, y: -500, width: 900, height: 450 };
+      const p = targetPose(grid, frame, gridTime, none, noGroup, 1, screen)!;
+      const own = targetPose(grid, frame, gridTime, none, noGroup, 1)!;
+      expect(p.focus).toEqual(own.focus);
+      const b = box(quads(depthScene(grid, p, gridTime, none, noGroup), focusNodes(grid, frame, noGroup).map((x) => x.key)));
+      expect(b.x).toBeGreaterThanOrEqual(screen.x - 1);
+      expect(b.y).toBeGreaterThanOrEqual(screen.y - 1);
+      expect(b.x + b.width).toBeLessThanOrEqual(screen.x + screen.width + 1);
+      expect(b.y + b.height).toBeLessThanOrEqual(screen.y + screen.height + 1);
+      expect(Math.max(b.width / screen.width, b.height / screen.height)).toBeGreaterThan(0.6);
+    });
+
     it("gives the time axis the length that makes the focus nodes' box the frame's shape", () => {
       const wide = targetPose(grid, { x: -40, y: -40, width: 2400, height: 460 }, gridTime, none, noGroup, 1)!;
       const narrow = targetPose(grid, { x: -40, y: -40, width: 1200, height: 460 }, gridTime, none, noGroup, 1)!;

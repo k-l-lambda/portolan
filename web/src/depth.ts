@@ -858,7 +858,9 @@ const MAX_SIGMA = 1.6;
  * The 3D pose for a flat view's frame. The focus nodes inside `rect` give the window (the time
  * they span) and so the time axis's offset; the axis's length is then the one that makes the
  * focus nodes' 3D bounding box the shape of the display, and the scene is scaled and placed so that
- * box fills `rect`. `zoom` is the flat view's, so the ruler's labels get their room on screen.
+ * box fills `screen`: the region the 3D view shows, which is `rect` itself unless the 3D view has
+ * been panned or zoomed on its own since. `zoom` is the 3D view's, so the ruler's labels get their
+ * room on screen.
  *
  * Null when the frame holds no card, so the caller keeps the pose it has.
  */
@@ -869,6 +871,7 @@ export function targetPose(
   ribbonOf: (key: string) => Ribbon | null,
   isGroup: (key: string) => boolean,
   zoom = 1,
+  screen: Rect = rect,
 ): Pose | null {
   const F = focusNodes(boxes, rect, isGroup);
   if (F.length === 0) return null;
@@ -925,7 +928,7 @@ export function targetPose(
 
   // The ruler's labels need room below it on screen, which is a fixed number of screen pixels.
   const room = LABEL_ROOM / Math.max(0.02, zoom);
-  const target = { width: rect.width * (1 - 2 * FIT_PAD), height: rect.height * (1 - 2 * FIT_PAD) - room };
+  const target = { width: screen.width * (1 - 2 * FIT_PAD), height: screen.height * (1 - 2 * FIT_PAD) - room };
   const want = target.width / Math.max(1, target.height);
   // The shape of the focus nodes' box grows wider with the length of time; find the length that
   // makes it the display's shape. Searched on a log scale, since the right length can be anything
@@ -950,7 +953,7 @@ export function targetPose(
   const fit = (pose: Pose) => {
     const b = bounds(pose, true);
     const sigma = Math.min(MAX_SIGMA, target.width / Math.max(1e-6, b.width), target.height / Math.max(1e-6, b.height));
-    const cx = rect.x + rect.width / 2, cy = rect.y + (rect.height - room) / 2;
+    const cx = screen.x + screen.width / 2, cy = screen.y + (screen.height - room) / 2;
     return { ...pose, sigma, anchor: { x: cx - sigma * (b.x + b.width / 2), y: cy - sigma * (b.y + b.height / 2) } };
   };
 
@@ -964,7 +967,7 @@ export function targetPose(
   const px = 1 / Math.max(1e-6, first.sigma * zoom);
   const bar = barSize(px);
   const lanePitch = Math.max(bar.h + 4 * px, (LABEL_H + 4) * px);
-  const lanes = assignLanes(viewOf(first), boxes, ribbonOf, isGroup, px, rect);
+  const lanes = assignLanes(viewOf(first), boxes, ribbonOf, isGroup, px, screen);
   let lowest = floor0;
   for (const b of boxes) {
     const lane = lanes[b.key];

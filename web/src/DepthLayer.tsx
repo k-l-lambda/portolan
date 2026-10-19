@@ -7,7 +7,7 @@
 // the panels. Its text and marks are scaled against the zoom, so the ruler stays readable at any
 // zoom instead of shrinking to specks with the map.
 
-import { Panel as FlowPanel, useReactFlow, useStore, useViewport, ViewportPortal } from "@xyflow/react";
+import { Panel as FlowPanel, useReactFlow, useStore, useViewport, ViewportPortal, type Viewport } from "@xyflow/react";
 import { memo, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
 import { rulerLine, rulerTicks, type Bar, type DepthScene, type Panel, type Point } from "./depth.ts";
 import type { Box } from "./elkLayout.ts";
@@ -188,12 +188,23 @@ const MINI_W = 200, MINI_H = 150;
  * layout's boxes, so the frame keeps meaning one thing: the flat camera whose cards set the 3D pose.
  * Dragging the frame pans that camera and the wheel zooms it, as xyflow's does; `onDrag` reports a
  * drag starting and ending, so the pose can follow once at the end rather than on every step.
+ *
+ * The camera is the main view's own viewport, unless `onCamera` is given: then (in 3D) it is
+ * `camera`, kept apart from the main view, so panning the 3D view leaves the frame alone and moving
+ * the frame reports the new camera instead of moving the main view.
  */
-export function FlatMiniMap({ boxes, classOf, onDrag }: { boxes: Box[]; classOf: (b: Box) => string; onDrag: (on: boolean) => void }) {
+export function FlatMiniMap({ boxes, classOf, onDrag, camera = null, onCamera }: {
+  boxes: Box[]; classOf: (b: Box) => string; onDrag: (on: boolean) => void;
+  camera?: Viewport | null; onCamera?: (v: Viewport) => void;
+}) {
   const flow = useReactFlow();
-  const [tx, ty, k] = useStore((st) => st.transform);
+  const [stx, sty, sk] = useStore((st) => st.transform);
   const fw = useStore((st) => st.width), fh = useStore((st) => st.height);
+  const own = onCamera && camera ? camera : null;
+  const tx = own ? own.x : stx, ty = own ? own.y : sty, k = own ? own.zoom : sk;
   const view = { x: -tx / k, y: -ty / k, width: fw / k, height: fh / k };
+  const getCam = (): Viewport => own ?? flow.getViewport();
+  const setCam = (v: Viewport) => (own && onCamera ? onCamera(v) : flow.setViewport(v));
   // Every laid-out box is on the map; a folded group is one box (its `hidden` counts what it holds).
   const shown = boxes;
   const xs = [view.x, ...shown.map((b) => b.x)], ys = [view.y, ...shown.map((b) => b.y)];
@@ -210,7 +221,7 @@ export function FlatMiniMap({ boxes, classOf, onDrag }: { boxes: Box[]; classOf:
   /** Flow units per screen pixel inside the navigator. */
   const unit = W / MINI_W;
   const onDown = (e: ReactPointerEvent<SVGSVGElement>) => {
-    const v = flow.getViewport();
+    const v = getCam();
     drag.current = { x: e.clientX, y: e.clientY, vx: v.x, vy: v.y, zoom: v.zoom, moved: false };
     e.currentTarget.setPointerCapture(e.pointerId);
     onDrag(true);
@@ -221,7 +232,7 @@ export function FlatMiniMap({ boxes, classOf, onDrag }: { boxes: Box[]; classOf:
     d.moved = true;
     // The frame moves with the pointer, so the view moves the other way, in the view's own pixels.
     const dx = (e.clientX - d.x) * unit * d.zoom, dy = (e.clientY - d.y) * unit * d.zoom;
-    flow.setViewport({ x: d.vx - dx, y: d.vy - dy, zoom: d.zoom });
+    setCam({ x: d.vx - dx, y: d.vy - dy, zoom: d.zoom });
   };
   const onUp = (e: ReactPointerEvent<SVGSVGElement>) => {
     const d = drag.current;
@@ -230,17 +241,17 @@ export function FlatMiniMap({ boxes, classOf, onDrag }: { boxes: Box[]; classOf:
       // A click centres the frame on the point clicked.
       const r = e.currentTarget.getBoundingClientRect();
       const px = vx - off + ((e.clientX - r.x) / r.width) * W, py = vy - off + ((e.clientY - r.y) / r.height) * H;
-      flow.setViewport({ x: fw / 2 - px * d.zoom, y: fh / 2 - py * d.zoom, zoom: d.zoom });
+      setCam({ x: fw / 2 - px * d.zoom, y: fh / 2 - py * d.zoom, zoom: d.zoom });
     }
     onDrag(false);
   };
   const onWheel = (e: ReactWheelEvent<SVGSVGElement>) => {
-    const v = flow.getViewport();
+    const v = getCam();
     const zoom = Math.min(2, Math.max(0.1, v.zoom * Math.pow(2, -e.deltaY * 0.002)));
     // About the frame's centre, so the region in the frame stays in it.
     const cx = (fw / 2 - v.x) / v.zoom, cy = (fh / 2 - v.y) / v.zoom;
     onDrag(true);
-    flow.setViewport({ x: fw / 2 - cx * zoom, y: fh / 2 - cy * zoom, zoom });
+    setCam({ x: fw / 2 - cx * zoom, y: fh / 2 - cy * zoom, zoom });
     clearTimeout(wheelEnd.current);
     wheelEnd.current = window.setTimeout(() => onDrag(false), 200);
   };

@@ -1,5 +1,5 @@
 import {
-  Background, Controls, MarkerType, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge,
+  Background, Controls, MarkerType, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge, type Viewport,
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
@@ -31,6 +31,13 @@ import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard, fill: FrameFill };
+
+/** The viewport that shows flow point (x, y) at the main view's centre, at `zoom`, as `setCenter` places it. */
+function centerAt(x: number, y: number, zoom: number): Viewport {
+  const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+  const w = pane?.width ?? 1000, h = pane?.height ?? 600;
+  return { x: w / 2 - x * zoom, y: h / 2 - y * zoom, zoom };
+}
 
 /** Older history points loaded per page as the rail is scrolled to its end (the server's first page is as long). */
 const TIMELINE_PAGE = 50;
@@ -350,8 +357,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // The 3D view stands each card in its own moment along a level time axis (see depth.ts). The
   // flat view's camera is kept throughout: the navigator always shows it, and the cards inside its
-  // frame — the focus nodes — decide the 3D pose. Changing between the views moves the camera
-  // from one pose to the other, starting from the flat view itself.
+  // frame — the focus nodes — decide the 3D pose. In 3D it is kept apart from the 3D view's own
+  // pan and zoom, so looking about the 3D scene leaves the frame, and the pose, where they are.
+  // Changing between the views moves the camera from one pose to the other, starting from the
+  // flat view itself.
   const [threeD, setThreeD] = useState(false);
   /** The pose on screen, null in the flat view; and the move in progress, if any. */
   const [pose, setPose] = useState<Pose | null>(null);
@@ -359,26 +368,19 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const raf = useRef(0);
   const [moving, setMoving] = useState(false);
   const [zoom, setZoom] = useState(1);
-  /** Whether the navigator is being dragged: its frame moves continuously, and the pose follows at the end. */
-  const miniDrag = useRef(false);
+  /**
+   * The flat view's camera while in 3D, which the navigator shows and moves; null in the flat
+   * view, where it is the main view's own viewport. The view's own framings (a search, a history
+   * point, a fold) move it too, and the pose follows.
+   */
+  const [camera, setCamera] = useState<Viewport | null>(null);
+  const cameraRef = useRef<Viewport | null>(null);
+  const setCam = useCallback((v: Viewport | null) => { cameraRef.current = v; setCamera(v); }, []);
+  // Read by callbacks that outlive a render (effects with narrow dependencies, the camera's tween).
+  const threeDRef = useRef(false);
 
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
-  // After a fold or unfold, pan by however far the node's box moved, so it stays where it was on
-  // screen instead of jumping with the relayout (see `followToggle`). Kept out of the way of the
-  // other framings: a search, a history point or a node from the URL each centre their own target.
-  const prevLayout = useRef<ElkResult | null>(null);
-  useEffect(() => {
-    const before = prevLayout.current;
-    prevLayout.current = layout;
-    const key = toggled.current;
-    if (!layout || !before || !key) return;
-    toggled.current = null;
-    const a = before.boxes.find((b) => b.key === key), b = layout.boxes.find((x) => x.key === key);
-    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
-    if (!a || !b || !pane) return;
-    flow.setViewport(followToggle(a, b, flow.getViewport(), pane));
-  }, [layout, flow]);
   const [layoutError, setLayoutError] = useState<string | null>(null);
   useEffect(() => {
     if (!data) return;
@@ -407,12 +409,15 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     return nodeRibbon(box.node, box.hidden > 0, nodeTimes.get(box.node.line) ?? now, now);
   }, [layout, nodeTimes, now]);
 
-  /** The 3D pose for the flat view's frame as it is now. Null when the frame holds no card. */
-  const poseFor = useCallback((v = flow.getViewport()): Pose | null => {
+  /**
+   * The 3D pose for the flat view's frame `cam`, fitted into the region the 3D view shows, `v`
+   * (the same, until the 3D view is panned or zoomed on its own). Null when the frame holds no card.
+   */
+  const poseFor = useCallback((cam = cameraRef.current ?? flow.getViewport(), v = flow.getViewport()): Pose | null => {
     const pane = document.querySelector(".canvas")?.getBoundingClientRect();
     if (!pane || !layout) return null;
-    const rect = { x: -v.x / v.zoom, y: -v.y / v.zoom, width: pane.width / v.zoom, height: pane.height / v.zoom };
-    return targetPose(layout.boxes, rect, timeOf, ribbonOf, isGroup, v.zoom);
+    const region = (q: Viewport) => ({ x: -q.x / q.zoom, y: -q.y / q.zoom, width: pane.width / q.zoom, height: pane.height / q.zoom });
+    return targetPose(layout.boxes, region(cam), timeOf, ribbonOf, isGroup, v.zoom, region(v));
   }, [flow, layout, timeOf, ribbonOf, isGroup]);
   const poseForRef = useRef(poseFor);
   poseForRef.current = poseFor;
@@ -436,32 +441,73 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     raf.current = requestAnimationFrame(step);
   }, []);
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
-  useEffect(() => { cancelAnimationFrame(raf.current); move.current = null; setMoving(false); setPose(null); setThreeD(false); }, [file]);
+  useEffect(() => {
+    cancelAnimationFrame(raf.current); move.current = null; setMoving(false); setPose(null);
+    setThreeD(false); threeDRef.current = false; setCam(null);
+  }, [file, setCam]);
 
   /** In 3D: move the camera to the pose for the flat view's frame, if it frames any card. */
-  const retarget = useCallback((v?: { x: number; y: number; zoom: number }) => {
-    if (!threeD) return;
-    const to = poseForRef.current(v);
+  const retarget = useCallback(() => {
+    if (!threeDRef.current) return;
+    const to = poseForRef.current();
     if (to) moveTo(to, 450);
-  }, [threeD, moveTo]);
+  }, [moveTo]);
+
+  /**
+   * Move the flat view's camera: in the flat view, the main view itself; in 3D, the navigator's
+   * frame, and the pose follows the cards it now holds while the 3D view stays where it is.
+   */
+  const moveCamera = useCallback((v: Viewport, ms = 0) => {
+    if (!threeDRef.current) return void flow.setViewport(v, ms ? { duration: ms } : undefined);
+    setCam(v);
+    retarget();
+  }, [flow, setCam, retarget]);
+  /** The flat view's camera as it is now. */
+  const cameraNow = useCallback(() => (threeDRef.current && cameraRef.current) || flow.getViewport(), [flow]);
 
   const toggle3D = useCallback(() => {
     if (!threeD) {
-      const to = poseFor();
+      const v = flow.getViewport();
+      // Stop the main view where it is, should it still be on its way back from a previous 3D visit.
+      flow.setViewport(v);
+      const to = poseFor(v, v);
       if (!to) return;
+      threeDRef.current = true;
+      setCam(v);
       // From the flat view itself: every card where it is, so the move starts without a jump.
       poseRef.current = flatPose(to);
       setPose(poseRef.current);
       setThreeD(true);
       moveTo(to, 900);
     } else {
-      const from = poseRef.current;
+      const from = poseRef.current, back = cameraRef.current;
+      threeDRef.current = false;
       setThreeD(false);
-      if (!from) return setPose(null);
-      // Back to the flat view the navigator has kept all along, then to the flat cards themselves.
-      moveTo(flatPose(from), 700, () => setPose(null));
+      // Back to the flat view the navigator has kept all along: the main view returns to its frame
+      // while the camera turns flat, so the move ends on the flat cards in that frame.
+      if (back) flow.setViewport(back, { duration: 700 });
+      const done = () => (setPose(null), setCam(null));
+      if (!from) return done();
+      moveTo(flatPose(from), 700, done);
     }
-  }, [threeD, poseFor, moveTo]);
+  }, [threeD, flow, poseFor, moveTo, setCam]);
+
+  // After a fold or unfold, pan by however far the node's box moved, so it stays where it was on
+  // screen instead of jumping with the relayout (see `followToggle`); in 3D, the navigator's frame
+  // follows it so. Kept out of the way of the other framings: a search, a history point or a node
+  // from the URL each centre their own target.
+  const prevLayout = useRef<ElkResult | null>(null);
+  useEffect(() => {
+    const before = prevLayout.current;
+    prevLayout.current = layout;
+    const key = toggled.current;
+    if (!layout || !before || !key) return;
+    toggled.current = null;
+    const a = before.boxes.find((b) => b.key === key), b = layout.boxes.find((x) => x.key === key);
+    const pane = document.querySelector(".canvas")?.getBoundingClientRect();
+    if (!a || !b || !pane) return;
+    moveCamera(followToggle(a, b, cameraNow(), pane));
+  }, [layout, moveCamera, cameraNow]);
 
   // A new layout (a group opened or closed, the file reloaded) moves the cards; the pose follows.
   useEffect(() => { if (threeD && !move.current) retarget(); }, [layout]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -490,12 +536,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     ? depthScene(layout.boxes, pose, timeOf, ribbonOf, isGroup)
     : null), [pose, layout, timeOf, ribbonOf, isGroup]);
 
-  // After a pan or zoom of the flat view's camera — the main view or the navigator — the 3D pose
-  // follows the cards its frame now holds. The ruler's density follows the zoom.
-  const onMoveEnd = useCallback((_e: unknown, v: { x: number; y: number; zoom: number }) => {
-    setZoom(v.zoom);
-    if (!miniDrag.current) retarget(v);
-  }, [retarget]);
+  // After a pan or zoom of the main view, the ruler's density follows its zoom. In 3D that pans or
+  // zooms the 3D view alone: the navigator's frame, and so the pose, stay where they are.
+  const onMoveEnd = useCallback((_e: unknown, v: Viewport) => setZoom(v.zoom), []);
 
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
@@ -530,9 +573,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     // Cap the zoom so a point that changed one small item does not fill the screen with it; a
     // point that changed a wide area still fits, since that needs a lower zoom anyway.
     const target = fitZoom({ x, y, width: right - x, height: bottom - y }, view, 0.2, FRAME_MAX_ZOOM);
-    flow.setCenter(target.x, target.y, { zoom: target.zoom, duration: 500 });
+    moveCamera(centerAt(target.x, target.y, target.zoom), 500);
     setPendingFrame(null);
-  }, [pendingFrame, layout, flow]);
+  }, [pendingFrame, layout, moveCamera]);
 
   const base = useMemo(() => {
     if (!data || !layout) return { nodes: [] as CardNode[], edges: [] as FlowEdge[] };
@@ -633,9 +676,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const box = layout.boxes.find((b) => b.key === pendingCenter);
     if (!box) return; // ancestors are still expanding; the next layout will have it
     const header = box.container ? 76 : box.height;
-    flow.setCenter(box.x + box.width / 2, box.y + header / 2, { zoom: Math.max(flow.getZoom(), 0.9), duration: 400 });
+    moveCamera(centerAt(box.x + box.width / 2, box.y + header / 2, Math.max(cameraNow().zoom, 0.9)), 400);
     setPendingCenter(null);
-  }, [pendingCenter, layout, flow]);
+  }, [pendingCenter, layout, moveCamera, cameraNow]);
 
   // A node named in the URL is focused once its document has loaded.
   const focused = useRef<string | null>(null);
@@ -959,7 +1002,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             <FlatMiniMap
               boxes={layout?.boxes ?? []}
               classOf={(b) => `mini status-${b.node.status ?? "todo"}${b.container ? " mini-group" : ""}${starred(b.node) ? " mini-star" : ""}`}
-              onDrag={(on) => { miniDrag.current = on; if (!on) retarget(); }}
+              // In 3D the navigator moves its own frame, not the 3D view; the pose follows once a drag ends.
+              camera={camera}
+              onCamera={threeD ? setCam : undefined}
+              onDrag={(on) => { if (!on) retarget(); }}
             />
           </ReactFlow>
         </div>
