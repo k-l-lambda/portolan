@@ -9,7 +9,7 @@ import { timingOf } from "../src/timing.ts";
 import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
-  innerRun, linearU, nodeRibbon, ribbonFor, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
+  innerRun, linearU, nodeRibbon, ribbonFor, rulerLine, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
 } from "../web/src/depth.ts";
 import { searchNodes } from "../web/src/search.ts";
 import { timerState } from "../web/src/timerState.ts";
@@ -616,7 +616,7 @@ describe("the 3D time-depth view", () => {
         for (const t of ticks) {
           expect(t.time).toBeLessThanOrEqual(focus.to);
           expect(t.time).toBeGreaterThanOrEqual(focus.to - focus.span);
-          expect(t.u).toBeCloseTo(axisU(t.time, focus), 9);
+          expect(t.u).toBeCloseTo(linearU(t.time, focus), 9);
           expect(t.label.length).toBeGreaterThan(0);
         }
         for (let i = 1; i < ticks.length; i++) expect(ticks[i]!.time, `span ${span}`).toBeLessThan(ticks[i - 1]!.time);
@@ -760,6 +760,43 @@ rhumb: 0.1
         expect(g.track![1].x).toBeCloseTo(at(r.plan.to).x, 4);
         // And the run is to the same scale: one hour of the eight days, not a fixed share.
         expect(linearU(r.plan.to, win) - linearU(r.plan.from, win)).toBeCloseTo(4, 9);
+      });
+
+      it("carry the ruler to true scale as far as the farthest bar reaches, and mark the present", () => {
+        const win = { to: NOW + 6 * HOUR, span: 2 * DAY };
+        const r = { kind: "running" as const, from: NOW - HOUR, to: NOW, plan: { from: NOW - HOUR, to: NOW - HOUR + 8 * DAY }, state: "ok" as const, label: "1h/8d", detail: "" };
+        const p = targetPose(boxes, { x: -100, y: -100, width: 600, height: 300 }, () => NOW - DAY, () => r, () => false, 1)!;
+        const sc = depthScene(boxes, { ...p, focus: win }, () => NOW - DAY, () => r, () => false, NOW);
+        const L = sc.view.length;
+        // The bar's newer end is four windows on (or clipped in front of the eye); the ruler reaches it.
+        expect(sc.extent[0]).toBeCloseTo(0, 6);
+        expect(sc.extent[1]).toBeCloseTo(sc.bars[0]!.reach[1], 6);
+        expect(sc.extent[1]).toBeGreaterThan(L * 1.2);
+        // Its true-scale line covers the bar's projection on the floor, end to end.
+        const line = rulerLine(sc);
+        const groundEnd = sc.bars[0]!.ground!.track![1];
+        const rulerEnd = projectPoint(sc.view, { t: sc.extent[1], d: sc.pose.ruler, h: sc.pose.floorH });
+        expect(line.window[1].x).toBeCloseTo(rulerEnd.x, 6);
+        expect(groundEnd.x - line.window[1].x).toBeLessThan(1e-6 + Math.abs(groundEnd.x - rulerEnd.x));
+        // Ticks run on past the window at the window's own step: evenly spaced in time all along.
+        const ticks = rulerTicks(sc, 1);
+        expect(ticks.some((t) => t.u > 1.05)).toBe(true);
+        expect(Math.max(...ticks.map((t) => t.u * L))).toBeLessThanOrEqual(sc.extent[1] + 1e-6);
+        const steps = new Set<number>();
+        const all = axisTicks(win, 1, { from: win.to - win.span, to: win.to + 6 * win.span });
+        for (let i = 1; i < all.length; i++) steps.add(Math.round(all[i - 1]!.time - all[i]!.time));
+        expect(steps.size).toBe(1);
+        // No two kept labels overlap on screen (11px monospace), however packed the far end is.
+        const xs = ticks.map((t) => ({ x: t.at.x, w: t.label.length * 6.8 })).sort((a, b) => a.x - b.x);
+        for (let i = 1; i < xs.length; i++) expect(xs[i]!.x - xs[i - 1]!.x).toBeGreaterThanOrEqual((xs[i]!.w + xs[i - 1]!.w) / 2);
+        // The present: across the floor at its own moment, on the true-scale ruler.
+        expect(sc.now).toBeDefined();
+        const n = projectPoint(sc.view, { t: linearU(NOW, win) * L, d: sc.pose.ruler, h: sc.pose.floorH });
+        expect(sc.now!.at.x).toBeCloseTo(n.x, 6);
+        expect(sc.now!.at.y).toBeCloseTo(n.y, 6);
+        // Without a present moment there is no line; nor when it falls past what the eye can see.
+        expect(depthScene(boxes, { ...p, focus: win }, () => NOW - DAY, () => r, () => false).now).toBeUndefined();
+        expect(depthScene(boxes, { ...p, focus: win }, () => NOW - DAY, () => r, () => false, NOW + 1e4 * YEAR).now).toBeUndefined();
       });
 
       it("may run off the frame without moving the framing", () => {

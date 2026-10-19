@@ -71,7 +71,7 @@ add(0, 0);
 for (let i = 0; i <= STEPS; i++) add(HOLD_FLAT + (TURN * i) / STEPS, ease(i / STEPS));
 for (let i = 0; i <= STEPS; i++) add(HOLD_FLAT + TURN + HOLD_3D + (TURN * i) / STEPS, ease(1 - i / STEPS));
 add(DUR, 0);
-const scenes: DepthScene[] = samples.map(({ s }) => depthScene(dboxes, blendPose(flat, target, s), timeOf, ribbonOf, isGroup));
+const scenes: DepthScene[] = samples.map(({ s }) => depthScene(dboxes, blendPose(flat, target, s), timeOf, ribbonOf, isGroup, NOW));
 const poses: Pose[] = scenes.map((sc) => sc.pose);
 const at3d = scenes[STEPS + 1]!; // the end of the turn into 3D
 const keyTimes = samples.map((x) => +x.at.toFixed(5)).join(";");
@@ -214,7 +214,7 @@ const shadows = at3d.shadows.map((sh) => {
   return animLine(per, `stroke="${mix(st, 55, C.bg)}" stroke-width="2" stroke-linecap="round"`)
     + `<circle cx="${cx[0]}" cy="${cy[0]}" r="${r1(2.1 * px)}" fill="${mix(st, fresh, C.surface)}" stroke="${st}" stroke-width="1">${smil("cx", cx)}${smil("cy", cy)}</circle>`;
 }).join("\n");
-const grounds = at3d.bars.map((bar) => {
+const grounds = `<g opacity="0.4">` + at3d.bars.map((bar) => {
   if (!bar.ground) return "";
   const st = bar.kind === "actual" ? ST.done : bar.kind === "running"
     ? (bar.state === "over" ? ERR : bar.state === "near" ? WARN : ST.done) : C.muted;
@@ -229,7 +229,19 @@ const grounds = at3d.bars.map((bar) => {
   return part("track", bar.kind === "estimate" ? `stroke="${C.muted}" stroke-width="2" stroke-dasharray="4 3"` : `stroke="${mix(st, 45, C.bg)}" stroke-width="2"`)
     + part("fill", `stroke="${mix(st, 80, C.bg)}" stroke-width="3"`)
     + part("over", `stroke="${ERR}" stroke-width="3"`);
-}).join("\n");
+}).join("\n") + `</g>`;
+
+// The present moment across the floor, as DepthFloor draws it: a strong line over a halo. A sample
+// where it is off the ruler takes the nearest sample's place, so the line does not fly in from 0,0.
+const nowPer = scenes.map((sc) => sc.now ?? null);
+const nowFilled = nowPer.map((q, i) => q ?? nowPer.slice(i).find(Boolean) ?? [...nowPer.slice(0, i)].reverse().find(Boolean) ?? null);
+const nowLine = nowFilled.every(Boolean) ? (() => {
+  const per = nowFilled.map((q) => [q!.at, q!.far] as [Point, Point]);
+  const fx = per.map((q) => r1(shifted(q[1]).x)), fy = per.map((q) => r1(shifted(q[1]).y - 6 * px));
+  return animLine(per, `stroke="${C.bg}" stroke-width="${r1(6 * px)}" stroke-linecap="round" opacity="0.85"`)
+    + animLine(per, `stroke="${ERR}" stroke-width="${r1(2.5 * px)}" stroke-linecap="round"`)
+    + `<text x="${fx[0]}" y="${fy[0]}" text-anchor="middle" font-size="${r1(10 * px)}" font-family="${MONO}" font-weight="700" fill="${ERR}">now${smil("x", fx)}${smil("y", fy)}</text>`;
+})() : "";
 
 const drops = at3d.drops.map((d) => {
   const per = scenes.map((sc) => sc.drops.find((x) => x.key === d.key) ?? null);
@@ -277,7 +289,7 @@ const bars = at3d.bars.map((bar) => {
   return `<g>${out.join("")}</g>`;
 }).join("\n");
 
-const floor = `<g class="show moving">${floorPoly}\n${grid.join("\n")}\n${shadows}\n${grounds}\n${drops}\n${bars}\n${rulerParts}\n${rulerMarks.join("\n")}</g>`;
+const floor = `<g class="show moving">${floorPoly}\n${grid.join("\n")}\n${shadows}\n${grounds}\n${drops}\n${bars}\n${nowLine}\n${rulerParts}\n${rulerMarks.join("\n")}</g>`;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}" role="img" aria-labelledby="t">
 <title id="t">${esc(m.doc.title ?? "Rhumb map")}: ${input.split("/").pop()} turning from the flat map into the time-depth view and back</title>

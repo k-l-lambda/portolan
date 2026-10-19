@@ -533,8 +533,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   /** The scene in the pose on screen: a panel for each card at its own moment, and the floor. */
   const scene = useMemo(() => (pose && layout
-    ? depthScene(layout.boxes, pose, timeOf, ribbonOf, isGroup)
-    : null), [pose, layout, timeOf, ribbonOf, isGroup]);
+    ? depthScene(layout.boxes, pose, timeOf, ribbonOf, isGroup, now)
+    : null), [pose, layout, timeOf, ribbonOf, isGroup, now]);
 
   // After a pan or zoom of the main view, the ruler's density follows its zoom. In 3D that pans or
   // zooms the 3D view alone: the navigator's frame, and so the pose, stay where they are.

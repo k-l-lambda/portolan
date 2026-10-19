@@ -642,7 +642,9 @@ a { color: var(--accent); }
 .floor-shadow.lit circle { stroke-width: 1.5; }
 .floor-shadow.hovered line:not(.shadow-hit) { stroke-width: 4; }
 .floor-ground.lit line { stroke-width: 4; }
-/* A timer bar's projection on the floor, along the time axis under the bar, in the bar's colours. */
+/* A timer bar's projection on the floor, along the time axis under the bar, in the bar's colours,
+   kept faint as a whole (lit, plain or dimmed alike) so it reads as a shadow of the bar, not a second bar. */
+.floor-grounds { opacity: 0.4; }
 .floor-ground { --st: var(--st-todo); }
 .floor-ground.actual { --st: var(--st-done); }
 .floor-ground.running { --st: var(--st-doing); }
@@ -687,7 +689,14 @@ a { color: var(--accent); }
 .floor-bar.estimate .bar-label { fill: var(--muted); font-weight: 500; }
 .floor-bar.running.timer-over .bar-label { fill: var(--error); }
 
-/* The ruler along the floor's near edge: solid over the window, dashed over the squeezed tails. */
+/* The present moment across the floor: a strong line from the ruler to the far edge, over a halo of
+   the background so it stays clear where it crosses the grid and the projections. */
+.floor-now line { stroke-linecap: round; }
+.floor-now .now-halo { stroke: var(--bg); stroke-width: 6; opacity: 0.85; }
+.floor-now .now-line { stroke: var(--error); stroke-width: 2.5; }
+.floor-now .now-label { fill: var(--error); font-family: ui-monospace, monospace; font-weight: 700; }
+/* The ruler along the floor's near edge: solid where it is to true scale (the window, and on as far
+   as the bars and the present reach), dashed over the squeezed tails beyond, where only panels stand. */
 .floor-ruler .ruler-line { stroke: var(--muted); stroke-width: 1.6; }
 .floor-ruler .ruler-tail { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: 0.7; }
 .floor-ruler .ruler-tick line { stroke: var(--muted); stroke-width: 1.2; }

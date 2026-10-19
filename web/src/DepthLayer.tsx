@@ -40,7 +40,7 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks, focus, 
   // One screen pixel in flow units: marks and text are sized in it, so they keep their screen size.
   const px = 1 / Math.max(0.05, zoom);
   const pts = [
-    ...floor.quad, ...line.older, ...line.newer, ...ticks.flatMap((t) => [t.at, t.far]),
+    ...floor.quad, ...line.older, ...line.newer, ...ticks.flatMap((t) => [t.at, t.far]), ...(scene.now ? [scene.now.at, scene.now.far] : []),
     ...bars.flatMap((b) => b.points), ...drops.flatMap((d) => [d.from, d.to]), ...shadows.flatMap((s) => [s.from, s.to]),
   ];
   const pad = 60 * px;
@@ -106,8 +106,16 @@ export const DepthFloor = memo(function DepthFloor({ scene, zoom, marks, focus, 
               </g>
             ))}
           </g>
-          {/* The ruler: solid over the window, dashed over the squeezed tails, where the scale is no
-              longer even and a reading would mislead. */}
+          {/* The present moment, across the floor from the ruler: where "now" is against the bars. */}
+          {scene.now && (
+            <g className="floor-now">
+              <line className="now-halo" x1={scene.now.at.x} y1={scene.now.at.y} x2={scene.now.far.x} y2={scene.now.far.y} style={{ strokeWidth: 6 * px }} />
+              <line className="now-line" x1={scene.now.at.x} y1={scene.now.at.y} x2={scene.now.far.x} y2={scene.now.far.y} style={{ strokeWidth: 2.5 * px }} />
+              <text className="now-label" x={scene.now.far.x} y={scene.now.far.y - 6 * px} textAnchor="middle" style={{ fontSize: 10 * px }}>now</text>
+            </g>
+          )}
+          {/* The ruler: solid where it is to true scale (the window, and on as far as the bars and the
+              present reach), dashed over the squeezed tails beyond, where a reading would mislead. */}
           <g className="floor-ruler" style={{ strokeWidth: 1.4 * px }}>
             <line className="ruler-line" x1={line.window[0].x} y1={line.window[0].y} x2={line.window[1].x} y2={line.window[1].y} />
             <line className="ruler-tail" x1={line.older[0].x} y1={line.older[0].y} x2={line.older[1].x} y2={line.older[1].y} />

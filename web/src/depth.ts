@@ -336,7 +336,8 @@ export type TickUnit = "hour" | "day" | "month" | "year";
 
 export interface Tick {
   time: number;
-  /** Position along the time axis, 0 at the window's oldest end and 1 at its newest. */
+  /** Position along the time axis on the window's own scale (`linearU`): 0 at its oldest end, 1 at
+   *  its newest, and beyond them in proportion, where the ruler runs on past the window. */
   u: number;
   label: string;
   /** A tick on a bigger boundary than its own step: drawn heavier, so the eye can count by it. */
@@ -555,29 +556,33 @@ export function nodeRibbon(node: RhumbNode, folded: boolean, own: number, now: n
   };
 }
 
+/** The most ticks one ruler is given, however far it runs past the window. */
+const MAX_TICKS = 400;
+
 /**
  * Ticks along the time axis, newest first: the boundary crossed, its position, its text, and
- * whether it falls on a boundary bigger than its step. About `count` of them are placed, each on
- * a real calendar boundary, so the labels read as dates rather than as an even division of the window.
+ * whether it falls on a boundary bigger than its step. The step is the one that puts about
+ * `count` of them over the window, each on a real calendar boundary, so the labels read as dates
+ * rather than as an even division of the window. They are placed over `range` (times, the window
+ * by default) at that same step, so a ruler run on past the window keeps its spacing.
  */
-export function axisTicks(focus: Focus, count: number): Tick[] {
+export function axisTicks(focus: Focus, count: number, range?: { from: number; to: number }): Tick[] {
   // The step whose tick count lands nearest the target, counting both ends. Comparing counts rather
   // than ratios matters: a step that looks nearest in ratio can still put half again as many ticks
   // on the axis as wanted, and they then crowd each other.
   const target = Math.max(2, count);
   const n = (step: number) => focus.span / step + 1;
   const [step, unit] = STEPS.reduce((best, s) => (Math.abs(n(s[0]) - target) < Math.abs(n(best[0]) - target) ? s : best));
-  const oldest = focus.to - focus.span;
+  const oldest = range?.from ?? focus.to - focus.span, newest = range?.to ?? focus.to;
   const out: Tick[] = [];
   const add = (time: number, label: string, major: boolean) => {
-    // Only ticks inside the window: one beyond it would sit in a squeezed tail and crowd the edge.
-    if (time > focus.to || time < oldest) return;
-    out.push({ time, u: axisU(time, focus), label, major });
+    if (time > newest || time < oldest) return;
+    out.push({ time, u: linearU(time, focus), label, major });
   };
   if (unit === "year") {
     const years = Math.max(1, Math.round(step / YEAR));
     let i = 0;
-    for (let y = Math.floor((1970 + focus.to / YEAR) / years) * years; out.length < 60; y -= years, i++) {
+    for (let y = Math.floor((1970 + newest / YEAR) / years) * years; out.length < MAX_TICKS; y -= years, i++) {
       const time = yearStart(y);
       if (time < oldest - step) break;
       // Every fifth tick drawn heavier. Keying it to a named boundary instead would make every tick
@@ -585,7 +590,7 @@ export function axisTicks(focus: Focus, count: number): Tick[] {
       add(time, yearLabel(y), i % 5 === 0);
     }
   } else {
-    for (let t = alignDown(focus.to, step, unit); t >= oldest && out.length < 60; t = alignDown(t - 1, step, unit)) {
+    for (let t = alignDown(newest, step, unit); t >= oldest && out.length < MAX_TICKS; t = alignDown(t - 1, step, unit)) {
       add(t, labelOf(t, unit, step, focus.span / DAY), isMajor(t, unit));
     }
   }
@@ -621,6 +626,9 @@ export interface Bar extends Ribbon {
   over?: Point[];
   /** Every corner, for framing. */
   points: Point[];
+  /** The stretch of the time axis the bar covers, in world units along it (as clipped in front of
+   *  the eye): the ruler runs at least this far. */
+  reach: [number, number];
   /** Where the run stands now, for a run in progress: a mark across the bar. */
   nowAt?: [Point, Point];
   /** The bar's projection on the floor, part by part: lines along the time axis under the bar,
@@ -648,6 +656,14 @@ export interface DepthScene {
   shadows: { key: string; from: Point; to: Point }[];
   bars: Bar[];
   floor: Floor;
+  /**
+   * The stretch of the time axis the ruler is drawn over to true scale, in world units along it:
+   * the window, and on past it as far as any bar reaches and to the present moment (in front of
+   * the eye). Its ticks are evenly spaced in time over all of it.
+   */
+  extent: [number, number];
+  /** The present moment across the floor, from the ruler to the floor's far edge, when it is on the ruler. */
+  now?: { at: Point; far: Point };
   view: View;
   pose: Pose;
 }
@@ -659,6 +675,19 @@ const trackOf = (view: View, time: number | undefined) => axisU(time ?? view.foc
  *  as its card when choosing what is framed. */
 const headerOf = (b: DepthBox) => ({ width: Math.min(HEADER_W, b.width), height: Math.min(HEADER_H, b.height) });
 
+/**
+ * The newest a thing along time may be drawn at: a little in front of the eye, where the newer end
+ * of time passes it. Bars and the ruler are clipped there rather than drawn through the eye, where
+ * the projection turns inside out.
+ */
+function nearestT(view: View): number {
+  const { fwd } = frame(view.camera);
+  return fwd.t < 0 ? view.aim.t + (view.camera.dist * 0.85) / -fwd.t : Infinity;
+}
+
+/** The moment at a place along the time axis (world units), on the window's own scale. */
+const timeAtT = (view: View, t: number) => view.focus.to - view.focus.span + (t / view.length) * view.focus.span;
+
 /** The bar for a ribbon under a box, at the box's own centre across. */
 function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, lane = 0, pitch = 0, px = 0, floorH?: number): Bar {
   // A bar is drawn to the true scale of the window, not squeezed into its tails like the panels'
@@ -668,10 +697,7 @@ function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, l
     const q = projectPoint(view, { t, d: b.x + b.width / 2, h });
     return { x: q.x, y: q.y };
   };
-  // The newest a bar may reach: a little in front of the eye, where the newer end of time passes it.
-  // Clipped there rather than drawn through the eye, where the projection turns inside out.
-  const { fwd } = frame(view.camera);
-  const nearest = fwd.t < 0 ? view.aim.t + (view.camera.dist * 0.85) / -fwd.t : Infinity;
+  const nearest = nearestT(view);
   const track = (time: number) => Math.min(nearest, linearU(time, view.focus) * view.length);
   /** A stretch along time, widened to the least length so a minute's work on a year's axis is a mark. */
   const span = (from: number, to: number): [number, number] => {
@@ -715,6 +741,7 @@ function barFor(view: View, b: DepthBox, foot: number, r: Ribbon, key: string, l
     ...r, key, ...out,
     ...(floorH === undefined ? {} : { ground }),
     points: quad(whole),
+    reach: whole,
     // At the bar's newer end, beside it rather than under it, so stacked lanes do not need room
     // for text between them; DepthFloor sets it off by a few screen pixels.
     labelAt: at(whole[1], (top + bot) / 2),
@@ -739,6 +766,7 @@ export function depthScene(
   timeOf: (key: string) => number | undefined,
   ribbonOf: (key: string) => Ribbon | null,
   isGroup: (key: string) => boolean,
+  now?: number,
 ): DepthScene {
   const view = viewOf(pose);
   const raw = new Map<string, Omit<Panel, "fog">>();
@@ -798,11 +826,23 @@ export function depthScene(
     if (below > pose.floorH) drops.push({ key: b.key, from: at(p.t, b.x + w / 2, below), to: at(p.t, b.x + w / 2, pose.floorH) });
   }
 
+  // The ruler, to true scale: over the window, and on as far as the bars reach and to the present,
+  // so every bar's stretch can be read off it. Panels outside the window still stand in the
+  // squeezed tails; the floor reaches over those too.
+  const L = view.length, nearest = nearestT(view);
+  const nowT = now === undefined ? null : linearU(now, view.focus) * L;
+  let lo = 0, hi = L;
+  for (const bar of bars) (lo = Math.min(lo, bar.reach[0]), hi = Math.max(hi, bar.reach[1]));
+  if (nowT !== null && Number.isFinite(nowT)) (lo = Math.min(lo, nowT), hi = Math.max(hi, nowT));
+  hi = Math.min(hi, nearest);
+  const extent: [number, number] = [lo, hi];
+  const f0 = Math.min(lo, -TAIL * L), f1 = Math.min(nearest, Math.max(hi, (1 + TAIL) * L));
   const floor: Floor = {
-    quad: [at(-TAIL * view.length, pose.ruler, pose.floorH), at((1 + TAIL) * view.length, pose.ruler, pose.floorH),
-      at((1 + TAIL) * view.length, pose.floorFar, pose.floorH), at(-TAIL * view.length, pose.floorFar, pose.floorH)],
+    quad: [at(f0, pose.ruler, pose.floorH), at(f1, pose.ruler, pose.floorH), at(f1, pose.floorFar, pose.floorH), at(f0, pose.floorFar, pose.floorH)],
   };
-  return { panels, order, drops, shadows, bars, floor, view, pose };
+  const nowLine = nowT !== null && nowT >= lo && nowT <= hi
+    ? { at: at(nowT, pose.ruler, pose.floorH), far: at(nowT, pose.floorFar, pose.floorH) } : undefined;
+  return { panels, order, drops, shadows, bars, floor, extent, ...(nowLine ? { now: nowLine } : {}), view, pose };
 }
 
 /** Smallest window allowed, so a run of edits in one minute does not become a microscope. */
@@ -1030,31 +1070,56 @@ export interface RulerTick extends Tick {
   far: Point;
 }
 
+/** Screen width of one character of a ruler label (11px monospace), and the least space between two labels. */
+const TICK_CH = 6.8, TICK_SPACE = 6;
+
 /**
- * The ruler's ticks at a zoom. Their spacing is set in screen pixels, so a ruler drawn longer on
- * screen carries finer ticks — months into days, days into hours.
+ * The ruler's ticks at a zoom, over its whole extent. Their step is set by the window's length in
+ * screen pixels, so a ruler drawn longer on screen carries finer ticks — months into days, days
+ * into hours — and is kept past the window, so the spacing is even in time all along. Where the
+ * perspective packs them closer than their labels allow (far back along the axis), the lesser ones
+ * give way: major ticks first, then the rest, each kept only if its label clears those kept.
  */
 export function rulerTicks(scene: DepthScene, zoom: number): RulerTick[] {
-  const { view, pose } = scene;
+  const { view, pose, extent } = scene;
   const a = projectPoint(view, { t: 0, d: pose.ruler, h: pose.floorH });
   const b = projectPoint(view, { t: view.length, d: pose.ruler, h: pose.floorH });
   const px = Math.hypot(b.x - a.x, b.y - a.y) * zoom;
-  return axisTicks(view.focus, Math.min(60, Math.round(px / TICK_GAP))).map((tick) => {
+  const range = { from: timeAtT(view, extent[0]), to: timeAtT(view, extent[1]) };
+  const placed = axisTicks(view.focus, Math.min(60, Math.round(px / TICK_GAP)), range).map((tick) => {
     const t = tick.u * view.length;
     const p = projectPoint(view, { t, d: pose.ruler, h: pose.floorH });
     const q = projectPoint(view, { t, d: pose.floorFar, h: pose.floorH });
     return { ...tick, at: { x: p.x, y: p.y }, far: { x: q.x, y: q.y } };
   });
+  // The ruler runs level across the screen, so labels collide by their distance across it.
+  const unit = 1 / Math.max(0.02, zoom);
+  const half = (tk: RulerTick) => (tk.label.length * TICK_CH * unit) / 2;
+  const kept: RulerTick[] = [];
+  for (const major of [true, false]) {
+    for (const tk of placed) {
+      if (tk.major !== major) continue;
+      if (kept.every((k) => Math.abs(k.at.x - tk.at.x) >= half(k) + half(tk) + TICK_SPACE * unit)) kept.push(tk);
+    }
+  }
+  const keep = new Set(kept);
+  return placed.filter((tk) => keep.has(tk));
 }
 
-/** The ruler's line: the window itself, and the squeezed tails either side of it. */
+/**
+ * The ruler's line: `window`, the stretch drawn to true scale (the scene's extent: the window and
+ * as far past it as the bars and the present reach), and the squeezed tails beyond it, where only
+ * panels stand and a reading would mislead. A tail the true-scale stretch covers is empty, both
+ * its ends at the same point.
+ */
 export function rulerLine(scene: DepthScene): { window: [Point, Point]; older: [Point, Point]; newer: [Point, Point] } {
-  const { view, pose } = scene;
-  const at = (u: number) => {
-    const p = projectPoint(view, { t: u * view.length, d: pose.ruler, h: pose.floorH });
+  const { view, pose, extent: [lo, hi] } = scene;
+  const at = (t: number) => {
+    const p = projectPoint(view, { t, d: pose.ruler, h: pose.floorH });
     return { x: p.x, y: p.y };
   };
-  return { window: [at(0), at(1)], older: [at(-TAIL), at(0)], newer: [at(1), at(1 + TAIL)] };
+  const L = view.length, far = Math.min(nearestT(view), (1 + TAIL) * L);
+  return { window: [at(lo), at(hi)], older: [at(Math.min(lo, -TAIL * L)), at(lo)], newer: [at(hi), at(Math.max(hi, far))] };
 }
 
 /**
