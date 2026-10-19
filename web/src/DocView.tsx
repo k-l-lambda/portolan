@@ -1,7 +1,7 @@
 import {
   Background, Controls, MarkerType, ReactFlow, ReactFlowProvider, useReactFlow, type Edge as FlowEdge, type Viewport,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
 import type { Timeline } from "../../src/timeline.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
@@ -9,7 +9,7 @@ import { api, ApiError, MORE_HISTORY, onServerEvents, READ_ONLY, sourceUrl, type
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle, type FloorMark } from "./DepthLayer.tsx";
-import { blendPose, depthScene, ease, flatPose, nodeRibbon, projectPath, targetPose, type Pose } from "./depth.ts";
+import { blendPose, DEFAULT_ANGLES, depthScene, ease, flatPose, nodeRibbon, orbitAngles, projectPath, targetPose, type Angles, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
@@ -378,6 +378,12 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const setCam = useCallback((v: Viewport | null) => { cameraRef.current = v; setCamera(v); }, []);
   // Read by callbacks that outlive a render (effects with narrow dependencies, the camera's tween).
   const threeDRef = useRef(false);
+  /** The camera's turn in 3D, set by dragging with the right button; the default until then.
+   *  Kept across refits (the navigator, a search), and back to the default on entering 3D. */
+  const angles = useRef<Angles>(DEFAULT_ANGLES);
+  /** A right-button drag turning the camera: where it started, and the turn it started from. */
+  const orbit = useRef<{ id: number; x: number; y: number; from: Angles } | null>(null);
+  const [orbiting, setOrbiting] = useState(false);
 
   // ELK runs asynchronously; keep the previous layout on screen until the new one is ready.
   const [layout, setLayout] = useState<ElkResult | null>(null);
@@ -417,7 +423,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const pane = document.querySelector(".canvas")?.getBoundingClientRect();
     if (!pane || !layout) return null;
     const region = (q: Viewport) => ({ x: -q.x / q.zoom, y: -q.y / q.zoom, width: pane.width / q.zoom, height: pane.height / q.zoom });
-    return targetPose(layout.boxes, region(cam), timeOf, ribbonOf, isGroup, v.zoom, region(v));
+    return targetPose(layout.boxes, region(cam), timeOf, ribbonOf, isGroup, v.zoom, region(v), angles.current);
   }, [flow, layout, timeOf, ribbonOf, isGroup]);
   const poseForRef = useRef(poseFor);
   poseForRef.current = poseFor;
@@ -470,6 +476,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       const v = flow.getViewport();
       // Stop the main view where it is, should it still be on its way back from a previous 3D visit.
       flow.setViewport(v);
+      angles.current = DEFAULT_ANGLES;
       const to = poseFor(v, v);
       if (!to) return;
       threeDRef.current = true;
@@ -491,6 +498,40 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       moveTo(flatPose(from), 700, done);
     }
   }, [threeD, flow, poseFor, moveTo, setCam]);
+
+  // In 3D, dragging with the right button turns the camera about the point it looks at: across, round
+  // the vertical (0° to 90° to the time axis); up and down, by up to 15° either side of the default.
+  // The scene keeps its window and its place on screen, so it turns in place rather than being
+  // fitted again; the navigator's frame is not touched. Left-button pans and the wheel are xyflow's.
+  const onOrbitDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.button !== 2 || !threeDRef.current || !poseRef.current) return;
+    e.preventDefault();
+    e.stopPropagation();
+    // A turn takes over from a camera move still running: it starts from where the camera is.
+    cancelAnimationFrame(raf.current);
+    move.current = null;
+    setMoving(false);
+    const p = poseRef.current;
+    orbit.current = { id: e.pointerId, x: e.clientX, y: e.clientY, from: { azimuth: p.azimuth, pitch: p.pitch } };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setOrbiting(true);
+  }, []);
+  const onOrbitMove = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    const o = orbit.current, p = poseRef.current;
+    if (!o || o.id !== e.pointerId || !p) return;
+    e.stopPropagation();
+    const a = orbitAngles(o.from, e.clientX - o.x, e.clientY - o.y);
+    angles.current = a;
+    poseRef.current = { ...p, ...a };
+    setPose(poseRef.current);
+  }, []);
+  const onOrbitUp = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    const o = orbit.current;
+    if (!o || o.id !== e.pointerId) return;
+    orbit.current = null;
+    setOrbiting(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+  }, []);
 
   // After a fold or unfold, pan by however far the node's box moved, so it stays where it was on
   // screen instead of jumping with the relayout (see `followToggle`); in 3D, the navigator's frame
@@ -957,7 +998,11 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         </span>
       </div>
       <div className="doc-body">
-        <div className="canvas">
+        <div className={`canvas${orbiting ? " orbiting" : ""}`}
+          // The right button turns the 3D camera, so the browser's own menu is held back there.
+          onPointerDownCapture={onOrbitDown} onPointerMoveCapture={onOrbitMove}
+          onPointerUpCapture={onOrbitUp} onPointerCancelCapture={onOrbitUp}
+          onContextMenu={threeD ? (e) => e.preventDefault() : undefined}>
           {focusCss && <style>{focusCss}</style>}
           <ReactFlow
             nodes={nodes}

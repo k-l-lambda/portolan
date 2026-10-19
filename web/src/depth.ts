@@ -122,6 +122,30 @@ export const PITCH = 0.06;
 /** The azimuth that, with `PITCH`, puts the line of sight at `SIGHT` to the time axis. */
 export const AZIMUTH = Math.acos(Math.cos(SIGHT) / Math.cos(PITCH));
 
+/** The camera's turn: `azimuth` about the vertical, `pitch` above level (radians). */
+export interface Angles {
+  azimuth: number;
+  pitch: number;
+}
+/** The default turn, as the 3D view first shows the scene. */
+export const DEFAULT_ANGLES: Angles = { azimuth: AZIMUTH, pitch: PITCH };
+const deg = Math.PI / 180;
+/** How far the user may turn the camera: round the vertical from looking straight back along time
+ *  (0°) to looking straight across it (90°), and up or down by 15° from the default pitch. */
+export const ORBIT = { azimuth: [0, 90 * deg] as const, pitch: [PITCH - 15 * deg, PITCH + 15 * deg] as const };
+/** Radians the camera turns per screen pixel dragged. */
+const ORBIT_RATE = 0.2 * deg;
+
+/**
+ * The camera's turn after dragging `dx`, `dy` screen pixels from `from`, held within `ORBIT`.
+ * Dragging right turns the eye round to look more across the time axis (more azimuth, towards
+ * 90°), dragging left more along it; dragging down lifts the eye to look down on the scene.
+ */
+export function orbitAngles(from: Angles, dx: number, dy: number): Angles {
+  const clamp = (v: number, [lo, hi]: readonly [number, number]) => Math.min(hi, Math.max(lo, v));
+  return { azimuth: clamp(from.azimuth + dx * ORBIT_RATE, ORBIT.azimuth), pitch: clamp(from.pitch + dy * ORBIT_RATE, ORBIT.pitch) };
+}
+
 /** Gap between the lowest card and the floor, and between the floor's near edge and the ruler. */
 const FLOOR_GAP = 70;
 const RULER_GAP = 60;
@@ -900,7 +924,7 @@ const MAX_SIGMA = 1.6;
  * focus nodes' 3D bounding box the shape of the display, and the scene is scaled and placed so that
  * box fills `screen`: the region the 3D view shows, which is `rect` itself unless the 3D view has
  * been panned or zoomed on its own since. `zoom` is the 3D view's, so the ruler's labels get their
- * room on screen.
+ * room on screen. `angles` is the camera's turn, the default unless the user has turned it.
  *
  * Null when the frame holds no card, so the caller keeps the pose it has.
  */
@@ -912,6 +936,7 @@ export function targetPose(
   isGroup: (key: string) => boolean,
   zoom = 1,
   screen: Rect = rect,
+  angles: Angles = DEFAULT_ANGLES,
 ): Pose | null {
   const F = focusNodes(boxes, rect, isGroup);
   if (F.length === 0) return null;
@@ -930,7 +955,7 @@ export function targetPose(
 
   // The scene at a length, unfitted.
   const poseAt = (length: number, floorH: number, lanes: Record<string, number>, lanePitch: number, px: number): Pose => ({
-    blend: 1, pitch: PITCH, azimuth: AZIMUTH, length,
+    blend: 1, pitch: angles.pitch, azimuth: angles.azimuth, length,
     dist: Math.max(length, W, H, 600) * 3,
     sigma: 1,
     aim: { t: length / 2, d: (x0 + x1) / 2, h: floorH + EYE_RISE * Math.max(H, 200) },
@@ -1071,7 +1096,7 @@ export interface RulerTick extends Tick {
 }
 
 /** Screen width of one character of a ruler label (11px monospace), and the least space between two labels. */
-const TICK_CH = 6.8, TICK_SPACE = 6;
+const TICK_CH = 6.8, TICK_SPACE = 6, TICK_LINE = 14;
 
 /**
  * The ruler's ticks at a zoom, over its whole extent. Their step is set by the window's length in
@@ -1092,14 +1117,17 @@ export function rulerTicks(scene: DepthScene, zoom: number): RulerTick[] {
     const q = projectPoint(view, { t, d: pose.floorFar, h: pose.floorH });
     return { ...tick, at: { x: p.x, y: p.y }, far: { x: q.x, y: q.y } };
   });
-  // The ruler runs level across the screen, so labels collide by their distance across it.
+  // Two labels collide when their boxes overlap: across, by their widths; down, by a line's height
+  // (the ruler is level at the default turn, but runs into the screen as the camera turns along it).
   const unit = 1 / Math.max(0.02, zoom);
   const half = (tk: RulerTick) => (tk.label.length * TICK_CH * unit) / 2;
+  const clear = (a: RulerTick, b: RulerTick) => Math.abs(a.at.x - b.at.x) >= half(a) + half(b) + TICK_SPACE * unit
+    || Math.abs(a.at.y - b.at.y) >= TICK_LINE * unit;
   const kept: RulerTick[] = [];
   for (const major of [true, false]) {
     for (const tk of placed) {
       if (tk.major !== major) continue;
-      if (kept.every((k) => Math.abs(k.at.x - tk.at.x) >= half(k) + half(tk) + TICK_SPACE * unit)) kept.push(tk);
+      if (kept.every((k) => clear(k, tk))) kept.push(tk);
     }
   }
   const keep = new Set(kept);

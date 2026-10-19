@@ -192,6 +192,8 @@ a { color: var(--accent); }
 .icon-btn:disabled { opacity: 1; color: color-mix(in srgb, var(--muted) 50%, transparent); }
 .doc-body { flex: 1; display: flex; min-height: 0; }
 .canvas { flex: 1; min-width: 0; }
+/* Turning the 3D camera with the right button: the grabbing hand over everything, cards included. */
+.canvas.orbiting, .canvas.orbiting * { cursor: grabbing !important; }
 
 .card {
   width: 100%; height: 100%; padding: 8px 10px; display: flex; flex-direction: column;

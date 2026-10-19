@@ -9,7 +9,7 @@ import { timingOf } from "../src/timing.ts";
 import { claimMarks, defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starredInside, unfoldStarted } from "../web/src/layout.ts";
 import {
   applyMatrix, axisTicks, axisU, AZIMUTH, blendPose, depthScene, ease, fitFocus, flatPose, focusNodes, panelAt, PITCH, projectPath, projectPoint,
-  innerRun, linearU, nodeRibbon, ribbonFor, rulerLine, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
+  innerRun, linearU, nodeRibbon, orbitAngles, DEFAULT_ANGLES, ribbonFor, rulerLine, rulerTicks, SIGHT, targetPose, viewOf, yearLabel,
 } from "../web/src/depth.ts";
 import { searchNodes } from "../web/src/search.ts";
 import { timerState } from "../web/src/timerState.ts";
@@ -549,6 +549,45 @@ describe("the 3D time-depth view", () => {
     it("does not blow a lone card up to fill the screen", () => {
       const one = targetPose(grid, { x: -2000, y: -2000, width: 4280, height: 4120 }, gridTime, none, noGroup, 1)!;
       expect(one.sigma).toBeLessThanOrEqual(1.6);
+    });
+
+    it("turns with a drag, held to 0°–90° round the vertical and 15° either side of the default pitch", () => {
+      const d = (r: number) => (r * 180) / Math.PI;
+      // A short drag turns a little, each way.
+      const right = orbitAngles(DEFAULT_ANGLES, 50, 0), down = orbitAngles(DEFAULT_ANGLES, 0, 25);
+      expect(right.azimuth).toBeGreaterThan(DEFAULT_ANGLES.azimuth);
+      // 0.2° a pixel.
+      expect(((right.azimuth - DEFAULT_ANGLES.azimuth) * 180) / Math.PI).toBeCloseTo(10, 9);
+      expect(right.pitch).toBe(DEFAULT_ANGLES.pitch);
+      expect(down.pitch).toBeGreaterThan(DEFAULT_ANGLES.pitch);
+      // However far it goes, it stops at the limits.
+      for (const [dx, dy] of [[1e5, 1e5], [-1e5, -1e5], [1e5, -1e5], [-1e5, 1e5]] as const) {
+        const a = orbitAngles(DEFAULT_ANGLES, dx, dy);
+        expect(d(a.azimuth)).toBeGreaterThanOrEqual(-1e-9);
+        expect(d(a.azimuth)).toBeLessThanOrEqual(90 + 1e-9);
+        expect(Math.abs(d(a.pitch - PITCH))).toBeLessThanOrEqual(15 + 1e-9);
+      }
+      expect(d(orbitAngles(DEFAULT_ANGLES, -1e5, 0).azimuth)).toBeCloseTo(0, 9);
+      expect(d(orbitAngles(DEFAULT_ANGLES, 1e5, 0).azimuth)).toBeCloseTo(90, 9);
+      expect(d(orbitAngles(DEFAULT_ANGLES, 0, 1e5).pitch - PITCH)).toBeCloseTo(15, 9);
+      // The limits are the default's, not the drag's start: a second drag cannot go further down.
+      const low = orbitAngles(DEFAULT_ANGLES, 0, -1e5);
+      expect(orbitAngles(low, 0, -1e5).pitch).toBeCloseTo(low.pitch, 12);
+    });
+
+    it("fits the focus nodes at a turned camera as well as at the default one", () => {
+      const frame = { x: 250, y: 100, width: 600, height: 300 };
+      const F = focusNodes(grid, frame, noGroup).map((b) => b.key);
+      for (const turn of [{ azimuth: 0.15, pitch: PITCH }, { azimuth: 1.3, pitch: PITCH + 0.2 }, { azimuth: AZIMUTH, pitch: PITCH - 0.2 }]) {
+        const p = targetPose(grid, frame, gridTime, none, noGroup, 1, frame, turn)!;
+        expect(p.azimuth).toBe(turn.azimuth);
+        expect(p.pitch).toBe(turn.pitch);
+        const b = box(quads(depthScene(grid, p, gridTime, none, noGroup), F));
+        expect(b.x).toBeGreaterThanOrEqual(frame.x - 1);
+        expect(b.x + b.width).toBeLessThanOrEqual(frame.x + frame.width + 1);
+        expect(b.y).toBeGreaterThanOrEqual(frame.y - 1);
+        expect(b.y + b.height).toBeLessThanOrEqual(frame.y + frame.height + 1);
+      }
     });
 
     it("has nothing to say about a frame over empty space", () => {
