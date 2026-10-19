@@ -60,6 +60,8 @@ const STATIC = typeof document === "undefined" ? null
   : document.querySelector<HTMLMetaElement>('meta[name="portolan-static"]')?.content ?? null;
 /** True on a static export: the map can be read but not changed. */
 export const READ_ONLY = STATIC !== null;
+/** True when older history points can be asked for (a server, not a static export). */
+export const MORE_HISTORY = STATIC === null;
 /** The map a static export opens by default; none (the index) when it holds several. */
 export const DEFAULT_FILE = STATIC || null;
 
@@ -95,7 +97,9 @@ const q = (file: string) => `file=${encodeURIComponent(file)}`;
 
 export const api = {
   files: () => call<{ root: string; files: FileSummary[] }>(STATIC !== null ? staticPath("files") : "/api/files"),
-  doc: (file: string) => call<DocResponse>(STATIC !== null ? staticPath("doc", file) : `/api/doc?${q(file)}`),
+  /** `points`: how many history points to send, when more than the first page were loaded. */
+  doc: (file: string, points?: number) =>
+    call<DocResponse>(STATIC !== null ? staticPath("doc", file) : `/api/doc?${q(file)}${points ? `&points=${points}` : ""}`),
   edit: (file: string, version: string, edit: EditOp) =>
     STATIC !== null ? Promise.reject(new ApiError(405, "This is a read-only demo")) :
     call<{ version: string; id?: string }>(`/api/edit?${q(file)}`, {
@@ -103,9 +107,20 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ version, edit }),
     }),
-  /** What a history point changed, as a unified diff; `point` is a commit sha or "local". */
-  diff: (file: string, point: string) =>
-    text(STATIC !== null ? staticPath("diff", file, point) : `/api/diff?${q(file)}&point=${encodeURIComponent(point)}`),
+  /**
+   * The history rail alone, at most `points` points, for loading older ones. A static export
+   * holds only the points it was built with, so there it never resolves to more.
+   */
+  timeline: (file: string, points: number) =>
+    STATIC !== null ? Promise.reject(new ApiError(405, "This is a read-only demo")) :
+    call<{ version: string; timeline: Timeline }>(`/api/timeline?${q(file)}&points=${points}`),
+  /**
+   * What a history point changed, as a unified diff; `point` is a commit sha or "local". `points`
+   * is how long the rail showing it is, so an older point loaded later is found too.
+   */
+  diff: (file: string, point: string, points?: number) =>
+    text(STATIC !== null ? staticPath("diff", file, point)
+      : `/api/diff?${q(file)}&point=${encodeURIComponent(point)}${points ? `&points=${points}` : ""}`),
   anchor: (file: string, line: number, index: number) =>
     call<AnchorResponse>(STATIC !== null ? staticPath("anchor", file, line, index) : `/api/anchor?${q(file)}&node=${line}&index=${index}`),
 };

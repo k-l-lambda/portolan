@@ -495,6 +495,10 @@ a { color: var(--accent); }
 .rail::-webkit-scrollbar { display: none; }
 .rail-title { margin: 4px 0 10px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .rail-empty, .rail-more { margin: 6px 0 0 8px; font-size: 11px; }
+.rail-more-btn { display: block; padding: 2px 4px; margin-left: 4px; border: 0; border-radius: 4px; background: none; font: inherit; color: var(--muted); cursor: pointer; }
+.rail-more-btn:hover:not(:disabled) { color: var(--text); background: var(--surface-2); }
+.rail-more-btn:disabled { cursor: default; }
+.rail-more-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 /* Ages in a right-aligned column; dots centred in a fixed second column, so the vertical line
    runs through every dot's centre whatever its size. The newest point gets a larger dot. */
 .rail-list { --dot: 10px; --lead: 14px; --slot: 16px; --col: 54px; --row: 29px; position: relative; list-style: none; margin: 0; padding: 0; }

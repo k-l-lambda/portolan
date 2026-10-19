@@ -26,11 +26,14 @@ export interface TimelinePoint {
 export interface Timeline {
   source: "git" | "links";
   points: TimelinePoint[];
-  /** Older points were left out (see TIMELINE_LIMIT). */
+  /** Older points were left out (see TIMELINE_LIMIT); the view can ask for more. */
   truncated: boolean;
 }
 
+/** Points sent at first; the rail asks for more, a page at a time, as it is scrolled to the end. */
 export const TIMELINE_LIMIT = 50;
+/** The most points one request may ask for. */
+export const TIMELINE_MAX = 2000;
 
 /** Same key as the web view uses for a node in the current map. */
 const keyOf = (n: RhumbNode) => n.id ?? `line:${n.line}`;
@@ -71,8 +74,17 @@ function sigsOf(source: string): Map<string, string> {
   }
 }
 
-/** Changed identities per revision, computed once per list of revisions. */
-const perRevision = new WeakMap<Revision[], { sigs: Map<string, string>[]; changes: string[][] }>();
+/**
+ * Each revision's signatures, parsed once per revision. Kept per revision rather than per list,
+ * since the rail's lists grow a page at a time and share their revisions: a longer list parses
+ * only the revisions the shorter one did not have.
+ */
+const sigCache = new WeakMap<Revision, Map<string, string>>();
+const sigsOfRevision = (r: Revision) => {
+  let sigs = sigCache.get(r);
+  if (!sigs) sigCache.set(r, (sigs = sigsOf(r.source)));
+  return sigs;
+};
 
 /**
  * Timeline from `revisions` (newest first, each with its text). The oldest revision is
@@ -81,14 +93,9 @@ const perRevision = new WeakMap<Revision[], { sigs: Map<string, string>[]; chang
  * now; when it differs from the newest revision, an uncommitted point dated `mtime` comes first.
  */
 export function gitTimeline(current: RhumbDocument, currentSource: string, mtime: number, revisions: Revision[], hasOlder = false): Timeline {
-  let cached = perRevision.get(revisions);
-  if (!cached) {
-    const sigs = revisions.map((r) => sigsOf(r.source));
-    // Each revision against the one before it; the oldest against an empty map (its first commit).
-    const changes = sigs.map((s, i) => changed(sigs[i + 1] ?? new Map(), s));
-    cached = { sigs, changes };
-    perRevision.set(revisions, cached);
-  }
+  const sigs = revisions.map(sigsOfRevision);
+  // Each revision against the one before it; the oldest against an empty map (its first commit).
+  const changes = sigs.map((s, i) => changed(sigs[i + 1] ?? new Map(), s));
   const now = new Map<string, string>();
   const walk = (nodes: RhumbNode[]) => nodes.forEach((n) => (now.set(identityOf(n), keyOf(n)), walk(n.children)));
   walk(current.nodes);
@@ -99,12 +106,12 @@ export function gitTimeline(current: RhumbDocument, currentSource: string, mtime
 
   const points: TimelinePoint[] = [];
   if (revisions.length > 0 && currentSource !== revisions[0]!.source) {
-    points.push(toPoint("local", changed(cached.sigs[0]!, signatures(current)), { time: mtime }));
+    points.push(toPoint("local", changed(sigs[0]!, signatures(current)), { time: mtime }));
   }
   const shown = hasOlder ? revisions.length - 1 : revisions.length;
   for (let i = 0; i < shown; i++) {
     const r = revisions[i]!;
-    points.push(toPoint("commit", cached.changes[i]!, { time: r.time, sha: r.sha, summary: r.summary }));
+    points.push(toPoint("commit", changes[i]!, { time: r.time, sha: r.sha, summary: r.summary }));
   }
   return { source: "git", points, truncated: hasOlder };
 }
@@ -120,9 +127,9 @@ function writtenYear(date: string): number {
 /**
  * Timeline for a map without commits: one point per date its links name, newest first. A
  * link's date comes from its path (`diary:2026/1008`) or, through `dateOf`, from the dated
- * heading it lands under, as for freshness.
+ * heading it lands under, as for freshness. At most `limit` dates, the newest.
  */
-export function linkTimeline(doc: RhumbDocument, dateOf?: (anchor: Anchor) => { date: string; time: number } | null): Timeline {
+export function linkTimeline(doc: RhumbDocument, dateOf?: (anchor: Anchor) => { date: string; time: number } | null, limit = TIMELINE_LIMIT): Timeline {
   const byDate = new Map<string, { time: number; nodes: Set<string> }>();
   const walk = (nodes: RhumbNode[]) => {
     for (const n of nodes) {
@@ -140,10 +147,10 @@ export function linkTimeline(doc: RhumbDocument, dateOf?: (anchor: Anchor) => { 
   // Dates further back than a JS Date can hold are all clamped to one time, so ties are broken
   // by the year as written (a Holocene year is CE + 10000).
   const all = [...byDate].sort((a, b) => b[1].time - a[1].time || writtenYear(b[0]) - writtenYear(a[0]));
-  const points = all.slice(0, TIMELINE_LIMIT).map(([date, s]): TimelinePoint => ({
+  const points = all.slice(0, limit).map(([date, s]): TimelinePoint => ({
     kind: "link", time: s.time, sha: null, summary: null, date, nodes: [...s.nodes], gone: 0,
   }));
-  return { source: "links", points, truncated: all.length > TIMELINE_LIMIT };
+  return { source: "links", points, truncated: all.length > limit };
 }
 
 /**

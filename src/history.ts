@@ -108,7 +108,11 @@ export class HistoryTracker {
   private repoOf = new Map<string, Promise<string | null>>();
   private heads = new Map<string, string | null>();
   private cache = new Map<string, { key: string; value: FileHistory }>();
-  private revCache = new Map<string, { key: string; value: Promise<{ revisions: Revision[]; hasOlder: boolean }> }>();
+  private revCache = new Map<string, {
+    head: string; limit: number;
+    value: Promise<{ revisions: Revision[]; hasOlder: boolean }>;
+    byLimit: Map<number, Promise<{ revisions: Revision[]; hasOlder: boolean }>>;
+  }>();
   private polling = false;
 
   /** Repository root containing `dir`, or null. */
@@ -169,15 +173,34 @@ export class HistoryTracker {
     const repo = await this.repo(dirname(abs));
     const head = repo ? await this.head(repo) : null;
     if (!repo || !head) return { revisions: [], hasOlder: false };
-    const key = `${head}:${limit}`;
+    // A longer list fetched at this HEAD serves a shorter one, so loading older points and then
+    // asking for the first page again (a reload, a diff) reads git once. Each length keeps its own
+    // result object, so what is computed per list of revisions is computed once per length.
     const hit = this.revCache.get(abs);
-    if (hit?.key === key) return hit.value;
-    const value = this.loadRevisions(abs, repo, limit);
-    this.revCache.set(abs, { key, value });
+    if (hit?.head === head) {
+      const own = hit.byLimit.get(limit);
+      if (own) return own;
+      if (hit.limit >= limit) {
+        const value = hit.value.then((all) => all.revisions.length > limit
+          ? { revisions: all.revisions.slice(0, limit + 1), hasOlder: true }
+          : all);
+        hit.byLimit.set(limit, value);
+        return value;
+      }
+    }
+    const value = this.loadRevisions(abs, repo, limit, hit?.value);
+    this.revCache.set(abs, { head, limit, value, byLimit: new Map([[limit, value]]) });
     return value;
   }
 
-  private async loadRevisions(abs: string, repo: string, limit: number): Promise<{ revisions: Revision[]; hasOlder: boolean }> {
+  /**
+   * `known` is the list read before, at this HEAD or an older one: a commit's text never changes,
+   * so its revisions are taken from it rather than read again, as the same objects (what is parsed
+   * from a revision is kept per revision object, see timeline.ts).
+   */
+  private async loadRevisions(abs: string, repo: string, limit: number,
+    known?: Promise<{ revisions: Revision[]; hasOlder: boolean }>): Promise<{ revisions: Revision[]; hasOlder: boolean }> {
+    const reuse = new Map((await known?.catch(() => null))?.revisions.map((r) => [`${r.sha}:${r.path}`, r]) ?? []);
     let log: string;
     try {
       log = await git(dirname(abs), ["-c", "core.quotePath=false", "log", "--follow", `-n${limit + 1}`,
@@ -194,6 +217,8 @@ export class HistoryTracker {
     const revisions: Revision[] = [];
     for (let i = 0; i < records.length; i += 8) {
       const batch = await Promise.all(records.slice(i, i + 8).map(async (r) => {
+        const seen = reuse.get(`${r.sha}:${r.path}`);
+        if (seen) return seen;
         const source = await git(repo, ["show", `${r.sha}:${r.path}`]).catch(() => "");
         return { sha: r.sha, time: r.time, summary: r.summary, path: r.path, source };
       }));

@@ -13,12 +13,12 @@ import { basename, dirname, extname, join, relative, resolve, sep } from "node:p
 import { fileURLToPath } from "node:url";
 import { derive } from "./derive.ts";
 import { applyEdit, EditError, type EditOp } from "./edit.ts";
-import { HistoryTracker, nodeTimes } from "./history.ts";
-import { gitTimeline, linkTimeline, pointDiff, TIMELINE_LIMIT } from "./timeline.ts";
+import { HistoryTracker, nodeTimes, type FileHistory } from "./history.ts";
+import { gitTimeline, linkTimeline, pointDiff, TIMELINE_LIMIT, TIMELINE_MAX } from "./timeline.ts";
 import { isStarred, parse } from "./parse.ts";
 import { checkAnchors, contextFor, excerpt, headingDate, resolveAnchor } from "./resolve.ts";
 import { ThreadStore, type ThreadAction } from "./threads.ts";
-import type { Anchor, RhumbNode } from "./types.ts";
+import type { Anchor, RhumbDocument, RhumbNode } from "./types.ts";
 
 export interface ServerOptions {
   /** A directory (serves every .rhumb below it) or a single .rhumb file. */
@@ -208,6 +208,23 @@ export function createRhumbServer(options: ServerOptions): Server {
     }
   });
 
+  /** How many history points a request asks for (`points`), within bounds. */
+  const pointsOf = (url: URL) => {
+    const n = Number(url.searchParams.get("points") ?? TIMELINE_LIMIT);
+    return Number.isFinite(n) ? Math.min(TIMELINE_MAX, Math.max(1, Math.floor(n))) : TIMELINE_LIMIT;
+  };
+  /**
+   * A map's history rail, at most `limit` points: the commits that touched the file, or its
+   * linked dates for a map with none (or with `dates: links`).
+   */
+  async function timelineFor(abs: string, doc: RhumbDocument, source: string, h: FileHistory | null,
+    dateOf: (a: Anchor) => { date: string; time: number } | null, limit: number) {
+    const revs = h ? await history.revisions(abs, limit) : { revisions: [], hasOlder: false };
+    return h && revs.revisions.length > 0
+      ? gitTimeline(doc, source, h.mtime, revs.revisions, revs.hasOlder)
+      : linkTimeline(doc, dateOf, limit);
+  }
+
   async function route(req: IncomingMessage, res: ServerResponse, url: URL) {
     const key = `${req.method} ${url.pathname}`;
     const param = url.searchParams.get("file");
@@ -251,12 +268,19 @@ export function createRhumbServer(options: ServerOptions): Server {
         mtime: h?.mtime ?? Math.floor(statSync(abs).mtimeMs / 1000), dirtyLines: h?.dirtyLines ?? 0,
         lastCommit: h?.lastCommit ?? null, nodes: nodeTimes(doc, h, dateOf), commits: h?.commits ?? {},
       };
-      // Commits that touched the file; a map with none (or with `dates: links`) is dated by its links instead.
-      const revs = h ? await history.revisions(abs, TIMELINE_LIMIT) : { revisions: [], hasOlder: false };
-      const timeline = h && revs.revisions.length > 0
-        ? gitTimeline(doc, source, h.mtime, revs.revisions, revs.hasOlder)
-        : linkTimeline(doc, dateOf);
+      const timeline = await timelineFor(abs, doc, source, h, dateOf, pointsOf(url));
       return send(res, 200, { file: rel, version, doc: { ...doc, diagnostics }, derived: derived.nodes, freshness, timeline });
+    }
+
+    if (key === "GET /api/timeline") {
+      // The history rail alone, at a length (`points`): the rail asks for older points with it as
+      // it is scrolled to the end, without the whole map coming again.
+      const { abs } = fileFor(param);
+      const { source, version, doc } = load(abs);
+      const ctx = contextFor(abs, doc, readLinked);
+      const dateOf = (a: Anchor) => headingDate(resolveAnchor(a, ctx), readLinked);
+      const h = doc.dates === "links" ? null : await history.file(abs, version);
+      return send(res, 200, { version, timeline: await timelineFor(abs, doc, source, h, dateOf, pointsOf(url)) });
     }
 
     if (key === "GET /api/diff") {
@@ -265,7 +289,8 @@ export function createRhumbServer(options: ServerOptions): Server {
       const point = url.searchParams.get("point") ?? "";
       if (point !== "local" && !/^[0-9a-f]{40}$/.test(point)) throw new HttpError(400, "Invalid point");
       if (load(abs).doc.dates === "links") throw new HttpError(404, "This map is dated by its links, not by git");
-      const { revisions } = await history.revisions(abs, TIMELINE_LIMIT);
+      // As many revisions as the rail showing the point holds, so an older point's diff is found.
+      const { revisions } = await history.revisions(abs, pointsOf(url));
       const diff = pointDiff(revisions, point, readFileSync(abs, "utf8"));
       if (diff === null) throw new HttpError(404, "No such point in this map's history");
       res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-cache" });

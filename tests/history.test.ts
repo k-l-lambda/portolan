@@ -391,6 +391,87 @@ links:
   });
 });
 
+describe("loading older history points", () => {
+  let dir: string;
+  afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
+
+  /** A map with `n` commits, the i-th adding item i. */
+  function history(n: number): string {
+    dir = repo();
+    const file = join(dir, "plan.rhumb");
+    let src = "";
+    for (let i = 1; i <= n; i++) {
+      src += `- [ ] Item ${i} ^i${i}\n`;
+      writeFileSync(file, src);
+      commit(dir, `add ${i}`, T1 + i * 60);
+    }
+    return file;
+  }
+
+  it("serves a shorter list from a longer one read at the same HEAD", async () => {
+    const file = history(5);
+    const tracker = new HistoryTracker();
+    const all = await tracker.revisions(file, 4);
+    expect(all.revisions.map((r) => r.summary)).toEqual(["add 5", "add 4", "add 3", "add 2", "add 1"]);
+    expect(all.hasOlder).toBe(true);
+    const two = await tracker.revisions(file, 2);
+    expect(two.revisions.map((r) => r.summary)).toEqual(["add 5", "add 4", "add 3"]);
+    expect(two.hasOlder).toBe(true);
+    // The same object for the same length, so what is computed per list is computed once.
+    expect(await tracker.revisions(file, 2)).toBe(two);
+    // A cut list still lists only what each shown commit changed.
+    const t = gitTimeline(parse(readFileSync(file, "utf8")), readFileSync(file, "utf8"), T1, two.revisions, two.hasOlder);
+    expect(t.points.map((p) => p.nodes)).toEqual([["i5"], ["i4"]]);
+    expect(t.truncated).toBe(true);
+  });
+
+  it("gives the rail more points on request, and the diff of a point loaded late", async () => {
+    history(5);
+    const server = createRhumbServer({ root: dir });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    try {
+      const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+      type Rail = { timeline: { truncated: boolean; points: { summary: string; sha: string }[] } };
+      const page = async (path: string) => (await (await fetch(`${base}${path}`)).json()) as Rail;
+      const first = await page("/api/doc?file=plan.rhumb&points=2");
+      expect(first.timeline.points.map((p) => p.summary)).toEqual(["add 5", "add 4"]);
+      expect(first.timeline.truncated).toBe(true);
+      const more = await page("/api/timeline?file=plan.rhumb&points=4");
+      expect(more.timeline.points.map((p) => p.summary)).toEqual(["add 5", "add 4", "add 3", "add 2"]);
+      expect(more.timeline.truncated).toBe(true);
+      const rest = await page("/api/timeline?file=plan.rhumb&points=6");
+      expect(rest.timeline.points.length).toBe(5);
+      expect(rest.timeline.truncated).toBe(false);
+      // The oldest commit is past the first page: the diff is found with the rail's length.
+      const oldest = rest.timeline.points.at(-1)!.sha;
+      expect((await fetch(`${base}/api/diff?file=plan.rhumb&point=${oldest}&points=2`)).status).toBe(404);
+      const diff = await fetch(`${base}/api/diff?file=plan.rhumb&point=${oldest}&points=6`);
+      expect(diff.status).toBe(200);
+      expect(await diff.text()).toContain("+- [ ] Item 1 ^i1");
+      // Out-of-range lengths are clamped, not refused.
+      expect((await page("/api/timeline?file=plan.rhumb&points=0")).timeline.points.length).toBe(1);
+      expect((await page("/api/timeline?file=plan.rhumb&points=nope")).timeline.points.length).toBe(5);
+    } finally {
+      server.close();
+    }
+  });
+
+  it("cuts a map's linked dates at the same length", () => {
+    const doc = parse(`---
+links:
+  diary: ../diary/{path}.md
+---
+- [x] A [n](diary:2026/1008) ^a
+- [x] B [n](diary:2026/1009) ^b
+- [x] C [n](diary:2026/1010) ^c
+`);
+    const two = linkTimeline(doc, undefined, 2);
+    expect(two.points.map((p) => p.date)).toEqual(["2026-10-10", "2026-10-09"]);
+    expect(two.truncated).toBe(true);
+    expect(linkTimeline(doc, undefined, 3).truncated).toBe(false);
+  });
+});
+
 describe("history rail labels", () => {
   it("formats ages compactly, linked days by whole days", () => {
     expect([30, 5 * 60, 3 * 3600, 2 * 86_400, 90 * 86_400, 800 * 86_400].map((d) => shortAgo(T2 - d, T2))).toEqual(["now", "5m", "3h", "2d", "3mo", "2y"]);

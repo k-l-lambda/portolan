@@ -1,12 +1,16 @@
 // History rail beside the Diagnostics panel: the map's commits as dots on a vertical line, newest
 // on top (uncommitted changes first, when there are any), or its linked dates for a map outside
-// git. Hovering or focusing a dot highlights the nodes that point changed.
+// git. Hovering or focusing a dot highlights the nodes that point changed. A rail cut short loads
+// its older points a page at a time as it is scrolled to the end.
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Timeline } from "../../src/timeline.ts";
 import { pointKey, pointTitle, railLabels } from "./timelineLabels.ts";
 
-export function TimelineRail({ timeline, now, active, pinned = null, onActive, onPick }: {
+/** How near the end, in pixels, the rail must be scrolled to ask for older points. */
+const NEAR_END = 48;
+
+export function TimelineRail({ timeline, now, active, pinned = null, onActive, onPick, onMore, loading = false }: {
   timeline: Timeline;
   now: number;
   /** Key of the highlighted point, see pointKey. */
@@ -16,7 +20,22 @@ export function TimelineRail({ timeline, now, active, pinned = null, onActive, o
   onActive: (key: string | null) => void;
   /** Clicking a dot: the view frames the nodes that point changed. */
   onPick?: (key: string) => void;
+  /** Ask for older points (when `timeline.truncated`); absent where none can be had. */
+  onMore?: () => void;
+  /** Older points are on their way. */
+  loading?: boolean;
 }) {
+  const nav = useRef<HTMLElement>(null);
+  const more = timeline.truncated && onMore ? onMore : null;
+  /** Ask for more when the end of the list is in sight. */
+  const check = () => {
+    const el = nav.current;
+    if (!more || loading || !el) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - NEAR_END) more();
+  };
+  // Also after each page lands (and at first): a rail whose points do not fill it cannot be
+  // scrolled, so its end is already in sight.
+  useEffect(check, [timeline, loading, more]);
   // The view's clock ticks once a minute; entering the rail also refreshes the ages when they
   // are a minute or more old (a background tab's timer may have been held back).
   const [entered, setEntered] = useState(0);
@@ -27,7 +46,8 @@ export function TimelineRail({ timeline, now, active, pinned = null, onActive, o
   };
   const labels = railLabels(timeline.points, shownAt);
   return (
-    <nav className="rail" aria-label={timeline.source === "git" ? "Commit history" : "Linked dates"} onPointerEnter={refresh}>
+    <nav ref={nav} className="rail" aria-label={timeline.source === "git" ? "Commit history" : "Linked dates"} onPointerEnter={refresh}
+      onScroll={check} aria-busy={loading}>
       <h2 className="rail-title">{timeline.source === "git" ? "History" : "Links"}</h2>
       {timeline.points.length === 0
         ? <p className="rail-empty muted">{timeline.source === "git" ? "No commits" : "No dated links"}</p>
@@ -48,7 +68,10 @@ export function TimelineRail({ timeline, now, active, pinned = null, onActive, o
             })}
           </ol>
         )}
-      {timeline.truncated && <p className="rail-more muted">older not shown</p>}
+      {timeline.truncated && (more
+        // A button as well as the scroll, for the keyboard and for a rail that is not scrolled.
+        ? <button type="button" className="rail-more rail-more-btn muted" onClick={more} disabled={loading}>{loading ? "loading…" : "load older"}</button>
+        : <p className="rail-more muted">older not shown</p>)}
     </nav>
   );
 }

@@ -3,8 +3,9 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import type { NodeTime } from "../../src/history.ts";
+import type { Timeline } from "../../src/timeline.ts";
 import type { EdgeKind, RhumbNode, Status } from "../../src/types.ts";
-import { api, ApiError, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
+import { api, ApiError, MORE_HISTORY, onServerEvents, READ_ONLY, sourceUrl, type DocResponse } from "./api.ts";
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle, type FloorMark } from "./DepthLayer.tsx";
@@ -31,6 +32,8 @@ import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard, fill: FrameFill };
 
+/** Older history points loaded per page as the rail is scrolled to its end (the server's first page is as long). */
+const TIMELINE_PAGE = 50;
 /** The closest the view goes when framing a history point: about a card's width on screen. */
 const FRAME_MAX_ZOOM = 1.1;
 
@@ -84,14 +87,24 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   }, []);
   const hasData = useRef(false);
   const seq = useRef(0);
+  // The history rail, kept apart from the map so loading older points does not rebuild the map.
+  // `railPoints` is how many points it asked for past the first page (null: the first page only),
+  // so a reload keeps the older points it already shows.
+  const [timeline, setTimeline] = useState<Timeline | null>(null);
+  const railPoints = useRef<number | null>(null);
+  const [moreLoading, setMoreLoading] = useState(false);
+  const moreSeq = useRef(0);
 
   // Reloads keep the current view (collapse state, selection) and drop out-of-order responses.
   const load = useCallback((live = false) => {
     const mine = ++seq.current;
-    api.doc(file).then(
+    const points = railPoints.current;
+    api.doc(file, points ?? undefined).then(
       (r) => {
         if (mine !== seq.current) return;
         hasData.current = true;
+        // Unless the rail grew since this was asked, which only adds older points to it.
+        if (railPoints.current === points) setTimeline(r.timeline ?? null);
         // A commit changes blame times without changing content, so compare those too.
         setData((prev) => (prev?.version === r.version && prev.freshness.head === r.freshness.head
           && prev.freshness.mtime === r.freshness.mtime ? prev : r));
@@ -108,6 +121,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   }, [file]);
 
   useEffect(() => {
+    railPoints.current = null;
+    moreSeq.current++;
+    setTimeline(null);
+    setMoreLoading(false);
     load();
     return onServerEvents({
       change: (e) => e.file === file && load(true),
@@ -116,6 +133,28 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       reconnect: () => load(true),
     });
   }, [file, load]);
+
+  /** The next page of older history points, when the rail is scrolled to its end. */
+  const loadMore = useCallback(() => {
+    if (!timeline?.truncated || !MORE_HISTORY || moreLoading) return;
+    const points = timeline.points.filter((p) => p.kind !== "local").length + TIMELINE_PAGE;
+    const mine = ++moreSeq.current;
+    railPoints.current = points;
+    setMoreLoading(true);
+    api.timeline(file, points).then(
+      (r) => {
+        if (mine !== moreSeq.current) return;
+        setMoreLoading(false);
+        // A reload asked for this many since would have set the same rail; a later page wins.
+        if (railPoints.current === points) setTimeline(r.timeline);
+      },
+      (e) => {
+        if (mine !== moreSeq.current) return;
+        setMoreLoading(false);
+        setNotice(`Could not load older history: ${(e as Error).message}`);
+      },
+    );
+  }, [file, timeline, moreLoading]);
 
   // Browser tab title: the map's own title (front matter `title`, else the file name).
   const docTitle = data?.doc.title ?? null;
@@ -242,12 +281,12 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const diffCache = useRef(new Map<string, string>());
   const onRailActive = useCallback((key: string | null) => {
     setRailActive(key);
-    if (key && data?.timeline?.source === "git") setDiffPoint(key);
-  }, [data]);
+    if (key && timeline?.source === "git") setDiffPoint(key);
+  }, [timeline]);
   // Forget a pinned point that a reload removed, or when another map opens.
   useEffect(() => {
-    if (diffPoint && !data?.timeline?.points.some((p) => pointKey(p) === diffPoint)) setDiffPoint(null);
-  }, [data, diffPoint]);
+    if (diffPoint && timeline && !timeline.points.some((p) => pointKey(p) === diffPoint)) setDiffPoint(null);
+  }, [timeline, diffPoint]);
   useEffect(() => { setDiffPoint(null); diffCache.current.clear(); }, [file]);
   useEffect(() => {
     if (!diffPoint || !data) return;
@@ -259,7 +298,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     let live = true;
     // A short wait, so sweeping the pointer down the rail does not fetch every dot on the way.
     const t = setTimeout(() => {
-      api.diff(file, diffPoint).then(
+      api.diff(file, diffPoint, railPoints.current ?? undefined).then(
         (text) => { diffCache.current.set(cacheKey, text); if (live) setDiffText({ key: diffPoint, text, error: null }); },
         (e) => live && setDiffText({ key: diffPoint, text: null, error: `Could not load the diff: ${(e as Error).message}` }),
       );
@@ -468,9 +507,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     setPendingFrame(keys);
   }, [reveal]);
   const framePoint = useCallback((key: string) => {
-    const point = data?.timeline?.points.find((p) => pointKey(p) === key);
+    const point = timeline?.points.find((p) => pointKey(p) === key);
     if (point) frameNodes(point.nodes);
-  }, [data, frameNodes]);
+  }, [timeline, frameNodes]);
   // Clicking a diagnostic frames what it is about in the same way: the node on its line, or both
   // ends of a relation written there, and selects the node so its own panel opens.
   const focusLine = useCallback((line: number) => {
@@ -636,7 +675,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const focusNodes = new Set<string>();
     const matches = new Set(search.keys.map(shown).filter((k): k is string => k !== null));
     const railKey = railActive ?? (diffHover ? diffPoint : null);
-    const point = !hover && !selected && railKey ? data?.timeline?.points.find((p) => pointKey(p) === railKey) : undefined;
+    const point = !hover && !selected && railKey ? timeline?.points.find((p) => pointKey(p) === railKey) : undefined;
     const railNodes = new Set((point?.nodes ?? []).map(shown).filter((k): k is string => k !== null));
     const searching = !hover && !point && query.trim() !== "";
     // Like a search, a history point lights up only its own nodes and the lines between them.
@@ -726,7 +765,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       : point ? railNodes : new Set<string>();
     // The floor's projections follow the cards: a focused card's projection lights up, the rest dim.
     return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, data]);
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -941,14 +980,14 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           onFocusLine={focusLine}
         />
         {!node && diffPoint && (() => {
-          const p = data.timeline?.points.find((x) => pointKey(x) === diffPoint);
+          const p = timeline?.points.find((x) => pointKey(x) === diffPoint);
           const d = diffText?.key === diffPoint ? diffText : null;
           return p && <DiffPanel point={p} diff={d?.text ?? null} error={d?.error ?? null} now={now}
             onClose={() => (setDiffPoint(null), setDiffHover(false))} onHover={setDiffHover} />;
         })()}
         </div>
-        {!node && data.timeline && <TimelineRail timeline={data.timeline} now={now} active={railActive ?? (diffHover ? diffPoint : null)} pinned={diffPoint}
-            onActive={onRailActive} onPick={framePoint} />}
+        {!node && timeline && <TimelineRail timeline={timeline} now={now} active={railActive ?? (diffHover ? diffPoint : null)} pinned={diffPoint}
+            onActive={onRailActive} onPick={framePoint} onMore={MORE_HISTORY ? loadMore : undefined} loading={moreLoading} />}
         </div>
       </div>
     </div>
