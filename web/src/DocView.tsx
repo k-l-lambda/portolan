@@ -14,7 +14,7 @@ import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
 import { FrameFill, NodeCard, StarIcon, type CardNode } from "./NodeCard.tsx";
 import type { EditOp } from "../../src/edit.ts";
-import { measureLabel, placeLabels, type LabelRequest } from "./geometry.ts";
+import { measureLabel, placeLabels, type LabelRequest, type Rect as GeoRect } from "./geometry.ts";
 import { PolylineEdge } from "./PolylineEdge.tsx";
 import { searchNodes } from "./search.ts";
 import { TimelineRail } from "./Timeline.tsx";
@@ -31,6 +31,25 @@ import { SidePanel } from "./SidePanel.tsx";
 import { absoluteTime, freshness, relativeTime } from "./time.ts";
 
 const nodeTypes = { card: NodeCard, fill: FrameFill };
+
+/** Screen pixels a label keeps from the edge of the main view. */
+const SCREEN_MARGIN = 6;
+/**
+ * The part of the map the main view shows, in flow units, less a margin; and the overlays drawn
+ * over it (the navigator, the zoom buttons), where a label would be hidden. Null before the view
+ * is mounted.
+ */
+function screenRegions(v: Viewport): { view: GeoRect; covered: GeoRect[] } | null {
+  const pane = document.querySelector(".canvas .react-flow")?.getBoundingClientRect() ?? document.querySelector(".canvas")?.getBoundingClientRect();
+  if (!pane || pane.width === 0) return null;
+  const toFlow = (x: number, y: number, w: number, h: number): GeoRect => ({ x: (x - v.x) / v.zoom, y: (y - v.y) / v.zoom, w: w / v.zoom, h: h / v.zoom });
+  const m = SCREEN_MARGIN;
+  const covered = [...document.querySelectorAll(".canvas .react-flow__panel")].map((el) => {
+    const r = el.getBoundingClientRect();
+    return toFlow(r.x - pane.x, r.y - pane.y, r.width, r.height);
+  }).filter((r) => r.w > 0 && r.h > 0);
+  return { view: toFlow(m, m, pane.width - 2 * m, pane.height - 2 * m), covered };
+}
 
 /** The viewport that shows flow point (x, y) at the main view's centre, at `zoom`, as `setCenter` places it. */
 function centerAt(x: number, y: number, zoom: number): Viewport {
@@ -579,7 +598,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // After a pan or zoom of the main view, the ruler's density follows its zoom. In 3D that pans or
   // zooms the 3D view alone: the navigator's frame, and so the pose, stay where they are.
-  const onMoveEnd = useCallback((_e: unknown, v: Viewport) => setZoom(v.zoom), []);
+  // A hovered line's label is placed on the part of the line on screen, so it is placed again when
+  // a pan or zoom settles.
+  const [viewTick, setViewTick] = useState(0);
+  const onMoveEnd = useCallback((_e: unknown, v: Viewport) => (setZoom(v.zoom), setViewTick((n) => n + 1)), []);
 
   // Clicking a point frames the nodes that point changed. Its groups open first, so the boxes are
   // known by the time the layout catches up; a zoom cap keeps a single card from filling the view.
@@ -804,6 +826,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     }
     // Spread visible labels along their edges so parallel edges do not stack their text.
     // The hovered edge is placed first and gets the best spot; cards are soft obstacles.
+    // The hovered line's label is always placed where it can be read: on the part of the line on
+    // screen, off the navigator and the zoom buttons, on a horizontal run where there is one.
+    const onScreen = focusEdge ? screenRegions(flow.getViewport()) : null;
     const requests: LabelRequest[] = base.edges
       .filter((e) => visible.has(e.id))
       .sort((a, b) => Number(b.id === focusEdge) - Number(a.id === focusEdge))
@@ -813,6 +838,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
         // Focused labels show their whole text, so they are placed at full width.
         w: measureLabel(String(e.label), 11, activeEdges.has(e.id)) + 14,
         h: 18,
+        ...(e.id === focusEdge && onScreen ? { within: onScreen.view, avoid: onScreen.covered } : {}),
       }));
     const cards = base.nodes.filter((n) => !n.data.container && n.type === "card").map((n) => ({ x: n.position.x, y: n.position.y, w: n.width!, h: n.height! }));
     // Lines that are drawn prominently: the focused ones, or all of them when nothing is focused.
@@ -849,7 +875,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       : point ? railNodes : new Set<string>();
     // The floor's projections follow the cards: a focused card's projection lights up, the rest dim.
     return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline]);
+  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline, flow, viewTick]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {

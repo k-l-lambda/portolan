@@ -205,6 +205,50 @@ describe("placeLabels", () => {
   });
 });
 
+describe("placeLabels on screen", () => {
+  const inside = (p: { x: number; y: number }, w: number, h: number, r: { x: number; y: number; w: number; h: number }) =>
+    p.x - w / 2 >= r.x - 1e-9 && p.x + w / 2 <= r.x + r.w + 1e-9 && p.y - h / 2 >= r.y - 1e-9 && p.y + h / 2 <= r.y + r.h + 1e-9;
+  // Down from a card, a long run across, then down to another card.
+  const route = [{ x: 0, y: 0 }, { x: 0, y: 400 }, { x: 1200, y: 400 }, { x: 1200, y: 900 }];
+  const req = (within?: { x: number; y: number; w: number; h: number }, avoid?: { x: number; y: number; w: number; h: number }[]) =>
+    ({ id: "e", points: route, w: 120, h: 18, ...(within ? { within } : {}), ...(avoid ? { avoid } : {}) });
+
+  it("puts the label on the part of the line on screen, on its horizontal run", () => {
+    // Only the right half of the long run is on screen, with the last drop.
+    const view = { x: 700, y: 200, w: 800, h: 600 };
+    const p = placeLabels([req(view)]).get("e")!;
+    expect(inside(p, 120, 18, view)).toBe(true);
+    expect(p.y).toBe(400); // on the horizontal run, not the vertical one beside it
+  });
+
+  it("takes a vertical run when that is all the screen shows of the line", () => {
+    const view = { x: -300, y: 50, w: 600, h: 250 }; // the first drop only
+    const p = placeLabels([req(view)]).get("e")!;
+    expect(inside(p, 120, 18, view)).toBe(true);
+    expect(p.x).toBe(0);
+  });
+
+  it("keeps the label whole on screen when the line only grazes its edge", () => {
+    // The screen's right edge is 20 units past the first drop: no room for a 120-wide label on it.
+    const view = { x: -500, y: 50, w: 520, h: 300 };
+    const p = placeLabels([req(view)]).get("e")!;
+    expect(inside(p, 120, 18, view)).toBe(true);
+  });
+
+  it("keeps off the navigator when the line has room elsewhere on screen", () => {
+    const view = { x: 0, y: 0, w: 1300, h: 1000 };
+    const nav = { x: 400, y: 340, w: 500, h: 120 }; // over the middle of the long run
+    const p = placeLabels([req(view, [nav])]).get("e")!;
+    expect(inside(p, 120, 18, view)).toBe(true);
+    expect(p.x + 60 + 4 <= nav.x || p.x - 60 - 4 >= nav.x + nav.w).toBe(true);
+    expect(p.y).toBe(400);
+  });
+
+  it("leaves a request without a region as it was", () => {
+    expect(placeLabels([req()]).get("e")).toEqual({ x: 600, y: 400 });
+  });
+});
+
 describe("endTab", () => {
   // A line leaving a node downward, turning right, then arriving at another node from the left.
   const pts = [{ x: 10, y: 0 }, { x: 10, y: 40 }, { x: 80, y: 40 }];

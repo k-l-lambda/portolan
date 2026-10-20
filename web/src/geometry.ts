@@ -41,6 +41,14 @@ export interface LabelRequest {
   /** Label box size in flow units. */
   w: number;
   h: number;
+  /**
+   * Keep the label wholly inside this region (the part of the map on screen, in flow units), on
+   * the part of the line that is in it, preferring a horizontal run, where a label reads along its
+   * line. For the hovered line, whose label must be seen wherever the line is.
+   */
+  within?: Rect;
+  /** Regions over the map where a label would be hidden (the navigator, the zoom buttons). */
+  avoid?: Rect[];
 }
 
 /** Point at distance `d` along a polyline, with whether that segment is vertical. */
@@ -70,21 +78,77 @@ function overlap(a: Rect, b: Rect): number {
  * candidate closest to its preferred point (middle of the longest segment) that is clear of
  * labels already placed and, where possible, of `obstacles` (cards). When the edge is too
  * short for that, the label stays centred on the line's x and moves up or down by whole rows.
- * Requests are placed in order, so put the hovered edge first.
+ * Requests are placed in order, so put the hovered edge first. A request with `within` is kept
+ * inside that region, on the part of its line that is in it (see `visibleSpots`).
  */
 export interface Line { id: string; points: { x: number; y: number }[] }
 
-/** True when segment a–b passes through the interior of rect r (orthogonal or diagonal). */
-function crosses(a: { x: number; y: number }, b: { x: number; y: number }, r: Rect): boolean {
+/** The part of segment a–b inside rect r, as parameters 0..1 along it; null when none is. */
+function clip(a: { x: number; y: number }, b: { x: number; y: number }, r: Rect): [number, number] | null {
   // Liang–Barsky clip of the segment against the rect.
   let t0 = 0, t1 = 1;
   const dx = b.x - a.x, dy = b.y - a.y;
   for (const [p, q] of [[-dx, a.x - r.x], [dx, r.x + r.w - a.x], [-dy, a.y - r.y], [dy, r.y + r.h - a.y]] as const) {
-    if (p === 0) { if (q < 0) return false; continue; }
+    if (p === 0) { if (q < 0) return null; continue; }
     const t = q / p;
-    if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+    if (p < 0) { if (t > t1) return null; if (t > t0) t0 = t; } else { if (t < t0) return null; if (t < t1) t1 = t; }
   }
-  return t1 - t0 > 1e-6;
+  return t1 >= t0 ? [t0, t1] : null;
+}
+
+/** True when segment a–b passes through the interior of rect r (orthogonal or diagonal). */
+function crosses(a: { x: number; y: number }, b: { x: number; y: number }, r: Rect): boolean {
+  const c = clip(a, b, r);
+  return c !== null && c[1] - c[0] > 1e-6;
+}
+
+/** Shrink a rect by `dx`, `dy` each side; a side that would cross the middle stops there. */
+function inset(r: Rect, dx: number, dy: number): Rect {
+  const w = Math.max(0, r.w - 2 * dx), h = Math.max(0, r.h - 2 * dy);
+  return { x: r.x + (r.w - w) / 2, y: r.y + (r.h - h) / 2, w, h };
+}
+const clampTo = (p: { x: number; y: number }, r: Rect) => ({ x: Math.min(r.x + r.w, Math.max(r.x, p.x)), y: Math.min(r.y + r.h, Math.max(r.y, p.y)) });
+
+/** Extra cost of a spot on a vertical run, against a horizontal one: a label reads along its line. */
+const VERTICAL_COST = 50;
+
+/**
+ * Spots for a label kept inside `within`: points on the line where the whole label fits in the
+ * region, each with its cost — distance from the middle of the longest such horizontal run (else
+ * of the longest run), and more on a vertical run. When no stretch of the line has room for the
+ * whole label, the points of the line that are on screen, moved in until the label fits.
+ */
+function visibleSpots(points: { x: number; y: number }[], w: number, h: number, within: Rect, gap: number): { p: { x: number; y: number }; penalty: number }[] {
+  const room = inset(within, w / 2 + gap, h / 2 + gap);
+  const pieces = (r: Rect) => {
+    const out: { a: { x: number; y: number }; b: { x: number; y: number }; vertical: boolean }[] = [];
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1]!, b = points[i]!, c = clip(a, b, r);
+      if (!c) continue;
+      const at = (t: number) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+      out.push({ a: at(c[0]), b: at(c[1]), vertical: Math.abs(b.x - a.x) < Math.abs(b.y - a.y) });
+    }
+    return out;
+  };
+  let runs = pieces(room);
+  let moved = false;
+  if (runs.length === 0) (runs = pieces(within), moved = true);
+  if (runs.length === 0) return [];
+  const len = (q: { a: { x: number; y: number }; b: { x: number; y: number } }) => Math.hypot(q.b.x - q.a.x, q.b.y - q.a.y);
+  const flat = runs.filter((q) => !q.vertical);
+  const main = (flat.length ? flat : runs).reduce((m, q) => (len(q) > len(m) ? q : m));
+  const anchor = { x: (main.a.x + main.b.x) / 2, y: (main.a.y + main.b.y) / 2 };
+  const step = Math.max(4, h / 2);
+  const out: { p: { x: number; y: number }; penalty: number }[] = [];
+  for (const q of runs) {
+    const n = Math.min(80, Math.max(1, Math.ceil(len(q) / step)));
+    for (let i = 0; i <= n; i++) {
+      const t = i / n, raw = { x: q.a.x + (q.b.x - q.a.x) * t, y: q.a.y + (q.b.y - q.a.y) * t };
+      const p = moved ? clampTo(raw, room) : raw;
+      out.push({ p, penalty: (q.vertical ? VERTICAL_COST : 0) + Math.hypot(p.x - anchor.x, p.y - anchor.y) * 0.01 });
+    }
+  }
+  return out.sort((a, b) => a.penalty - b.penalty);
 }
 
 export function placeLabels(
@@ -114,6 +178,9 @@ export function placeLabels(
     candidates.sort((a, b) => Math.abs(a - preferred) - Math.abs(b - preferred));
 
     const box = (p: { x: number; y: number }): Rect => ({ x: p.x - r.w / 2 - gap, y: p.y - r.h / 2 - gap, w: r.w + 2 * gap, h: r.h + 2 * gap });
+    // Inside `within`, a label's centre may go only where the whole label still fits.
+    const room = r.within ? inset(r.within, r.w / 2 + gap, r.h / 2 + gap) : null;
+    const keep = (p: { x: number; y: number }) => (room ? clampTo(p, room) : p);
     let best: { p: { x: number; y: number }; cost: number; onLabels: number } | null = null;
     // Lines sharing this edge's exact path (one `a needs b, c` line) count as its own.
     const ownPath = JSON.stringify(r.points);
@@ -123,15 +190,24 @@ export function placeLabels(
       const onLabels = placed.reduce((s, q) => s + overlap(b, q), 0);
       const onCards = obstacles.reduce((s, q) => s + overlap(b, q), 0);
       const onLines = others.reduce((s, l) => s + (l.points.slice(1).some((q, i) => crosses(l.points[i]!, q, b)) ? 1 : 0), 0);
+      // Under the navigator or the zoom buttons a label is not seen at all, so that costs most
+      // after covering another label.
+      const hidden = (r.avoid ?? []).reduce((s, q) => s + overlap(b, q), 0);
       // Never cover a label; then stay near the own line (penalty) over avoiding other lines
       // and cards. Card cover counts as the covered fraction, so wide labels are not pushed far.
-      const cost = onLabels * 1000 + onLines * 40 + (onCards / (b.w * b.h)) * 60 + penalty;
+      const cost = onLabels * 1000 + (hidden / (b.w * b.h)) * 400 + onLines * 40 + (onCards / (b.w * b.h)) * 60 + penalty;
       if (!best || cost < best.cost) best = { p, cost, onLabels: onLabels + onLines };
-      return onLabels === 0 && onLines === 0 && onCards === 0;
+      return onLabels === 0 && onLines === 0 && onCards === 0 && hidden === 0;
     };
+    // The spots to try, best first: along the path from the preferred point; or, kept inside a
+    // region, along the part of the line in it, horizontal runs first.
+    const spots = r.within
+      ? visibleSpots(r.points, r.w, r.h, r.within, gap)
+      : candidates.map((d) => ({ p: pointAt(r.points, d), penalty: Math.abs(d - preferred) * 0.01 }));
+    if (spots.length === 0) spots.push({ p: keep(pointAt(r.points, preferred)), penalty: 0 });
     let clear = false;
-    for (const d of candidates) {
-      if ((clear = consider(pointAt(r.points, d), Math.abs(d - preferred) * 0.01))) break;
+    for (const sp of spots) {
+      if ((clear = consider(sp.p, sp.penalty))) break;
     }
     // Still covering a label or sitting on another line: labels are wide, flat strips, so
     // stagger them up or down. x stays on the line (a sideways shift of a wide
@@ -140,13 +216,13 @@ export function placeLabels(
       // Half-row steps, so a label can tuck between two others instead of a full row out.
       outer: for (let i = 1; i <= 8; i++) {
         for (const k of [i / 2, -i / 2]) {
-          for (const d of candidates) {
-            const p = pointAt(r.points, d);
-            if (consider({ x: p.x, y: p.y + k * (r.h + gap) }, 30 * Math.abs(k) + Math.abs(d - preferred) * 0.01)) break outer;
+          for (const sp of spots) {
+            if (consider(keep({ x: sp.p.x, y: sp.p.y + k * (r.h + gap) }), 30 * Math.abs(k) + sp.penalty)) break outer;
           }
         }
       }
     }
+    best!.p = keep(best!.p);
     out.set(r.id, { x: best!.p.x, y: best!.p.y });
     placed.push(box(best!.p));
   }
