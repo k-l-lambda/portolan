@@ -265,17 +265,11 @@ title: Portolan
     - Command-line checks and the server exist; there are no agent tools yet.
   - [x] Publishing {kind: milestone} ^publish
     - Why: the code lived on one machine, and others can only use it once it is public and installable.
-    - The code is public on GitHub; releases are set up to go to npm whenever the version number changes.
-    - Released on npm (0.1.0, then 0.1.1 through the automatic workflow); the package carries its license and the bundled libraries' notices.
-    - [npm scope and workflow](../changelog.md#package-k-l-lambdaportolan-builds-to-dist-publish-workflow-uses-npm-trusted-publishing-portolan-9957ecd)
-    - The first manual release failed because the npm login on this machine had expired.
-    - [publish error](../changelog.md#not-a-package-or-scope-problem-npm-did-not-recognize-the-login-both-available-tokens-return-401)
-    - [license files](../changelog.md#license-bundled-third-party-notices-and-text-links-without-a-heading-portolan-65d90e1)
-    - A read-only demo of this map runs on GitHub Pages and is rebuilt on every push.
-    - [live demo](../changelog.md#read-only-demo-at-httpsk-l-lambdagithubioportolan-deployed-by-githubworkflowspagesyml-portolan-5eea371)
-    - The demo now shows a folder of maps, including a fictional civilization-building map with deep-past dates and abandoned branches.
-    - [demo folder](../changelog.md#the-project-map-is-now-docsdemoportolanrhumb-pages-exports-every-map-under-docsdemo-portolan-d59ccdd); [civilization branches](../changelog.md#15-branch-nodes-with-reasons-designer-voice-notes-for-the-life-stages-11-new-he-log-entries-committed-by-the-user-as-portolan-c8483af)
-    - The civilization demo also shows kinds and claims; this map carries its own kinds and topic tags.
+    - Public on GitHub, and released to npm whenever the version number changes (0.1.0 by hand, 0.1.1 on through the workflow); the package carries its license and the bundled libraries' notices.
+    - [npm scope and workflow](../changelog.md#package-k-l-lambdaportolan-builds-to-dist-publish-workflow-uses-npm-trusted-publishing-portolan-9957ecd); [license files](../changelog.md#license-bundled-third-party-notices-and-text-links-without-a-heading-portolan-65d90e1)
+    - The first manual release failed: the npm login on this machine had expired. [publish error](../changelog.md#not-a-package-or-scope-problem-npm-did-not-recognize-the-login-both-available-tokens-return-401)
+    - A read-only demo on GitHub Pages, rebuilt on every push, shows a folder of maps: this one, with its own kinds and topic tags, and a fictional civilization map with deep-past dates, abandoned branches, kinds and claims.
+    - [live demo](../changelog.md#read-only-demo-at-httpsk-l-lambdagithubioportolan-deployed-by-githubworkflowspagesyml-portolan-5eea371); [demo folder](../changelog.md#the-project-map-is-now-docsdemoportolanrhumb-pages-exports-every-map-under-docsdemo-portolan-d59ccdd); [civilization branches](../changelog.md#15-branch-nodes-with-reasons-designer-voice-notes-for-the-life-stages-11-new-he-log-entries-committed-by-the-user-as-portolan-c8483af)
     - [demo claims](../changelog.md#12-kinds-and-every-claim-style-but-retracted-in-the-civilization-demo-portolan-c8fda73); [map kinds](../changelog.md#memoportolanrhumb-got-kinds-and-topic-tags-the-changelog-and-shipped-map-were-regenerated-from-the-diary-diary-job-7211fab1-portolan-ef29e2c)
 
 %% Rhumb tooling

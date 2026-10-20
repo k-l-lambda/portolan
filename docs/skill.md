@@ -57,7 +57,7 @@ links:
 | `[/]` | doing, in progress |
 | `[x]` | done |
 | `[-]` | dropped, abandoned (keep the node) |
-| `[!]` | blocked; add a note with the reason |
+| `[!]` | blocked; add a note `blocked_by: <what blocks it>` |
 | `[?]` | idea, proposed but not committed |
 
 - Always write a readable kebab-case ID matching `[a-z0-9][a-z0-9-]{0,47}`. Prefix child IDs with the parent's (`threads`, `threads-model`). Never write `^_xxxxxx`: the `_` prefix is reserved for IDs that `fmt` generates when a human omits one.
@@ -68,7 +68,7 @@ links:
 - Timing: `{estimate: 2h, started: 2026-10-15T09:30+08:00, finished: …}`. `estimate` is a duration with units, largest first (`45m`, `2h`, `1h30m`, `3d`, `2y`); a bare number is `W015`. `started` and `finished` are ISO date-times, best with the offset, or plain dates; anything else is `W016`. They are working figures: be roughly right (minutes for hours of work, a date for weeks of it), not exact. See section 5 for when to set them.
 - A `hypothesis` or `finding` records how its evidence stands with one verdict flag, written like `star`: `{kind: hypothesis, refuted: true}`. Verdicts are `supported`, `partial`, `refuted`, `inconclusive`; at most one (`W013`). `replicated`, `contested`, `retracted` may be added to a verdict. Status and verdict are separate: when an investigation finishes, mark it `[x]` and set the verdict the evidence supports; finishing never implies `supported`. Leave a hypothesis without a verdict until it has been tested.
 - Hierarchy is 2 spaces per level. A node's parent is the nearest preceding node with smaller indentation; siblings share one indentation.
-- Notes are list items without a checkbox. They belong to the node above them and are not children. Use them for blocked reasons, short context and links.
+- Notes are list items without a checkbox. They belong to the node above them and are not children. Use them for blocked reasons, short context and links. A blocked item's reason is a note starting `blocked_by:`. Keep notes few (more than 10 is `I007`): when a state changes, replace the old state's note rather than adding another below it.
 - Titles are inline Markdown (code spans, links). A title that itself ends in `^word` or `{...}` must escape it as `\^` or `\{`.
 
 ```rhumb
@@ -321,6 +321,8 @@ Then run `node src/cli.ts check memo/portolan.rhumb`: no output, exit 0. If the 
 | Claim flag on an item that is not a hypothesis or finding | `I004` | add `kind: hypothesis` or `kind: finding`, or drop the flag |
 | `[ ]` parent with started children | `I003` | set the parent to `[/]` |
 | Node with no relation at all among siblings | `I006` | add its `needs` / `relates` edge, or move it; top-level nodes and only children are exempt |
+| `[!]` item without a `blocked_by:` note | `W019` | add `- blocked_by: <what blocks it>` under it |
+| More than 10 notes on one item | `I007` | condense them; for a history of states keep only the latest, the rest belongs in the diary |
 
 This file triggers `W005`, `W006`, `W007`, `W008`, `W018` and `I003`:
 

@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { staticPath } from "../web/src/api.ts";
-import { applyEdit, byUrgency, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, formatDuration, headingDate, parse, parseDuration, parseMoment, resolveAnchor, ThreadStore, sharePercent, timingOf, timingReport } from "../src/index.ts";
+import { applyEdit, blockedReason, byUrgency, checkAnchors, createRhumbServer, derive, EditError, excerpt, foldThreads, format, formatDuration, headingDate, parse, parseDuration, parseMoment, resolveAnchor, ThreadStore, sharePercent, timingOf, timingReport } from "../src/index.ts";
 
 const SRC = `---
 title: T
@@ -164,6 +164,47 @@ r needs gone
     // Only `stopped`: a doing node below anywhere counts, so a nested one keeps its ancestors quiet.
     // `done2` is done with a doing child, which is W007 as well, and I006 flags the unrelated ones.
     expect(derive(doc).diagnostics.map((x) => [x.code, x.line]).filter(([c]) => c !== "I006")).toEqual([["W018", 5], ["W007", 9]]);
+  });
+});
+
+describe("notes checks", () => {
+  it("asks a blocked node to say what blocks it in a blocked_by: note", () => {
+    const doc = parse(`- [ ] Root ^root
+  - [!] Says why ^why
+    - blocked_by: the GPU queue; see [log](https://example.com)
+  - [!] Says nothing ^silent
+    - Waiting on someone
+  - [!] Empty reason ^empty
+    - blocked_by:
+  - [ ] Not blocked ^open
+    - blocked_by: only a blocked node needs it
+root needs why, silent, empty, open
+`);
+    expect(derive(doc).diagnostics.filter((d) => d.code === "W019").map((d) => d.line)).toEqual([4]);
+    const [why, silent, empty] = doc.nodes[0]!.children;
+    expect(blockedReason(why!)).toBe("the GPU queue; see [log](https://example.com)");
+    expect(blockedReason(silent!)).toBeNull();
+    // An empty reason still counts as the note being there; the list shows it as empty.
+    expect(blockedReason(empty!)).toBe("");
+  });
+
+  it("joins several blocked_by: notes, and flags a node with more than 10 notes", () => {
+    const notes = (n: number) => Array.from({ length: n }, (_, i) => `  - state ${i + 1}`).join("\n");
+    const doc = parse(`- [!] Two reasons ^two
+  - blocked_by: review
+  - blocked_by: the release window
+- [/] Ten notes ^ten
+${notes(10)}
+- [/] Eleven notes ^eleven
+${notes(11)}
+two relates ten
+ten relates eleven
+`);
+    expect(blockedReason(doc.nodes[0]!)).toBe("review; the release window");
+    const i007 = derive(doc).diagnostics.filter((d) => d.code === "I007");
+    expect(i007.map((d) => d.line)).toEqual([15]);
+    expect(i007[0]!.message).toMatch(/^11 notes; .*keep only the latest/);
+    expect(i007[0]!.level).toBe("info");
   });
 });
 

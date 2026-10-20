@@ -1,5 +1,6 @@
 // Derived semantics (spec section 6): computed from the AST, never written to the file.
 
+import { BLOCKED_BY, blockedReason, MAX_NOTES } from "./notes.ts";
 import { diagnostic } from "./parse.ts";
 import type { Diagnostic, RhumbDocument, RhumbNode } from "./types.ts";
 
@@ -99,6 +100,14 @@ export function derive(doc: RhumbDocument): Derived {
     }
     if (n.status === "todo" && n.children.some((c) => c.status === "doing" || c.status === "done")) {
       diagnostics.push(diagnostic("I003", n.line, "Children have started; consider marking this node doing"));
+    }
+    // A blocked node says what blocks it, in a note of its own, so the blocked list can say why.
+    if (n.status === "blocked" && blockedReason(n) === null) {
+      diagnostics.push(diagnostic("W019", n.line, `Blocked node has no "${BLOCKED_BY}" note saying what blocks it`));
+    }
+    // Notes are a description, not a log: a long run of them is usually states written one after another.
+    if (n.notes.length > MAX_NOTES) {
+      diagnostics.push(diagnostic("I007", n.line, `${n.notes.length} notes; consider condensing them, and for a history of states keep only the latest`));
     }
     const p = progress.get(n)!;
     return {

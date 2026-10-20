@@ -20,6 +20,8 @@ import { searchNodes } from "./search.ts";
 import { TimelineRail } from "./Timeline.tsx";
 import { DiffPanel } from "./DiffPanel.tsx";
 import { pointKey } from "./timelineLabels.ts";
+import { blockedReason } from "../../src/notes.ts";
+import type { BlockedItem } from "./SidePanel.tsx";
 import { nodeKind } from "../../src/kinds.ts";
 import { byUrgency, timingOf } from "../../src/timing.ts";
 import type { TimedItem } from "./TimerChip.tsx";
@@ -97,6 +99,9 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Hovered node or edge; falls back to the selected node so keyboard and touch users get the same focus.
   // `floor`: the hover came from the node's projection on the 3D view's floor, so its title shows there.
   const [hover, setHover] = useState<{ kind: "node" | "edge"; id: string; floor?: boolean } | null>(null);
+  // An item pointed at in the Diagnostics panel's lists (in progress, blocked): highlighted as if
+  // its card were, when the pointer is on no card or line.
+  const [listHover, setListHover] = useState<string | null>(null);
   const [allLabels, setAllLabels] = useState(false);
   // Last placed position of each label, so a label fades out where it was shown.
   const lastLabelAt = useRef(new Map<string, { x: number; y: number }>());
@@ -273,6 +278,16 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     }
     return out.sort((a, b) => byUrgency(a.timing, b.timing) || a.line - b.line);
   }, [all, now]);
+  // Blocked items with what blocks them, in map order, for the Diagnostics panel.
+  const blocked = useMemo(() => {
+    const out: BlockedItem[] = [];
+    for (const [key, n] of all) {
+      if (n.status === "blocked") out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", reason: blockedReason(n) });
+    }
+    return out.sort((a, b) => a.line - b.line);
+  }, [all]);
+  // A list row that a reload or a selection took away stops highlighting.
+  useEffect(() => setListHover(null), [data, selected]);
   const starredList = useMemo(() => [...all.values()].filter(starred), [all]);
   const [highlightStars, setHighlightStars] = useState(false);
   const [starMenu, setStarMenu] = useState(false);
@@ -768,7 +783,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
 
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
-  const { nodes, edges, focusCss, focusSet } = useMemo(() => {
+  const pointer = hover;
+  const { nodes, edges, focusCss, focusSet, shownHover } = useMemo(() => {
     // Focus set: the hovered node, else the nodes a hovered history point changed, else the
     // search matches (for both, only they and the edges between them light up), else the
     // selected node, else (with "Highlight starred") every starred node. A node in a collapsed
@@ -778,6 +794,10 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       for (let k: string | null = key; k; k = parents.get(k) ? nodeKey(parents.get(k)!) : null) if (visibleKeys.has(k)) return k;
       return null;
     };
+    // A row pointed at in the Diagnostics panel's lists stands for its card, or the nearest
+    // visible card above it in a folded group; `floor` since the pointer is not on that card.
+    const listKey = !pointer && listHover ? shown(listHover) : null;
+    const hover = pointer ?? (listKey ? { kind: "node" as const, id: listKey, floor: true } : null);
     const focusNodes = new Set<string>();
     const matches = new Set(search.keys.map(shown).filter((k): k is string => k !== null));
     const railKey = railActive ?? (diffHover ? diffPoint : null);
@@ -874,8 +894,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id && !hover.floor)))
       : point ? railNodes : new Set<string>();
     // The floor's projections follow the cards: a focused card's projection lights up, the rest dim.
-    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null };
-  }, [base, hover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline, flow, viewTick]);
+    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null, shownHover: hover };
+  }, [base, pointer, listHover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline, flow, viewTick]);
 
   const selectLine = useCallback((line: number) => {
     for (const [key, n] of all) {
@@ -1054,17 +1074,18 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
             onMoveEnd={onMoveEnd}
             proOptions={{ hideAttribution: false }}
           >
-            {scene && <DepthFloor scene={scene} zoom={zoom} marks={floorMarks} focus={focusSet} hovered={hover?.kind === "node" ? hover.id : null}
+            {scene && <DepthFloor scene={scene} zoom={zoom} marks={floorMarks} focus={focusSet} hovered={shownHover?.kind === "node" ? shownHover.id : null}
               onHover={onFloorHover} />}
-            {scene && !moving && scene.pose.blend > 0.99 && hover?.kind === "node" && (() => {
+            {scene && !moving && scene.pose.blend > 0.99 && shownHover?.kind === "node" && (() => {
               // A panel at 45° is foreshortened, so the hovered one also shows its title flat.
+              const hover = shownHover;
               const panel = scene.panels.get(hover.id);
               const box = layout?.boxes.find((b) => b.key === hover.id);
               if (!panel || !box) return null;
               const t = nodeTimes.get(box.node.line);
               const sub = [box.node.id ? shortId(box.node.id, null, 24) : "", t !== undefined ? absoluteTime(t) : ""].filter(Boolean).join(" · ");
-              // Pointed at on the floor, the title shows there, where the pointer met the projection.
-              return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} at={hover.floor ? floorAt ?? undefined : undefined} />;
+              // Pointed at on the floor, the title shows there; pointed at in a list, over the panel.
+              return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} at={hover.floor && pointer ? floorAt ?? undefined : undefined} />;
             })()}
             <Background gap={24} />
             <Controls showInteractive={false} />
@@ -1090,6 +1111,8 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
           diagnostics={data.doc.diagnostics}
           onStar={onStar}
           timed={timed}
+          blocked={blocked}
+          onHoverItem={setListHover}
           onGoTo={goTo}
           freshness={data.freshness}
           now={now}

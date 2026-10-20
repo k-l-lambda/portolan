@@ -3,7 +3,7 @@ import type { NodeState } from "../../src/derive.ts";
 import type { Diagnostic, RhumbNode } from "../../src/types.ts";
 import { api, READ_ONLY, type AnchorResponse, type Freshness } from "./api.ts";
 import { absoluteTime, relativeTime, isoTime } from "./time.ts";
-import { starred } from "./layout.ts";
+import { plainTitle, starred } from "./layout.ts";
 import { StarIcon } from "./NodeCard.tsx";
 import { CopyText } from "./CopyText.tsx";
 import { renderMarkdown } from "./markdown.ts";
@@ -24,15 +24,21 @@ interface Props {
   onStar: (node: RhumbNode) => void;
   /** Doing items with timing, most urgent first (shown with Diagnostics). */
   timed?: TimedItem[];
+  /** Blocked items with what blocks them, in map order (shown with Diagnostics). */
+  blocked?: BlockedItem[];
+  /** Pointing at an item in those lists: the map highlights it, as pointing at its card does. */
+  onHoverItem?: (key: string | null) => void;
   /** Reveal, select and center a node by key. */
   onGoTo?: (key: string) => void;
 }
 
-export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onFocusLine, onStar, timed = [], onGoTo }: Props) {
+export function SidePanel({ file, node, state, diagnostics, freshness, now, onSelectLine, onFocusLine, onStar, timed = [], blocked = [], onGoTo, onHoverItem }: Props) {
   const focus = onFocusLine ?? onSelectLine;
   if (!node) {
+    const lineOf = (key: string) => timed.find((t) => t.key === key)?.line ?? blocked.find((b) => b.key === key)?.line;
     return <DiagnosticsPanel diagnostics={diagnostics} freshness={freshness} now={now} onFocusLine={focus}
-      timed={timed} onGoTo={onGoTo ?? ((key) => { const i = timed.find((t) => t.key === key); if (i) onSelectLine(i.line); })} />;
+      timed={timed} blocked={blocked} onHoverItem={onHoverItem}
+      onGoTo={onGoTo ?? ((key) => { const line = lineOf(key); if (line !== undefined) onSelectLine(line); })} />;
   }
   const updated = freshness.nodes.find((t) => t.line === node.line);
   const own = diagnostics.filter((d) => d.line === node.line || node.notes.some((n) => n.line === d.line));
@@ -163,9 +169,9 @@ function AnchorView({ file, line, index }: { file: string; line: number; index: 
   );
 }
 
-function DiagnosticsPanel({ diagnostics, freshness, now, onFocusLine, timed, onGoTo }: {
+function DiagnosticsPanel({ diagnostics, freshness, now, onFocusLine, timed, blocked, onGoTo, onHoverItem }: {
   diagnostics: Diagnostic[]; freshness: Freshness; now: number; onFocusLine: (line: number) => void;
-  timed: TimedItem[]; onGoTo: (key: string) => void;
+  timed: TimedItem[]; blocked: BlockedItem[]; onGoTo: (key: string) => void; onHoverItem?: (key: string | null) => void;
 }) {
   const at = (t: number) => (
     <time dateTime={isoTime(t)} title={absoluteTime(t)}>{relativeTime(t, now)}</time>
@@ -198,12 +204,57 @@ function DiagnosticsPanel({ diagnostics, freshness, now, onFocusLine, timed, onG
             : " · no uncommitted changes")}
         </dd>
       </dl>
-      {timed.length > 0 && <TimedWork items={timed} onSelect={(i) => onGoTo(i.key)} />}
-      {diagnostics.length > 0 && timed.length > 0 && <h3>Problems</h3>}
+      {/* What cannot move first, then what is moving. */}
+      {blocked.length > 0 && <BlockedWork items={blocked} onSelect={(i) => onGoTo(i.key)} onHover={onHoverItem} />}
+      {timed.length > 0 && <TimedWork items={timed} onSelect={(i) => onGoTo(i.key)} onHover={onHoverItem} />}
+      {diagnostics.length > 0 && (timed.length > 0 || blocked.length > 0) && <h3>Problems</h3>}
       {diagnostics.length === 0
         ? <p className="muted">No problems. Select a node to see its notes and diary links.</p>
         : <DiagnosticList diagnostics={diagnostics} onFocusLine={onFocusLine} />}
     </aside>
+  );
+}
+
+/** One blocked item for the Diagnostics panel, with what its `blocked_by:` notes say blocks it. */
+export interface BlockedItem {
+  key: string;
+  line: number;
+  title: string;
+  /** The reason as written (inline Markdown); null when the item has no `blocked_by:` note (W019). */
+  reason: string | null;
+}
+
+/**
+ * Blocked items, in map order, each with what blocks it. Clicking a row goes to the item, and
+ * pointing at one highlights it in the map, as the in-progress list does. The reason is shown as
+ * plain text: the row is a button, and a link inside it could not be followed.
+ */
+function BlockedWork({ items, onSelect, onHover }: {
+  items: BlockedItem[]; onSelect: (item: BlockedItem) => void; onHover?: (key: string | null) => void;
+}) {
+  const missing = items.filter((i) => i.reason === null).length;
+  return (
+    <section className="blocked" aria-label="Blocked work">
+      <h3>
+        Blocked <span className="timed-count">{items.length}</span>
+        {missing > 0 && <span className="blocked-flag">{missing === items.length ? "no reasons given" : `${missing} without a reason`}</span>}
+      </h3>
+      <ul className="timed-list" onPointerLeave={() => onHover?.(null)}>
+        {items.map((i) => {
+          const reason = i.reason === null ? null : plainTitle(i.reason) || "(empty reason)";
+          return (
+            <li key={i.key}>
+              <button type="button" className={`blocked-row${reason === null ? " no-reason" : ""}`}
+                title={reason === null ? "No blocked_by: note says what blocks this item" : `Blocked by: ${reason}`}
+                onClick={() => onSelect(i)} onPointerEnter={() => onHover?.(i.key)} onFocus={() => onHover?.(i.key)} onBlur={() => onHover?.(null)}>
+                <span className="timed-title">{i.title}</span>
+                <span className="blocked-reason">{reason ?? "no blocked_by: note"}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 

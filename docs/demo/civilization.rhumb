@@ -94,7 +94,7 @@ links:
       - [文明构建日志](chronicle:civilization-log#6783-he)
     - [!] 鲸类海洋文明 {kind: lineage} ^history-cetaceans
       - Why: 鲸类具有大脑、长寿命和以歌声跨代传递的群体知识，保留为海洋中的备份智慧谱系。
-      - 搁置原因：水下无法用火，冶炼、陶器和电力无从起步，技术链停在工具之前；待找到不依赖火的材料加工路径再评估。
+      - blocked_by: 水下无法用火，冶炼、陶器和电力无从起步，技术链停在工具之前；待找到不依赖火的材料加工路径再评估。
     - [?] 鸦科备份谱系 {kind: hypothesis} ^history-corvids
       - Why: 龙族计划留下的鸟类分支中，鸦科已能制作、传授工具；若灵长类路径失败，可作为低成本备选。
       - 待评估：小体型对脑容量和手部操作的上限，以及在人类文明并存时的生态位。
@@ -231,7 +231,7 @@ links:
       - [文明构建日志](chronicle:civilization-log#11971-04-19-he)
     - [!] 核热火箭 {kind: experiment} ^history-space-nerva
       - Why: 以反应堆加热氢工质，比冲约为化学推进的两倍，用于载人火星任务和重型轨道运输。
-      - 搁置原因：地面试车已验证反应堆与发动机，但优先级与预算变化使项目在 1972 年底中止；重启前需先有轨道核安全规则。
+      - blocked_by: 地面试车已验证反应堆与发动机，但优先级与预算变化使项目在 1972 年底中止；重启前需先有轨道核安全规则。
       - [文明构建日志](chronicle:civilization-log#11972-he)
     - [x] 航天飞机首飞 ^history-space-shuttle
       - Why: 可重复使用运输扩大在轨服务与大型载荷组装能力，降低后续空间基础设施扩建门槛。
@@ -289,7 +289,7 @@ links:
       - [文明构建日志](chronicle:civilization-log#11942-12-02-he)
     - [!] 熔盐堆实验 {kind: experiment} ^history-industry-msr
       - Why: 以熔融氟盐同时承载燃料与冷却，验证高温、低压运行的另一条先进堆路线。
-      - 搁置原因：实验堆运行四年后停堆，资源转向其他堆型；重启需要耐熔盐腐蚀的结构材料和在线燃料处理工艺。
+      - blocked_by: 实验堆运行四年后停堆，资源转向其他堆型；重启需要耐熔盐腐蚀的结构材料和在线燃料处理工艺。
       - [文明构建日志](chronicle:civilization-log#11969-12-he)
     - [x] 熔盐堆可在高温低压下运行 {kind: finding, partial: true, contested: true} ^history-industry-msr-finding
       - Why: 实验堆四年运行的结论：高温低压运行可行，但结构材料的熔盐腐蚀仍未解决，只能算部分成立。

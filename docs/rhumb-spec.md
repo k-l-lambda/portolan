@@ -85,7 +85,7 @@ node-line = indent ("-" | "*") SP "[" S "]" SP title [SP attrs] [SP "^" ID]
 | `[/]` | doing | in progress |
 | `[x]` | done | finished |
 | `[-]` | dropped | abandoned |
-| `[!]` | blocked | explicitly blocked; put the reason in a note |
+| `[!]` | blocked | explicitly blocked; put the reason in a note starting `blocked_by:` |
 | `[?]` | idea | proposed, not yet committed |
 
 For tolerance the parser also accepts `[X]` and `[~]`, which `fmt` normalizes to `[x]` and `[/]`. Any other symbol is error `E002`.
@@ -180,10 +180,12 @@ A list item without a checkbox is a note that belongs to its parent node. A note
 
 ```rhumb
 - [!] K3 hidden-state capture ^capture
-  - Wait for the current 4-GPU training job to finish; TP8 needs the whole machine
+  - blocked_by: the current 4-GPU training job; TP8 needs the whole machine
   - [record](diary:2026/1008#camelot-exp73)
 ```
 
+- A blocked node says what blocks it in a note that starts with `blocked_by:`; tools list blocked nodes with that text. A blocked node without one is warning `W019`.
+- Notes describe a node; they are not its log. A node with more than 10 notes is info `I007`: condense them, and where they record one state after another, keep only the latest.
 - A note at the top level has no parent. It is ignored and reported as `W001`.
 - A node indented under a note is attached to the node that owns the note, and reported as `W002`.
 
@@ -299,6 +301,8 @@ These values are computed by tools and never written to the file.
   - a doing node with children, none of which is doing (directly or below): `W018` (the work below has stopped, or the status sits on the wrong node)
   - a todo parent with a doing or done child: `I003` (suggests changing the parent to doing)
   - a node that no relation reaches or starts, and that is neither a top-level node nor an only child: `I006` (a forgotten item, or a missing edge)
+  - a blocked node without a note starting `blocked_by:`: `W019` (see 3.7)
+  - a node with more than 10 notes: `I007` (see 3.7)
 - **Parent status** is always written explicitly. 0.1 does not derive it, so the file never disagrees with what the UI shows.
 
 ## 7. Formatting (`rhumb fmt`)

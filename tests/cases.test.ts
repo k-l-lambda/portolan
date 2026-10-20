@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parse } from "../src/index.ts";
+import { derive, parse } from "../src/index.ts";
 
 const casesDir = join(import.meta.dirname, "cases");
 
@@ -63,6 +63,14 @@ describe("parse", () => {
     const attrs = JSON.stringify(doc.nodes);
     for (const k of ["decision", "question", "hypothesis", "experiment", "finding", "risk", "milestone", "survey", "spike"]) expect(attrs).toContain(`"kind":"${k}"`);
     for (const f of ["supported", "refuted", "partial", "replicated", "contested"]) expect(attrs).toContain(`"${f}":true`);
+  });
+
+  it("keeps the shipped maps free of consistency warnings", () => {
+    // Infos such as I006 (an item without a relation) are left to the maps; warnings are not.
+    for (const f of ["../docs/example.rhumb", "../docs/demo/portolan.rhumb", "../docs/demo/civilization.rhumb"]) {
+      const warnings = derive(parse(readFileSync(join(import.meta.dirname, f), "utf8"))).diagnostics.filter((d) => d.level !== "info");
+      expect(warnings, f).toEqual([]);
+    }
   });
 
   it("parses the project map without diagnostics", () => {

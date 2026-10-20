@@ -61,8 +61,11 @@ export interface TimedItem {
 /**
  * Doing items with timing, most urgent first: each row shows its time against the estimate on a
  * bar. Past the estimate the bar keeps the estimate's mark and runs on, so the overrun shows.
+ * Pointing at a row (or focusing it) highlights its item in the map, as pointing at the card does.
  */
-export function TimedWork({ items, onSelect }: { items: TimedItem[]; onSelect: (item: TimedItem) => void }) {
+export function TimedWork({ items, onSelect, onHover }: {
+  items: TimedItem[]; onSelect: (item: TimedItem) => void; onHover?: (key: string | null) => void;
+}) {
   const over = items.filter((i) => i.timing.state === "over").length;
   const near = items.filter((i) => i.timing.state === "near").length;
   return (
@@ -72,14 +75,15 @@ export function TimedWork({ items, onSelect }: { items: TimedItem[]; onSelect: (
         {over > 0 && <span className="timed-flag timer-over">{over} over</span>}
         {near > 0 && <span className="timed-flag timer-near">{near} nearly due</span>}
       </h3>
-      <ul className="timed-list">
+      <ul className="timed-list" onPointerLeave={() => onHover?.(null)}>
         {items.map((i) => {
           const { estimate, elapsed, state } = i.timing;
           // Where the estimate falls on the bar: the whole bar while on time, earlier once over.
           const span = estimate !== null && elapsed !== null ? Math.max(estimate, elapsed) : null;
           return (
             <li key={i.key}>
-              <button type="button" className={`timed-row timer-${state ?? "plain"}`} title={timerText(i.timing)} onClick={() => onSelect(i)}>
+              <button type="button" className={`timed-row timer-${state ?? "plain"}`} title={timerText(i.timing)} onClick={() => onSelect(i)}
+                onPointerEnter={() => onHover?.(i.key)} onFocus={() => onHover?.(i.key)} onBlur={() => onHover?.(null)}>
                 <span className="timed-title">{i.title}</span>
                 <span className="timed-value">
                   {elapsed !== null && estimate !== null ? `${formatDuration(elapsed)} / ${formatDuration(estimate)}`
