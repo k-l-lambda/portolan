@@ -76,6 +76,10 @@ title: Portolan
       - Why: a status that no longer matches the work below it, and an item no relation reaches, are both easy to miss by reading.
       - A doing group with nothing doing below it is `W018`; an isolated node among siblings is `I006`.
       - [the two checks](../changelog.md#w018-for-a-doing-group-with-nothing-doing-below-it-i006-for-an-isolated-node-portolan-49816fa)
+    - [x] Blocked reasons and long notes ^rhumb-notes
+      - Why: a blocked item that does not say what blocks it cannot be unblocked by anyone else, and notes that pile up as a log hide the current state.
+      - A blocked item without a note starting `blocked_by:` is `W019`; more than 10 notes on one item is `I007`, a hint to condense them and keep only the latest state.
+      - [blocked_by and long notes](../changelog.md#w019-and-i007-a-blocked-list-above-in-progress-rows-that-highlight-their-item-portolan-3740273)
     - [x] Timing {tags: [time]} ^rhumb-timing
       - Why: agents work for hours on one item, and people want to see whether it is on track without asking.
       - An item can carry an estimate, when its current run started and when it finished; these are rough working figures.
@@ -121,8 +125,18 @@ title: Portolan
       - Branches with no work in progress start folded; the card layout was later replaced by nested frames.
       - [web map view](../changelog.md#react--vite--xyflow-map-view-with-status-editing-and-a-diary-panel-directory-mode-server-portolan-d2ce447); [view tweaks](../changelog.md#status-tinted-cards-default-collapse--suffix-ids-portolan-fb6b7b6)
       - Pointing at a card shows its whole title without moving or resizing the card.
+      - The whole title is a label laid over the clamped one, wrapped the same way, so nothing reflows and the pointer passes through it.
+      - [hover title](../changelog.md#the-whole-title-in-a-label-laid-over-the-clamped-one-wrapped-the-same-way-portolan-3eae0ca)
+      - The navigator is faint until the pointer is on it.
+      - [faint navigator](../changelog.md#faint-at-rest-whole-while-hovered-focused-or-dragged-portolan-44f8b28)
       - Only branches with work in progress open by default; starred items no longer keep a branch open.
       - [default folding](../changelog.md#history-life-primates-needs-history-life-neocortex-stars-no-longer-keep-a-branch-open-portolan-5e0aa8b-869c143)
+    - [x] Diagnostics panel ^ui-diags
+      - Why: a problem the checker finds is only useful if one can get to the item it is about.
+      - With nothing selected, the panel lists the map's problems; clicking one frames the item on its line, or both ends of a relation, as a history point does.
+      - [framing on a diagnostic](../changelog.md#a-diagnostic-frames-the-node-on-its-line-or-both-ends-of-a-relation-there-through-the-history-points-framing-portolan-c5ed822)
+      - Above the problems, blocked items with what blocks them, then timed work in progress; pointing at a row highlights its item, clicking goes to it.
+      - [blocked list](../changelog.md#w019-and-i007-a-blocked-list-above-in-progress-rows-that-highlight-their-item-portolan-3740273)
     - [x] Folds stay put ^ui-fold-follow
       - Why: folding or unfolding relays the map out, and the card just clicked could jump away or out of sight.
       - Folding or unfolding an item pans the view so it stays where it was on screen.
@@ -153,10 +167,14 @@ title: Portolan
       - [label placement](../changelog.md#labels-now-stay-centred-on-their-own-line-and-move-only-up-or-down-portolan-08efdc9)
       - With all labels on, every line shows its label; a reason shared by several targets of one edge line appears once.
       - [missing needs labels](../changelog.md#label-dedupe-treated-every-unlabeled-edges-needs-as-a-repeat-portolan-95386d4)
+      - A hovered line's label stays on the part of the line on screen, on a horizontal run where there is one, clear of the navigator.
+      - [label on screen](../changelog.md#the-hovered-lines-label-goes-on-the-part-of-the-line-on-screen-a-horizontal-run-first-off-the-navigator-portolan-a8f9295)
     - [x] Star UI ^ui-star
       - Why: a star is only useful if starred items stand out and can be reached from anywhere.
       - Starred items are framed in gold, listed in a menu, and linked from the start page; a folded group shows how many it holds.
       - [star UI](../changelog.md#shared-reserved-attribute-star-true-a-general-set-attr-edit-op-and-a-dedicated-star-ui-portolan-e39fff9)
+      - Starred items are marked in the side panel's Blocked and In progress lists too.
+      - [stars in the lists](../changelog.md#a-starred-items-row-shows-its-star-before-the-title-a-mark-and-not-a-control-portolan-70b69ac)
     - [x] Status editing ^ui-edit
       - Why: people should update progress where they read it, through the same path agents use, without overwriting someone else's change.
     - [x] Diary panel {tags: [links]} ^ui-diary
@@ -211,6 +229,8 @@ title: Portolan
       - [history rail](../changelog.md#an-88-px-rail-at-the-far-right-next-to-diagnostics-commits-from-the-server-nodes-highlighted-on-hover-portolan-2513c2b)
       - Pointing at a commit opens its diff under Diagnostics, colored like a diff, until another dot or Close.
       - [diff panel](../changelog.md#diff-panel-under-diagnostics-pinned-to-the-last-hovered-point-diffs-computed-by-the-server-from-the-revision-texts-portolan-c2318bf)
+      - The rail shows the newest 50 points and loads the next 50 as it is scrolled to its end, reading and parsing only the commits each page adds.
+      - [load older](../changelog.md#the-rail-asks-for-50-more-points-at-a-time-through-a-rail-only-endpoint-each-page-reads-and-parses-only-its-own-commits-portolan-e417d83)
     - [x] Timers {tags: [time]} ^ui-timers
       - Why: work in progress should show at a glance whether it is on time, nearly due or over.
       - Doing cards show the time since the start against the estimate, finished ones the time they took; Diagnostics lists timed work, most urgent first.
@@ -229,10 +249,22 @@ title: Portolan
         - Why: the 3D view needs a fixed point of reference, and switching views should not lose one's place.
         - The navigator keeps the flat map; the items in its frame set the time axis's offset and length so they fill the screen, and switching is a camera move from the flat view.
         - [navigator decides the pose](../changelog.md#a-flat-navigator-a-pose-fitted-to-the-focus-nodes-and-a-camera-move-that-starts-on-the-flat-view-to-the-pixel)
+        - In 3D the navigator's frame is its own camera: panning or zooming the 3D view leaves it and the pose alone, and the frame's cards are fitted into what the 3D view shows.
+        - [frame holds still](../changelog.md#in-3d-the-flat-camera-is-its-own-state-the-3d-views-pan-and-zoom-leave-it-and-the-pose-alone-portolan-baac2d6)
+      - [x] Turning the camera {tags: [time]} ^ui-depth-orbit
+        - Why: one fixed angle hides some panels behind others and foreshortens the rest; one should be able to look along time or across it.
+        - Dragging with the right button turns the 3D camera about the point it looks at, from looking along time to looking across it, and up or down by up to 15°.
+        - [turn the camera](../changelog.md#a-right-button-drag-turns-the-camera-about-its-aim-090-round-the-vertical-15-from-the-default-pitch-02-per-pixel-portolan-f52c1d7)
       - [x] Timer bars {tags: [time]} ^ui-depth-bars
         - Why: how long work took or is taking is what a time axis is for.
         - Done items by their real start and finish, doing ones as a progress bar against the estimate, others by their estimate; bars that would cross are stacked.
         - [timer bars](../changelog.md#three-kinds-of-bar-by-status-stacked-into-lanes-where-they-cross-with-a-least-size-on-screen-portolan-0893051)
+        - Each item's line and each bar's stretch are also drawn on the floor, the item's with a dot as strong as its freshness.
+        - [floor projections](../changelog.md#every-items-line-on-the-floor-with-a-freshness-dot-and-each-bars-stretch-projected-under-it-portolan-611cf9e)
+        - Bars are drawn to true scale and may run off the screen; the framing follows the items, not how far their bars reach. A highlighted item's projections light up, and pointing at a projection is pointing at its item.
+        - [true scale](../changelog.md#bars-use-the-windows-linear-scale-everywhere-the-framing-ignores-how-far-they-reach-portolan-9965c48-bf1369f); [projections follow focus](../changelog.md#projections-follow-the-cards-focus-both-ways-and-the-title-shows-where-the-pointer-met-the-projection-portolan-1062fae)
+        - The floor's ruler runs to true scale as far as the farthest bar and the present, with even ticks, and a red line marks now; bars' projections are faint.
+        - [ruler and now](../changelog.md#the-ruler-is-solid-to-true-scale-over-the-window-the-bars-and-now-with-even-ticks-a-red-now-line-across-the-floor-projections-at-40--portolan-6847a95)
       - [x] Bars for folded work {tags: [time]} ^ui-depth-inferred
         - Why: a folded release with no times of its own showed nothing of how long it took.
         - A folded done item without times of its own takes its bar from the work inside it.
@@ -260,6 +292,8 @@ title: Portolan
     - [changelog and shipped map](../changelog.md#docschangelogmd-holds-the-35-portolan-diary-entries-docsportolanrhumb-is-now-the-project-map-linked-into-it)
     - The README example shows every kind of mark, and its image is drawn with the app's own icons.
     - [example marks](../changelog.md#the-readme-example-shows-7-preset-kinds-two-custom-ones-su-sp-every-verdict-style-and-two-qualifiers-same-commit-976233a)
+    - The example is timed, and an animation beside the 3D view's description shows it turning from the flat view into 3D and back.
+    - [timed example and animation](../changelog.md#the-example-is-timed-its-still-image-draws-timer-chips-and-docsexample-3dsvg-animates-the-turn-into-3d-and-back-from-the-apps-own-poses-portolan-d960976)
   - [?] Agent interface {tags: [agents]} ^agent-api
     - Why: agents should read and change maps and comments through a proper tool interface, not only by editing text.
     - Command-line checks and the server exist; there are no agent tools yet.
@@ -307,15 +341,18 @@ ui-labels needs ui-layout
 ui-star needs rhumb-star, ui-edit
 ui-search needs ui-tree
 rhumb-liveness needs rhumb-derive, rhumb-check
+rhumb-notes needs rhumb-check
 rhumb-timing needs rhumb-parser
 ui-timers needs ui-tree, rhumb-timing
 ui-depth needs ui-timers, ui-history
 ui-depth-pose needs ui-depth-panels
 ui-depth-bars needs ui-depth-panels, ui-timers
 ui-depth-inferred needs ui-depth-bars
+ui-depth-orbit needs ui-depth-pose
 ui-connection needs hot-reload
 ui-warnings needs ui-edit
 ui-fold-follow needs ui-tree
+ui-diags needs rhumb-check, ui-history
 ui-history needs ui-freshness, ui-diary
 ui-recent needs ui-index
 ui-copy needs ui-diary
@@ -331,3 +368,8 @@ backlog-analysis from survey
 rhumb-decisions from backlog-analysis
 rhumb-labels from rhumb-review
 rhumb-kinds from rhumb-review
+threads-targets relates ui-threads: comments on relations and links belong to the same annotation panel
+threads-mentions relates threads-agent: mentions and assignment need comments to reach the agent and come back
+ui-favicon relates ui-tab-title: icon and title together tell map tabs apart
+ui-tab-title relates ui-threads: tab identity and annotation entry are both Web view usability
+publish relates docs: the published package ships with the README, the skill guide and the example map
