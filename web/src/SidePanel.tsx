@@ -9,7 +9,7 @@ import { CopyText } from "./CopyText.tsx";
 import { renderMarkdown } from "./markdown.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
 import { timingOf } from "../../src/timing.ts";
-import { TimedWork, TimerChip, timerText, timingRecord, type TimedItem } from "./TimerChip.tsx";
+import { ListStar, TimedWork, TimerChip, timerText, timingRecord, type TimedItem } from "./TimerChip.tsx";
 
 interface Props {
   file: string;
@@ -222,6 +222,8 @@ export interface BlockedItem {
   title: string;
   /** The reason as written (inline Markdown); null when the item has no `blocked_by:` note (W019). */
   reason: string | null;
+  /** The item is starred: marked in the list, not changed from it. */
+  starred?: boolean;
 }
 
 /**
@@ -247,7 +249,7 @@ function BlockedWork({ items, onSelect, onHover }: {
               <button type="button" className={`blocked-row${reason === null ? " no-reason" : ""}`}
                 title={reason === null ? "No blocked_by: note says what blocks this item" : `Blocked by: ${reason}`}
                 onClick={() => onSelect(i)} onPointerEnter={() => onHover?.(i.key)} onFocus={() => onHover?.(i.key)} onBlur={() => onHover?.(null)}>
-                <span className="timed-title">{i.title}</span>
+                <span className="timed-title"><ListStar on={i.starred} />{i.title}</span>
                 <span className="blocked-reason">{reason ?? "no blocked_by: note"}</span>
               </button>
             </li>

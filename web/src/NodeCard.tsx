@@ -9,7 +9,11 @@ import type { Timing } from "../../src/timing.ts";
 import { TimerChip } from "./TimerChip.tsx";
 import { READ_ONLY } from "./api.ts";
 import { ProgressBar } from "./ProgressBar.tsx";
+import { StarIcon } from "./StarIcon.tsx";
 import type { NodeTime } from "../../src/history.ts";
+
+// Where the cards' star has always been imported from.
+export { StarIcon };
 
 export const STATUSES: { value: Status; label: string }[] = [
   { value: "todo", label: "todo" },
@@ -125,12 +129,3 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
 export const FrameFill = memo(function FrameFill({ data }: NodeProps<CardNode>) {
   return <div className={`card container frame-fill status-${data.node.status ?? "todo"}`} aria-hidden="true" />;
 });
-
-export function StarIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg className="star-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-      <path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"
-        fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-    </svg>
-  );
-}

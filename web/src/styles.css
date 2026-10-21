@@ -393,6 +393,9 @@ a { color: var(--accent); }
 .timed-row:hover { background: color-mix(in srgb, var(--timer) 10%, var(--surface-2)); }
 .timed-row:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .timed-title { min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A starred item's star before its title in the side panel's lists, as on its card; a mark, not a control. */
+.list-star { display: inline-block; vertical-align: -2px; margin-right: 4px; color: var(--star); }
+.list-star .star-icon { width: 12px; height: 12px; }
 .timed-value { font: 600 11px/1.3 ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--timer); white-space: nowrap; }
 .timed-bar { grid-column: 1 / -1; position: relative; height: 5px; margin-top: 2px; border-radius: 3px;
   background: color-mix(in srgb, var(--timer) 18%, var(--surface)); }

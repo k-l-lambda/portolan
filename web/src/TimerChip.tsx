@@ -7,6 +7,7 @@ import type { Timing } from "../../src/timing.ts";
 import { formatDuration, sharePercent } from "../../src/timing.ts";
 import { timerState } from "./timerState.ts";
 import { absoluteTime } from "./time.ts";
+import { StarIcon } from "./StarIcon.tsx";
 
 const STATE_TEXT = { ok: "on time", near: "nearly due", over: "over the estimate" } as const;
 
@@ -56,6 +57,13 @@ export interface TimedItem {
   line: number;
   title: string;
   timing: Timing;
+  /** The item is starred: marked in the list, not changed from it. */
+  starred?: boolean;
+}
+
+/** A starred item's mark in a side-panel list: the star, shown only, not a control. */
+export function ListStar({ on }: { on?: boolean }) {
+  return on ? <span className="list-star" role="img" aria-label="Starred" title="Starred"><StarIcon filled /></span> : null;
 }
 
 /**
@@ -84,7 +92,7 @@ export function TimedWork({ items, onSelect, onHover }: {
             <li key={i.key}>
               <button type="button" className={`timed-row timer-${state ?? "plain"}`} title={timerText(i.timing)} onClick={() => onSelect(i)}
                 onPointerEnter={() => onHover?.(i.key)} onFocus={() => onHover?.(i.key)} onBlur={() => onHover?.(null)}>
-                <span className="timed-title">{i.title}</span>
+                <span className="timed-title"><ListStar on={i.starred} />{i.title}</span>
                 <span className="timed-value">
                   {elapsed !== null && estimate !== null ? `${formatDuration(elapsed)} / ${formatDuration(estimate)}`
                     : elapsed !== null ? `${formatDuration(elapsed)}, no estimate` : `est. ${formatDuration(estimate!)}, not started`}

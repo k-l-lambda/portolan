@@ -274,7 +274,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const out: TimedItem[] = [];
     for (const [key, n] of all) {
       const timing = n.status === "doing" ? timingOf(n, now) : null;
-      if (timing) out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", timing });
+      if (timing) out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", timing, starred: starred(n) });
     }
     return out.sort((a, b) => byUrgency(a.timing, b.timing) || a.line - b.line);
   }, [all, now]);
@@ -282,7 +282,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   const blocked = useMemo(() => {
     const out: BlockedItem[] = [];
     for (const [key, n] of all) {
-      if (n.status === "blocked") out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", reason: blockedReason(n) });
+      if (n.status === "blocked") out.push({ key, line: n.line, title: plainTitle(n.title) || "(untitled)", reason: blockedReason(n), starred: starred(n) });
     }
     return out.sort((a, b) => a.line - b.line);
   }, [all]);
