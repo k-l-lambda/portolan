@@ -327,7 +327,7 @@ a { color: var(--accent); }
 .file-stars .star-icon { color: var(--star); }
 .mini.mini-star { stroke: var(--star); stroke-width: 6; }
 .card .status-select, .card .toggle { background: color-mix(in srgb, var(--surface) 70%, transparent); }
-.card.status-dropped .card-title { text-decoration: line-through; }
+.card.status-dropped .card-title, .card.status-dropped .card-title-full { text-decoration: line-through; }
 .card-header { height: 60px; display: flex; flex-direction: column; justify-content: space-between; flex: none; }
 .card-head { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }
 /* A container frames its children: faint fill, header on top, children laid out inside by ELK. */
@@ -350,17 +350,23 @@ a { color: var(--accent); }
    through to cards and the pane (pan, zoom, hover), while its header stays clickable. */
 .react-flow__node:has(.card.container) { pointer-events: none !important; }
 .react-flow__node:has(.card.container) .card-header { pointer-events: auto; }
-.card-title {
-  flex: 1 1 0; min-width: 0; font-weight: 550; line-height: 1.25; overflow: hidden;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+/* The title's place in the head row; it does not clip, so the hover label can run out of it. */
+.card-title-box { position: relative; flex: 1 1 0; min-width: 0; }
+.card-title, .card-title-full { font-weight: 550; line-height: 1.25; overflow-wrap: anywhere; }
+.card-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+/* Hover lays the whole title in a label over the clamped one: at its very place and width, wrapped
+   the same way, so its first two lines are the title's own and only the rest (when there is more)
+   runs on below, over the card's foot, on the card's own fill. Nothing reflows: the title keeps its
+   clamp and the card its size, and the label takes no pointer events, so whatever is under it
+   still takes the click. A leaf card rises above its neighbours (still under edge labels, z-index
+   400); a frame does not, since its fill would cover its children. xyflow sets z-index inline,
+   hence !important. */
+.card-title-full {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 2; display: none; pointer-events: none;
+  border-radius: 0 0 4px 4px; background: var(--card-bg);
 }
-/* Hover shows the whole title on one line that runs past the card's right edge, on the card's own
-   fill. The card keeps its size and position and every control stays where it is. A leaf card
-   rises above its neighbours (still under edge labels, z-index 400); a frame does not, since its
-   fill would cover its children. xyflow sets z-index inline, hence !important. */
 .react-flow__node:hover:not(:has(.card.container)) { z-index: 350 !important; }
-.react-flow__node:hover .card-title { display: block; overflow: visible; white-space: nowrap; -webkit-line-clamp: unset; }
-.react-flow__node:hover .card-title-text { padding-right: 6px; border-radius: 0 4px 4px 0; background: var(--card-bg); }
+.react-flow__node:hover .card-title-full { display: block; }
 .card-foot { display: flex; gap: 5px; align-items: center; font-size: 11px; min-width: 0; }
 .card-id { flex: 0 1 auto; min-width: 2ch; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
 /* Timer of a doing item: a bar of elapsed against estimated time, colored by how close it is. */
@@ -417,6 +423,8 @@ a { color: var(--accent); }
 .status-select {
   flex: none; font: inherit; font-size: 11px; padding: 0 2px; border-radius: 4px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--st-todo); cursor: pointer;
+  /* A control, not text: a drag across the card does not highlight the status word. */
+  -webkit-user-select: none; user-select: none;
 }
 .status-select.status-doing { color: var(--st-doing); }
 .status-select.status-done { color: var(--st-done); }

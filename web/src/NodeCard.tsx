@@ -74,7 +74,12 @@ export const NodeCard = memo(function NodeCard({ data }: NodeProps<CardNode>) {
           {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
         {kind && kind !== "task" && <KindMark kind={kind} letters={kindLetters} />}
-        <span className="card-title"><span className="card-title-text">{title}</span></span>
+        {/* The title, clamped to two lines; on hover the whole of it, on one line, in a label laid
+            over it, which lets the pointer through to the controls under it. */}
+        <span className="card-title-box">
+          <span className="card-title">{title}</span>
+          <span className="card-title-full" aria-hidden="true">{title}</span>
+        </span>
         <button
           type="button"
           className={`star-toggle nodrag${isStar ? " on" : ""}`}
