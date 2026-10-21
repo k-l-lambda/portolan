@@ -467,7 +467,7 @@ a { color: var(--accent); }
 /* Fade out, then drop out of hit-testing and the accessibility tree once invisible. */
 .edge-label.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
 @media (prefers-reduced-motion: reduce) {
-  .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden, .card, .rail-dot { transition: none; }
+  .react-flow__edge, .react-flow__edge .react-flow__edge-path, .react-flow__node, .edge-label, .edge-label.is-hidden, .card, .rail-dot, .flat-minimap { transition: none; }
   .conn-checking .icon-btn.conn-btn .icon { animation: none; }
 }
 /* Hovering a label itself also shows its whole text. It widens in place around its centre and
@@ -636,7 +636,10 @@ a { color: var(--accent); }
 .react-flow__node.panel3d .card.container, .react-flow__node.panel3d .card.frame-fill { pointer-events: none; }
 .react-flow__node.panel3d .card.container .card-header { pointer-events: auto; }
 
-/* The navigator: the flat map, in 3D too (FlatMiniMap). */
+/* The navigator: the flat map, in 3D too (FlatMiniMap). Faint until the pointer is on it, so the
+   map under its corner shows through; whole while hovered, focused or dragged. */
+.flat-minimap { opacity: 0.3; transition: opacity 0.2s ease; }
+.flat-minimap:hover, .flat-minimap:focus-within, .flat-minimap:active { opacity: 1; }
 .flat-minimap svg { cursor: grab; touch-action: none; display: block; }
 .flat-minimap svg:active { cursor: grabbing; }
 
