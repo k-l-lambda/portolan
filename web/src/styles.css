@@ -652,6 +652,28 @@ a { color: var(--accent); }
 .hover-title-text { font: 600 13px/1.35 system-ui, sans-serif; }
 .hover-title-sub { margin-top: 2px; color: var(--muted); font: 500 11px/1.2 ui-monospace, monospace; }
 
+/* A highlighted line's end that is off screen: a stand-in box at the view's edge, where the line
+   leaves it, with the node's title and an arrow towards it. Over the map and lines, under the
+   navigator and zoom buttons; it takes no pointer events, so the hover under it stays. */
+.offscreen-ends { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.offscreen-end {
+  --st: var(--st-todo);
+  position: absolute; box-sizing: border-box; display: flex; align-items: center; gap: 5px; padding: 0 8px 0 6px;
+  border: 1px dashed color-mix(in srgb, var(--st) 70%, var(--border)); border-left: 3px solid var(--st); border-radius: 5px;
+  background: color-mix(in srgb, var(--st) 10%, var(--surface)); color: var(--text);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.16); font: 600 12px/1 system-ui, -apple-system, "Segoe UI", "Noto Sans", "PingFang SC", sans-serif;
+  animation: offscreen-in 0.15s ease-out;
+}
+.offscreen-end.status-doing { --st: var(--st-doing); }
+.offscreen-end.status-done { --st: var(--st-done); }
+.offscreen-end.status-blocked { --st: var(--st-blocked); }
+.offscreen-end.status-idea { --st: var(--st-idea); }
+.offscreen-end.status-dropped { --st: var(--st-dropped); }
+.offscreen-arrow { flex: none; color: var(--muted); font-weight: 700; }
+.offscreen-title { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@keyframes offscreen-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .offscreen-end { animation: none; } }
+
 /* The floor under the scene, with a grid line across it at each tick. */
 .floor .ground { fill: color-mix(in srgb, var(--accent) 3%, transparent); stroke: color-mix(in srgb, var(--border) 80%, transparent); stroke-width: 1; }
 .floor-grid line { stroke: color-mix(in srgb, var(--border) 70%, transparent); stroke-width: 1; }

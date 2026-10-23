@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "../src/index.ts";
 import { layoutElk, layoutTime } from "../web/src/elkLayout.ts";
-import { endTab, labelPoint, placeLabels, roundedPath } from "../web/src/geometry.ts";
+import { endTab, exitPoint, labelPoint, placeEnds, placeLabels, roundedPath } from "../web/src/geometry.ts";
 
 const SRC = `- [/] Root ^root
   - [x] Spec ^spec
@@ -268,5 +268,53 @@ describe("endTab", () => {
   it("returns null for degenerate lines", () => {
     expect(endTab([{ x: 0, y: 0 }], true)).toBeNull();
     expect(endTab([{ x: 0, y: 0 }, { x: 0, y: 0 }], true)).toBeNull();
+  });
+});
+
+describe("off-screen line ends", () => {
+  const view = { x: 0, y: 0, w: 100, h: 100 };
+
+  it("finds where a line leaves the view towards its hidden end", () => {
+    // In at the left, out at the top, on to a target far above.
+    const line = [{ x: 10, y: 50 }, { x: 60, y: 50 }, { x: 60, y: -300 }];
+    expect(exitPoint(line, view, true)).toEqual({ x: 60, y: 0, side: "top" });
+    // Walking to the source instead: the line starts in view, so its last point there is the start.
+    const out = exitPoint([{ x: -200, y: 40 }, { x: 50, y: 40 }], view, false);
+    expect(out).toEqual({ x: 0, y: 40, side: "left" });
+  });
+
+  it("gives nothing for a line wholly off screen", () => {
+    expect(exitPoint([{ x: 200, y: 10 }, { x: 300, y: 10 }], view, true)).toBeNull();
+  });
+
+  it("puts boxes against their side, in view, without overlapping", () => {
+    const at = placeEnds([
+      { id: "a", at: { x: 50, y: 0 }, side: "top", w: 40, h: 10 },
+      { id: "b", at: { x: 55, y: 0 }, side: "top", w: 40, h: 10 },
+      { id: "c", at: { x: 100, y: 95 }, side: "right", w: 30, h: 10 },
+    ], view, [], 4);
+    const a = at.get("a")!, b = at.get("b")!, c = at.get("c")!;
+    expect(a.y).toBe(0);
+    expect(b.y).toBe(0);
+    expect(Math.abs(a.x - b.x)).toBeGreaterThanOrEqual(44);
+    for (const p of [a, b]) expect(p.x >= 0 && p.x + 40 <= 100).toBe(true);
+    // Against the right side, pulled up so it stays in view.
+    expect(c).toEqual({ x: 70, y: 90, w: 30, h: 10 });
+  });
+
+  it("moves a box off an overlay along its side", () => {
+    const at = placeEnds([{ id: "a", at: { x: 90, y: 100 }, side: "bottom", w: 20, h: 10 }], view, [{ x: 70, y: 80, w: 30, h: 20 }], 4);
+    const a = at.get("a")!;
+    expect(a.y).toBe(90);
+    expect(a.x + 20).toBeLessThanOrEqual(70);
+  });
+
+  it("narrows boxes on a crowded side so they keep apart and off an overlay", () => {
+    const ends = ["a", "b", "c", "d"].map((id, i) => ({ id, at: { x: 10 + i, y: 100 }, side: "bottom" as const, w: 60, h: 10 }));
+    const at = placeEnds(ends, { x: 0, y: 0, w: 200, h: 100 }, [{ x: 160, y: 85, w: 40, h: 15 }], 4, 20);
+    const boxes = [...at.values()].sort((p, q) => p.x - q.x);
+    expect(boxes.every((b) => b.w < 60 && b.w >= 20)).toBe(true);
+    for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.x).toBeGreaterThanOrEqual(boxes[i - 1]!.x + boxes[i - 1]!.w);
+    expect(boxes.at(-1)!.x + boxes.at(-1)!.w).toBeLessThanOrEqual(160);
   });
 });

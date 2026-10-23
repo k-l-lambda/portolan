@@ -9,6 +9,7 @@ import { api, ApiError, MORE_HISTORY, onServerEvents, READ_ONLY, sourceUrl, type
 import { ConnectionStatus } from "./ConnectionStatus.tsx";
 import { WarningNotice } from "./WarningNotice.tsx";
 import { DepthFloor, FlatMiniMap, HoverTitle, type FloorMark } from "./DepthLayer.tsx";
+import { OffscreenEnds, type LineEnd } from "./OffscreenEnds.tsx";
 import { blendPose, DEFAULT_ANGLES, depthScene, ease, flatPose, nodeRibbon, orbitAngles, projectPath, targetPose, type Angles, type Pose } from "./depth.ts";
 import { layoutElk, type Box, type ElkResult } from "./elkLayout.ts";
 import { defaultCollapsed, fitZoom, followToggle, kindLetters, nodeKey, nodesForLine, plainTitle, shortId, starred, starredInside, unfoldStarted } from "./layout.ts";
@@ -784,7 +785,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
   // Focus: the hovered edge, or every edge of the hovered (else selected) node. Everything else
   // is dimmed, and cross-edge labels are shown only for focused edges unless "All labels" is on.
   const pointer = hover;
-  const { nodes, edges, focusCss, focusSet, shownHover } = useMemo(() => {
+  const { nodes, edges, focusCss, focusSet, shownHover, ends } = useMemo(() => {
     // Focus set: the hovered node, else the nodes a hovered history point changed, else the
     // search matches (for both, only they and the edges between them light up), else the
     // selected node, else (with "Highlight starred") every starred node. A node in a collapsed
@@ -821,6 +822,23 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
       if (e.id === focusEdge || touches) {
         activeEdges.add(e.id);
         activeNodes.add(e.source).add(e.target);
+      }
+    }
+    // The ends of the lines a hover lights up; those off screen get a stand-in at the view's edge.
+    const ends: LineEnd[] = [];
+    if (hover) {
+      const byId = new Map(base.nodes.map((n) => [n.id, n]));
+      for (const e of base.edges) {
+        if (!activeEdges.has(e.id)) continue;
+        const points = (e.data as { points: { x: number; y: number }[] }).points;
+        for (const atEnd of [false, true]) {
+          const n = byId.get(atEnd ? e.target : e.source);
+          if (!n) continue;
+          ends.push({
+            key: n.id, title: plainTitle(n.data.node.title) || "(untitled)", status: n.data.node.status ?? "todo",
+            rect: { x: n.position.x, y: n.position.y, w: n.width ?? 0, h: n.height ?? 0 }, points, atEnd,
+          });
+        }
       }
     }
     // A search with no match, or a point whose nodes are all gone, still dims the map.
@@ -894,7 +912,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
     const near = hover ? new Set([...activeNodes].filter((k) => !(hover.kind === "node" && k === hover.id && !hover.floor)))
       : point ? railNodes : new Set<string>();
     // The floor's projections follow the cards: a focused card's projection lights up, the rest dim.
-    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null, shownHover: hover };
+    return { nodes: base.nodes, edges, focusCss: (focused ? cardFocusCss(activeNodes) : "") + matchCss(matches) + liftCss(near), focusSet: focused ? activeNodes : null, shownHover: hover, ends };
   }, [base, pointer, listHover, selected, allLabels, parents, highlightStars, starredList, search, query, railActive, diffHover, diffPoint, timeline, flow, viewTick]);
 
   const selectLine = useCallback((line: number) => {
@@ -1087,6 +1105,7 @@ function DocViewInner({ file, focus }: { file: string; focus: string | null }) {
               // Pointed at on the floor, the title shows there; pointed at in a list, over the panel.
               return <HoverTitle panel={panel} title={plainTitle(box.node.title)} sub={sub} at={hover.floor && pointer ? floorAt ?? undefined : undefined} />;
             })()}
+            <OffscreenEnds ends={ends} />
             <Background gap={24} />
             <Controls showInteractive={false} />
             {/* The navigator always draws the flat map and the flat view's frame, in 3D as well:

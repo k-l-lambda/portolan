@@ -273,3 +273,95 @@ export function endTab(points: { x: number; y: number }[], start: boolean, len =
     angle: (Math.atan2(uy, ux) * 180) / Math.PI,
   };
 }
+
+export type Side = "left" | "right" | "top" | "bottom";
+
+/**
+ * Where a line leaves `view` on its way to an end that is off screen: the last point of the line
+ * still in view, and the side of the view it crosses there. The line runs from its source; `toEnd`
+ * walks it towards the target (else towards the source). Null when no part of the line is in view.
+ */
+export function exitPoint(points: { x: number; y: number }[], view: Rect, toEnd: boolean): { x: number; y: number; side: Side } | null {
+  const pts = toEnd ? points : [...points].reverse();
+  // From the hidden end back along the line, the first segment that reaches into the view; where
+  // it enters (seen from the hidden end) is where the line leaves on its way out.
+  for (let i = pts.length - 1; i > 0; i--) {
+    const a = pts[i - 1]!, b = pts[i]!, c = clip(a, b, view);
+    if (!c) continue;
+    const t = c[1], p = { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+    const d: [Side, number][] = [["left", Math.abs(p.x - view.x)], ["right", Math.abs(view.x + view.w - p.x)],
+      ["top", Math.abs(p.y - view.y)], ["bottom", Math.abs(view.y + view.h - p.y)]];
+    return { ...p, side: d.reduce((m, s) => (s[1] < m[1] ? s : m))[0] };
+  }
+  return null;
+}
+
+export interface EndRequest { id: string; at: { x: number; y: number }; side: Side; w: number; h: number }
+
+/**
+ * Boxes for line ends that are off screen, each touching `view` on the inside at the point where its
+ * line leaves: against the side it crosses, centred on the crossing along that side, kept in view.
+ * Along each side, boxes keep apart, and off `avoid` (overlays such as the navigator) and the boxes
+ * already placed on the other sides (at the corners). On a top or bottom side too crowded for them,
+ * boxes are narrowed (to `minW` at least); past that they may overlap. Returns each box.
+ */
+export function placeEnds(ends: EndRequest[], view: Rect, avoid: Rect[] = [], gap = 4, minW = 72): Map<string, Rect> {
+  const out = new Map<string, Rect>();
+  const placed: Rect[] = [];
+  for (const side of ["top", "bottom", "left", "right"] as Side[]) {
+    let mine = ends.filter((e) => e.side === side);
+    if (mine.length === 0) continue;
+    const horiz = side === "top" || side === "bottom";
+    const lo = horiz ? view.x : view.y, hi = horiz ? view.x + view.w : view.y + view.h;
+    const len = (e: EndRequest) => (horiz ? e.w : e.h);
+    const fix = (e: EndRequest) => side === "left" ? view.x : side === "right" ? view.x + view.w - e.w
+      : side === "top" ? view.y : view.y + view.h - e.h;
+    // The strip along the side the boxes take, and the stretches of it that are blocked.
+    const deep = Math.max(...mine.map((e) => (horiz ? e.h : e.w)));
+    const band: Rect = side === "left" ? { x: view.x, y: view.y, w: deep, h: view.h }
+      : side === "right" ? { x: view.x + view.w - deep, y: view.y, w: deep, h: view.h }
+      : side === "top" ? { x: view.x, y: view.y, w: view.w, h: deep } : { x: view.x, y: view.y + view.h - deep, w: view.w, h: deep };
+    const blocks = [...avoid, ...placed]
+      .filter((r) => r.x < band.x + band.w && band.x < r.x + r.w && r.y < band.y + band.h && band.y < r.y + r.h)
+      .map((r) => (horiz ? [r.x, r.x + r.w] : [r.y, r.y + r.h]) as [number, number]);
+    // Too long for the free part of a top or bottom side: narrow every box by the same share.
+    if (horiz) {
+      let blocked = 0, end = lo;
+      for (const [a, b] of [...blocks].sort((p, q) => p[0] - q[0])) {
+        const from = Math.max(a - gap, end, lo), to = Math.min(b + gap, hi);
+        if (to > from) (blocked += to - from, end = to);
+      }
+      const room = hi - lo - blocked - gap * (mine.length + 2 * blocks.length);
+      const need = mine.reduce((t, e) => t + e.w, 0);
+      if (need > room) {
+        const k = Math.max(0, room) / need;
+        mine = mine.map((e) => ({ ...e, w: Math.max(Math.min(e.w, minW), Math.floor(e.w * k)) }));
+      }
+    }
+    /** The nearest start at or past `u` (or before it, going down) where a box of length L meets no block. */
+    const free = (u: number, L: number, up: boolean) => {
+      for (let moved = true, n = 0; moved && n < 50; n++) {
+        moved = false;
+        for (const [a, b] of blocks) if (u < b + gap && a - gap < u + L) (u = up ? b + gap : a - gap - L, moved = true);
+      }
+      return u;
+    };
+    const items = mine.map((e) => ({ e, u: (horiz ? e.at.x : e.at.y) - len(e) / 2 })).sort((a, b) => a.u - b.u);
+    // Forward: each box at its spot or past the one before, skipping blocked stretches. Back: boxes
+    // pushed past the far end come back in, the same way.
+    let cursor = lo;
+    for (const it of items) (it.u = free(Math.max(it.u, cursor), len(it.e), true), cursor = it.u + len(it.e) + gap);
+    let limit = hi;
+    for (const it of [...items].reverse()) {
+      if (it.u + len(it.e) > limit) it.u = free(limit - len(it.e), len(it.e), false);
+      it.u = Math.max(lo, Math.min(it.u, hi - len(it.e)));
+      limit = it.u - gap;
+    }
+    for (const it of items) {
+      const b: Rect = horiz ? { x: it.u, y: fix(it.e), w: it.e.w, h: it.e.h } : { x: fix(it.e), y: it.u, w: it.e.w, h: it.e.h };
+      placed.push(b);
+      out.set(it.e.id, b);
+    }
+  }
+  return out;
+}
