@@ -1,0 +1,2167 @@
+---
+rhumb: 0.1
+title: 通向实在之路
+links:
+  r2r: https://k-l-lambda.github.io/lecture-annotation/ebooks/The_Road_to_Reality/{path}/
+---
+
+%% 彭罗斯《通向实在之路》阅读图：每章一个顶级节点，其下是该章首次讲解的数学、物理概念和它提出的问题。
+%% `needs` 从概念指向它所依赖的概念；带标签的 `relates` 连接问题与相关概念。链接指向在线注释版的章节分页。
+%% 英文版见 road-to-reality.en.rhumb，两者 ID 与结构一致。
+
+- [ ] 第 1 章 科学的根源 {kind: chapter} ^ch01
+  - 彭罗斯认为数学证明是科学的第一个突破，并引入了他的三个世界（柏拉图数学世界、物理世界、心智世界）以及联系它们的三重奥秘。 [第 1 章](r2r:chapter_01)
+  - [ ] 柏拉图正多面体 {kind: math} ^platonic-solids
+    - 五种正多面体，古希腊人迷信地将它们与各元素和天界相对应。 [§1.1](r2r:chapter_01#11-探寻世界的成因)
+  - [ ] 数学证明 {kind: math} ^mathematical-proof
+    - 从公理出发、无懈可击的逻辑演绎链条，被归功于泰勒斯和毕达哥拉斯，是科学的第一块基石。 [§1.2](r2r:chapter_01#12-数学真理)
+  - [ ] 公理与定理 {kind: math} ^axioms
+    - 不证自明的起始命题，由证明从中确立定理；而几何“公理”原来是值得怀疑的。 [§1.2](r2r:chapter_01#12-数学真理)
+  - [ ] 欧几里得几何 {kind: math} ^euclidean-geometry
+    - 三维空间中刚体的公理化几何，是对物理空间极好但并不精确的描述。 [§1.2](r2r:chapter_01#12-数学真理)
+  - [ ] 柏拉图的数学形式世界 {kind: math} ^platonic-world
+    - 柏拉图的理想化数学对象的领域，物理上的正方形、圆和立方体都只是它们的近似。 [§1.2](r2r:chapter_01#12-数学真理)
+  - [ ] 数学真理的客观性 {kind: math} ^mathematical-objectivity
+    - 彭罗斯对柏拉图式存在的解读：数学真理独立于任何个人或文化而成立，并以费马和曼德布罗特为例加以说明。 [§1.3](r2r:chapter_01#13-柏拉图的数学世界真实吗)
+  - [ ] 费马大定理 {kind: math} ^fermat-last-theorem
+    - 当 n > 2 时不存在满足 x^n + y^n = z^n 的正整数；由怀尔斯证明，被用作检验客观性的例子。 [§1.3](r2r:chapter_01#13-柏拉图的数学世界真实吗)
+  - [ ] 三个世界与三重奥秘 {kind: math} ^three-worlds
+    - 彭罗斯描绘的柏拉图数学世界、物理世界和心智世界，每个世界都与前一个世界的一小部分神秘地联系着。 [§1.4](r2r:chapter_01#14-三个世界与三重奥秘)
+  - [ ] 柏拉图的数学世界“真实”吗？ {kind: question} ^q-platonic-world-real
+    - 数学对象究竟是独立于心智而客观存在，还是数学家们达成共识的文化产物。 [§1.3](r2r:chapter_01#13-柏拉图的数学世界真实吗)
+  - [ ] 数学为何能如此精确地支配物理世界？ {kind: question} ^q-why-math-describes-physics
+    - 本书第一个也是核心的奥秘：数学描述物理行为时所具有的非凡精度与美。 [§1.4](r2r:chapter_01#14-三个世界与三重奥秘)
+  - [ ] 物质如何获得意识？ {kind: question} ^q-mind-from-matter
+    - 第二重奥秘：经过适当组织的物质（如大脑）如何产生有意识的心智活动。 [§1.4](r2r:chapter_01#14-三个世界与三重奥秘)
+  - [ ] 每个世界怎能涵盖它所投射出的那个世界？ {kind: question} ^q-three-worlds-paradox
+    - 三个世界图中有意设置的悖论，暗示这些世界或许是某个更深层实在的不同侧面。 [§1.5](r2r:chapter_01#15-善真美)
+
+- [ ] 第 2 章 古代定理和现代问题 {kind: chapter} ^ch02
+  - 毕达哥拉斯定理的证明揭示了它对欧几里得平行公设的依赖；平行公设不成立便得到双曲几何，本章给出了双曲几何的几种欧几里得模型，并将其与宇宙的几何联系起来。 [第 2 章](r2r:chapter_02)
+  - [ ] 毕达哥拉斯定理 {kind: math} ^pythagorean-theorem
+    - 斜边的平方等于另两边平方之和；这里用两种大小的正方形铺砌来证明。 [§2.1](r2r:chapter_02#21-毕达哥拉斯定理)
+  - [ ] 欧几里得公设 {kind: math} ^euclid-postulates
+    - 欧几里得关于平面几何的五条假设；前四条表达了直线、圆、无界性、均匀性和各向同性。 [§2.2](r2r:chapter_02#22-欧几里得公设)
+  - [ ] 平行公设（欧几里得第五公设） {kind: math} ^parallel-postulate
+    - 欧几里得第五公设，等价于平行线唯一的普莱费尔公理；甚至证明正方形存在都需要它。 [§2.2](r2r:chapter_02#22-欧几里得公设)
+  - [ ] 三角形内角和 {kind: math} ^triangle-angle-sum
+    - 在欧几里得几何中，三角形的内角和为 π，而这一事实的标准证明要用到平行公设。 [§2.3](r2r:chapter_02#23-毕达哥拉斯定理的相似面积证明)
+  - [ ] 相似图形与面积 {kind: math} ^similar-triangles
+    - 相似图形的面积与线性尺度的平方成正比，借助把直角三角形一分为二，由此给出毕达哥拉斯定理的第二种证明。 [§2.3](r2r:chapter_02#23-毕达哥拉斯定理的相似面积证明)
+  - [ ] 双曲几何（罗巴切夫斯基几何） {kind: math} ^hyperbolic-geometry
+    - 平行公设不成立的自洽的非欧几何，其中三角形内角和小于 π，毕达哥拉斯定理也不成立。 [§2.4](r2r:chapter_02#24-双曲几何共形图像)
+  - [ ] 双曲几何的共形表示（庞加莱圆盘） {kind: math} ^poincare-disc
+    - 把双曲平面画在一个圆内，直线表现为与边界正交的圆弧，角度保持真实，如埃舍尔的《圆极限 I》。 [§2.4](r2r:chapter_02#24-双曲几何共形图像)
+  - [ ] 兰伯特面积公式 {kind: math} ^lambert-area-formula
+    - 双曲三角形的面积由其内角决定，π − (α+β+γ) = CΔ，与哈里奥特的球面公式相类似。 [§2.4](r2r:chapter_02#24-双曲几何共形图像)
+  - [ ] 双曲距离与伪半径 {kind: math} ^hyperbolic-distance
+    - 圆盘模型中的距离是一个交比的对数，并以伪半径 C^(-1/2) 为尺度。 [§2.4](r2r:chapter_02#24-双曲几何共形图像)
+  - [ ] 双曲几何的射影表示（贝尔特拉米-克莱因模型） {kind: math} ^beltrami-klein-model
+    - 把双曲平面画在圆盘内，直线就是直的弦，但角度被扭曲；它通过贝尔特拉米的半球面与共形模型联系起来。 [§2.5](r2r:chapter_02#25-双曲几何的其他表示)
+  - [ ] 球极平面投影 {kind: math} ^stereographic-projection
+    - 从球面的一极把球面投影到平面上，它是共形的且把圆映为圆；它把半球面模型映为共形模型。 [§2.5](r2r:chapter_02#25-双曲几何的其他表示)
+  - [ ] 反证法（归谬法） {kind: math} ^proof-by-contradiction
+    - 假设某命题不成立并推出矛盾；萨凯里试图用这种方法证明第五公设，结果却发现了双曲几何。 [§2.6](r2r:chapter_02#26-双曲几何的历史渊源)
+  - [ ] 伪球面 {kind: math} ^pseudosphere
+    - 由曳物线旋转而成、内蕴曲率为常负值的曲面，给出贝尔特拉米的双曲几何局部模型。 [§2.6](r2r:chapter_02#26-双曲几何的历史渊源)
+  - [ ] 椭圆几何 {kind: math} ^elliptic-geometry
+    - 球面上图形所满足的有限、正曲率的均匀几何；与欧几里得几何和双曲几何一起构成三种各向同性的几何。 [§2.7](r2r:chapter_02#27-与物理空间的关系)
+  - [ ] 我们怎么知道正方形一定存在？ {kind: question} ^q-do-squares-exist
+    - 要证明存在四边相等且四角皆为直角的图形，原来要依赖平行公设。 [§2.1](r2r:chapter_02#21-毕达哥拉斯定理)
+  - [ ] 平行公设能否由其他公设导出？ {kind: question} ^q-parallel-postulate-provable
+    - 这一延续数百年的探索以证明双曲几何自洽而告终，因此第五公设是独立的。 [§2.6](r2r:chapter_02#26-双曲几何的历史渊源)
+  - [ ] 宇宙的空间几何是欧几里得的、双曲的还是椭圆的？ {kind: question} ^q-geometry-of-universe
+    - 这是宇宙学尺度上一个悬而未决的观测问题；彭罗斯承认自己偏爱双曲的情形。 [§2.7](r2r:chapter_02#27-与物理空间的关系)
+
+- [ ] 第 3 章 物理世界里数的种类 {kind: chapter} ^ch03
+  - 本章从 √2 的无理性出发构建实数，并探讨自然数、整数和实数如何与物理相联系，从电荷的量子化一直谈到连续统。 [第 3 章](r2r:chapter_03)
+  - [ ] 有理数（分数） {kind: math} ^rational-numbers
+    - 整数之比 a/b，毕达哥拉斯学派曾希望它们足以度量一切几何长度。 [§3.1](r2r:chapter_03#31-毕达哥拉斯灾难)
+  - [ ] √2 的无理性 {kind: math} ^irrationality-of-sqrt2
+    - 用无穷递降法证明不存在平方为 2 的分数，尽管毕达哥拉斯定理给出单位正方形的对角线为 √2。 [§3.1](r2r:chapter_03#31-毕达哥拉斯灾难)
+  - [ ] 实数 {kind: math} ^real-numbers
+    - 由无穷小数展开或连分数展开给出的数，是欧几里得长度以及一切成功物理理论的框架所必需的。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 连分数 {kind: math} ^continued-fractions
+    - 形如 a+1/(b+1/(c+…)) 的嵌套表达式，希腊人用它表示比例；恰好对有理数而言它是有限的。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 二次无理数 {kind: math} ^quadratic-irrationals
+    - 形如 a+√b 的数，可用尺规作出；拉格朗日证明它们恰好是连分数最终呈周期性的那些数。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 欧多克索斯的比例理论 {kind: math} ^eudoxus-ratios
+    - 欧多克索斯借助整数倍来比较长度之比的判据，预示了现代的实数概念。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 戴德金分割（切口） {kind: math} ^dedekind-cuts
+    - 戴德金把每个实数构造为有理数的一种划分，使欧多克索斯的思想现代化。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 极限过程 {kind: math} ^limits
+    - 实数赋予无穷级数和数列以意义，例如 1−1/3+1/5−… = π/4，这是面积和微积分的基础。 [§3.2](r2r:chapter_03#32-实数系)
+  - [ ] 自然数 {kind: math} ^natural-numbers
+    - 带有加法和乘法的计数数 0, 1, 2, 3, …，它们是否依赖于物理的“东西”受到了质疑。 [§3.4](r2r:chapter_03#34-自然数需要物理世界吗)
+  - [ ] 冯·诺伊曼序数 {kind: math} ^von-neumann-ordinals
+    - 仅由空集构建的自然数：∅, {∅}, {∅,{∅}}, …，与物理世界无关。 [§3.4](r2r:chapter_03#34-自然数需要物理世界吗)
+  - [ ] 整数 {kind: math} ^integers
+    - 自然数及其负数；它们的直接物理意义直到 20 世纪才变得清楚。 [§3.5](r2r:chapter_03#35-物理世界里的离散数)
+  - [ ] 电荷的整数倍性 {kind: physics} ^electric-charge-quantization
+    - 每个孤立物体的电荷都是质子电荷的整数倍（对夸克而言是其三分之一的整数倍）。 [§3.5](r2r:chapter_03#35-物理世界里的离散数)
+  - [ ] 加和性量子数 {kind: physics} ^additive-quantum-numbers
+    - 像电荷这样在各组分之间相加的粒子标记；所有已知的加和性量子数都取整数值。 [§3.5](r2r:chapter_03#35-物理世界里的离散数)
+  - [ ] 反粒子 {kind: physics} ^antiparticles
+    - 每种粒子都有一个静质量相同、电荷相反的伙伴；粒子对的产生和湮没使质量与能量相互转化。 [§3.5](r2r:chapter_03#35-物理世界里的离散数)
+  - [ ] 毕达哥拉斯灾难 {kind: question} ^q-pythagorean-catastrophe
+    - 如果没有任何有理数能度量正方形的对角线，几何就不能单单建立在分数之上。 [§3.1](r2r:chapter_03#31-毕达哥拉斯灾难)
+  - [ ] 物理实在是连续的还是离散的？ {kind: question} ^q-continuum-or-discrete
+    - 实数在大约 10^43 个尺度量级上都行之有效，但薛定谔、爱因斯坦以及彭罗斯的自旋网络都暗示离散性可能才是根本的。 [§3.3](r2r:chapter_03#33-物理世界里的实数)
+  - [ ] 自然数需要物理世界吗？ {kind: question} ^q-natural-numbers-physical
+    - 计数数是依赖于持久存在的物理对象，还是可以从纯粹的集合论中凭空构造出来。 [§3.4](r2r:chapter_03#34-自然数需要物理世界吗)
+
+- [ ] 第 4 章 奇幻的复数 {kind: chapter} ^ch04
+  - 添加 i = √−1 后得到一个让每个多项式都有根的数系；在韦塞尔平面上，幂级数的收敛性变得一目了然，曼德布罗特集也栖身于此。 [第 4 章](r2r:chapter_04)
+  - [ ] 复数 {kind: math} ^complex-numbers
+    - 形如 a+ib 且 i² = −1 的数，对一切算术运算封闭；由卡尔达诺和邦贝利引入。 [第 4 章](r2r:chapter_04)
+  - [ ] 代数基本定理 {kind: math} ^fundamental-theorem-of-algebra
+    - 每个复多项式方程都有复数解，因此它可分解为一次因式之积。 [§4.2](r2r:chapter_04#42-用复数解方程)
+  - [ ] 三次方程的卡尔达诺公式 {kind: math} ^cubic-formula
+    - 方程 x³ = 3px + 2q 的解法；在不可约情形下，三个实根只能借助复数求得。 [§4.2](r2r:chapter_04#42-用复数解方程)
+  - [ ] 幂级数 {kind: math} ^power-series
+    - 无穷和 a0 + a1x + a2x² + …，对某些 x 收敛到有限值，对另一些 x 则发散。 [§4.3](r2r:chapter_04#43-幂级数的收敛)
+  - [ ] 发散级数 {kind: math} ^divergent-series
+    - 像欧拉的 1+4+16+… = −1/3 这样的级数，按字面理解毫无意义，但谨慎处理后却有意义，如在量子场论中那样。 [§4.3](r2r:chapter_04#43-幂级数的收敛)
+  - [ ] 复平面（韦塞尔平面） {kind: math} ^complex-plane
+    - 把 z = x+iy 表示为点 (x, y)，用实轴和虚轴拓展实直线。 [§4.4](r2r:chapter_04#44-韦塞尔复平面)
+  - [ ] 奇点与极点 {kind: math} ^poles
+    - 函数变为无穷大的点；(1+z²)⁻¹ 在 ±i 处有隐藏的极点，在实直线上是看不到的。 [§4.4](r2r:chapter_04#44-韦塞尔复平面)
+  - [ ] 收敛圆 {kind: math} ^circle-of-convergence
+    - 幂级数在以原点为心、延伸到最近奇点的圆内收敛，在圆外发散。 [§4.4](r2r:chapter_04#44-韦塞尔复平面)
+  - [ ] 曼德布罗特集 {kind: math} ^mandelbrot-set
+    - 从 0 出发迭代 z ↦ z² + c 时保持有界的那些点 c；规则简单，边界却无比复杂。 [§4.5](r2r:chapter_04#45-如何构造曼德布罗特集)
+  - [ ] 为什么大自然在最小尺度上运用复数系？ {kind: question} ^q-why-nature-uses-complex-numbers
+    - 长期被视为发明的复数，原来支配着量子物理；彭罗斯称之为神奇。 [第 4 章](r2r:chapter_04)
+  - [ ] (1+x²)⁻¹ 的级数为何在 |x|>1 时发散？ {kind: question} ^q-hidden-divergence
+    - 该函数在整条实直线上都是光滑的，但其级数在 ±1 之外失效；位于 ±i 的复极点解释了这一点。 [§4.3](r2r:chapter_04#43-幂级数的收敛)
+  - [ ] 发散级数的“和”能有什么意义？ {kind: question} ^q-meaning-of-divergent-series
+    - 像欧拉的 −1/3 这样的答案是否具有真实意义，这个问题在量子场论中一再出现。 [§4.3](r2r:chapter_04#43-幂级数的收敛)
+
+- [ ] 第 5 章 对数、幂和根的几何 {kind: chapter} ^ch05
+  - 本章以几何方式展示复数运算，定义对数与复数幂并说明其多值性，再由单位根引出粒子物理中的乘积性量子数。 [第 5 章](r2r:chapter_05)
+  - [ ] 复数加法与乘法的几何 {kind: math} ^complex-multiplication-geometry
+    - 加上 w 使平面平移；乘以 w 使平面转动并伸缩，因此乘以 i 就是转过一个直角。 [§5.1](r2r:chapter_05#51-复代数几何)
+  - [ ] 极坐标（模和幅角） {kind: math} ^polar-coordinates
+    - 用 z 到 0 的距离 r = |z| 和角 θ 来表示 z，其中角只能确定到相差 2π 的整数倍。 [§5.1](r2r:chapter_05#51-复代数几何)
+  - [ ] 对数 {kind: math} ^logarithm
+    - 指数运算的逆运算，把乘法变为加法，正如计算尺所做的那样。 [§5.2](r2r:chapter_05#52-复对数概念)
+  - [ ] 指数函数与自然对数的底 e {kind: math} ^exponential-function
+    - e^z 由级数 Σ zⁿ/n! 定义，处处收敛，且 e^(a+b) = e^a e^b。 [§5.3](r2r:chapter_05#53-多值性自然对数)
+  - [ ] 复对数（自然对数） {kind: math} ^complex-logarithm
+    - log w = log r + iθ；其虚部就是幅角，因此它只能确定到相差 2πi 的整数倍。 [§5.3](r2r:chapter_05#53-多值性自然对数)
+  - [ ] 欧拉公式 e\^\{πi}+1=0 {kind: math} ^euler-identity
+    - e^(πi) + 1 = 0 把 0、1、i、π 和 e 联系在一起；它与 e^(2πi) = 1 一起构成对数多值性的根源。 [§5.3](r2r:chapter_05#53-多值性自然对数)
+  - [ ] 柯茨-欧拉公式 {kind: math} ^euler-formula
+    - e^(iθ) = cos θ + i sin θ，它把三角函数的加法公式和倍角公式都纳入了指数函数之中。 [§5.3](r2r:chapter_05#53-多值性自然对数)
+  - [ ] 复数幂 {kind: math} ^complex-powers
+    - w^z = e^(z log w)，只有在指定 log w 的一个分支后才有确定的定义；i^i 是实数。 [§5.4](r2r:chapter_05#54-复数幂)
+  - [ ] 等角螺线（对数螺线） {kind: math} ^equiangular-spiral
+    - 与从极点出发的每条射线都交成同一角度的曲线；w^z 的诸多值位于两条这样的螺线的交点上。 [§5.4](r2r:chapter_05#54-复数幂)
+  - [ ] n 次单位根 {kind: math} ^roots-of-unity
+    - 1^(1/n) 的 n 个值 e^(2πik/n)，它们是单位圆上正 n 边形的顶点。 [§5.4](r2r:chapter_05#54-复数幂)
+  - [ ] 循环群 Z_n {kind: math} ^cyclic-group
+    - n 次单位根构成一个有限乘法群，例如 1、ω、ω² 起着三角形转动的作用。 [§5.4](r2r:chapter_05#54-复数幂)
+  - [ ] 乘积性量子数 {kind: physics} ^multiplicative-quantum-numbers
+    - 在各组分之间相乘的粒子标记，取 n 次单位根的值；它们大多只是近似成立的。 [第 5 章](r2r:chapter_05)
+  - [ ] 宇称 {kind: physics} ^parity
+    - 镜面反射下一种近似的 n = 2 乘积性量子数 ε = ±1，在弱相互作用中不守恒。 [第 5 章](r2r:chapter_05)
+  - [ ] 夸克性 {kind: physics} ^quarkiness
+    - 彭罗斯提出的 n = 3 乘积性量子数 e^(−2qπi)，取 Z_3 中的值；自由粒子的夸克性必须为 1。 [第 5 章](r2r:chapter_05)
+  - [ ] 为什么只是平面转动？三维情形又如何？ {kind: question} ^q-why-only-plane-rotations
+    - 复数乘法刻画的是平面的转动；彭罗斯追问在三维中什么起这样的作用，后面借助四元数再回到这个问题。 [§5.1](r2r:chapter_05#51-复代数几何)
+  - [ ] 疑难：e = e\^\{1−4π²} {kind: question} ^q-complex-power-paradox
+    - 练习 5.10 中把幂当作单值而导致的表面矛盾，通过固定对数的一个分支即可消解。 [§5.4](r2r:chapter_05#54-复数幂)
+  - [ ] i\^i 是什么？ {kind: question} ^q-i-to-the-i
+    - i^i 曾被认为是虚幻之极，实际上却是实数 e^(−π/2)，并且有无穷多个实数值。 [§5.4](r2r:chapter_05#54-复数幂)
+
+- [ ] 第 6 章 实数微积分 {kind: chapter} ^ch06
+  - 本章介绍实函数的微分、光滑性等级、幂级数意义上的解析性以及积分，并将现代的映射式函数概念与欧拉的函数概念相对照。 [第 6 章](r2r:chapter_06)
+  - [ ] 作为映射的函数 {kind: math} ^function-as-mapping
+    - 现代观点把函数看作从定义域到目标空间的映射，即一张查找表，不需要明确的公式。 [§6.1](r2r:chapter_06#61-如何构造实函数)
+  - [ ] 赫维塞德阶梯函数 {kind: math} ^heaviside-step-function
+    - theta(x) 对负的 x 取零、对正的 x 取一；按现代观点它是完全正当的函数，欧拉却会拒绝它。 [§6.1](r2r:chapter_06#61-如何构造实函数)
+  - [ ] 连续 {kind: math} ^continuity
+    - 函数在其图像没有跳跃之处是连续的；theta(x) 在原点不连续，|x| 则是连续的。 [§6.2](r2r:chapter_06#62-函数的斜率)
+  - [ ] 导数 {kind: math} ^derivative
+    - 图像在某点的斜率 dy/dx，由极限定义；|x| 在其尖角处不可微。 [§6.2](r2r:chapter_06#62-函数的斜率)
+  - [ ] 高阶导数 {kind: math} ^higher-derivatives
+    - 反复求导；f' 的零点给出极大值和极小值，f'' 的零点给出与曲率有关的拐点。 [§6.3](r2r:chapter_06#63-高阶导数cinfty-光滑函数)
+  - [ ] C\^n 与 C\^∞ 光滑性 {kind: math} ^smooth-functions
+    - C^n 表示有 n 阶连续导数；C^infinity 表示有任意阶导数，但像 h(x) 那样拼接而成的光滑函数仍然存在。 [§6.3](r2r:chapter_06#63-高阶导数cinfty-光滑函数)
+  - [ ] 泰勒级数与麦克劳林级数 {kind: math} ^taylor-series
+    - 幂级数系数 a_n = f^(n)(p)/n! 由函数在展开点处的各阶导数确定。 [§6.4](r2r:chapter_06#64-欧拉的-函数概念)
+  - [ ] 解析（C\^ω）函数 {kind: math} ^analytic-functions
+    - 处处局部等于其幂级数的函数；它比 C^infinity 更严格，把 exp(-1/x) 与零拼接起来的例子说明了这一点。 [§6.4](r2r:chapter_06#64-欧拉的-函数概念)
+  - [ ] 莱布尼茨法则与求导法则 {kind: math} ^leibniz-rule
+    - 乘积法则 d(fg) = f dg + g df，加上和、幂、链式和商的法则，使求导成为机械的操作。 [§6.5](r2r:chapter_06#65-微分法则)
+  - [ ] 不定积分与定积分 {kind: math} ^integration
+    - 积分是微分的逆运算，相差一个常数；定积分给出两个限之间的有向面积。 [§6.6](r2r:chapter_06#66-积分)
+  - [ ] 微积分基本定理 {kind: math} ^fundamental-theorem-of-calculus
+    - 曲线 f 下方的面积等于 g(b) - g(a)，其中 g 是导数为 f 的任一函数。 [§6.6](r2r:chapter_06#66-积分)
+  - [ ] 狄拉克 δ 函数 {kind: math} ^dirac-delta-function
+    - 阶梯函数的导数，在原点处为无穷大；这是一种 C^-2 “函数”，对量子力学至关重要。 [§6.6](r2r:chapter_06#66-积分)
+  - [ ] 什么才算真正的函数？ {kind: question} ^q-what-is-a-function
+    - 欧拉关于单一、非拼接函数的直觉，能否用光滑性、幂级数或复可微性来刻画？ [§6.4](r2r:chapter_06#64-欧拉的-函数概念)
+  - [ ] 为何微分“容易”而积分“难”（反之亦然）？ {kind: question} ^q-differentiation-vs-integration
+    - 显式公式可以机械地求导，积分却需要新的函数；而就数值计算和存在性而言，积分使函数更光滑，微分则使其变差。 [§6.6](r2r:chapter_06#66-积分)
+
+- [ ] 第 7 章 复数微积分 {kind: chapter} ^ch07
+  - 本章借助周线积分和柯西公式说明复可微性必然导致解析性，并阐述解析延拓及其对路径的依赖。 [第 7 章](r2r:chapter_07)
+  - [ ] 全纯函数 {kind: math} ^holomorphic-functions
+    - 复变量的复光滑函数；这是本书的核心概念，它原来自动就是复解析的。 [§7.1](r2r:chapter_07#71-复光滑全纯函数)
+  - [ ] 周线积分 {kind: math} ^contour-integration
+    - 沿复平面上路径的积分，在定义域内对路径作形变时保持不变；绕原点一周时，dz/z 的积分为 2 pi i。 [§7.2](r2r:chapter_07#72-周线积分)
+  - [ ] 同调形变与同伦形变 {kind: math} ^homology-homotopy
+    - 允许（同调）或不允许（同伦）方向相反的部分相互抵消的路径形变；同伦的路径总是同调的。 [§7.2](r2r:chapter_07#72-周线积分)
+  - [ ] 柯西公式 {kind: math} ^cauchy-integral-formula
+    - 全纯函数在 p 点的值及其 n 阶导数由 f/(z-p)^(n+1) 的周线积分给出。 [§7.3](r2r:chapter_07#73-复光滑幂级数)
+  - [ ] 复光滑性蕴含解析性 {kind: math} ^complex-smooth-implies-analytic
+    - 借助柯西公式可知，一次复可微的函数具有收敛的泰勒级数，从而具有任意阶导数。 [§7.3](r2r:chapter_07#73-复光滑幂级数)
+  - [ ] 留数定理 {kind: math} ^residue-theorem
+    - 闭周线积分等于 2 pi i 乘以周线所包围的留数之和；可用于计算定积分和级数求和。 [§7.3](r2r:chapter_07#73-复光滑幂级数)
+  - [ ] 开区域 {kind: math} ^open-regions
+    - 其中每一点周围都有一个仍落在该集合内的小圆盘的集合；开单位圆盘符合条件，闭单位圆盘则不然。 [§7.4](r2r:chapter_07#74-解析延拓)
+  - [ ] 解析延拓 {kind: math} ^analytic-continuation
+    - 沿一条路径用相互重叠的幂级数延伸全纯函数；对每条路径它是唯一且刚性的，但依赖于路径，如 log z 所示。 [§7.4](r2r:chapter_07#74-解析延拓)
+  - [ ] 欧拉-黎曼 ζ 函数 {kind: math} ^riemann-zeta-function
+    - 狄利克雷级数 Σ n^-z，可解析延拓到除 z = 1 以外的整个平面；它是素数理论的核心。 [§7.4](r2r:chapter_07#74-解析延拓)
+  - [ ] 黎曼假设成立吗？ {kind: question} ^q-riemann-hypothesis
+    - ζ 函数的所有非平凡零点都位于 Re(z) = 1/2 上吗？这或许是最重要的未解数学问题。 [§7.4](r2r:chapter_07#74-解析延拓)
+  - [ ] 复光滑性为何能带来如此多的结果？ {kind: question} ^q-magic-of-complex-smoothness
+    - 一次复导数蕴含解析性的证明要绕道周线积分和多值的对数，而命题和结论中都没有它们的身影。 [§7.3](r2r:chapter_07#73-复光滑幂级数)
+
+- [ ] 第 8 章 黎曼曲面和复映射 {kind: chapter} ^ch08
+  - 本章把多值全纯函数视为黎曼曲面上的单值函数，将全纯性与共形映射联系起来，并介绍黎曼球面、亏格、模以及黎曼映射定理。 [第 8 章](r2r:chapter_08)
+  - [ ] 黎曼曲面 {kind: math} ^riemann-surfaces
+    - 由复平面的小块粘合而成的多叶定义域，log z 之类的多值函数在其上成为单值的；这是流形的第一个例子。 [§8.1](r2r:chapter_08#81-黎曼曲面概念)
+  - [ ] 分支点 {kind: math} ^branch-points
+    - 函数的各叶绕其互相置换的点；对 z^(m/n) 其阶为 n，对 log z 其阶为无穷。 [§8.1](r2r:chapter_08#81-黎曼曲面概念)
+  - [ ] 共形映射 {kind: math} ^conformal-mappings
+    - 保持角度和无限小形状的映射；全纯映射恰好就是保定向的共形映射。 [§8.2](r2r:chapter_08#82-共形映射)
+  - [ ] 默比乌斯（双线性）变换 {kind: math} ^mobius-transformations
+    - 映射 w = (az+b)/(cz+d)（ad 不等于 bc），由欧几里得运动、伸缩和反演组合而成；它们把圆映为圆。 [§8.2](r2r:chapter_08#82-共形映射)
+  - [ ] 黎曼球面 {kind: math} ^riemann-sphere
+    - 复平面加上无穷远点，由 z 和 w = 1/z 两个坐标片构成；通过球极平面投影它是一个球面，是最简单的紧黎曼曲面。 [§8.3](r2r:chapter_08#83-黎曼球面)
+  - [ ] 紧黎曼曲面的亏格 {kind: math} ^genus
+    - 从拓扑上对紧可定向曲面进行分类的“柄”数：球面为 0，环面或茶杯为 1，椒盐卷饼为 3。 [§8.4](r2r:chapter_08#84-紧黎曼曲面的亏格)
+  - [ ] 卡拉比-丘空间的参模 {kind: math} ^moduli
+    - 描述卡拉比-丘空间形状的连续参数；它们的变化是零能模，威胁着经典稳定性。 [§8.4](r2r:chapter_08#84-紧黎曼曲面的亏格)
+  - [ ] 黎曼映射定理 {kind: math} ^riemann-mapping-theorem
+    - 任何由简单闭环围成的区域都可全纯地映射到单位圆盘上，一旦固定三个边界点，映射便是唯一的。 [§8.5](r2r:chapter_08#85-黎曼映射定理)
+  - [ ] 茹科夫斯基机翼变换 {kind: physics} ^zhukovsky-transformation
+    - w = (z + 1/z)/2 把圆的外部映为机翼截面，使流经机翼的理想化气流变得可以计算。 [§8.5](r2r:chapter_08#85-黎曼映射定理)
+  - [ ] 多值函数应如何处理？ {kind: question} ^q-multivalued-functions
+    - 黎曼不去任意地割开平面，而是让函数自己确定其定义域，即黎曼曲面。 [§8.1](r2r:chapter_08#81-黎曼曲面概念)
+  - [ ] 为什么模数公式 3g-3 对 g = 0、1 不成立？ {kind: question} ^q-moduli-count-anomaly
+    - 把连续自变换的个数 s 与模数 m 一起计入，便恢复了统一的公式 m - s = 3g - 3。 [§8.4](r2r:chapter_08#84-紧黎曼曲面的亏格)
+  - [ ] 全纯结构为何会在宏观物理中显现？ {kind: question} ^q-complex-structure-macroscopic
+    - 复结构在量子尺度上是基本的，但在大型系统中大多被掩盖；理想化的气流是一个幸运的例外。 [§8.5](r2r:chapter_08#85-黎曼映射定理)
+
+- [ ] 第 9 章 傅里叶分解和超函数 {kind: chapter} ^ch09
+  - 本章把傅里叶级数改写为黎曼球面上的洛朗级数，导出正负频率剖分和傅里叶变换，并由全纯函数构建佐藤的超函数。 [第 9 章](r2r:chapter_09)
+  - [ ] 傅里叶级数 {kind: math} ^fourier-series
+    - 把周期函数分解为纯正弦和余弦谐波，用复指数可以写得很紧凑。 [§9.1](r2r:chapter_09#91-傅里叶级数-153)
+  - [ ] 洛朗级数 {kind: math} ^laurent-series
+    - 允许出现负幂的幂级数；取 z = e^(i chi) 时，它恰好就是函数在单位圆上的傅里叶级数。 [§9.1](r2r:chapter_09#91-傅里叶级数-153)
+  - [ ] 收敛圆环 {kind: math} ^annulus-of-convergence
+    - 洛朗级数在两个同心圆之间的开圆环内收敛；对非解析的 f，这个圆环收缩为单位圆。 [§9.2](r2r:chapter_09#92-圆上的函数)
+  - [ ] 正负频率剖分 {kind: math} ^frequency-splitting
+    - 把圆上的函数剖分为分别全纯延拓到黎曼球面两个半球上的部分；这对量子理论至关重要。 [§9.3](r2r:chapter_09#93-黎曼球面上的频率剖分)
+  - [ ] 傅里叶变换 {kind: math} ^fourier-transform
+    - 周期趋于无穷时傅里叶级数的极限，给出对称的变换对 f(chi) 和 g(p)。 [§9.4](r2r:chapter_09#94-傅里叶变换)
+  - [ ] 超函数 {kind: math} ^hyperfunctions
+    - 佐藤的广义函数：曲线两侧全纯函数之间的“跳跃”，定义为全纯函数对模去全纯函数。 [§9.7](r2r:chapter_09#97-超函数)
+  - [ ] 切除定理 {kind: math} ^excision-theorem
+    - 保证超函数概念与所选取的包含该曲线的开区域无关。 [§9.7](r2r:chapter_09#97-超函数)
+  - [ ] 分布 {kind: math} ^distributions
+    - 与 C^infinity 函数对偶的 C^-infinity 广义函数；像 δ 函数一样，它们都是特殊的超函数。 [§9.7](r2r:chapter_09#97-超函数)
+  - [ ] 哪种函数才是适当的？ {kind: question} ^q-appropriate-functions
+    - 欧拉的全纯函数与现代的一般函数，哪一种才是“真正的”函数？由全纯函数构建的超函数调和了两者。 [§9.6](r2r:chapter_09#96-哪种函数是适当的)
+  - [ ] 刚性的解析函数如何描述不可预测的信号？ {kind: question} ^q-rigidity-vs-signals
+    - 解析信号由其任意一小段完全确定，因此波的传播和信息传递需要非解析的（例如不连续的）函数。 [§9.1](r2r:chapter_09#91-傅里叶级数-153)
+
+- [ ] 第 10 章 曲面 {kind: chapter} ^ch10
+  - 把曲面看作实二维光滑流形，引入偏导数、矢量场和 1 形式，并通过柯西－黎曼方程和拉普拉斯方程重新得到全纯性。 [第 10 章](r2r:chapter_10)
+  - [ ] 复共轭 {kind: math} ^complex-conjugation
+    - 把 z = x+iy 映为 z̄ = x−iy 的映射，即关于实轴的反射；这是一种非全纯运算，借助它可以把 x 和 y 分离开。 [§10.1](r2r:chapter_10#101-复维和实维-179)
+  - [ ] 复维和实维 {kind: math} ^complex-vs-real-dimension
+    - 黎曼曲面是一维复的，却是二维实的；允许出现 z̄ 后，函数 F(z, z̄) 就成为 x 和 y 的一般函数。 [§10.1](r2r:chapter_10#101-复维和实维-179)
+  - [ ] 偏导数 {kind: math} ^partial-derivatives
+    - 保持另一变量不变而求的导数 ∂f/∂x、∂f/∂y；它们的连续性定义了多元函数的光滑性。 [§10.2](r2r:chapter_10#102-光滑偏导数)
+  - [ ] 混合二阶偏导数 {kind: math} ^mixed-partial-derivatives
+    - 对 C² 函数有 ∂²f/∂x∂y = ∂²f/∂y∂x；练习表明，对每个变量分别光滑的函数未必整体光滑。 [§10.2](r2r:chapter_10#102-光滑偏导数)
+  - [ ] 标量场 {kind: math} ^scalar-fields
+    - 从流形到 ℝ 或 ℂ 的光滑函数 Φ，要与它在某个特定拼块中的坐标表达式 f(x, y) 区别开。 [§10.2](r2r:chapter_10#102-光滑偏导数)
+  - [ ] 转移函数 {kind: math} ^transition-functions
+    - 联系重叠拼块上坐标的光滑映射 X(x,y)、Y(x,y)，它们使流形上的光滑性与坐标选取无关。 [§10.2](r2r:chapter_10#102-光滑偏导数)
+  - [ ] 链式法则 {kind: math} ^chain-rule
+    - 用新坐标把 ∂/∂x 表示为 (∂X/∂x)∂/∂X + (∂Y/∂x)∂/∂Y，说明导数算子在拼块之间如何变换。 [§10.3](r2r:chapter_10#103-矢量场和-1-形式)
+  - [ ] 矢量场 {kind: math} ^vector-fields
+    - 形如 ξ = a∂/∂x + b∂/∂y 的微分算子，可画成由小箭头组成的场；ξ(Φ) 是 Φ 沿箭头方向的增长率。 [§10.3](r2r:chapter_10#103-矢量场和-1-形式)
+  - [ ] 1 形式 {kind: math} ^one-forms
+    - 像 dΦ = u dx + v dy 这样的量，它们不是无穷小量，而是与矢量场配对的对象；也称为余矢量，与矢量对偶。 [§10.3](r2r:chapter_10#103-矢量场和-1-形式)
+  - [ ] 梯度（外导数） {kind: math} ^gradient
+    - 标量场的与坐标无关的导数 dΦ，可用地图上的等值线来表示；沿等值线有 ξ(Φ)=0。 [§10.3](r2r:chapter_10#103-矢量场和-1-形式)
+  - [ ] 分量与标量积 {kind: math} ^scalar-product
+    - 矢量的分量 (a,b) 与 1 形式的分量 (u,v) 组合成标量积 dΦ·ξ = au + bv = ξ(Φ)。 [第 10 章](r2r:chapter_10)
+  - [ ] 柯西－黎曼方程 {kind: math} ^cauchy-riemann-equations
+    - 全纯性可写成 ∂Φ/∂z̄ = 0，即 ∂α/∂x = ∂β/∂y 且 ∂α/∂y = −∂β/∂x；黎曼曲面就是带有这种结构的实二维流形。 [§10.5](r2r:chapter_10#105-柯西黎曼方程)
+  - [ ] 拉普拉斯方程（拉普拉斯算符） {kind: math} ^laplace-equation
+    - 全纯函数的实部和虚部满足 ∇²α = 0（可用肥皂膜来想象）；它被用来证明超函数可以剖分为正频部分和负频部分。 [§10.5](r2r:chapter_10#105-柯西黎曼方程)
+  - [ ] 微积分第二基本困惑 {kind: question} ^q-second-fundamental-confusion
+    - 为什么 X = x 却有 ∂/∂X ≠ ∂/∂x，而 Y ≠ y 却有 ∂/∂Y = ∂/∂y？用矢量场的箭头从几何上即可解释。 [§10.3](r2r:chapter_10#103-矢量场和-1-形式)
+  - [ ] 黎曼曲面是复曲线还是实曲面？ {kind: question} ^q-riemann-surface-curve-or-surface
+    - 彭罗斯偏爱把它看作复曲线的纯全纯观点，但基于柯西－黎曼方程的实观点提供了强有力的偏微分方程技术。 [§10.1](r2r:chapter_10#101-复维和实维-179)
+
+- [ ] 第 11 章 超复数 {kind: chapter} ^ch11
+  - 介绍四元数、八元数、克利福德代数和格拉斯曼代数，它们是复数在更高维的推广，旋量则从转动的几何中产生。 [第 11 章](r2r:chapter_11)
+  - [ ] 四元数 {kind: math} ^quaternions
+    - 哈密顿的数 q = t+ui+vj+wk，其中 i²=j²=k²=ijk=−1；除乘法交换律外，所有代数规律都成立。 [§11.1](r2r:chapter_11#111-四元数代数)
+  - [ ] 环（幺环） {kind: math} ^ring
+    - 一种代数结构，其加法和乘法满足结合律并服从分配律；带有单位元 1 时称为幺环。 [§11.1](r2r:chapter_11#111-四元数代数)
+  - [ ] 矢量空间 {kind: math} ^vector-space
+    - 具有满足交换律和结合律的加法以及标量乘法的元素集合；四元数构成以 1、i、j、k 为基的四维实矢量空间。 [§11.1](r2r:chapter_11#111-四元数代数)
+  - [ ] 可除代数（除环） {kind: math} ^division-algebra
+    - 每个非零元素都有逆的代数；对四元数，利用四元数共轭有 q⁻¹ = q̄(q̄q)⁻¹。 [§11.1](r2r:chapter_11#111-四元数代数)
+  - [ ] 八元数 {kind: math} ^octonions
+    - 格雷夫斯和凯莱发现的八维非结合可除代数，有七个虚单位；其乘法表留到 §16.2 给出。 [§11.2](r2r:chapter_11#112-四元数的物理角色)
+  - [ ] 胡尔维茨定理 {kind: math} ^hurwitz-theorem
+    - 平方和恒等式只在 1、2、4、8 维存在，因此 ℝ、ℂ、ℍ 和 𝕆 是仅有的可除代数。 [§11.2](r2r:chapter_11#112-四元数的物理角色)
+  - [ ] 四元数空间里的转动 {kind: math} ^quaternion-rotations
+    - i、j、k 作用为绕三根相互垂直的轴转动 π；i² = −1 只对旋量性对象才有意义，可用一本书和一根带子来演示。 [§11.3](r2r:chapter_11#113-四元数几何)
+  - [ ] 旋量（自旋体） {kind: math} ^spinors
+    - 转动 2π 后改变符号、转动 4π 后才复原的对象；带子戏法表明，只有 2π 转动次数的奇偶性才是重要的。 [§11.3](r2r:chapter_11#113-四元数几何)
+  - [ ] 转动如何叠加 {kind: math} ^rotation-composition
+    - 哈密顿的球面三角形法则：把转动表示为长度为转角一半的大圆弧，这些弧像矢量一样合成。 [§11.4](r2r:chapter_11#114-转动如何叠加)
+  - [ ] 克利福德代数 {kind: math} ^clifford-algebra
+    - 由反射 γ₁…γₙ 生成，满足 γᵣ² = −1 且两两反对易；这是一个 2ⁿ 维代数，它包含四元数并可用来定义旋量。 [§11.5](r2r:chapter_11#115-克利福德代数)
+  - [ ] 约化旋量与手征 {kind: math} ^reduced-spinors-chirality
+    - n 为偶数时，2^{n/2} 维的自旋空间分裂为两个手征相反的半旋量空间，在四维时空中它们都是二维的。 [§11.5](r2r:chapter_11#115-克利福德代数)
+  - [ ] 格拉斯曼代数 {kind: math} ^grassmann-algebra
+    - 退化的克利福德代数，其生成元反对易且平方为零；它不需要度规，可描述各种维数的平面元。 [§11.6](r2r:chapter_11#116-格拉斯曼代数)
+  - [ ] 楔积（格拉斯曼积） {kind: math} ^wedge-product
+    - 反对易的乘积 a∧b，表示有大小的定向平面元；按阶数的奇偶有 P∧Q = ±Q∧P，从而得到分级代数。 [§11.6](r2r:chapter_11#116-格拉斯曼代数)
+  - [ ] 反对称化（方括号记法） {kind: math} ^antisymmetrization
+    - 方括号 A_[pq] = ½(A_pq − A_qp) 及其 r 指标推广给出了楔积的分量。 [§11.6](r2r:chapter_11#116-格拉斯曼代数)
+  - [ ] 四元数为何未能成为物理学的语言？ {kind: question} ^q-why-quaternions-failed
+    - 哈密顿的四元数演算最终落败：它的四维不符合时空的符号差，而且没有良好的四元数全纯性。 [§11.2](r2r:chapter_11#112-四元数的物理角色)
+  - [ ] 自然界为何区分左手与右手？ {kind: question} ^q-parity-violation
+    - 自然界对两个约化自旋空间的处理不同，因此某些过程不具有反射不变性（李政道、杨振宁、吴健雄）。 [§11.5](r2r:chapter_11#115-克利福德代数)
+
+- [ ] 第 12 章 n 维流形 {kind: chapter} ^ch12
+  - 用坐标拼块构造一般的 n 维流形，并发展矢量、余矢量、p 形式、嘉当外微积分、张量和复流形。 [第 12 章](r2r:chapter_12)
+  - [ ] 构形空间（位形空间） {kind: physics} ^configuration-space
+    - 其点表示系统所有可能位置的空间；刚体的构形空间是六维非欧流形，气体的则是 3N 维的。 [§12.1](r2r:chapter_12#121-为什么要研究高维流形)
+  - [ ] 相空间 {kind: physics} ^phase-space
+    - 由所有粒子的位置和动量构成的 6N 维空间；即使只是一点空气，其维数也极其巨大。 [§12.1](r2r:chapter_12#121-为什么要研究高维流形)
+  - [ ] 单连通与多连通 {kind: math} ^simply-connected
+    - 若空间中每条闭环都能收缩为一点，则称它是单连通的；转动空间中有一条不可收缩的 2π 闭环，而绕两圈的闭环却可收缩（拓扑挠率）。 [§12.1](r2r:chapter_12#121-为什么要研究高维流形)
+  - [ ] n 维流形与坐标拼块 {kind: math} ^n-manifolds
+    - 由 ℝⁿ 的开区域粘合而成的流形，带有坐标 x¹…xⁿ 和相容的转移函数，并要求是豪斯道夫的；之后坐标便被“忘掉”。 [§12.2](r2r:chapter_12#122-流形与坐标拼块)
+  - [ ] 切空间 {kind: math} ^tangent-space
+    - 一点处矢量构成的 n 维矢量空间，是把该点邻域不断放大的极限；矢量场是作用于标量场的导子。 [§12.3](r2r:chapter_12#123-标量矢量和余矢量)
+  - [ ] 余矢量与余切空间 {kind: math} ^covectors
+    - 从矢量到标量的线性映射，构成对偶的余切空间；余矢量定义一个 (n−1) 维平面元，除非它是梯度，否则这些平面元是扭曲的。 [§12.3](r2r:chapter_12#123-标量矢量和余矢量)
+  - [ ] p 形式与多重矢量 {kind: math} ^p-forms
+    - 余矢量的反对称楔积（矢量的楔积则给出双矢量等），描述 (n−p) 维和 p 维平面元；形式的行为如同密度。 [§12.4](r2r:chapter_12#124-格拉斯曼积)
+  - [ ] 形式的积分 {kind: math} ^integration-of-forms
+    - 在嘉当的外微积分中，p 形式是 p 维区域上天然的被积函数，在坐标变换下保持不变。 [§12.5](r2r:chapter_12#125-形式的积分)
+  - [ ] 外导数 {kind: math} ^exterior-derivative
+    - 把 p 形式变为 (p+1) 形式的算子 d，可由公理或反对称化的偏导数来定义；它满足 d² = 0。 [§12.6](r2r:chapter_12#126-外导数)
+  - [ ] 庞加莱引理 {kind: math} ^poincare-lemma
+    - 满足 dα = 0 的形式局部上是恰当的，即 α = dβ；例如闭 1 形式局部上是梯度。 [§12.6](r2r:chapter_12#126-外导数)
+  - [ ] 外演算基本定理 {kind: math} ^stokes-theorem
+    - ∫_R dφ = ∫_∂R φ，它统一了高斯定理、格林定理、开尔文－斯托克斯定理和微积分基本定理；彭罗斯避免使用“斯托克斯定理”这一名称。 [§12.6](r2r:chapter_12#126-外导数)
+  - [ ] 紧致性 {kind: math} ^compactness
+    - 若区域中的每个无穷序列都在该区域的某点处聚积，则称该区域是紧致的；球面、环面和闭圆盘都是紧致的。 [§12.6](r2r:chapter_12#126-外导数)
+  - [ ] 定向性与边界 {kind: math} ^orientability
+    - 在每一点都有一致的手性（默比乌斯带就没有）；定向区域的边界满足 ∂² = 0，与 d² = 0 相互补充。 [§12.6](r2r:chapter_12#126-外导数)
+  - [ ] 体积元 {kind: math} ^volume-element
+    - 度量 n 维密度的 n 形式 ε；与它缩并可把 (n−p) 重矢量转换为 p 形式（一种霍奇型对偶）。 [§12.7](r2r:chapter_12#127-体积元求和规则)
+  - [ ] 求和约定 {kind: math} ^summation-convention
+    - 一个上指标与一个下指标重复出现即表示求和，于是标量积写作 β_r ξ^r；缩并是它的推广。 [§12.7](r2r:chapter_12#127-体积元求和规则)
+  - [ ] 张量 {kind: math} ^tensors
+    - [p q] 价张量是 p 个矢量和 q 个余矢量的多重线性函数，写成带 q 个上指标和 p 个下指标的形式。 [§12.8](r2r:chapter_12#128-张量抽象指标记法和图示记法)
+  - [ ] 抽象指标记法与图示记法 {kind: math} ^abstract-index-notation
+    - 彭罗斯把指标当作抽象标签而非坐标值，并用带“手臂”和“腿”的图形表示张量，缩并就是把线连起来。 [§12.8](r2r:chapter_12#128-张量抽象指标记法和图示记法)
+  - [ ] 复流形 {kind: math} ^complex-manifolds
+    - 由 ℂⁿ 全纯拼接而成的流形，或带有殆复结构 J（J² = −1）的实 2n 维流形，按纽兰德－尼伦伯格定理，该结构可积时即为复流形。 [§12.9](r2r:chapter_12#129-复流形)
+  - [ ] 为什么要研究高维流形？ {kind: question} ^q-why-higher-dimensions
+    - 时空是四维的，但物理系统的构形空间和相空间以及弦论之类的理论都需要多得多的维数。 [§12.1](r2r:chapter_12#121-为什么要研究高维流形)
+  - [ ] 数学家与物理学家的记法冲突 {kind: question} ^q-notation-conflict
+    - 与坐标无关的 β·ξ 对比分量形式的 β_r ξ^r：彭罗斯认为这一冲突在很大程度上是人为的，并用抽象指标加以消解。 [§12.8](r2r:chapter_12#128-张量抽象指标记法和图示记法)
+
+- [ ] 第 13 章 对称群 {kind: chapter} ^ch13
+  - 群论速成：有限群与连续群、矩阵、本征值、表示和李代数，以及正交群、酉群和辛群等典型群。 [第 13 章](r2r:chapter_13)
+  - [ ] 群 {kind: math} ^groups
+    - 具有满足结合律的乘法、单位元和逆元的集合，以正方形的对称为模型；若乘法可交换，则称为阿贝尔群。 [§13.1](r2r:chapter_13#131-变换群)
+  - [ ] SO(3) 群与 O(3) 群 {kind: math} ^so3
+    - 球面的转动对称构成三维流形 SO(3)；加上反射则得到由两个分支组成的不连通群 O(3)。 [§13.1](r2r:chapter_13#131-变换群)
+  - [ ] 子群、正规子群与商群 {kind: math} ^normal-subgroups
+    - 正规子群 S 对所有 g 满足 Sg = gS，因而它的陪集构成商群 G/S；这与对称性破缺有关。 [§13.2](r2r:chapter_13#132-子群和单群)
+  - [ ] 单群 {kind: math} ^simple-groups
+    - 没有非平凡正规子群的群；基灵和嘉当对单李群作了分类（A、B、C、D 系列和五个例外群），有限单群则包括魔群。 [§13.2](r2r:chapter_13#132-子群和单群)
+  - [ ] 线性变换和矩阵 {kind: math} ^matrices
+    - 保持矢量空间结构的线性映射 x^a ↦ T^a_b x^b，可表示为数组，其乘法不可交换，以克罗内克 δ 为单位元，非奇异时有逆。 [§13.3](r2r:chapter_13#133-线性变换和矩阵)
+  - [ ] 一般线性群 {kind: math} ^general-linear-group
+    - GL(n) 是 n×n 非奇异（实或复）矩阵构成的群；SL(n) 是其中行列式为 1 的元素构成的正规子群。 [§13.3](r2r:chapter_13#133-线性变换和矩阵)
+  - [ ] 行列式 {kind: math} ^determinant
+    - 用列维-齐维塔符号由矩阵构造的数，当且仅当矩阵奇异时为零，且 det(AB) = det A det B。 [§13.4](r2r:chapter_13#134-行列式和迹)
+  - [ ] 迹 {kind: math} ^trace
+    - 对角元之和；det(I+εA) = 1+ε trace A 把 SL(n) 的无穷小元素与无迹矩阵联系起来，并且 det e^A = e^{trace A}。 [§13.4](r2r:chapter_13#134-行列式和迹)
+  - [ ] 本征值与本征矢量 {kind: math} ^eigenvectors
+    - Tv = λv，其中 det(T − λI) = 0；以本征矢量为基可使 T 对角化，这种正则形式对量子理论至关重要。 [§13.5](r2r:chapter_13#135-本征值与本征矢量)
+  - [ ] 表示理论 {kind: math} ^representation-theory
+    - 保持乘法的同态 g ↦ T(g)，映入 GL(n)，若为单射则称为忠实表示；它是量子理论和粒子物理的核心。 [§13.6](r2r:chapter_13#136-表示理论与李代数)
+  - [ ] 李群与李代数 {kind: math} ^lie-algebra
+    - 连续群的无穷小元素 I+εA，配以对易子 [A,B]；反对称性、雅可比恒等式和结构常数确定了群的局部结构。 [§13.6](r2r:chapter_13#136-表示理论与李代数)
+  - [ ] 可约性 {kind: math} ^reducibility
+    - 张量表示空间可以分解，例如分为对称部分和反对称部分的直和；紧致半单群（基灵形式非奇异）是完全可约的。 [§13.7](r2r:chapter_13#137-张量表示空间可约性)
+  - [ ] 度规与符号差 {kind: math} ^metric
+    - 对称非奇异张量 g_ab，通过 ds² = g_ab dx^a dx^b 定义长度；它可对角化为 ±1 元素，从而给出其符号差 (p,q)。 [§13.8](r2r:chapter_13#138-正交群)
+  - [ ] 正交群 {kind: math} ^orthogonal-group
+    - O(n)、SO(n) 保持正定度规；伪正交群 O(p,q) 包括洛伦兹群 O(1,3)，它们都是 O(n,ℂ) 的实形式。 [§13.8](r2r:chapter_13#138-正交群)
+  - [ ] 埃尔米特型与埃尔米特共轭 {kind: math} ^hermitian-conjugation
+    - 埃尔米特对称型在一个变元上是反线性的，由它得到运算 *（共轭转置）、埃尔米特矩阵以及埃尔米特标量积和范数。 [§13.9](r2r:chapter_13#139-酉群)
+  - [ ] 酉群（幺正群） {kind: math} ^unitary-group
+    - 保持埃尔米特型的复线性映射，满足 T⁻¹ = T*；正定时为 U(n)，否则为伪酉群 U(p,q)，行列式为 1 时为 SU(n)。 [§13.9](r2r:chapter_13#139-酉群)
+  - [ ] 辛群 {kind: math} ^symplectic-group
+    - 在偶数维中保持反对称双线性型的群，对经典力学至关重要；低维时有一些巧合，如 SU(2) = Sp(1)，它局部上与 SO(3) 相同。 [§13.10](r2r:chapter_13#1310-辛群)
+  - [ ] 物理对称性为何是严格的？ {kind: question} ^q-exact-symmetry
+    - 具体的对称物体似乎只是近似对称，但已知的一切相互作用都通过规范联络建立在严格的对称性之上，这将在后面各章展开。 [§13.1](r2r:chapter_13#131-变换群)
+  - [ ] 是否存在破缺的基本对称群？ {kind: question} ^q-broken-symmetry
+    - 粒子物理希望观测到的对称性是某个假想的基本群破缺后留下的子群，但这个群至今尚未找到。 [§13.2](r2r:chapter_13#132-子群和单群)
+  - [ ] 不同实形式（符号差）的差别何时重要？ {kind: question} ^q-real-forms
+    - 各个 O(p,q) 群有同一个复化；物理学家常把紧致情形的结果用到非紧致情形，而量子理论又模糊了符号差的区别。 [§13.8](r2r:chapter_13#138-正交群)
+
+- [ ] 第 14 章 流形上的微积分 {kind: chapter} ^ch14
+  - 为光滑流形配备联络、曲率、度规和辛形式，使张量场可以求导，几何可以度量。 [第 14 章](r2r:chapter_14)
+  - [ ] 仿射空间 {kind: math} ^affine-space
+    - “忘掉”了原点的矢量空间，就像欧几里得空间：平行四边形有意义，但没有哪一点是特殊的。 [§14.1](r2r:chapter_14#141-流形上的微分)
+  - [ ] 平行移动 {kind: math} ^parallel-transport
+    - 沿曲线搬运切矢量并保持它“平行”；在球面上，结果依赖于所走的路径。 [§14.2](r2r:chapter_14#142-平行移动)
+  - [ ] 协变导数（联络） {kind: math} ^covariant-derivative
+    - 通过与平行移动作比较来对矢量场和张量场求导的算子 ∇；它是线性的，并服从莱布尼茨法则。 [§14.3](r2r:chapter_14#143-协变导数)
+  - [ ] 挠率张量 {kind: math} ^torsion-tensor
+    - ∇a∇b 作用于标量时的反对称部分；物理中通常假定它为零，但在爱因斯坦－嘉当理论和超引力理论中不为零。 [§14.4](r2r:chapter_14#144-曲率和挠率)
+  - [ ] 曲率张量 {kind: math} ^curvature-tensor
+    - 由协变导数的对易子定义；它度量矢量沿小闭环平行移动一周后的变化。 [§14.4](r2r:chapter_14#144-曲率和挠率)
+  - [ ] 比安基对称性和比安基恒等式 {kind: math} ^bianchi-identity
+    - 无挠情形下有 R_[abc]^d = 0 和 ∇_[a R_bc]d^e = 0；后者对爱因斯坦场方程至关重要。 [§14.4](r2r:chapter_14#144-曲率和挠率)
+  - [ ] 测地线和仿射参数 {kind: math} ^geodesics
+    - 切矢量沿自身平行移动的曲线，是直线的类比；仿射参数使切矢量的标度保持不变。 [§14.5](r2r:chapter_14#145-测地线平行四边形和曲率)
+  - [ ] 测地线平行四边形 {kind: math} ^geodesic-parallelogram
+    - 由测地线构成的小平行四边形，有挠率时在 O(ε²) 阶不闭合，无挠时在 O(ε³) 阶不闭合；沿其平行移动一周即可读出 R。 [§14.5](r2r:chapter_14#145-测地线平行四边形和曲率)
+  - [ ] 测地线偏差 {kind: math} ^geodesic-deviation
+    - 相邻测地线的相对加速度由曲率支配：正曲率使它们相互靠拢，负曲率使它们彼此散开。 [§14.5](r2r:chapter_14#145-测地线平行四边形和曲率)
+  - [ ] 矢量场的李括号（交换子） {kind: math} ^lie-bracket
+    - 两个矢量场的对易子 [ξ,η] 仍是矢量场，它度量由二者构成的四边形的缺口；它满足雅可比恒等式。 [§14.6](r2r:chapter_14#146-李导数)
+  - [ ] 李导数 {kind: math} ^lie-derivative
+    - 张量场相对于沿给定矢量场拖曳后的自身的导数；它与联络无关，且 £ξη = [ξ,η]。 [§14.6](r2r:chapter_14#146-李导数)
+  - [ ] （伪）黎曼流形 {kind: math} ^riemannian-manifold
+    - 带有度规 g_ab 的流形，曲线长度由 ∫ds 给出；洛伦兹符号差 +--- 对相对论至关重要。 [§14.7](r2r:chapter_14#147-度规能为你做什么)
+  - [ ] 列维-齐维塔联络（黎曼联络、克里斯托费尔联络） {kind: math} ^levi-civita-connection
+    - 满足 ∇g = 0 的唯一无挠联络，平行移动时长度保持不变；其测地线使长度取极值。 [§14.7](r2r:chapter_14#147-度规能为你做什么)
+  - [ ] 黎曼张量（黎曼-克里斯托费尔张量） {kind: math} ^riemann-tensor
+    - 用 g 降指标后的曲率张量，满足 R_abcd = -R_abdc = R_cdab，有 n²(n²-1)/12 个独立分量。 [§14.7](r2r:chapter_14#147-度规能为你做什么)
+  - [ ] 基灵矢量 {kind: math} ^killing-vectors
+    - 满足 £κ g = 0 即 ∇(a κb) = 0 的矢量场 κ；它们生成（伪）黎曼流形的连续对称性。 [§14.7](r2r:chapter_14#147-度规能为你做什么)
+  - [ ] 辛流形 {kind: math} ^symplectic-manifolds
+    - 带有闭的非奇异反对称形式 S_ab（dS = 0）的流形；它们局部上都一样，是一种没有曲率的“松弛”结构。 [§14.8](r2r:chapter_14#148-辛流形)
+  - [ ] 泊松括号 {kind: math} ^poisson-bracket
+    - 借助逆辛形式把两个标量场组合起来；它是反对称的并满足雅可比恒等式，是哈密顿力学的关键。 [§14.8](r2r:chapter_14#148-辛流形)
+  - [ ] 物理时空是否有挠率？ {kind: question} ^q-spacetime-torsion
+    - 大多数物理理论取 ∇ 为无挠的，但自旋/挠率理论和超引力允许具有物理意义的挠率。 [§14.4](r2r:chapter_14#144-曲率和挠率)
+  - [ ] 哪些结构是“松弛”的？ {kind: question} ^q-flabby-structures
+    - 与度规不同，辛结构和复结构没有局部不变量；书中指出这一问题与扭量理论有关。 [§14.8](r2r:chapter_14#148-辛流形)
+
+- [ ] 第 15 章 纤维丛和规范联络 {kind: chapter} ^ch15
+  - 介绍纤维丛及其截面和联络，说明丛曲率正是现代粒子物理中规范场的基础。 [第 15 章](r2r:chapter_15)
+  - [ ] 卡鲁扎-克莱因理论（额外维） {kind: physics} ^kaluza-klein
+    - 认为“内部”维是微小的额外空间维的想法，可用一根水管来形象地说明；书中视之为推测性的。 [§15.1](r2r:chapter_15#151-纤维丛的物理背景)
+  - [ ] 纤维丛 {kind: math} ^fibre-bundles
+    - 底空间 M 上的流形 B，局部上像以 V 为纤维的乘积 M×V，但整体上可能是扭曲的，如默比乌斯丛。 [§15.2](r2r:chapter_15#152-丛的数学思想)
+  - [ ] 默比乌斯丛 {kind: math} ^mobius-bundle
+    - 圆周上扭曲的实线丛，与平凡的柱面相对照；这种扭曲来自纤维的符号反转对称。 [§15.2](r2r:chapter_15#152-丛的数学思想)
+  - [ ] 丛的截面 {kind: math} ^bundle-cross-sections
+    - 底空间的连续像，与每根纤维恰好相交一次，是函数图像的推广；默比乌斯丛的每个截面都与零截面相交。 [§15.3](r2r:chapter_15#153-丛的截面)
+  - [ ] 克利福德丛（霍普夫纤维化） {kind: math} ^hopf-fibration
+    - 以 S² 为底、以圆周为纤维的 S³，由 C² 中的复直线 Aw+Bz=0 构造而成；它没有连续的截面。 [§15.4](r2r:chapter_15#154-克利福德丛)
+  - [ ] 克利福德平行线 {kind: math} ^clifford-parallels
+    - 霍普夫纤维化的纤维圆周：S³ 中彼此环绕却又处处等距的大圆。 [§15.4](r2r:chapter_15#154-克利福德丛)
+  - [ ] 复矢量丛 {kind: math} ^complex-vector-bundles
+    - 纤维为复矢量空间的丛；CP¹ 上复线丛的截面表示 S² 上的旋量场。 [§15.5](r2r:chapter_15#155-复矢量丛余切丛)
+  - [ ] 切丛 {kind: math} ^tangent-bundle
+    - T(M)，其点由 M 中的一点及该点处的一个切矢量组成；它的截面就是矢量场。 [§15.5](r2r:chapter_15#155-复矢量丛余切丛)
+  - [ ] 余切丛 {kind: math} ^cotangent-bundle
+    - T*(M)，由余矢量构成；它天然是一个 2n 维辛流形，即经典力学的相空间。 [§15.5](r2r:chapter_15#155-复矢量丛余切丛)
+  - [ ] 射影空间 {kind: math} ^projective-space
+    - (n+1) 维矢量空间中过原点的直线所构成的空间，添加了无穷远点从而使平行线相交；有实的和复的两种。 [§15.6](r2r:chapter_15#156-射影空间)
+  - [ ] 齐次坐标 {kind: math} ^homogeneous-coordinates
+    - 不全为零的比值 z⁰:z¹:…:zⁿ，用来标记 RPⁿ 或 CPⁿ 中的点。 [§15.6](r2r:chapter_15#156-射影空间)
+  - [ ] 帕普斯定理和德萨格定理 {kind: math} ^pappus-desargues-theorems
+    - 平面射影几何中经典的关联定理，一旦平行线在无穷远处相交，它们就能简洁地表述。 [§15.6](r2r:chapter_15#156-射影空间)
+  - [ ] 丛联络（规范联络） {kind: math} ^gauge-connection
+    - 纤维值沿底空间中曲线保持“不变”的概念；在 S¹ 上的“应变”丛中，它依赖于路径。 [§15.7](r2r:chapter_15#157-丛联络的非平凡性)
+  - [ ] 丛曲率 {kind: math} ^bundle-curvature
+    - 丛协变导数 ∇a = ∂/∂xᵃ - Aa 的对易子，给出 F_ab；麦克斯韦场等物理规范场就表现为这种曲率。 [§15.8](r2r:chapter_15#158-丛曲率)
+  - [ ] 内部维是否就是真实的额外空间维？ {kind: question} ^q-extra-dimensions
+    - 卡鲁扎-克莱因理论、超引力和弦论把它们看作微小的额外维；本书则更倾向于把它们看作丛的纤维。 [§15.1](r2r:chapter_15#151-纤维丛的物理背景)
+  - [ ] 规范理论中纤维对称性的起源是什么？ {kind: question} ^q-gauge-symmetry-origin
+    - 规范理论需要严格的纤维对称性，这就引出了它们的起源和本性这一根本问题，第 28、31、34 章将再次讨论。 [§15.8](r2r:chapter_15#158-丛曲率)
+
+- [ ] 第 16 章 无限的阶梯 {kind: chapter} ^ch16
+  - 对比有限数系和有限几何与康托尔的无限层级，进而考察集合论、可计算性和哥德尔定理中的基础性难题。 [第 16 章](r2r:chapter_16)
+  - [ ] 有限域 {kind: math} ^finite-fields
+    - 数系 F_p（模素数的整数）和 F_q（q = p^m），其中 p 个相同元素相加得零。 [§16.1](r2r:chapter_16#161-有限域)
+  - [ ] 有限射影几何 {kind: math} ^finite-projective-geometry
+    - 射影空间 Pⁿ(F_q) 有 1+q+…+qⁿ 个点；用“魔盘”构造可实现帕普斯定理和德萨格定理的有限版本。 [§16.2](r2r:chapter_16#162-物理上需要的是有限还是无限几何)
+  - [ ] 法诺平面 {kind: math} ^fano-plane
+    - F_2 上有 7 个点的射影平面，其直线编码了八元数生成元的乘法表。 [§16.2](r2r:chapter_16#162-物理上需要的是有限还是无限几何)
+  - [ ] 集合的势（基数） {kind: math} ^cardinality
+    - 两个集合能建立一一对应时具有相同的势；自然数、整数和有理数都具有相同的可数势 ℵ₀。 [§16.3](r2r:chapter_16#163-无限的不同大小)
+  - [ ] 选择公理 {kind: math} ^axiom-of-choice
+    - 对任何由非空集合组成的集合，都存在一个从每个集合中各取一个元素的集合；由它可推出所有基数都可以比较大小。 [§16.3](r2r:chapter_16#163-无限的不同大小)
+  - [ ] 康托尔对角线法 {kind: math} ^cantor-diagonal-argument
+    - 用反证法证明对每个基数都有 α < 2^α，因此实数（C = 2^ℵ₀）比自然数多。 [§16.4](r2r:chapter_16#164-康托尔对角线法)
+  - [ ] 连续统假说 {kind: math} ^continuum-hypothesis
+    - 康托尔猜想 2^ℵ₀ = ℵ₁，即两者之间不存在其他基数；已证明它独立于标准集合论公理（哥德尔、科恩）。 [§16.5](r2r:chapter_16#165-数学基础方面的难题)
+  - [ ] 罗素悖论 {kind: math} ^russell-paradox
+    - 所有不属于自身的集合所组成的集合是自相矛盾的；这是把康托尔论证用于“所有集合的集合”，由此引出了集合与类的区分。 [§16.5](r2r:chapter_16#165-数学基础方面的难题)
+  - [ ] 图灵机和普适图灵机 {kind: math} ^turing-machines
+    - 作用于自然数的理想化算法，本身可用数编码；普适图灵机 U 可以模拟任何图灵机。 [§16.6](r2r:chapter_16#166-图灵机和哥德尔定理)
+  - [ ] 停机问题（不可计算性） {kind: math} ^halting-problem
+    - 图灵的对角线证明：没有算法能判定一台图灵机是否停机；“好”机器的集合不是递归可列的。 [§16.6](r2r:chapter_16#166-图灵机和哥德尔定理)
+  - [ ] 递归集和递归可列集 {kind: math} ^recursive-sets
+    - ℕ 的子集，其成员资格或其列举可由算法给出；这是“构造主义”意义下可接受的集合概念。 [§16.6](r2r:chapter_16#166-图灵机和哥德尔定理)
+  - [ ] 哥德尔不完备定理 {kind: math} ^godel-incompleteness
+    - 任何可靠的算术形式系统都无法证明某些真的 Π₁ 语句；这里由图灵的停机结果推出。 [§16.6](r2r:chapter_16#166-图灵机和哥德尔定理)
+  - [ ] 场的函数自由度 {kind: physics} ^functional-freedom
+    - 基数不能刻画物理空间的大小；场的自由度用 ∞^(k∞ⁿ) 来衡量，即 n 个变量的函数的 k 个分量。 [§16.7](r2r:chapter_16#167-物理学中无限的大小)
+  - [ ] 物理上需要的是有限还是无限几何？ {kind: question} ^q-finite-or-infinite-physics
+    - 实数连续统会不会只是某个有限数系的近似？本书认为，无限结构至少就时间而言必须认真对待。 [§16.2](r2r:chapter_16#162-物理上需要的是有限还是无限几何)
+  - [ ] 连续统假说是否为真？ {kind: question} ^q-continuum-hypothesis-truth
+    - 它独立于标准公理，其真假可能是客观的，也可能只取决于所选择的数学标准。 [§16.5](r2r:chapter_16#165-数学基础方面的难题)
+  - [ ] 哥德尔定理是否意味着存在原则上不可知的数学真理？ {kind: question} ^q-godel-unknowable-truths
+    - 本书拒绝这种流行的解读：我们能看出哥德尔语句为真，因此洞察力超越了任何形式系统。 [§16.6](r2r:chapter_16#166-图灵机和哥德尔定理)
+
+- [ ] 第 17 章 时空 {kind: chapter} ^ch17
+  - 追溯时空结构从亚里士多德时空、伽利略时空到嘉当的牛顿时空、闵可夫斯基时空和爱因斯坦时空的演变，推动力是相对性原理、等效原理和光速不变。 [第 17 章](r2r:chapter_17)
+  - [ ] 亚里士多德时空 {kind: physics} ^aristotelian-spacetime
+    - 乘积 E¹×E³，具有绝对时间和绝对空间，空间中的一点从一个时刻延续到下一个时刻。 [§17.1](r2r:chapter_17#171-亚里士多德物理学的时空)
+  - [ ] 伽利略相对性原理 {kind: physics} ^galilean-relativity
+    - 伽利略的船舱论证：动力学定律在每个匀速运动的参考系中都相同，因此绝对空间没有意义。 [§17.2](r2r:chapter_17#172-伽利略原理下的时空相对性)
+  - [ ] 伽利略时空 {kind: physics} ^galilean-spacetime
+    - 以 E¹（绝对时间）为底、以 E³ 为纤维的纤维丛，不同时刻的空间之间没有逐点的等同。 [§17.2](r2r:chapter_17#172-伽利略原理下的时空相对性)
+  - [ ] 世界线 {kind: physics} ^world-line
+    - 粒子的历史，表现为时空中的一条曲线；惯性运动表现为直的世界线。 [§17.3](r2r:chapter_17#173-时空的牛顿动力学)
+  - [ ] 牛顿定律和牛顿动力学 {kind: physics} ^newtons-laws
+    - 在具有仿射结构的伽利略时空上表述的三大定律；力按矢量相加，并在粒子之间瞬时作用。 [§17.3](r2r:chapter_17#173-时空的牛顿动力学)
+  - [ ] 牛顿万有引力定律 {kind: physics} ^newtonian-gravity
+    - 质量之间的平方反比吸引 GmM/r²，由非常简单的要素给出了一个精确得出奇的普适理论。 [§17.3](r2r:chapter_17#173-时空的牛顿动力学)
+  - [ ] 等效原理 {kind: physics} ^equivalence-principle
+    - 引力质量与惯性质量相等，使均匀引力场等效于加速度；自由下落就是爱因斯坦意义下的惯性运动。 [§17.4](r2r:chapter_17#174-等效原理)
+  - [ ] 嘉当的牛顿时空 {kind: physics} ^newton-cartan-spacetime
+    - 把牛顿引力重建为 E¹ 上的丛，带有一个联络，其测地线就是自由下落的世界线；曲率编码了引力。 [§17.5](r2r:chapter_17#175-嘉当的牛顿时空)
+  - [ ] 潮汐效应 {kind: physics} ^tidal-effect
+    - 邻近自由下落粒子之间的相对形变，在真空中是一种保持体积的挤压，通过测地线偏差与时空曲率等同起来。 [§17.5](r2r:chapter_17#175-嘉当的牛顿时空)
+  - [ ] 光锥（零锥） {kind: physics} ^light-cones
+    - 过一个事件的光子历史所构成的锥面，对洛伦兹度规由 g_ab vᵃvᵇ = 0 给出；它确定了光速。 [§17.7](r2r:chapter_17#177-光锥)
+  - [ ] 放弃绝对时间 {kind: physics} ^relativity-of-simultaneity
+    - 均匀排列的零锥与伽利略时空的 E³ 分层不相容，因此必须放弃绝对同时性；它之所以显得自然，只是因为 c 太大了。 [§17.8](r2r:chapter_17#178-放弃绝对时间)
+  - [ ] 闵可夫斯基时空 {kind: physics} ^minkowski-space
+    - 狭义相对论的平直时空，零锥均匀排列，度规的符号差为 +---，且其标度是确定的。 [§17.8](r2r:chapter_17#178-放弃绝对时间)
+  - [ ] 原时 {kind: physics} ^proper-time
+    - 沿类时世界线的 τ = ∫ds，即理想时钟所测量的时间；类空世界线在物理上是禁止的。 [§17.8](r2r:chapter_17#178-放弃绝对时间)
+  - [ ] 因果结构（类时、零、类空） {kind: physics} ^causal-structure
+    - 零锥决定了一个事件的未来：有质量粒子在零锥内部运动，光沿零锥运动，信号绝不会跑到零锥之外。 [§17.8](r2r:chapter_17#178-放弃绝对时间)
+  - [ ] 爱因斯坦时空 {kind: physics} ^einsteinian-spacetime
+    - 弯曲的洛伦兹流形，它推广闵可夫斯基空间，正如嘉当的牛顿时空推广伽利略时空；其列维-齐维塔曲率描述引力。 [§17.9](r2r:chapter_17#179-爱因斯坦广义相对论的时空)
+  - [ ] 为什么说“时空”而不是空间和时间？ {kind: question} ^q-why-spacetime
+    - 本章表明，即使伽利略相对性也否定了持续存在的绝对空间，因此需要统一的时空图像。 [§17.1](r2r:chapter_17#171-亚里士多德物理学的时空)
+  - [ ] 引力是一种力还是时空几何？ {kind: question} ^q-gravity-a-force
+    - 等效原理使自由下落成为惯性运动，因此引力是感觉不到的；它真正的标志是潮汐曲率。 [§17.4](r2r:chapter_17#174-等效原理)
+  - [ ] 光速如何对所有观察者都保持不变？ {kind: question} ^q-light-speed-vs-relativity
+    - 麦克斯韦理论中固定的光速似乎与相对性原理冲突；零锥几何通过放弃绝对时间解决了这一矛盾。 [§17.6](r2r:chapter_17#176-确定不变的有限光速)
+  - [ ] 闭合类时曲线（时间旅行）是否符合物理？ {kind: question} ^q-time-travel
+    - 某些爱因斯坦时空允许信号回到自身过去的因果结构；彭罗斯认为它们不符合物理而将其排除。 [§17.9](r2r:chapter_17#179-爱因斯坦广义相对论的时空)
+
+- [ ] 第 18 章 闵可夫斯基几何 {kind: chapter} ^ch18
+  - 展开闵可夫斯基时空的几何：其庞加莱对称性、洛伦兹正交性与时钟佯谬、双曲速度空间、作为黎曼球面的天球，以及相对论性的能量、动量和角动量。 [第 18 章](r2r:chapter_18)
+  - [ ] 复化闵可夫斯基空间 {kind: math} ^complexified-minkowski-space
+    - 欧几里得四维空间和闵可夫斯基空间是同一个带全纯度规的复四维空间的不同实截面。 [§18.1](r2r:chapter_18#181-欧几里得型与闵可夫斯基型四维空间)
+  - [ ] 庞加莱群 {kind: physics} ^poincare-group
+    - 闵可夫斯基空间的十维对称群：四个平移加上六维的洛伦兹群。 [§18.2](r2r:chapter_18#182-闵可夫斯基空间的对称群)
+  - [ ] 洛伦兹正交性与同时性 {kind: physics} ^lorentzian-orthogonality
+    - 观察者的同时空间是其世界线的闵可夫斯基正交补，随速度而倾斜；类光方向与自身正交。 [§18.3](r2r:chapter_18#183-洛伦兹正交性时钟悖论)
+  - [ ] 时钟（双生子）佯谬 {kind: physics} ^clock-paradox
+    - 反向的洛伦兹三角不等式表明，旅行的双生子沿折线世界线经历的固有时比留在家中的那位少。 [§18.3](r2r:chapter_18#183-洛伦兹正交性时钟悖论)
+  - [ ] 相对论速度空间 {kind: physics} ^relativistic-velocity-space
+    - 闵可夫斯基空间中未来类时方向的单位双曲面具有双曲几何，充当相对论速度空间。 [§18.4](r2r:chapter_18#184-闵可夫斯基空间的双曲几何)
+  - [ ] 速率 {kind: physics} ^rapidity
+    - 速度空间中的双曲距离 rho = artanh v；光速对应于无穷大的速率。 [§18.4](r2r:chapter_18#184-闵可夫斯基空间的双曲几何)
+  - [ ] 相对论速度合成 {kind: physics} ^relativistic-velocity-addition
+    - 共线速度通过速率相加按 (u+v)/(1+uv) 合成；一般速度则按双曲三角形法则合成。 [§18.4](r2r:chapter_18#184-闵可夫斯基空间的双曲几何)
+  - [ ] 作为黎曼球面的天球 {kind: physics} ^celestial-sphere
+    - 通过一个事件的光线构成的球面带有黎曼球面的共形结构，在观察者变换下保持不变，因此圆仍然是圆。 [§18.5](r2r:chapter_18#185-作为黎曼球面的天球)
+  - [ ] 恒星的光行差 {kind: physics} ^stellar-aberration
+    - 观察者的运动使恒星的视位置发生畸变，但这种畸变保持天球上的圆和角度不变。 [§18.5](r2r:chapter_18#185-作为黎曼球面的天球)
+  - [ ] 菲茨杰拉德-洛伦兹收缩 {kind: physics} ^lorentz-contraction
+    - 运动物体沿运动方向被压扁，但由于光传播的效应，运动的球看上去仍是圆形，只是似乎转动了。 [§18.5](r2r:chapter_18#185-作为黎曼球面的天球)
+  - [ ] 动能与势能 {kind: physics} ^kinetic-energy
+    - 牛顿能量分为动能 mv^2/2 和储存在力中的势能；总能量守恒。 [§18.6](r2r:chapter_18#186-牛顿能量和角动量)
+  - [ ] 动量守恒 {kind: physics} ^momentum-conservation
+    - 对各粒子求和的总动量 p = mv 守恒，并在伽利略推动下协调一致地变换。 [§18.6](r2r:chapter_18#186-牛顿能量和角动量)
+  - [ ] 角动量 {kind: physics} ^angular-momentum
+    - 关于原点的动量矩 x wedge p，对孤立系统守恒，与之并列的还有质心量 tp - mx。 [§18.6](r2r:chapter_18#186-牛顿能量和角动量)
+  - [ ] 能量动量四维矢量 {kind: physics} ^four-momentum
+    - 能量与三维动量合成一个可加守恒的时空矢量；对有质量粒子，它等于静质量乘以四维速度。 [§18.7](r2r:chapter_18#187-相对论性能量和角动量)
+  - [ ] 爱因斯坦质能方程 E = mc\^2 {kind: physics} ^mass-energy-equivalence
+    - 四维动量的时间分量同时度量总能量和总质量，二者通过 E = mc^2 等价。 [§18.7](r2r:chapter_18#187-相对论性能量和角动量)
+  - [ ] 静质量 {kind: physics} ^rest-mass
+    - 四维动量的闵可夫斯基长度，与参考系无关；它不守恒，因此有质量的 π 介子可以衰变为两个无质量的光子。 [§18.7](r2r:chapter_18#187-相对论性能量和角动量)
+  - [ ] 相对论性角动量 {kind: physics} ^relativistic-angular-momentum
+    - 反对称张量 M^ab = x^a p^b - x^b p^a 把角动量与质心运动统一起来，并与洛伦兹转动相联系。 [§18.7](r2r:chapter_18#187-相对论性能量和角动量)
+  - [ ] 取虚时间（欧几里得时间）是否合理？ {kind: question} ^q-imaginary-time
+    - 彭罗斯怀疑由来已久的 t = iw 技巧及其现代后继者欧几里得量子场论，具体批评留待后文。 [§18.1](r2r:chapter_18#181-欧几里得型与闵可夫斯基型四维空间)
+  - [ ] 洛伦兹收缩能否被看到？ {kind: question} ^q-lorentz-contraction-visible
+    - 为什么高速运动的球尽管受到菲茨杰拉德-洛伦兹压缩，其轮廓看上去仍是圆形。 [§18.5](r2r:chapter_18#185-作为黎曼球面的天球)
+  - [ ] 相对论中质量是否守恒？ {kind: question} ^q-mass-conservation
+    - 能量、动量和角动量在相对论中依然守恒，但质量守恒与能量守恒合而为一，静质量则不守恒。 [§18.6](r2r:chapter_18#186-牛顿能量和角动量)
+
+- [ ] 第 19 章 麦克斯韦和爱因斯坦的经典场 {kind: chapter} ^ch19
+  - 用形式的语言表述麦克斯韦电磁理论及其守恒律，并将其解读为规范曲率；继而讨论能量动量张量、爱因斯坦场方程、宇宙学常数、外尔张量以及引力能问题。 [第 19 章](r2r:chapter_19)
+  - [ ] 麦克斯韦场张量 {kind: physics} ^maxwell-field-tensor
+    - 电场和磁场合成一个时空 2 形式 F，电荷与电流则构成电荷-电流矢量 J。 [§19.2](r2r:chapter_19#192-麦克斯韦电磁场理论)
+  - [ ] 霍奇对偶 {kind: math} ^hodge-dual
+    - 用列维-齐维塔张量把 p 形式变为 (4-p) 形式，在这里起到互换电场与磁场角色的作用。 [§19.2](r2r:chapter_19#192-麦克斯韦电磁场理论)
+  - [ ] 麦克斯韦方程 {kind: physics} ^maxwell-equations
+    - 可紧凑地写成 dF = 0 和 d*F = 4 pi *J，支配电场和磁场的时间演化。 [§19.2](r2r:chapter_19#192-麦克斯韦电磁场理论)
+  - [ ] 自对偶场和反自对偶场 {kind: physics} ^self-dual-field
+    - 复组合 F +/- i*F 把麦克斯韦场分为分别描述右手和左手光子的两部分。 [§19.2](r2r:chapter_19#192-麦克斯韦电磁场理论)
+  - [ ] 电磁波 {kind: physics} ^electromagnetic-waves
+    - 麦克斯韦方程允许以光速传播的波，从而把光确认为电磁辐射。 [§19.2](r2r:chapter_19#192-麦克斯韦电磁场理论)
+  - [ ] 电荷守恒 {kind: physics} ^charge-conservation
+    - 由 d*J = 0 和外微积分基本定理，穿过任何闭三维曲面的总电荷通量为零；高斯定律也可类似地得出。 [§19.3](r2r:chapter_19#193-麦克斯韦理论中的守恒律和通量定律)
+  - [ ] 电磁势 {kind: physics} ^electromagnetic-potential
+    - 由庞加莱引理，dF = 0 使得局部上可写 F = dA；A 不是局部可测的，因为 A + d Theta 与之等价。 [§19.4](r2r:chapter_19#194-作为规范曲率的麦克斯韦场)
+  - [ ] 规范不变性 {kind: physics} ^gauge-invariance
+    - 带电场的相位变化由 A 的移动来补偿；势给出丛上的联络，其曲率就是麦克斯韦场。 [§19.4](r2r:chapter_19#194-作为规范曲率的麦克斯韦场)
+  - [ ] 外尔规范理论 {kind: physics} ^weyl-gauge-theory
+    - 外尔 1918 年提出长度标度依赖于路径（共形重标度）的想法；它在物理上失败了，但换成单位模的复相位后便行得通。 [§19.4](r2r:chapter_19#194-作为规范曲率的麦克斯韦场)
+  - [ ] 阿哈罗诺夫-玻姆效应 {kind: physics} ^aharonov-bohm-effect
+    - 穿过无场区域的干涉条纹发生移动，移动量取决于 A 沿拓扑非平凡路径的回路积分。 [§19.4](r2r:chapter_19#194-作为规范曲率的麦克斯韦场)
+  - [ ] 能量动量张量 {kind: physics} ^energy-momentum-tensor
+    - 给出能量和动量的密度与通量的对称张量 T_ab，满足守恒方程 div T = 0，是引力的源。 [§19.5](r2r:chapter_19#195-能量动量张量)
+  - [ ] 由基灵矢量得到的守恒律 {kind: physics} ^killing-vector-conservation
+    - 将 T_ab 与基灵矢量缩并得到守恒流，因此积分形式的能量守恒需要时空对称性。 [§19.5](r2r:chapter_19#195-能量动量张量)
+  - [ ] 里奇张量 {kind: math} ^ricci-tensor
+    - 黎曼张量的缩并，度量一团自由下落粒子的体积初始加速度。 [§19.6](r2r:chapter_19#196-爱因斯坦场方程)
+  - [ ] 爱因斯坦场方程 {kind: physics} ^einstein-field-equations
+    - R_ab - R g_ab/2 = -8 pi G T_ab，由缩并的比安基恒等式所迫使；真空情形即里奇平坦。 [§19.6](r2r:chapter_19#196-爱因斯坦场方程)
+  - [ ] 宇宙学常数 {kind: physics} ^cosmological-constant
+    - 爱因斯坦为得到静态宇宙而加入的 Lambda g_ab 项，在哈勃的发现之后被放弃，又因遥远超新星的观测而复活。 [§19.7](r2r:chapter_19#197-进一步的问题宇宙学常数外尔张量)
+  - [ ] 外尔共形张量 {kind: math} ^weyl-tensor
+    - 去掉里奇部分后的黎曼张量，描述引力的自由度；它为零意味着共形平坦。 [§19.7](r2r:chapter_19#197-进一步的问题宇宙学常数外尔张量)
+  - [ ] 引力波 {kind: physics} ^gravitational-waves
+    - 从绕转天体带走正能量的时空涟漪，已由赫尔斯-泰勒双脉冲星的轨道衰减间接证实。 [§19.8](r2r:chapter_19#198-引力场能量)
+  - [ ] 引力场能量在哪里？ {kind: question} ^q-gravitational-energy
+    - 引力能是真实的（它会被引力波带走），但由于等效原理，它没有局部密度。 [§19.8](r2r:chapter_19#198-引力场能量)
+  - [ ] 宇宙学常数是否存在？ {kind: question} ^q-cosmological-constant
+    - 被爱因斯坦抛弃的 Lambda 屡屡回归；超新星数据如今表明存在一个小的正值或类似的暗能量。 [§19.7](r2r:chapter_19#197-进一步的问题宇宙学常数外尔张量)
+  - [ ] 电磁势是否物理实在？ {kind: question} ^q-reality-of-potential
+    - A 不是局部可测的，但阿哈罗诺夫-玻姆效应表明其非局域的回路积分具有可观测效应。 [§19.4](r2r:chapter_19#194-作为规范曲率的麦克斯韦场)
+
+- [ ] 第 20 章 拉格朗日量和哈密顿量 {kind: chapter} ^ch20
+  - 将牛顿力学改写为拉格朗日形式和哈密顿形式，讨论小振动与简正模，把哈密顿流与辛几何联系起来，并将拉格朗日方法推广到场、内特尔定理和现代理论。 [第 20 章](r2r:chapter_20)
+  - [ ] 拉格朗日形式体系 {kind: physics} ^lagrangian-formalism
+    - 用位形空间切丛上的函数 L = K - V 来描述系统，其中广义坐标和广义速度相互独立。 [§20.1](r2r:chapter_20#201-神奇的拉格朗日形式体系)
+  - [ ] 欧拉-拉格朗日方程 {kind: physics} ^euler-lagrange-equations
+    - 运动方程 d/dt(dL/dq-dot) = dL/dq，可重新得到牛顿定律，例如伽利略的匀加速运动。 [§20.1](r2r:chapter_20#201-神奇的拉格朗日形式体系)
+  - [ ] 平稳作用原理（哈密顿原理） {kind: physics} ^stationary-action
+    - 哈密顿原理：在端点固定的所有路径中，实际运动使 L 的作用量积分取平稳值。 [§20.1](r2r:chapter_20#201-神奇的拉格朗日形式体系)
+  - [ ] 哈密顿形式体系 {kind: physics} ^hamiltonian-formalism
+    - 以广义动量代替速度，在相空间（余切丛）中工作，以总能量 H 作为哈密顿量。 [§20.2](r2r:chapter_20#202-更为对称的哈密顿图像)
+  - [ ] 哈密顿方程 {kind: physics} ^hamilton-equations
+    - 对称的一阶方程 dq/dt = dH/dp, dp/dt = -dH/dq，在相空间上定义一个流。 [§20.2](r2r:chapter_20#202-更为对称的哈密顿图像)
+  - [ ] 简谐运动 {kind: physics} ^simple-harmonic-motion
+    - 服从 d^2q/dt^2 = -omega^2 q 的小振动，呈正弦形式，频率为 omega/2pi，例如小振幅的单摆。 [§20.3](r2r:chapter_20#203-小振动)
+  - [ ] 振动的简正模 {kind: physics} ^normal-modes
+    - 在稳定平衡附近，二次哈密顿量给出的振动可分解为 W = PQ 的本征矢量，每个都有自己的频率。 [§20.3](r2r:chapter_20#203-小振动)
+  - [ ] 哈密顿流与泊松括号 {kind: math} ^hamiltonian-flow
+    - 时间演化是相空间上的矢量场 {H, }；它保持辛形式不变，H 本身也守恒。 [§20.4](r2r:chapter_20#204-辛几何的哈密顿动力学)
+  - [ ] 刘维尔定理 {kind: physics} ^liouville-theorem
+    - 哈密顿演化保持相空间体积不变，即辛 2 形式的 N 次楔积幂。 [§20.4](r2r:chapter_20#204-辛几何的哈密顿动力学)
+  - [ ] 泛函导数 {kind: math} ^functional-derivative
+    - 对场的求导，为无穷维位形空间给出欧拉-拉格朗日方程。 [§20.5](r2r:chapter_20#205-场的拉格朗日处理)
+  - [ ] 场的拉格朗日密度 {kind: physics} ^field-lagrangian
+    - 一个时空密度，其 4 形式积分即作用量 S；S 在场变分下取平稳值便给出场方程。 [§20.5](r2r:chapter_20#205-场的拉格朗日处理)
+  - [ ] 内特尔定理 {kind: physics} ^noether-theorem
+    - 拉格朗日量的每个连续对称性都给出一个守恒量，例如规范不变性给出电荷守恒。 [§20.6](r2r:chapter_20#206-如何从拉格朗日量导出现代理论)
+  - [ ] 希尔伯特引力拉格朗日量 {kind: physics} ^einstein-hilbert-action
+    - 希尔伯特 1915 年以标量曲率 R 为拉格朗日密度导出了爱因斯坦方程，与之并列的是麦克斯韦拉格朗日量 -F_ab F^ab/4。 [§20.6](r2r:chapter_20#206-如何从拉格朗日量导出现代理论)
+  - [ ] 拉格朗日方法是寻找新理论的正确途径吗？ {kind: question} ^q-lagrangian-guidance
+    - 几乎所有新理论都以拉格朗日量的形式提出，但彭罗斯担忧这几乎无法指引我们判断哪种物理是正确的。 [§20.6](r2r:chapter_20#206-如何从拉格朗日量导出现代理论)
+  - [ ] 数学形式之美会误导物理学吗？ {kind: question} ^q-formal-elegance
+    - 经典力学完美的哈密顿图像被量子事实推翻，但它仍然为量子理论铺平了道路。 [§20.4](r2r:chapter_20#204-辛几何的哈密顿动力学)
+
+- [ ] 第 21 章 量子粒子 {kind: chapter} ^ch21
+  - 从非对易变量、量子哈密顿量和薛定谔方程出发建立单粒子量子力学，回顾波粒二象性的实验证据，并考察波函数、量子跳变、概率、位置态与动量态以及不确定关系。 [第 21 章](r2r:chapter_21)
+  - [ ] 非对易变量 {kind: math} ^non-commuting-variables
+    - 赫维塞德的算符演算把 d/dx 当作代数量处理，但 D 与 x 不对易：Dx - xD = 1。 [§21.1](r2r:chapter_21#211-非对易变量)
+  - [ ] 正则对易关系 {kind: physics} ^canonical-commutation-relations
+    - 用 i hbar d/dx 代替动量，便得到位置与动量之间的 [p_a, x^b] = i hbar delta_a^b。 [§21.2](r2r:chapter_21#212-量子哈密顿量)
+  - [ ] 正则量子化 {kind: physics} ^canonical-quantization
+    - 把动量算符代入经典哈密顿量便得到量子哈密顿量，但存在因子有序化的歧义。 [§21.2](r2r:chapter_21#212-量子哈密顿量)
+  - [ ] 波函数 {kind: physics} ^wavefunction
+    - 位置（而非动量）的复函数 psi，给出系统的量子态。 [§21.3](r2r:chapter_21#213-薛定谔方程)
+  - [ ] 薛定谔方程 {kind: physics} ^schrodinger-equation
+    - i hbar dpsi/dt = H psi，即波函数在量子哈密顿量作用下的确定性时间演化。 [§21.3](r2r:chapter_21#213-薛定谔方程)
+  - [ ] 普朗克常数与 E = h nu {kind: physics} ^planck-constant
+    - 普朗克 1900 年对黑体辐射的分析解决了瑞利-金斯公式的失败，引入了能量子 E = h nu；hbar = h/2pi。 [§21.4](r2r:chapter_21#214-量子理论的实验背景)
+  - [ ] 德布罗意波长 {kind: physics} ^de-broglie-wavelength
+    - 动量为 p 的粒子具有波长 h/p，这在戴维孙-革末的晶体电子衍射实验中得到体现。 [§21.4](r2r:chapter_21#214-量子理论的实验背景)
+  - [ ] 双缝实验 {kind: physics} ^double-slit-experiment
+    - 单个粒子以局域的斑点到达，却逐渐累积成干涉图样，其条纹间距给出德布罗意波长。 [§21.4](r2r:chapter_21#214-量子理论的实验背景)
+  - [ ] 波粒二象性 {kind: physics} ^wave-particle-duality
+    - 粒子表现得像波，波表现得像粒子；动量本征函数（平面波）使算符动量与经典动量相协调。 [§21.5](r2r:chapter_21#215-理解波粒二象性)
+  - [ ] 可观察量的本征态 {kind: physics} ^eigenstates
+    - 可观察量算符对其作用相当于乘以一个数（即本征值）的态，该本征值就是确定的测量值。 [§21.5](r2r:chapter_21#215-理解波粒二象性)
+  - [ ] 动量态 {kind: physics} ^momentum-states
+    - 平面波 exp(-iP.x/hbar)，是具有确定四维动量的动量本征态，在空间中完全弥散。 [§21.5](r2r:chapter_21#215-理解波粒二象性)
+  - [ ] 波包 {kind: physics} ^wave-packet
+    - 由动量态构成的局域波函数，例如高斯函数乘以平面波，可近似经典粒子。 [§21.6](r2r:chapter_21#216-什么是量子实在)
+  - [ ] 马赫-曾德尔干涉仪 {kind: physics} ^mach-zehnder-interferometer
+    - 在束分实验中，单个光子依装置不同而表现出粒子性或波动性，揭示出波函数的整体性和非局域性。 [§21.7](r2r:chapter_21#217-波函数的整体性质)
+  - [ ] 量子跳变（态收缩） {kind: physics} ^wavefunction-collapse
+    - 在测量时，态突然坍缩为局域的形式，这一过程不能由薛定谔演化来描述。 [§21.8](r2r:chapter_21#218-奇怪的量子跳变)
+  - [ ] 玻恩概率法则 {kind: physics} ^born-rule
+    - 对归一化波函数，|psi|^2 给出位置的概率密度；态是射线，psi ~ k psi。 [§21.9](r2r:chapter_21#219-波函数的概率分布)
+  - [ ] 归一化波函数 {kind: physics} ^normalized-wavefunction
+    - |psi|^2 的积分为 1 的波函数；动量态和位置态是不可归一化的理想化情形。 [§21.9](r2r:chapter_21#219-波函数的概率分布)
+  - [ ] 位置态 {kind: physics} ^position-states
+    - 狄拉克 δ 函数 delta(x - X)，是位置的本征态，与动量态相反，是无限集中的。 [§21.10](r2r:chapter_21#2110-位置态)
+  - [ ] 动量空间描述 {kind: physics} ^momentum-space
+    - psi(x) 的傅里叶变换把同一个态表示为动量的函数，位置态与动量态的角色随之互换。 [§21.11](r2r:chapter_21#2111-动量空间描述)
+  - [ ] 海森伯不确定关系 {kind: physics} ^uncertainty-principle
+    - 弥散满足 Delta x Delta p >= hbar/2，反映了互不对易的测量之间的不相容性；类似的能量-时间关系限制了不稳定态的寿命。 [§21.11](r2r:chapter_21#2111-动量空间描述)
+  - [ ] 什么是量子实在？ {kind: question} ^q-quantum-reality
+    - 彭罗斯认为，物理上实在的是波函数（态矢），而不仅仅是概率。 [§21.6](r2r:chapter_21#216-什么是量子实在)
+  - [ ] 粒子怎么可能同时是波？ {kind: question} ^q-wave-particle
+    - 双缝和束分实验的结果否定了纯波动或纯粒子的图像，要求一个整体性的波函数。 [§21.5](r2r:chapter_21#215-理解波粒二象性)
+  - [ ] 测量疑难：R 如何能够发生？ {kind: question} ^q-measurement-problem
+    - 如果态真的按确定性的 U 演化，R 又如何能够发生？彭罗斯论证没有一种常规本体论能回答这个问题。 [§21.8](r2r:chapter_21#218-奇怪的量子跳变)
+  - [ ] 波函数只是概率波吗？ {kind: question} ^q-probability-wave
+    - 复振幅和相消干涉表明 psi 不可能仅仅是概率，因此它必定更为实在。 [§21.9](r2r:chapter_21#219-波函数的概率分布)
+
+- [ ] 第 22 章 量子代数、几何和自旋 {kind: chapter} ^ch22
+  - 阐述量子力学的形式工具（希尔伯特空间、幺正演化、可观察量、投影测量）和自旋的几何，从二态系统的黎曼球面到马约拉纳描述和相对论性角动量。 [第 22 章](r2r:chapter_22)
+  - [ ] 幺正演化（U 过程） {kind: physics} ^unitary-evolution
+    - 态矢的确定性、线性的薛定谔演化，是两种截然不同的量子过程之一，保持标量积不变。 [§22.1](r2r:chapter_22#221-量子步骤-u-和-r)
+  - [ ] U 的线性性 {kind: physics} ^quantum-linearity
+    - 薛定谔演化保持叠加；用于探测器时会得出叠加的结果，这正是它与 R 冲突的根源。 [§22.2](r2r:chapter_22#222-u-的线性性以及它给-r-带来的问题)
+  - [ ] 希尔伯特空间 {kind: math} ^hilbert-space
+    - 由可归一化的态构成、带有正定埃尔米特标量积的复矢量空间，是量子态的舞台。 [§22.3](r2r:chapter_22#223-幺正结构希尔伯特空间和狄拉克算符)
+  - [ ] 狄拉克符号（左矢和右矢） {kind: math} ^dirac-notation
+    - H 中的右矢 |psi> 与对偶的左矢 <phi|，其括号给出埃尔米特标量积；算符矩阵元为 <phi|L|psi>。 [§22.3](r2r:chapter_22#223-幺正结构希尔伯特空间和狄拉克算符)
+  - [ ] 薛定谔绘景和海森伯绘景 {kind: physics} ^heisenberg-picture
+    - 把时间依赖性从态转移到算符上的等价描述；由此得到海森伯运动方程 i hbar dQ/dt = [H,Q]。 [§22.4](r2r:chapter_22#224-幺正演化薛定谔绘景和海森伯绘景)
+  - [ ] 量子可观察量 {kind: physics} ^quantum-observables
+    - 可测量的量表示为线性算符；彭罗斯认为，具有正交本征矢量的正规算符（不必是埃尔米特算符）就足够了。 [§22.5](r2r:chapter_22#225-量子可观察量)
+  - [ ] 是/否测量与投影算符 {kind: physics} ^projection-postulate
+    - 满足 E = E* = E^2 的投影算符 E 代表是/否问题；投影假设即使在本征值简并时也能确定测量后的态。 [§22.6](r2r:chapter_22#226-yesno-测量投影算符)
+  - [ ] 零测量（无相互作用测量） {kind: physics} ^null-measurement
+    - 没有探测到也会使态收缩；以马赫-曾德尔干涉仪中的埃利策-韦德曼炸弹检验为例。 [§22.7](r2r:chapter_22#227-类光测量螺旋性)
+  - [ ] 螺旋性 {kind: physics} ^helicity
+    - 无质量粒子绕其运动方向的自旋，s = +-j；光子的螺旋态即圆偏振。 [§22.7](r2r:chapter_22#227-类光测量螺旋性)
+  - [ ] 自旋、泡利矩阵和角动量对易规则 {kind: physics} ^spin
+    - 自旋是 SO(3) 李代数的表示，[L1,L2]=i hbar L3；自旋 1/2 使用二分量波函数和泡利矩阵。 [§22.8](r2r:chapter_22#228-自旋和旋量)
+  - [ ] 二维旋量形式体系 {kind: math} ^two-spinors
+    - 把自旋 n/2 的态表示为带抽象指标的全对称旋量 psi_AB...F，这种演算可以补充甚至取代张量。 [§22.8](r2r:chapter_22#228-自旋和旋量)
+  - [ ] 卡西米尔算符 {kind: math} ^casimir-operators
+    - 与群的所有生成元都对易的算符（SO(3) 的 J^2；庞加莱群的 p_a p^a 和 S_a S^a），用于标记不可约表示。 [§22.12](r2r:chapter_22#2212-相对论性量子角动量)
+  - [ ] 布洛赫球 {kind: physics} ^bloch-sphere
+    - 由 2x2 密度矩阵构成的实心球，纯态位于其边界球面（即黎曼球面）上，最大混合态位于球心。 [§22.9](r2r:chapter_22#229-二态系统的黎曼球面)
+  - [ ] 马约拉纳描述 {kind: physics} ^majorana-description
+    - 自旋 n/2 的态对应于球面上 n 个无序点，可通过施特恩-格拉赫测量的零结果来解释。 [§22.10](r2r:chapter_22#2210-高自旋马约拉纳绘景)
+  - [ ] 球谐函数（球面调和函数） {kind: math} ^spherical-harmonics
+    - S^2 上拉普拉斯算符的本征函数，本征值为 -j(j+1)，d/dphi 的本征值为 im，与自旋加权调和函数和马约拉纳点相联系。 [§22.11](r2r:chapter_22#2211-球谐函数)
+  - [ ] 泡利-卢班斯基自旋矢量 {kind: physics} ^pauli-lubanski-vector
+    - 由 p_a 和 M^ab 构造的相对论性自旋 S^a；它与 p_a p^a 一起给出庞加莱群的两个卡西米尔算符，在无质量时化为螺旋性。 [§22.12](r2r:chapter_22#2212-相对论性量子角动量)
+  - [ ] 量子谐振子 {kind: physics} ^quantum-harmonic-oscillator
+    - 每个简正模的能量为 (n + 1/2) hbar omega，可用来近似孤立量子客体的内部自由度。 [§22.13](r2r:chapter_22#2213-一般的孤立量子客体)
+  - [ ] 玻尔原子与氢光谱 {kind: physics} ^bohr-atom
+    - 量子化的开普勒轨道和氢原子定态解释了光谱线（巴尔末公式）；这种离散性源于紧致性。 [§22.13](r2r:chapter_22#2213-一般的孤立量子客体)
+  - [ ] U 与 R 如何协调？ {kind: question} ^q-u-and-r-consistency
+    - 线性的薛定谔演化会使探测器的响应叠加，与单一结果相矛盾；书中提到了多世界观点，并预期一个更深层的理论。 [§22.2](r2r:chapter_22#222-u-的线性性以及它给-r-带来的问题)
+  - [ ] 态矢描述的是实在吗？ {kind: question} ^q-state-vector-reality
+    - 多数物理学家把态收缩视为非物理的；彭罗斯认为海森伯绘景掩盖了量子实在，而薛定谔绘景使之清晰可见。 [§22.4](r2r:chapter_22#224-幺正演化薛定谔绘景和海森伯绘景)
+  - [ ] 大量子自旋为何不像经典自旋？ {kind: question} ^q-quantum-vs-classical-spin
+    - 一般的大 j 态的马约拉纳点随机散布在球面上，不像经典自旋那样聚集在一根轴周围。 [§22.11](r2r:chapter_22#2211-球谐函数)
+
+- [ ] 第 23 章 纠缠的量子世界 {kind: chapter} ^ch23
+  - 讨论多粒子量子态，说明纠缠如何从张量积中产生，EPR、贝尔和哈迪的例子如何否定定域实在论，玻色子与费米子如何区分，以及量子隐形传态如何体现 quanglement。 [第 23 章](r2r:chapter_23)
+  - [ ] 多粒子系统的波函数 {kind: physics} ^many-particle-wavefunction
+    - 在所有粒子的联合位形空间上、带有单一共同时间的一个波函数，而不是每个粒子各有一个波函数。 [§23.1](r2r:chapter_23#231-多粒子系统的量子力学)
+  - [ ] 多粒子系统态空间之巨大 {kind: physics} ^many-particle-state-space
+    - 自由度按 infinity^(2 infinity^(3n)) 增长，而不是相当于 n 个独立的场；一个十点的玩具宇宙使这种指数增长变得具体。 [§23.2](r2r:chapter_23#232-巨大的多粒子系统态空间)
+  - [ ] 希尔伯特空间的张量积（H\^p ⊗ H\^q） {kind: math} ^tensor-product-states
+    - 复合系统的态位于 H^p tensor H^q 中；其中只有极小的一部分是简单乘积 |psi>|phi>，其余都是纠缠态。 [§23.3](r2r:chapter_23#233-量子纠缠贝尔不等式)
+  - [ ] 量子纠缠 {kind: physics} ^entanglement
+    - 复合系统中不能写成乘积的态，因而各部分没有各自的态矢；这是薛定谔 1935 年提出的概念。 [§23.3](r2r:chapter_23#233-量子纠缠贝尔不等式)
+  - [ ] 爱因斯坦-波多尔斯基-罗森（EPR）效应 {kind: physics} ^epr-effects
+    - 对纠缠体系中相距遥远的各部分进行测量时出现的关联，任何定域的、类经典的解释都无法再现。 [§23.3](r2r:chapter_23#233-量子纠缠贝尔不等式)
+  - [ ] 贝尔不等式 {kind: physics} ^bell-inequalities
+    - 任何定域隐变量模型都必须遵守的、关于分离测量的联合概率的界限，而量子预言违反了它。 [§23.3](r2r:chapter_23#233-量子纠缠贝尔不等式)
+  - [ ] 玻姆型 EPR 实验 {kind: physics} ^epr-bohm
+    - 两个自旋 1/2 粒子处于自旋 0 的单态；斯塔普所设计的测量方向安排显示出对贝尔不等式的违反。 [§23.4](r2r:chapter_23#234-玻姆型-epr-实验)
+  - [ ] 哈迪的 EPR 事例 {kind: physics} ^hardy-example
+    - 一个几乎不涉及概率的非定域性论证，使用确定的是/否结果，剩下的那个事件出现的概率为 1/12。 [§23.5](r2r:chapter_23#235-哈迪的-epr-事例几乎与概率无关)
+  - [ ] 玻色子和费米子 {kind: physics} ^bosons-and-fermions
+    - 全同粒子的波函数在交换下是对称的（玻色子）或反对称的（费米子），这改变了态的计数方式。 [§23.7](r2r:chapter_23#237-玻色子和费米子)
+  - [ ] 泡利不相容原理 {kind: physics} ^pauli-exclusion-principle
+    - 反对称性禁止两个全同费米子占据同一个态，这使普通物质得以稳定，并决定了化学的结构。 [§23.7](r2r:chapter_23#237-玻色子和费米子)
+  - [ ] 玻色-爱因斯坦凝聚 {kind: physics} ^bose-einstein-condensation
+    - 在低温下玻色子聚集到同一个态中，这是超流、激光以及（通过库珀对）超导的基础。 [§23.7](r2r:chapter_23#237-玻色子和费米子)
+  - [ ] 对称化态与反对称化态 {kind: math} ^symmetrized-states
+    - 以抽象指标形式写出的全同玻色子态 psi^(alpha phi^beta...) 与费米子态 psi^[alpha phi^beta...]，是可能情形中纠缠最少的。 [§23.8](r2r:chapter_23#238-玻色子和费米子的量子态)
+  - [ ] 量子隐形传态 {kind: physics} ^quantum-teleportation
+    - 利用一个共享的 EPR 对、一次贝尔基测量和两个经典比特，再加一次校正转动，来传送一个未知的自旋态。 [§23.9](r2r:chapter_23#239-量子隐形传态)
+  - [ ] quanglement（量子纠缠） {kind: physics} ^quanglement
+    - 彭罗斯对量子信息的称呼：一种不能用来传递信号的影响，可以想象为沿 EPR 通道逆时间传播。 [§23.10](r2r:chapter_23#2310-量子纠缠)
+  - [ ] EPR 效应不能超光速传递信息 {kind: physics} ^no-signalling
+    - EPR 关联不能以非因果的方式传递经典信息，因此尽管看似非定域，却与相对论相容。 [§23.10](r2r:chapter_23#2310-量子纠缠)
+  - [ ] 如何理解量子纠缠（第一个谜团）？ {kind: question} ^q-two-mysteries-of-entanglement
+    - 第一个谜团：既然没有任何定域实在论模型能再现违反贝尔不等式的关联，我们该如何在概念上把握纠缠。 [§23.6](r2r:chapter_23#236-量子纠缠的两个谜团)
+  - [ ] 为何我们感觉不到纠缠（第二个谜团）？ {kind: question} ^q-why-entanglement-unnoticed
+    - 几乎所有的态都是纠缠的，而 U 只会增加纠缠；彭罗斯认为，正是 R 使日常世界保持在非纠缠状态。 [§23.6](r2r:chapter_23#236-量子纠缠的两个谜团)
+  - [ ] EPR 效应与相对论如何协调？ {kind: question} ^q-epr-and-relativity
+    - 对类空分离的各部分所做的测量没有不变的先后次序，因此究竟是哪一次测量“引起”态收缩是没有定义的；quanglement 提供了部分图像。 [§23.10](r2r:chapter_23#2310-量子纠缠)
+
+- [ ] 第 24 章 狄拉克电子和反粒子 {kind: chapter} ^ch24
+  - 说明量子理论与狭义相对论的结合如何迫使人们引入反粒子和量子场，以及狄拉克用克利福德代数给出的波算符平方根如何导出电子方程、电子的自旋和磁矩以及正电子。 [第 24 章](r2r:chapter_24)
+  - [ ] 量子场论（引入的动机） {kind: physics} ^quantum-field-theory
+    - 相对论加上量子理论并不保持粒子数守恒，因此基本实体变成了量子场，粒子则是其激发。 [§24.2](r2r:chapter_24#242-为什么反粒子意味着量子场)
+  - [ ] 粒子-反粒子对的产生和湮没 {kind: physics} ^pair-creation
+    - 足够集中的能量（至少是静能量的两倍）会产生粒子-反粒子对，因此单粒子量子力学不再适用。 [§24.2](r2r:chapter_24#242-为什么反粒子意味着量子场)
+  - [ ] 能量的正定性（正频率条件） {kind: physics} ^positive-frequency
+    - 物理态必须具有正能量，即波函数的时间依赖只含正频率部分，这与黎曼球面上的频率剖分相联系。 [§24.3](r2r:chapter_24#243-量子力学里能量的正定性)
+  - [ ] 相对论哈密顿量 (μ²+p²)\^\{1/2} {kind: physics} ^relativistic-hamiltonian
+    - 相对论能量需要对一个微分算符开平方根，其中隐含的符号歧义容许出现负能量。 [§24.4](r2r:chapter_24#244-相对论能量公式的困难)
+  - [ ] 波算符（达朗贝尔算符） {kind: math} ^wave-operator
+    - 洛伦兹不变的二阶算符 box = d^2/dt^2 - grad^2，用以取代薛定谔方程中不具不变性的 d/dt。 [§24.5](r2r:chapter_24#245-partialpartial-t-的非不变性)
+  - [ ] 克莱因-戈登方程 {kind: physics} ^klein-gordon-equation
+    - (box + M^2) psi = 0，其中 M = mu/hbar，是有质量无自旋粒子的相对论性波动方程，对时间是二阶的。 [§24.5](r2r:chapter_24#245-partialpartial-t-的非不变性)
+  - [ ] 狄拉克算符（克利福德-狄拉克平方根） {kind: math} ^dirac-operator
+    - 利用洛伦兹克利福德元素 gamma_a，一阶算符 d-slash = gamma^a d_a 的平方就是波算符。 [§24.6](r2r:chapter_24#246-波算符的克利福德狄拉克平方根)
+  - [ ] 狄拉克方程 {kind: physics} ^dirac-equation
+    - (d-slash + iM) psi = 0，对时间是一阶的，却是洛伦兹不变的；其旋量波函数自动描述了电子的自旋。 [§24.7](r2r:chapter_24#247-狄拉克方程)
+  - [ ] （狄拉克）电子磁矩 {kind: physics} ^dirac-magnetic-moment
+    - 与电磁势耦合后，狄拉克电子表现为一个具有确定强度的磁体，除量子电动力学修正外与实验相符。 [§24.7](r2r:chapter_24#247-狄拉克方程)
+  - [ ] 狄拉克旋量（四分量） {kind: math} ^dirac-spinor
+    - 伽马矩阵需要 4x4 表示，因此 psi 有四个分量，而泡利的只有两个，但它仍描述一个二态的自旋 1/2 粒子。 [§24.8](r2r:chapter_24#248-正电子的狄拉克途径)
+  - [ ] 狄拉克海 {kind: physics} ^dirac-sea
+    - 负能态全部被填满，因此泡利原理阻止电子落入其中；一个空穴的行为如同带正电的反电子。 [§24.8](r2r:chapter_24#248-正电子的狄拉克途径)
+  - [ ] 正电子 {kind: physics} ^positron
+    - 由狄拉克空穴理论预言的电子的反粒子（起初被误认为是质子），1932 年由安德森发现。 [§24.8](r2r:chapter_24#248-正电子的狄拉克途径)
+  - [ ] 量子理论与相对论能否协调？ {kind: question} ^q-qm-relativity-tension
+    - 二者的结合迫使人们引入量子场，但量子场论在数学上仍不完全自洽，需要借助种种技巧；这种张力依然存在。 [§24.1](r2r:chapter_24#241-量子理论与相对论之间的张力)
+  - [ ] 如何处理负能解？ {kind: question} ^q-negative-energy
+    - 相对论性方程容许负频率，这会使物质不稳定；狄拉克海把这一难题变成了对反物质的预言。 [§24.4](r2r:chapter_24#244-相对论能量公式的困难)
+
+- [ ] 第 25 章 粒子物理学的标准模型 {kind: chapter} ^ch25
+  - 借助彭罗斯的狄拉克电子 zigzag 图像，定性地浏览标准模型：弱相互作用的手征性，C、P、T 与 CPT，电弱 U(2) 对称性与希格斯场，强子、夸克与色 SU(3)，以及超越标准模型的前景。 [第 25 章](r2r:chapter_25)
+  - [ ] 粒子物理学的标准模型 {kind: physics} ^standard-model
+    - 描述所有已知粒子以及强、弱、电磁相互作用的现行框架，是从 1928 年后的粒子“动物园”中发展起来的。 [§25.1](r2r:chapter_25#251-现代粒子物理学的起源)
+  - [ ] 电子的 zigzag 图像 {kind: physics} ^zigzag-picture
+    - 在二维旋量形式中，狄拉克电子是无质量的左手 zig 与右手 zag 不断相互转化，二者通过质量耦合。 [§25.2](r2r:chapter_25#252-电子的-zigzag-图像)
+  - [ ] 手征性（γ5 投影） {kind: physics} ^chirality
+    - 左手与右手部分 (1 -+ gamma_5) psi 对应于狄拉克场中不带撇和带撇的二维旋量。 [§25.2](r2r:chapter_25#252-电子的-zigzag-图像)
+  - [ ] 费恩曼图 {kind: physics} ^feynman-diagrams
+    - 粒子过程（发射、吸收、交换）的时空图；在量子力学中，所有这些过程都是叠加在一起的。 [§25.2](r2r:chapter_25#252-电子的-zigzag-图像)
+  - [ ] 弱相互作用（W、Z 玻色子） {kind: physics} ^weak-interaction
+    - 引起 β 衰变的力，曾被视为费米的点相互作用，如今认为由有质量的矢量玻色子 W+-、Z0 传递，它们只与 zig 部分耦合。 [§25.3](r2r:chapter_25#253-电弱相互作用反射不对称性)
+  - [ ] 反射不对称性（宇称不守恒） {kind: physics} ^parity-violation
+    - 吴健雄的钴 60 实验表明弱过程是镜像不对称的，因为只有左手的 zig 参与其中。 [§25.3](r2r:chapter_25#253-电弱相互作用反射不对称性)
+  - [ ] 外尔方程（无质量中微子） {kind: physics} ^weyl-equation
+    - 令 M = 0，二维旋量形式的狄拉克方程便解耦为各自独立的外尔方程；只有 zig 型作为中微子参与弱耦合。 [§25.3](r2r:chapter_25#253-电弱相互作用反射不对称性)
+  - [ ] 正反共轭、宇称、时间反演与 CPT 定理 {kind: physics} ^cpt-theorem
+    - 正反共轭、宇称和时间反演各自（以及 CP）都会被破坏，但 CPT 是严格成立的；CP 破坏见于 K0 衰变。 [§25.4](r2r:chapter_25#254-正反共轭宇称和时间反演)
+  - [ ] 反粒子作为时间反向运动的粒子 {kind: physics} ^antiparticle-time-reversal
+    - 由 CPT 可知 C 等于 PT，因此费恩曼和施蒂克尔堡把反粒子看作时间反演的粒子，从而在图中得到交叉对称性。 [§25.4](r2r:chapter_25#254-正反共轭宇称和时间反演)
+  - [ ] 电弱理论（电弱对称群 U(2)） {kind: physics} ^electroweak-theory
+    - 弱力与电磁力统一在 SU(2)xU(1)（实为 U(2)）之下，它使 W+-、Z0、gamma 相互转动；预言的 W 和 Z 质量于 1983 年在欧洲核子研究中心得到证实。 [§25.5](r2r:chapter_25#255-电弱对称群)
+  - [ ] 希格斯场（对称性破缺） {kind: physics} ^higgs-field
+    - 质量破坏了 U(2) 对称性；zig 与 zag 的耦合常数被重新诠释为一个希格斯场，它选出观测到的质量本征态。 [§25.5](r2r:chapter_25#255-电弱对称群)
+  - [ ] 温伯格角（弱混合角） {kind: physics} ^weinberg-angle
+    - 描述电弱理论中 Z0 与光子混合的参数，是标准模型中无法解释的常数之一。 [§25.7](r2r:chapter_25#257-色夸克)
+  - [ ] 强子、重子、介子和轻子 {kind: physics} ^hadrons
+    - 参与强相互作用的粒子分为属于费米子的重子和属于玻色子的介子；轻子（电子、μ 子、τ 子、中微子）不受强力作用。 [§25.6](r2r:chapter_25#256-强相互作用粒子)
+  - [ ] 夸克模型（SU(3) 味对称） {kind: physics} ^quark-model
+    - 把强子多重态看作 SU(3)/Z3 的表示，并用带分数电荷的夸克 u、d、s 来解释；它预言了 Ω⁻ 粒子。 [§25.6](r2r:chapter_25#256-强相互作用粒子)
+  - [ ] 色夸克 {kind: physics} ^colour-charge
+    - 每种味的夸克都有三种不可观测的颜色，这解决了自旋-统计问题，并提供了一个严格的 SU(3) 对称性。 [§25.7](r2r:chapter_25#257-色夸克)
+  - [ ] 量子色动力学（QCD） {kind: physics} ^quantum-chromodynamics
+    - 色 SU(3) 的非阿贝尔规范理论，其相互作用的胶子把夸克束缚在一起，夸克二重态共有三代。 [§25.7](r2r:chapter_25#257-色夸克)
+  - [ ] 卡比博角与味混合 {kind: physics} ^cabibbo-angle
+    - 夸克的强相互作用本征态与弱相互作用本征态彼此有一个转动，正如 K0 混合为 K_L 和 K_S。 [§25.7](r2r:chapter_25#257-色夸克)
+  - [ ] 大统一理论 {kind: physics} ^grand-unified-theories
+    - 为统一强力与电弱力而提出的、包含 SU(3) 和 U(2) 的更大对称群；目前尚无一个被普遍接受。 [§25.8](r2r:chapter_25#258-超越标准模型)
+  - [ ] zig 和 zag 粒子真实存在吗？ {kind: question} ^q-are-zigzags-real
+    - 彭罗斯认为，无质量的 zig 和 zag 与狄拉克电子本身同样真实，这引出了数学描述在多大程度上把握了实在的问题。 [§25.2](r2r:chapter_25#252-电子的-zigzag-图像)
+  - [ ] 严重破缺的 SU(2) 如何能作为规范群？ {kind: question} ^q-broken-gauge-symmetry
+    - 彭罗斯怀疑一个严重破缺的对称性能否充当真正的规范对称性，并将其与严格的色 SU(3) 相对照。 [§25.8](r2r:chapter_25#258-超越标准模型)
+  - [ ] 标准模型之外是什么？ {kind: question} ^q-beyond-standard-model
+    - 约 17 个无法解释的参数以及 SU(3) 与 U(2) 之间奇特的不对称，促使人们提出大统一理论以及陈匡武和周尚真提出的对偶群方案。 [§25.8](r2r:chapter_25#258-超越标准模型)
+
+- [ ] 第 26 章 量子场论 {kind: chapter} ^ch26
+  - 从产生算符与湮没算符、路径积分和费恩曼图出发构建量子场论，并通过重正化与真空的选择来面对其中的无穷大。 [第 26 章](r2r:chapter_26)
+  - [ ] 产生算符和湮没算符 {kind: physics} ^creation-annihilation-operators
+    - 二次量子化：波函数算符从真空中添加或移除粒子，对玻色子它们相互对易，对费米子则相互反对易。 [§26.2](r2r:chapter_26#262-产生算符和湮没算符)
+  - [ ] 真空态 {kind: physics} ^vacuum-state
+    - 不含任何粒子的态 |0>，它被每个湮没算符所湮没，产生算符作用其上便构造出多粒子态。 [§26.2](r2r:chapter_26#262-产生算符和湮没算符)
+  - [ ] 场算符的无穷维代数 {kind: math} ^field-operator-algebra
+    - 费米子场算符满足一种无穷维克利福德代数，并具有无穷维的埃尔米特型、辛型和正交型。 [§26.3](r2r:chapter_26#263-无穷维代数)
+  - [ ] 场空间上的复结构 {kind: math} ^field-complex-structure
+    - 一个满足 J^2 = -1 的算符 J，作用于正频率自由场时相当于乘以 i，作用于负频率自由场时相当于乘以 -i，从而使经典场空间成为复空间。 [§26.3](r2r:chapter_26#263-无穷维代数)
+  - [ ] 马约拉纳旋量场 {kind: physics} ^majorana-spinors
+    - 一种其粒子即为自身反粒子的旋量场，这是有质量中微子的一种可能情形；与狄拉克粒子形成对照。 [§26.4](r2r:chapter_26#264-量子场论中的反粒子)
+  - [ ] 不等价真空（备择真空） {kind: physics} ^inequivalent-vacua
+    - 诸如 |0> 与狄拉克海这样的真空，场代数中没有任何算符能把它们联系起来，因此它们定义了不同的量子理论。 [§26.5](r2r:chapter_26#265-备择真空)
+  - [ ] 费恩曼路径积分（历史求和） {kind: physics} ^path-integral
+    - 每一条经典历史由其作用量获得振幅 exp(iS/hbar)；对所有历史求和，便得到经典路径以及量子修正。 [§26.6](r2r:chapter_26#266-相互作用拉格朗日量和路径积分)
+  - [ ] 费恩曼传播子 {kind: physics} ^feynman-propagator
+    - 自由粒子在两点之间形式上求和得到的振幅，以 i-epsilon 规定确保正频率；它对应于费恩曼图中的一条线。 [§26.7](r2r:chapter_26#267-发散的路径积分费恩曼响应)
+  - [ ] 质量壳 {kind: physics} ^mass-shell
+    - 动量空间中的双曲面 P_a P^a = M^2；真实的外粒子位于其上，而虚的内线可以偏离质量壳。 [§26.8](r2r:chapter_26#268-构建费恩曼图s-矩阵)
+  - [ ] 散射矩阵（S 矩阵） {kind: physics} ^s-matrix
+    - 由入态到出态的振幅构成的无穷矩阵，通过对费恩曼图求和来计算；它是量子场论的主要目标。 [§26.8](r2r:chapter_26#268-构建费恩曼图s-矩阵)
+  - [ ] 树图与圈图 {kind: physics} ^tree-and-loop-diagrams
+    - 树图中的内部动量完全确定，再现经典理论；闭合圈则留下自由动量，对其积分会发散。 [§26.8](r2r:chapter_26#268-构建费恩曼图s-矩阵)
+  - [ ] 重正化 {kind: physics} ^renormalization
+    - 把发散的图贡献吸收到有限个重新标度的参数（如电荷和质量）之中；可重正化理论允许这样做。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 紫外发散 {kind: physics} ^ultraviolet-divergence
+    - 圈积分中由任意大的动量（即任意小的距离）引起的无穷大；这是量子场论中最严重的发散。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 真空极化 {kind: physics} ^vacuum-polarization
+    - 虚的电子-正电子对屏蔽了电子的裸电荷，这是电荷重正化的物理基础。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 渐近自由 {kind: physics} ^asymptotic-freedom
+    - 强力在极高动量下变弱，这使得量子色动力学尽管耦合常数很大，却仍然可以计算。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 精细结构常数 {kind: physics} ^fine-structure-constant
+    - 无量纲的电磁耦合常数 e^2/(hbar c)，约为 1/137，可与强耦合常数以及更弱的弱力相比较；它的值没有任何理论能够解释，爱丁顿曾试图推导出它。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 微扰展开 {kind: math} ^perturbation-expansion
+    - 费恩曼图是关于耦合常数的幂级数中的各项；即便是重正化后的量子电动力学，其级数也很可能不收敛。 [§26.10](r2r:chapter_26#2610-拉格朗日量的费恩曼图)
+  - [ ] 量子场论中的无穷大是否意味着更深层的缺陷？ {kind: question} ^q-qft-infinities
+    - 重正化是否只是掩盖了发散，而未来的理论（也许涉及引力）必须真正消除它们。 [§26.9](r2r:chapter_26#269-重正化)
+  - [ ] 发散的路径积分有数学意义吗？ {kind: question} ^q-path-integral-meaning
+    - 路径积分缺乏真正的无穷维测度；物理学家相信发散求和具有一种类似欧拉的“柏拉图式”意义。 [§26.7](r2r:chapter_26#267-发散的路径积分费恩曼响应)
+  - [ ] 自然界选择哪个真空？ {kind: question} ^q-choice-of-vacuum
+    - 电弱理论中的对称性破缺是通过选择一个不等价真空来模拟的，这就引出了该真空的物理地位问题。 [§26.11](r2r:chapter_26#2611-费恩曼图和真空选择)
+
+- [ ] 第 27 章 大爆炸及其热力学传奇 {kind: chapter} ^ch27
+  - 阐释熵与热力学第二定律，将时间之矢追溯到一个熵极低、异乎寻常地特殊的大爆炸，并介绍黑洞、黑洞熵以及标准宇宙学模型。 [第 27 章](r2r:chapter_27)
+  - [ ] 动力学定律的时间对称性 {kind: physics} ^time-reversal-symmetry
+    - 经典动力学方程与量子（U）动力学方程在时间反演下都是对称的，因此初始数据与终态数据同样都能决定演化。 [§27.1](r2r:chapter_27#271-动力学演化的时间对称性)
+  - [ ] 混沌系统 {kind: physics} ^chaotic-systems
+    - 其行为极其敏感地依赖于初始数据的确定性系统，例如磁摆玩具或天气。 [§27.2](r2r:chapter_27#272-亚微观成分)
+  - [ ] 热力学第二定律 {kind: physics} ^second-law
+    - 热量从较热的物体流向较冷的物体；更确切地说，孤立系统的熵增加，这使得倒推过去而非预言未来变得困难。 [§27.2](r2r:chapter_27#272-亚微观成分)
+  - [ ] 熵 {kind: physics} ^entropy
+    - 克劳修斯引入的无序性量度；第二定律断言这个量不会减少。 [§27.3](r2r:chapter_27#273-熵)
+  - [ ] 粗粒化 {kind: physics} ^coarse-graining
+    - 将相空间划分为若干盒子，每个盒子中的态在宏观上不可区分；玻尔兹曼熵就定义在这种划分之上。 [§27.3](r2r:chapter_27#273-熵)
+  - [ ] 玻尔兹曼熵公式 {kind: physics} ^boltzmann-entropy
+    - S = k log V，其中 V 是粗粒化盒子的相空间体积；对数使熵具有可加性和稳健性。 [§27.3](r2r:chapter_27#273-熵)
+  - [ ] 热平衡 {kind: physics} ^thermal-equilibrium
+    - 熵最大的盒子，其体积几乎充满整个相空间；对气体而言，它给出麦克斯韦速度分布和能量均分。 [§27.4](r2r:chapter_27#274-熵概念的鲁棒性)
+  - [ ] 引力成团与熵 {kind: physics} ^gravitational-entropy
+    - 有引力时，均匀分布的物质是低熵的，成团则使熵增加，这解释了为什么太阳是一个可利用的低熵源。 [§27.7](r2r:chapter_27#277-大爆炸的角色)
+  - [ ] 大爆炸 {kind: physics} ^big-bang
+    - 宇宙的奇性起源，得到弗里德曼解、哈勃膨胀和背景辐射的支持；对应于相空间中的区域 B。 [§27.7](r2r:chapter_27#277-大爆炸的角色)
+  - [ ] 宇宙微波背景辐射 {kind: physics} ^cosmic-microwave-background
+    - 充满空间的 2.7 K 辐射，是大爆炸红移后的遗迹，具有几乎精确的普朗克黑体谱。 [§27.7](r2r:chapter_27#277-大爆炸的角色)
+  - [ ] 黑洞 {kind: physics} ^black-holes
+    - 由引力坍缩形成的区域，最早由史瓦西解描述，连光也无法从中逃逸。 [§27.8](r2r:chapter_27#278-黑-洞)
+  - [ ] 钱德拉塞卡极限 {kind: physics} ^chandrasekhar-limit
+    - 一个质量上限，超过它时，由泡利原理产生的电子简并压便无法支撑冷星抵抗坍缩。 [§27.8](r2r:chapter_27#278-黑-洞)
+  - [ ] 事件视界 {kind: physics} ^event-horizon
+    - 一个零超曲面，它把能够向无穷远发送信号的事件与被困在黑洞内的事件分隔开；对落入者而言，它在局部上毫无异样。 [§27.9](r2r:chapter_27#279-事件视界与时空奇点)
+  - [ ] 时空奇点 {kind: physics} ^spacetime-singularities
+    - 在能量为正以及一些温和假设下，按照爱因斯坦方程，坍缩必然产生曲率无穷大的奇点。 [§27.9](r2r:chapter_27#279-事件视界与时空奇点)
+  - [ ] 宇宙监督 {kind: physics} ^cosmic-censorship
+    - 一个尚未证明的猜想：引力坍缩产生的奇点总是隐藏在事件视界之内。 [§27.9](r2r:chapter_27#279-事件视界与时空奇点)
+  - [ ] 普朗克单位 {kind: physics} ^planck-units
+    - 取 c = G = hbar = k = 1 的单位制；普朗克长度约为 1.6e-35 m，普朗克时间约为 5.3e-44 s。 [§27.10](r2r:chapter_27#2710-黑洞熵)
+  - [ ] 贝肯斯坦-霍金公式（黑洞熵） {kind: physics} ^bekenstein-hawking-entropy
+    - 以普朗克单位计，黑洞熵等于视界面积的四分之一；最终的克尔黑洞只需十个参数描述，却携带着巨大的熵。 [§27.10](r2r:chapter_27#2710-黑洞熵)
+  - [ ] 弗里德曼-勒迈特-罗伯逊-沃克模型 {kind: physics} ^flrw-models
+    - 空间均匀且各向同性的宇宙学模型，K > 0、0 或 < 0，从大爆炸开始膨胀，可以带有或不带宇宙学常数。 [§27.11](r2r:chapter_27#2711-宇宙学)
+  - [ ] 共形图 {kind: math} ^conformal-diagrams
+    - 一种将时空画成零直线呈 45 度、无穷远成为有限边界的图，用以展示因果结构。 [§27.12](r2r:chapter_27#2712-共形图)
+  - [ ] 粒子视界 {kind: physics} ^particle-horizon
+    - 由于大爆炸是类空的过去边界，每个观察者只能看到宇宙中位于其过去光锥之内的那一部分。 [§27.12](r2r:chapter_27#2712-共形图)
+  - [ ] 第二定律从何而来？ {kind: question} ^q-arrow-of-time
+    - 时间对称的动力学加上相空间体积，会给出在两个时间方向上都熵增加的结论；不对称性必定来自一个低熵的初始态。 [§27.5](r2r:chapter_27#275-第二定律的导出)
+  - [ ] 整个宇宙可以看作一个孤立系统吗？ {kind: question} ^q-universe-isolated-system
+    - 彭罗斯拒绝诉诸开放系统的逃避说法，也不认为单凭膨胀就能抬高熵的上限。 [§27.6](r2r:chapter_27#276-整个宇宙可看作一个孤立系统吗)
+  - [ ] 大爆炸为何如此特殊？ {kind: question} ^q-special-big-bang
+    - 物质处于热化状态而几何是均匀的，这使初始态只占相空间的约 10^(10^123) 分之一；引力自由度并未热化。 [§27.13](r2r:chapter_27#2713-异乎寻常的特殊大爆炸)
+
+- [ ] 第 28 章 早期宇宙的推测性理论 {kind: chapter} ^ch28
+  - 批判性地考察自发对称性破缺、拓扑缺陷、暴胀、人存原理和哈特尔-霍金假说，并提出外尔曲率假说来解释大爆炸的特殊性。 [第 28 章](r2r:chapter_28)
+  - [ ] 墨西哥帽势 {kind: physics} ^mexican-hat-potential
+    - 一种能量曲面，其对称的顶部是不稳定的；态会滚落到帽檐上某个随机选定的点，从而破坏对称性。 [§28.1](r2r:chapter_28#281-早期宇宙的自发对称破缺)
+  - [ ] 相变 {kind: physics} ^phase-transition
+    - 冷却时平衡性质的突变，例如铁磁体在其居里点以下发生磁化；在量子场论中则对应于真空的改变。 [§28.1](r2r:chapter_28#281-早期宇宙的自发对称破缺)
+  - [ ] 宇宙拓扑缺陷 {kind: physics} ^topological-defects
+    - 当对称性在不同区域独立地破缺时产生的、无法被抹平的缺陷，如畴壁、弦和单极子。 [§28.2](r2r:chapter_28#282-宇宙的拓扑缺陷)
+  - [ ] 狄拉克磁单极子与规范单极子 {kind: physics} ^magnetic-monopoles
+    - 孤立的磁极；狄拉克证明了只要存在一个磁单极子，电荷就必须量子化，而大统一理论预言了非阿贝尔规范单极子。 [§28.2](r2r:chapter_28#282-宇宙的拓扑缺陷)
+  - [ ] 宇宙弦 {kind: physics} ^cosmic-strings
+    - 线状缺陷，其引力场相当于从闵可夫斯基空间中剪去一个楔形再粘合起来；曾被提议作为星系形成的种子。 [§28.2](r2r:chapter_28#282-宇宙的拓扑缺陷)
+  - [ ] 暴胀宇宙学 {kind: physics} ^inflationary-cosmology
+    - 一种设想：极早期一段短暂的指数膨胀冲淡了单极子，并解释了宇宙的均匀性和平直性。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 视界问题 {kind: physics} ^horizon-problem
+    - 在标准模型中，背景温度相同的遥远区域彼此处于对方的粒子视界之外，因而不可能达到热平衡。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 平直性问题与光滑性问题 {kind: physics} ^flatness-problem
+    - 为什么宇宙在空间上如此接近平直且如此均匀；暴胀声称能熨平初始的不规则性。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 德西特空间 {kind: math} ^de-sitter-space
+    - 五维闵可夫斯基空间中的洛伦兹四维球面，是 Lambda 为正时的真空解；取其一半便得到稳恒态模型。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 反德西特空间 {kind: math} ^anti-de-sitter-space
+    - Lambda 为负的常曲率时空，除非展开为其万有覆叠，否则含有闭合类时曲线。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 暴胀场与伪真空 {kind: physics} ^inflaton-field
+    - 一种假设的标量场，其势的伪真空能量起着巨大的有效宇宙学常数的作用，驱动暴胀。 [§28.4](r2r:chapter_28#284-暴胀宇宙学)
+  - [ ] 人存原理（弱形式和强形式） {kind: physics} ^anthropic-principle
+    - 观察者只能发现自己处在允许智慧生命存在的地方，或处在其常数允许智慧生命存在的宇宙中；迪克、卡特和霍伊尔曾运用这一原理。 [§28.6](r2r:chapter_28#286-人存原理)
+  - [ ] 里奇曲率和外尔曲率的聚焦效应 {kind: physics} ^ricci-weyl-focusing
+    - 物质产生的里奇曲率像正透镜一样会聚光线；自由引力产生的外尔曲率则像一个纯像散透镜。 [§28.8](r2r:chapter_28#288-外尔曲率假说)
+  - [ ] 外尔曲率假说 {kind: physics} ^weyl-curvature-hypothesis
+    - 彭罗斯的设想：与黑洞奇点不同，外尔曲率在初始奇点处为零，由此解释大爆炸的低熵。 [§28.8](r2r:chapter_28#288-外尔曲率假说)
+  - [ ] 裸奇点 {kind: physics} ^naked-singularities
+    - 从外部可以看到的类时奇点；宇宙监督若成立，就只剩下类空的未来奇点和过去奇点。 [§28.8](r2r:chapter_28#288-外尔曲率假说)
+  - [ ] 威克转动与欧几里得化 {kind: math} ^wick-rotation
+    - 用 i t 代替 t，把洛伦兹度规变为黎曼度规；霍金用它使引力路径积分变得易于处理。 [§28.9](r2r:chapter_28#289-哈特尔霍金的无界假说)
+  - [ ] 哈特尔-霍金的无边界假说 {kind: physics} ^no-boundary-proposal
+    - 一种量子引力设想：对黎曼几何求路径积分，使大爆炸光滑地闭合起来，而没有奇性边界。 [§28.9](r2r:chapter_28#289-哈特尔霍金的无界假说)
+  - [ ] 暗物质 {kind: physics} ^dark-matter
+    - 由星系旋转推断出的非重子物质，其数量远超普通物质，并关系到空间曲率 K 的符号。 [§28.10](r2r:chapter_28#2810-宇宙学参数观察的地位)
+  - [ ] 暗能量与加速膨胀 {kind: physics} ^dark-energy
+    - 1998 年以来的超新星和微波背景数据表明 Lambda 为正，这如今被称为暗能量，且 K 接近于零。 [§28.10](r2r:chapter_28#2810-宇宙学参数观察的地位)
+  - [ ] 暴胀的动机有效吗？ {kind: question} ^q-inflation-motivation
+    - 彭罗斯论证暴胀无法解释均匀性，因为一般的初始态不会被抹平，而且第二定律也禁止这一点。 [§28.5](r2r:chapter_28#285-暴胀的动机有效吗)
+  - [ ] 早期宇宙的对称性破缺在物理上是真实的吗？ {kind: question} ^q-symmetry-breaking-reality
+    - 因果上分离的区域会各自独立地破缺电弱对称性，然而光子处处一致，这对字面意义上的对称性破缺图像构成挑战。 [§28.3](r2r:chapter_28#283-早期宇宙的对称性破缺问题)
+  - [ ] 人存原理能解释大爆炸的特殊性吗？ {kind: question} ^q-anthropic-special-big-bang
+    - 不能：生命只需要一小块光滑区域，其所占相空间体积远比我们观测到的均匀宇宙“便宜”得多。 [§28.7](r2r:chapter_28#287-大爆炸的特殊性质人存是关键)
+  - [ ] 宇宙学常数为何如此之小？ {kind: question} ^q-cosmological-constant-problem
+    - 量子场论对真空能的估计比观测到的 Lambda 大约 10^120 倍，而各 Omega 值之间的巧合仍令人困惑。 [§28.10](r2r:chapter_28#2810-宇宙学参数观察的地位)
+
+- [ ] 第 29 章 测量疑难 {kind: chapter} ^ch29
+  - 彭罗斯综述量子力学的常规与非常规本体论，引入密度矩阵和布洛赫球，并论证若没有客观的 R，没有一种观点能解决薛定谔猫佯谬。 [第 29 章](r2r:chapter_29)
+  - [ ] 哥本哈根解释 {kind: physics} ^copenhagen-interpretation
+    - 观点 (a)：态矢量只描述实验者的知识，R 只是这种知识的更新，而不是一个物理过程。 [第 29 章](r2r:chapter_29)
+  - [ ] 多世界观点（一体性） {kind: physics} ^many-worlds-interpretation
+    - 埃弗里特的观点 (b)：只发生 U；所有结果共存于一个巨大的叠加——一体性——之中，观察者也随之分裂。 [第 29 章](r2r:chapter_29)
+  - [ ] 相容历史 {kind: physics} ^consistent-histories
+    - 观点 (d)：插入若干组投影算符的粗粒化历史，经过选择，使量子概率服从经典概率法则。 [§29.2](r2r:chapter_29#292-量子理论的非传统本体论)
+  - [ ] 德布罗意-玻姆领波本体论 {kind: physics} ^pilot-wave-theory
+    - 观点 (e)：位形空间中一个实际的位形点受波函数引导，由此有两个层次的实在。 [§29.2](r2r:chapter_29#292-量子理论的非传统本体论)
+  - [ ] 投影算符的谱分解（主幂等元） {kind: math} ^spectral-decomposition
+    - 一个埃尔米特算符等于其各不相同的本征值分别乘以相互正交、总和为恒等算符的投影算符之和。 [§29.2](r2r:chapter_29#292-量子理论的非传统本体论)
+  - [ ] 密度矩阵 {kind: physics} ^density-matrix
+    - 冯·诺伊曼提出的各可能态外积的加权和；单凭它就能给出所有测量概率，即 ED 的迹。 [§29.3](r2r:chapter_29#293-密度矩阵)
+  - [ ] 纯态和混合态 {kind: physics} ^mixed-states
+    - 形如 |psi><psi| 的密度矩阵是纯态，其他的则是混合态；同一个混合态密度矩阵可以有许多不等价的分解。 [§29.4](r2r:chapter_29#294-自旋-frac12-的密度矩阵布洛赫球)
+  - [ ] 纠缠态的约化密度矩阵 {kind: physics} ^reduced-density-matrix
+    - 对 EPR 对中未知的另一方求和（指标缩并），得到的密度矩阵与远处的测量选择无关。 [§29.5](r2r:chapter_29#295-epr-状态的密度矩阵)
+  - [ ] 环境退相关（FAPP） {kind: physics} ^environmental-decoherence
+    - 观点 (c)：对不可及的环境求迹，得到对角的密度矩阵；彭罗斯称之为一种“就所有实际问题来说”（FAPP）的权宜之计。 [§29.6](r2r:chapter_29#296-环境退相关的-fapp-哲学)
+  - [ ] 薛定谔猫 {kind: physics} ^schrodinger-cat
+    - 一个经过分束器的光子触发杀猫装置，于是 U 演化产生活猫与死猫的叠加。 [§29.7](r2r:chapter_29#297-哥本哈根本体论的薛定谔猫)
+  - [ ] 施密特分解 {kind: math} ^schmidt-decomposition
+    - 纠缠态在两侧各配对出一组唯一的正交基，但这些优先态未必就是活猫和死猫。 [§29.8](r2r:chapter_29#298-其他传统本体论能够解决猫佯谬吗)
+  - [ ] 量子态是真实的吗？ {kind: question} ^q-reality-of-quantum-state
+    - 观点 (a) 至 (f) 在物理实在究竟由 |psi>、密度矩阵还是别的什么来表示这一问题上各持己见。 [§29.2](r2r:chapter_29#292-量子理论的非传统本体论)
+  - [ ] 密度矩阵描述的是什么实在？ {kind: question} ^q-density-matrix-ontology
+    - 由于同一个密度矩阵允许许多不同的态的概率混合，它无法确定实际存在的是哪些态。 [§29.4](r2r:chapter_29#294-自旋-frac12-的密度矩阵布洛赫球)
+
+- [ ] 第 30 章 量子态收缩中的引力角色 {kind: chapter} ^ch30
+  - 彭罗斯从时间不对称性、黑洞热力学与信息损失，以及叠加原理与广义协变性之间的冲突出发，论证态收缩是一种客观的引力效应，可由 FELIX 之类的实验检验。 [第 30 章](r2r:chapter_30)
+  - [ ] 反常 {kind: physics} ^quantum-anomalies
+    - 用泊松括号表示的经典对称性在量子化后未能保持，只留下该对称性的一个子群。 [§30.2](r2r:chapter_30#302-来自宇宙学时间不对称的线索)
+  - [ ] 量子态收缩的时间不对称性 {kind: physics} ^time-asymmetry-of-r
+    - 一个分束器思想实验表明，平方模法则对未来给出正确的概率，对过去却倒推出荒谬的结果；R 是时间不对称的。 [§30.3](r2r:chapter_30#303-量子态收缩的时间不对称性)
+  - [ ] 霍金温度 {kind: physics} ^hawking-temperature
+    - 黑洞以正比于其表面引力的温度进行热辐射；这是用弯曲时空中的量子场论、在 scri 处区分正频率而得到的。 [§30.4](r2r:chapter_30#304-霍金的黑洞温度)
+  - [ ] 翁鲁效应 {kind: physics} ^unruh-effect
+    - 匀加速观察者把闵可夫斯基真空看作热浴，因为加速改变了正频率的概念。 [§30.4](r2r:chapter_30#304-霍金的黑洞温度)
+  - [ ] 林德勒坐标 {kind: physics} ^rindler-coordinates
+    - 闵可夫斯基空间上的双曲角坐标，其时间就是匀加速观察者的固有时，类似于极角。 [§30.5](r2r:chapter_30#305-源自复周期性的黑洞温度)
+  - [ ] 吉本斯-佩里复周期性温度 {kind: physics} ^complex-periodicity-temperature
+    - 将史瓦西解或克尔解复化，得到虚时间上的周期性，其周期等于霍金温度的倒数；这很优美，但并非物理推导。 [§30.5](r2r:chapter_30#305-源自复周期性的黑洞温度)
+  - [ ] 永恒黑洞与虫洞 {kind: physics} ^eternal-black-hole
+    - 最大延拓的史瓦西时空：两个外部宇宙由一个不可穿越的虫洞相连，并含有黑洞区域和白洞区域。 [§30.6](r2r:chapter_30#306-基灵矢量能量流时间旅行)
+  - [ ] 虫洞时间旅行 {kind: physics} ^time-travel-wormholes
+    - 维持虫洞敞开需要负能量密度；在类空分隔的事件之间穿行将允许闭合类时曲线。 [§30.6](r2r:chapter_30#306-基灵矢量能量流时间旅行)
+  - [ ] 霍金辐射 {kind: physics} ^hawking-radiation
+    - 启发式地说，视界处的虚粒子对发生分离：负能量的一方落入基灵矢量为类空的区域，另一方则逃逸出去。 [§30.7](r2r:chapter_30#307-来自负能量途径的能量流)
+  - [ ] 能层与彭罗斯过程 {kind: physics} ^penrose-process
+    - 在克尔视界之外，基灵矢量变为类空，因此粒子可以把负能量带入黑洞，从而提取转动能（类星体的能源）。 [§30.7](r2r:chapter_30#307-来自负能量途径的能量流)
+  - [ ] 黑洞蒸发与霍金爆炸 {kind: physics} ^hawking-evaporation
+    - 一旦环境温度降到黑洞温度以下，黑洞便失去质量、温度升高，最终在一次小爆炸中消失。 [§30.8](r2r:chapter_30#308-霍金爆炸)
+  - [ ] 霍金盒与相空间平衡 {kind: physics} ^hawking-box
+    - 一个封闭的镜面盒子表明，在黑洞奇点处损失的相空间体积必须得到平衡；彭罗斯认为这要靠 R 重新获得的体积来平衡。 [§30.9](r2r:chapter_30#309-更激进的观点)
+  - [ ] 薛定谔团块 {kind: physics} ^schrodinger-lump
+    - 用一个处于两个位置叠加的大质量团块代替猫；每个位置都是定态，因此标准量子力学认为该叠加也是定态。 [§30.10](r2r:chapter_30#3010-薛定谔团块)
+  - [ ] 质量分布之差的引力自能 E_G {kind: physics} ^gravitational-self-energy-difference
+    - 两个时空的叠加违背广义协变性；这种误差以两个质量分布之差的自能来量度，即 E_G。 [§30.11](r2r:chapter_30#3011-与爱因斯坦原理的基本冲突)
+  - [ ] 薛定谔-牛顿方程 {kind: physics} ^schrodinger-newton-equation
+    - 带有牛顿势的薛定谔方程，该势由波函数的期望质量密度产生；它的定态就是优先基。 [§30.12](r2r:chapter_30#3012-优先的薛定谔牛顿态)
+  - [ ] 引力客观收缩（OR） {kind: physics} ^gravitational-or
+    - 两个定态的叠加在平均约 hbar/E_G 的时间内自发收缩为其中之一，且不违背能量守恒。 [§30.12](r2r:chapter_30#3012-优先的薛定谔牛顿态)
+  - [ ] FELIX 实验 {kind: physics} ^felix-experiment
+    - 一种拟议中的干涉仪实验，使一面微小的镜子处于位置叠加态，以检验相干性是否在引力 OR 的时标上丧失。 [§30.13](r2r:chapter_30#3013-felix-及其相关理论)
+  - [ ] 黑洞中的信息会丢失吗？ {kind: question} ^q-black-hole-information-loss
+    - 丢失、储存还是返回？彭罗斯支持信息丢失，认为它违背幺正性，并由客观的 R 来平衡。 [§30.8](r2r:chapter_30#308-霍金爆炸)
+  - [ ] 态收缩是一种引力效应吗？ {kind: question} ^q-gravity-and-state-reduction
+    - 量子叠加与广义协变性之间的冲突表明 R 是客观的引力过程，这一主张可以由实验检验。 [§30.11](r2r:chapter_30#3011-与爱因斯坦原理的基本冲突)
+  - [ ] 早期宇宙的不规则性从何而来？ {kind: question} ^q-origin-of-early-universe-fluctuations
+    - U 演化精确地保持 FLRW 对称性，因此“量子涨落”只有通过某种客观收缩才能破坏它，而不能靠 FAPP 式的视界论证。 [§30.14](r2r:chapter_30#3014-早期宇宙涨落的起源)
+
+- [ ] 第 31 章 超对称、超维和弦 {kind: chapter} ^ch31
+  - 彭罗斯阐释超对称、高维时空，以及弦论如何演变为超弦、M 理论、膜和全息原理，同时批判性地质疑额外维的稳定性、理论的有限性和弦论的物理学地位。 [第 31 章](r2r:chapter_31)
+  - [ ] 跑动的耦合常数 {kind: physics} ^running-coupling-constants
+    - 耦合强度依赖于相互作用能量；观测到的常数是低能极限，而大统一理论需要它们在高能下交汇。 [§31.1](r2r:chapter_31#311-令人费解的参数)
+  - [ ] 超对称 {kind: physics} ^supersymmetry
+    - 一种通过自旋相差 1/2 的超对称伴侣把玻色子与费米子配对的对称性，有助于抵消量子场论的无穷大；尚无观测支持。 [§31.2](r2r:chapter_31#312-超对称)
+  - [ ] 超李代数与超群 {kind: math} ^super-lie-algebra
+    - 推广的李代数，其奇生成元之间取反对易子，参数是格拉斯曼代数元而非实数。 [§31.2](r2r:chapter_31#312-超对称)
+  - [ ] 超代数和超流形 {kind: math} ^superalgebra
+    - 把平方为零的反对易生成元 epsilon 添加到实数中；在几何上，它相当于一个流形在更大流形中的一阶邻域。 [§31.3](r2r:chapter_31#313-超对称代数和几何)
+  - [ ] 超引力 {kind: physics} ^supergravity
+    - 超对称化的广义相对论，增加了自旋 3/2 的引力微子；人们曾希望它可重正化，其 11 维版本后来成为 M 理论的核心。 [§31.3](r2r:chapter_31#313-超对称代数和几何)
+  - [ ] 高维时空与函数自由度 {kind: physics} ^higher-dimensional-spacetime
+    - 如卡鲁扎-克莱因理论中那样的小额外维；若没有对称性，它们带来的函数自由度与四维物理相比实在太多。 [§31.4](r2r:chapter_31#314-高维时空)
+  - [ ] 原初的强子弦论 {kind: physics} ^hadronic-string-theory
+    - 韦内齐亚诺公式和南部的弦借助弦历史的拓扑，解释了强子散射图的对偶性和线性的雷杰轨迹。 [§31.5](r2r:chapter_31#315-原初的强子弦论)
+  - [ ] 雷杰轨迹 {kind: physics} ^regge-trajectories
+    - 观测到的强子共振态自旋与质量平方之间的线性关系，可用张力随拉伸而增大的弦来解释。 [§31.5](r2r:chapter_31#315-原初的强子弦论)
+  - [ ] 超弦理论 {kind: physics} ^superstrings
+    - 反常相消要求 26 维，超对称将其降为 10 维（格林-施瓦茨，1984）；普朗克尺度的弦给出自旋为 2 的引力子。 [§31.7](r2r:chapter_31#317-额外时空维的弦动机)
+  - [ ] 弦的世界叶与里奇平直性 {kind: physics} ^string-worldsheet
+    - 弦扫出二维世界叶，其拉格朗日量为面积；自洽性要求在 alpha prime 的最低阶上背景是里奇平直的十维时空。 [§31.9](r2r:chapter_31#319-弦动力学)
+  - [ ] 卡鲁扎-克莱因激发模 {kind: physics} ^kaluza-klein-modes
+    - 绕小的紧致维的模在四维中表现为克莱因-戈登粒子，其质量为普朗克尺度，因而据称观测不到。 [§31.10](r2r:chapter_31#3110-为什么我们看不见额外的空间维)
+  - [ ] 卡拉比-丘空间 {kind: math} ^calabi-yau-spaces
+    - 具有协变常旋量的紧致里奇平直凯勒六维流形，额外维需要取这种空间；这样的空间有成千上万种，破坏了唯一性。 [§31.14](r2r:chapter_31#3114-神奇的卡拉比丘空间m-理论)
+  - [ ] 镜像对称 {kind: math} ^mirror-symmetry
+    - 卡拉比-丘空间之间的一种猜想中的对偶，它正确地预言了五次三维簇上有理曲线的数目。 [§31.14](r2r:chapter_31#3114-神奇的卡拉比丘空间m-理论)
+  - [ ] 弦对偶（S-、T-、U-对偶） {kind: physics} ^string-dualities
+    - 威腾 1995 年引发的第二次超弦革命：五种超弦理论通过强弱互换、大小互换的对偶相互联系。 [§31.14](r2r:chapter_31#3114-神奇的卡拉比丘空间m-理论)
+  - [ ] M 理论 {kind: physics} ^m-theory
+    - 一种假设的 11 维理论，统一了五种弦论和 11 维超引力，包含各种维数的 p 膜。 [§31.14](r2r:chapter_31#3114-神奇的卡拉比丘空间m-理论)
+  - [ ] BPS 态 {kind: physics} ^bps-states
+    - 超对称的极端态（质量等于荷），不受修正影响，被用来把弱耦合下的弦态计数外推到黑洞。 [§31.15](r2r:chapter_31#3115-弦与黑洞熵)
+  - [ ] 弦与黑洞熵 {kind: physics} ^string-black-hole-entropy
+    - 施特劳明格和瓦法对 BPS 弦态的计数再现了极端带电黑洞的 S = A/4；彭罗斯怀疑这能否解释视界熵。 [§31.15](r2r:chapter_31#3115-弦与黑洞熵)
+  - [ ] 全息原理（ADS/CFT 猜想） {kind: physics} ^holographic-principle
+    - 马尔达西纳的猜想：AdS5 x S5 上的弦论等价于其共形边界上的超对称杨-米尔斯理论，尽管两者的函数自由度并不匹配。 [§31.16](r2r:chapter_31#3116-全息原理)
+  - [ ] D 膜与膜世界 {kind: physics} ^d-branes
+    - 开弦端点所在的类时子空间；我们也许生活在一个 3 膜上，这一设想旨在解决等级问题。 [§31.17](r2r:chapter_31#3117-d-膜观点)
+  - [ ] 自然常数为何取这些值？ {kind: question} ^q-puzzling-parameters
+    - 精细结构常数、粒子质量以及等级问题（引力的微弱）都缺乏解释，重正化也无法提供解释。 [§31.1](r2r:chapter_31#311-令人费解的参数)
+  - [ ] 为什么我们看不见额外的空间维？ {kind: question} ^q-why-unseen-extra-dimensions
+    - 彭罗斯怀疑量子稳定性论证，并表明在经典意义上额外维是不稳定的，会发展出奇点。 [§31.10](r2r:chapter_31#3110-为什么我们看不见额外的空间维)
+  - [ ] 弦论是有限的量子引力理论吗？ {kind: question} ^q-string-quantum-gravity
+    - 有限性只在低阶得到证明，对亏格求和很可能发散；而且该理论只是在背景上微扰地处理引力。 [§31.13](r2r:chapter_31#3113-弦量子场论是有限的吗)
+  - [ ] 弦论的物理学地位如何？ {kind: question} ^q-status-of-string-theory
+    - 镜像对称之类非凡的数学巧合令人印象深刻，但并没有给出明确的理由让人相信这一理论描述了自然。 [§31.18](r2r:chapter_31#3118-弦论的物理学地位)
+
+- [ ] 第 32 章 更为狭窄的爱因斯坦途径；圈变量 {kind: chapter} ^ch32
+  - 彭罗斯综述以阿什台卡手征变量、圈变量和自旋网络为基础的正则量子引力，权衡圈量子引力的成就与尚未解决的困难。 [第 32 章](r2r:chapter_32)
+  - [ ] 正则量子引力 {kind: physics} ^canonical-quantum-gravity
+    - 从类空三维曲面上的哈密顿形式出发对广义相对论进行量子化，受到广义协变性和非多项式哈密顿量的阻碍。 [§32.1](r2r:chapter_32#321-正则量子引力)
+  - [ ] 广义相对论的约束方程 {kind: physics} ^constraint-equations
+    - 作用于初始三维曲面内部的方程，初始数据必须满足它们才能自洽地演化；狄拉克发展了处理它们的量子化方法。 [§32.1](r2r:chapter_32#321-正则量子引力)
+  - [ ] 自旋 2 引力子及其螺旋性 {kind: physics} ^graviton-helicity
+    - 引力波在转动 pi 后回到自身，因此引力子自旋为 2，螺旋性为正负 2。 [§32.2](r2r:chapter_32#322-阿什台卡变量的手征输入)
+  - [ ] 自对偶与反自对偶外尔曲率 {kind: math} ^self-dual-weyl-curvature
+    - 借助对偶把复外尔张量分解为描述右旋引力子和左旋引力子的两部分，与麦克斯韦场的情形相同。 [§32.2](r2r:chapter_32#322-阿什台卡变量的手征输入)
+  - [ ] 阿什台卡变量 {kind: physics} ^ashtekar-variables
+    - 手征的正则变量（无撇自旋联络与三度规密度），使引力约束变为多项式形式。 [§32.3](r2r:chapter_32#323-阿什台卡变量的形式)
+  - [ ] 巴伯罗-伊莫兹参数 {kind: physics} ^barbero-immirzi-parameter
+    - 联络中代替 i 的实参数 eta，它把非紧群 SL(2,C) 变为紧群 SU(2)，代价是失去手征性。 [§32.3](r2r:chapter_32#323-阿什台卡变量的形式)
+  - [ ] 威尔逊圈（和乐的迹） {kind: math} ^wilson-loops
+    - 沿闭合圈平行移动所得自旋空间变换的迹，是联络的一个与基无关的量。 [§32.4](r2r:chapter_32#324-圈变量)
+  - [ ] 圈变量与圈态 {kind: physics} ^loop-variables
+    - 集中在三维曲面中圈上的量子引力基态，其面积为 delta 函数，并且只有拓扑意义。 [§32.4](r2r:chapter_32#324-圈变量)
+  - [ ] 量子化的面积谱 {kind: physics} ^area-quantization
+    - 自旋为 j 的圈每穿过探测曲面一次，就贡献面积 8 pi G eta hbar sqrt(j(j+1))。 [§32.4](r2r:chapter_32#324-圈变量)
+  - [ ] 结和链 {kind: math} ^knots-and-links
+    - 三维空间中闭合圈的拓扑：三叶形纽结、怀特黑德链、博罗门环，以及亚历山大多项式和琼斯多项式等多项式不变量。 [§32.5](r2r:chapter_32#325-结与链的数学)
+  - [ ] 琼斯多项式与纽结不变量 {kind: math} ^jones-polynomial
+    - 受物理启发的纽结不变量（琼斯、HOMFLY、考夫曼），源于一种区分上交叉与下交叉的图形代数。 [§32.5](r2r:chapter_32#325-结与链的数学)
+  - [ ] q 形变结构（量子群） {kind: math} ^q-deformation
+    - 取 q = A^2 的考夫曼代数是 binor 计算的形变；它被误导性地称为“量子群”，尽管与量子理论并无关系。 [§32.5](r2r:chapter_32#325-结与链的数学)
+  - [ ] 拓扑量子场论 {kind: physics} ^topological-quantum-field-theory
+    - 威腾提出的理论，没有局部场方程，只有整体结构和源处的“小故障”，就像 2+1 维广义相对论那样。 [§32.5](r2r:chapter_32#325-结与链的数学)
+  - [ ] 自旋网络 {kind: physics} ^spin-networks
+    - 彭罗斯的组合网络，由总自旋单元组成，三价顶点给出有理概率，三维空间的方向由此涌现；后来在圈引力中被重新使用。 [§32.6](r2r:chapter_32#326-自旋网络)
+  - [ ] 圈引力中的黑洞熵 {kind: physics} ^black-hole-entropy-loop
+    - 对视界上的自旋网络态计数，当 eta = log 2/(pi sqrt 3) 时再现贝肯斯坦-霍金熵。 [§32.6](r2r:chapter_32#326-自旋网络)
+  - [ ] 自旋泡沫 {kind: physics} ^spin-foams
+    - 更高维的自旋网络，带有自旋标记的二维曲面，被看作自旋网络的时间演化。 [§32.7](r2r:chapter_32#327-圈量子引力的地位)
+  - [ ] 引力在根本上是左右不对称的吗？ {kind: question} ^q-chirality-of-gravity
+    - 阿什台卡的手征变量对两种引力子螺旋性的处理不同；这是一种数学假象，还是暗示着自然界深层的手征性？ [§32.2](r2r:chapter_32#322-阿什台卡变量的手征输入)
+  - [ ] 圈引力中的哈密顿约束与动力学问题 {kind: question} ^q-hamiltonian-constraint
+    - 圈引力解决了空间约束，但对离开三维曲面的演化缺乏明确无歧义的处理。 [§32.6](r2r:chapter_32#326-自旋网络)
+  - [ ] 量子引力中的时间问题 {kind: question} ^q-problem-of-time
+    - 广义协变性使时间演化难以辨认，而相互叠加的自旋网络的位置之间没有对应关系。 [§32.7](r2r:chapter_32#327-圈量子引力的地位)
+
+- [ ] 第 33 章 更彻底的观点；扭量理论 {kind: chapter} ^ch33
+  - 在综述时空的各种离散化方案之后，彭罗斯发展了扭量理论：在这一理论中，光线和全纯结构是基本的，时空点则是导出的概念。 [第 33 章](r2r:chapter_33)
+  - [ ] 因果集 {kind: physics} ^causal-sets
+    - 索金的设想：时空是一个离散的、可能有限的点集，点之间的因果关系是基本概念。 [§33.1](r2r:chapter_33#331-几何上具有离散元素的理论)
+  - [ ] 雷杰微积分 {kind: physics} ^regge-calculus
+    - 由平直四维单纯形构建时空，曲率以 delta 函数的形式集中在二维的“骨”上。 [§33.1](r2r:chapter_33#331-几何上具有离散元素的理论)
+  - [ ] 范畴论与拓扑斯理论 {kind: math} ^category-theory
+    - 非常一般的抽象代数框架（包括 n-范畴和直觉主义的拓扑斯逻辑），被提议作为物理学可能的基础。 [§33.1](r2r:chapter_33#331-几何上具有离散元素的理论)
+  - [ ] 非对易几何 {kind: math} ^noncommutative-geometry
+    - 孔涅从非对易代数重建“空间”的方法，推广了从函数代数恢复流形的做法。 [§33.1](r2r:chapter_33#331-几何上具有离散元素的理论)
+  - [ ] 作为光线的扭量 {kind: math} ^twistor-correspondence
+    - 光线成为 PN 中的点，而时空事件成为黎曼球面（天球），这使光线比点更为基本。 [§33.2](r2r:chapter_33#332-作为光线的扭量)
+  - [ ] 时空的共形群 {kind: math} ^conformal-group
+    - 保持光锥不变的群 O(2,4)，无质量场方程在其作用下不变；它比庞加莱群更大。 [§33.3](r2r:chapter_33#333-共形群紧化闵可夫斯基空间)
+  - [ ] 紧化闵可夫斯基空间 {kind: math} ^compactified-minkowski-space
+    - 在无穷远处添加一个光锥得到的 M#，可实现为 E(2,4) 中零锥的射线，拓扑为 S1 x S3。 [§33.3](r2r:chapter_33#333-共形群紧化闵可夫斯基空间)
+  - [ ] 扭量与扭量空间 {kind: math} ^twistors
+    - 四复维空间 T 的元素，T 上的埃尔米特型符号差为 (++--)；扭量是 O(2,4) 的约化旋量，局部上即 SU(2,2) 的旋量。 [§33.5](r2r:chapter_33#335-基本扭量几何及其坐标)
+  - [ ] 射影扭量空间与关联关系 {kind: math} ^projective-twistor-space
+    - PT = CP3 被零区域 PN 分为 PT+ 和 PT-；关联关系 omega = i r pi 把扭量与事件联系起来。 [§33.5](r2r:chapter_33#335-基本扭量几何及其坐标)
+  - [ ] 鲁宾逊线汇 {kind: math} ^robinson-congruence
+    - 表示非零扭量的扭曲光线族，描绘出无质量自旋粒子的非局域角动量。 [§33.6](r2r:chapter_33#336-作为无质量自旋粒子的扭量的几何)
+  - [ ] α 平面与 β 平面 {kind: math} ^alpha-planes
+    - 复化闵可夫斯基空间中表示扭量的自对偶复二维平面；反自对偶的 β 平面则表示对偶扭量。 [§33.6](r2r:chapter_33#336-作为无质量自旋粒子的扭量的几何)
+  - [ ] 扭量量子论 {kind: physics} ^twistor-quantization
+    - Z 与 Z-bar 成为正则共轭算符，因此扭量波函数是全纯的；螺旋性即欧拉齐次算符。 [§33.7](r2r:chapter_33#337-扭量量子论)
+  - [ ] 无质量自由场方程 {kind: physics} ^massless-field-equations
+    - 适用于任意自旋场的二旋量方程，推广了外尔中微子方程、麦克斯韦方程和线性化外尔曲率方程。 [§33.8](r2r:chapter_33#338-无质量场的扭量描述)
+  - [ ] 扭量周线积分 {kind: math} ^twistor-contour-integral
+    - 齐次扭量函数的周线积分自动给出无质量场方程的解；正频率意味着函数可延拓到 PT+ 中。 [§33.8](r2r:chapter_33#338-无质量场的扭量描述)
+  - [ ] 层上同调 {kind: math} ^sheaf-cohomology
+    - 借助重叠拼块上的切赫上闭链定义的一阶上同调，本质上是非局域的；扭量函数是全纯上同调元素，可用不可能三杠图来说明。 [§33.9](r2r:chapter_33#339-扭量层上同调)
+  - [ ] 扭量与正/负频率剖分 {kind: physics} ^twistor-frequency-splitting
+    - PT+ 与 PT- 上的上同调分别给出正频率场和负频率场，类似于沿黎曼球面赤道对函数进行剖分。 [§33.10](r2r:chapter_33#3310-扭量与正负频率剖分)
+  - [ ] 非线性引力子 {kind: physics} ^nonlinear-graviton
+    - 使扭量空间形变，得到弯曲的复反自对偶真空时空，借助小平邦彦定理，其中的点对应于全纯曲线。 [§33.11](r2r:chapter_33#3311-非线性引力子)
+  - [ ] 反自对偶规范场的沃德构造 {kind: physics} ^ward-construction
+    - 通过全纯丛对一般的反自对偶杨-米尔斯场给出扭量描述，与非线性引力子相类似。 [§33.12](r2r:chapter_33#3312-扭量与广义相对论)
+  - [ ] 时空在根本上是离散的吗？ {kind: question} ^q-discrete-spacetime
+    - 是否应当用有限域、格点、因果集或其他组合结构来取代实数连续统？ [§33.1](r2r:chapter_33#331-几何上具有离散元素的理论)
+  - [ ] 变线球问题 {kind: question} ^q-googly-problem
+    - 如何从扭量（而非对偶扭量）得到右旋的非线性引力子，这是完整的广义相对论所需要的。 [§33.12](r2r:chapter_33#3312-扭量与广义相对论)
+  - [ ] 上同调的非局域性能解释量子非局域性吗？ {kind: question} ^q-twistor-nonlocality-epr
+    - 彭罗斯猜测扭量上同调的非局域本性正暗示着 EPR 纠缠那种神秘的非局域性。 [§33.9](r2r:chapter_33#339-扭量层上同调)
+  - [ ] 扭量理论能做出物理预言吗？ {kind: question} ^q-twistor-predictions
+    - 扭量理论缺乏明确的预言；它的全纯哲学暗示空间曲率为负（K<0），或许还有 Lambda=0。 [§33.14](r2r:chapter_33#3314-扭量理论的未来)
+
+- [ ] 第 34 章 实在之路通向何方 {kind: chapter} ^ch34
+  - 彭罗斯评估二十世纪物理学，讨论时尚与数学美的影响、理论的可检验性、实在的本质，以及心智在物理学中的位置。 [第 34 章](r2r:chapter_34)
+  - [ ] 富勒烯双缝干涉 {kind: physics} ^fullerene-interference
+    - 蔡林格小组展示了 C60 和 C70 分子的量子干涉，但其质量尺度仍远低于引力 OR 起作用的尺度。 [§34.1](r2r:chapter_34#341-20-世纪物理学的伟大理论及其超越)
+  - [ ] 波普尔判据 {kind: physics} ^popper-falsifiability
+    - 一个理论只有在实验可能将其驳倒时才是科学的；彭罗斯认为这一判据过于严苛，并以超对称和暴胀加以检验。 [§34.4](r2r:chapter_34#344-错误理论能被实验驳倒吗)
+  - [ ] 第五要素 {kind: physics} ^quintessence
+    - 一种具有负压的新动力学场，以有效宇宙学常数的形式提供“暗能量”，被举为受时尚驱动的宇宙学的例子。 [§34.4](r2r:chapter_34#344-错误理论能被实验驳倒吗)
+  - [ ] 协奏客观收缩（神经微管） {kind: physics} ^orch-or
+    - 哈默罗夫和彭罗斯的设想：神经元微管中的大尺度量子相干以协奏的引力 OR 事件告终，这些事件构成意识活动的基础。 [§34.7](r2r:chapter_34#347-心智在物理理论中的作用)
+  - [ ] 结合问题与达金斯的贝尔检验 {kind: physics} ^binding-problem-bell-test
+    - 达金斯提议在大脑不同区域结合知觉的方式中寻找对贝尔不等式的违背，作为意识中存在量子效应的证据。 [§34.7](r2r:chapter_34#347-心智在物理理论中的作用)
+  - [ ] 错误的理论能被实验驳倒吗？ {kind: question} ^q-can-wrong-theories-be-refuted
+    - 超对称、弦论和暴胀这样的时髦理论可以调整其参数来逃避实验的驳斥。 [§34.4](r2r:chapter_34#344-错误理论能被实验驳倒吗)
+  - [ ] 时尚在物理学中起什么作用？ {kind: question} ^q-fashion-in-physics
+    - 缺乏实验指引时，从众效应会把研究引向流行的方法，例如弦论和四旋量记号。 [§34.3](r2r:chapter_34#343-物理理论中时尚的作用)
+  - [ ] 什么是实在？ {kind: question} ^q-what-is-reality
+    - 物理学通过数学模型描述实在；彭罗斯追问实在归根结底是否是数学的，并重新审视三个世界。 [§34.6](r2r:chapter_34#346-什么是实在)
+  - [ ] 心智在物理理论中起什么作用？ {kind: question} ^q-mind-in-physics
+    - 从人存原理到对 R 的各种诠释，彭罗斯论证是真实的 OR 支配着意识，而不是意识支配着 R。 [§34.7](r2r:chapter_34#347-心智在物理理论中的作用)
+  - [ ] 美和“奇迹”是物理学可靠的向导吗？ {kind: question} ^q-mathematical-beauty-as-guide
+    - 数学美和惊人的巧合曾引导进步，但也常常误导人，例如四元数、超引力以及弦论的种种“奇迹”。 [§34.9](r2r:chapter_34#349-美和奇迹)
+
+%% 关系
+
+%% 第 1 章
+axioms needs mathematical-proof
+euclidean-geometry needs axioms
+mathematical-objectivity needs platonic-world
+mathematical-objectivity relates q-platonic-world-real: 回应
+fermat-last-theorem needs mathematical-proof
+three-worlds needs platonic-world
+three-worlds relates q-why-math-describes-physics: 回应
+q-platonic-world-real relates platonic-world: 关于
+q-platonic-world-real relates mathematical-objectivity: 取决于
+fermat-last-theorem relates q-platonic-world-real: 检验
+three-worlds relates q-why-math-describes-physics: 表述
+q-why-math-describes-physics relates platonic-world: 涉及
+three-worlds relates q-mind-from-matter: 表述
+q-three-worlds-paradox relates three-worlds: 关于
+
+%% 第 2 章
+pythagorean-theorem needs euclidean-geometry, mathematical-proof
+euclid-postulates needs axioms, euclidean-geometry
+parallel-postulate needs euclid-postulates
+parallel-postulate relates q-do-squares-exist: 回应
+triangle-angle-sum needs parallel-postulate
+similar-triangles needs triangle-angle-sum, pythagorean-theorem
+hyperbolic-geometry needs parallel-postulate
+hyperbolic-geometry relates q-parallel-postulate-provable: 回应
+poincare-disc needs hyperbolic-geometry
+lambert-area-formula needs hyperbolic-geometry, triangle-angle-sum
+hyperbolic-distance needs poincare-disc
+beltrami-klein-model needs hyperbolic-geometry, poincare-disc
+proof-by-contradiction needs mathematical-proof
+pseudosphere needs hyperbolic-geometry
+elliptic-geometry needs euclid-postulates
+q-do-squares-exist relates parallel-postulate: 依赖于
+q-do-squares-exist relates pythagorean-theorem: 涉及
+q-parallel-postulate-provable relates parallel-postulate: 关于
+hyperbolic-geometry relates q-parallel-postulate-provable: 判定
+proof-by-contradiction relates q-parallel-postulate-provable: 尝试解决
+q-geometry-of-universe relates hyperbolic-geometry: 考察
+q-geometry-of-universe relates elliptic-geometry: 考察
+q-geometry-of-universe relates euclidean-geometry: 考察
+
+%% 第 3 章
+irrationality-of-sqrt2 needs rational-numbers, proof-by-contradiction, pythagorean-theorem
+irrationality-of-sqrt2 relates q-pythagorean-catastrophe: 回应
+real-numbers needs rational-numbers, irrationality-of-sqrt2
+real-numbers relates q-pythagorean-catastrophe: 回应
+continued-fractions needs rational-numbers
+quadratic-irrationals needs continued-fractions
+eudoxus-ratios needs rational-numbers
+dedekind-cuts needs eudoxus-ratios, rational-numbers
+limits needs real-numbers
+von-neumann-ordinals needs natural-numbers
+von-neumann-ordinals relates q-natural-numbers-physical: 回应
+integers needs natural-numbers
+electric-charge-quantization needs integers
+additive-quantum-numbers needs integers, electric-charge-quantization
+antiparticles needs additive-quantum-numbers
+q-pythagorean-catastrophe relates irrationality-of-sqrt2: 源于
+real-numbers relates q-pythagorean-catastrophe: 解决
+q-continuum-or-discrete relates real-numbers: 质疑
+q-continuum-or-discrete relates limits: 涉及
+q-natural-numbers-physical relates natural-numbers: 关于
+von-neumann-ordinals relates q-natural-numbers-physical: 解答
+
+%% 第 4 章
+complex-numbers needs real-numbers
+complex-numbers relates q-why-nature-uses-complex-numbers: 引出
+fundamental-theorem-of-algebra needs complex-numbers
+cubic-formula needs complex-numbers
+power-series needs limits
+divergent-series needs power-series
+complex-plane needs complex-numbers
+poles needs complex-plane
+circle-of-convergence needs power-series, complex-plane, poles
+circle-of-convergence relates q-hidden-divergence: 回应
+mandelbrot-set needs complex-plane
+mandelbrot-set relates q-platonic-world-real: 例示
+q-why-nature-uses-complex-numbers relates complex-numbers: 关于
+q-why-nature-uses-complex-numbers relates q-why-math-describes-physics: 属于
+q-hidden-divergence relates power-series: 关于
+circle-of-convergence relates q-hidden-divergence: 解决
+poles relates q-hidden-divergence: 解释
+q-meaning-of-divergent-series relates divergent-series: 关于
+
+%% 第 5 章
+complex-multiplication-geometry needs complex-plane
+complex-multiplication-geometry relates q-why-only-plane-rotations: 引出
+polar-coordinates needs complex-plane
+exponential-function needs power-series, circle-of-convergence
+complex-logarithm needs logarithm, exponential-function, polar-coordinates
+euler-identity needs exponential-function
+euler-formula needs exponential-function, polar-coordinates
+complex-powers needs complex-logarithm
+equiangular-spiral needs complex-powers
+roots-of-unity needs complex-powers, euler-formula
+cyclic-group needs roots-of-unity
+multiplicative-quantum-numbers needs roots-of-unity, additive-quantum-numbers
+parity needs multiplicative-quantum-numbers, antiparticles
+quarkiness needs multiplicative-quantum-numbers, cyclic-group, electric-charge-quantization
+q-why-only-plane-rotations relates complex-multiplication-geometry: 关于
+q-why-only-plane-rotations relates q-why-nature-uses-complex-numbers: 推广
+complex-powers relates q-complex-power-paradox: 解决
+q-complex-power-paradox relates complex-logarithm: 取决于
+complex-powers relates q-i-to-the-i: 解答
+
+%% 第 6 章
+function-as-mapping needs real-numbers
+heaviside-step-function needs function-as-mapping
+continuity needs function-as-mapping
+derivative needs function-as-mapping, continuity
+higher-derivatives needs derivative
+smooth-functions needs higher-derivatives, continuity
+taylor-series needs power-series, higher-derivatives
+analytic-functions needs taylor-series, smooth-functions
+analytic-functions relates q-what-is-a-function: 回应
+leibniz-rule needs derivative
+integration needs derivative
+fundamental-theorem-of-calculus needs derivative, integration
+dirac-delta-function needs heaviside-step-function, derivative, smooth-functions
+q-what-is-a-function relates function-as-mapping: 对照
+q-what-is-a-function relates smooth-functions: 检验
+analytic-functions relates q-what-is-a-function: 解答
+q-differentiation-vs-integration relates leibniz-rule: 涉及
+q-differentiation-vs-integration relates integration: 关于
+q-differentiation-vs-integration relates smooth-functions: 涉及
+
+%% 第 7 章
+holomorphic-functions needs complex-plane, derivative, analytic-functions
+holomorphic-functions relates q-what-is-a-function: 回应
+contour-integration needs integration, holomorphic-functions, complex-logarithm
+homology-homotopy needs contour-integration
+cauchy-integral-formula needs contour-integration, holomorphic-functions
+complex-smooth-implies-analytic needs cauchy-integral-formula, taylor-series
+residue-theorem needs cauchy-integral-formula
+open-regions needs complex-plane
+analytic-continuation needs holomorphic-functions, circle-of-convergence, open-regions
+riemann-zeta-function needs analytic-continuation
+q-riemann-hypothesis relates riemann-zeta-function: 关于
+q-riemann-hypothesis relates analytic-continuation: 涉及
+q-magic-of-complex-smoothness relates complex-smooth-implies-analytic: 关于
+q-magic-of-complex-smoothness relates contour-integration: 涉及
+
+%% 第 8 章
+riemann-surfaces needs analytic-continuation, complex-logarithm
+riemann-surfaces relates q-multivalued-functions: 回应
+branch-points needs riemann-surfaces
+conformal-mappings needs holomorphic-functions
+mobius-transformations needs conformal-mappings
+riemann-sphere needs riemann-surfaces, mobius-transformations, stereographic-projection
+genus needs riemann-surfaces, riemann-sphere
+moduli needs genus
+riemann-mapping-theorem needs conformal-mappings, riemann-sphere
+zhukovsky-transformation needs riemann-mapping-theorem, conformal-mappings
+zhukovsky-transformation relates q-complex-structure-macroscopic: 例示
+riemann-surfaces relates q-multivalued-functions: 解答
+q-multivalued-functions relates complex-logarithm: 关于
+q-moduli-count-anomaly relates moduli: 关于
+q-moduli-count-anomaly relates genus: 涉及
+q-complex-structure-macroscopic relates holomorphic-functions: 涉及
+
+%% 第 9 章
+fourier-series needs euler-formula, integration
+laurent-series needs power-series, fourier-series
+annulus-of-convergence needs laurent-series, circle-of-convergence
+frequency-splitting needs laurent-series, riemann-sphere, holomorphic-functions
+fourier-transform needs fourier-series, integration
+hyperfunctions needs holomorphic-functions, frequency-splitting
+hyperfunctions relates q-appropriate-functions: 回应
+excision-theorem needs hyperfunctions, open-regions
+distributions needs dirac-delta-function, smooth-functions
+hyperfunctions relates q-appropriate-functions: 解答
+q-appropriate-functions relates analytic-functions: 涉及
+q-appropriate-functions relates q-what-is-a-function: 延续
+q-rigidity-vs-signals relates analytic-continuation: 涉及
+q-rigidity-vs-signals relates fourier-transform: 推动
+
+%% 第 10 章
+complex-conjugation needs complex-numbers, complex-plane
+complex-vs-real-dimension needs complex-conjugation, riemann-surfaces, holomorphic-functions
+complex-vs-real-dimension relates q-riemann-surface-curve-or-surface: 回应
+partial-derivatives needs derivative, smooth-functions
+mixed-partial-derivatives needs partial-derivatives
+scalar-fields needs smooth-functions
+transition-functions needs partial-derivatives
+chain-rule needs partial-derivatives, transition-functions
+vector-fields needs chain-rule, scalar-fields
+vector-fields relates q-second-fundamental-confusion: 解释
+one-forms needs partial-derivatives, vector-fields
+gradient needs one-forms, scalar-fields
+scalar-product needs vector-fields, one-forms
+cauchy-riemann-equations needs complex-conjugation, partial-derivatives, holomorphic-functions
+cauchy-riemann-equations relates q-riemann-surface-curve-or-surface: 回应
+laplace-equation needs cauchy-riemann-equations, mixed-partial-derivatives
+q-second-fundamental-confusion relates partial-derivatives: 关于
+vector-fields relates q-second-fundamental-confusion: 解决
+q-second-fundamental-confusion relates chain-rule: 涉及
+q-riemann-surface-curve-or-surface relates complex-vs-real-dimension: 关于
+q-riemann-surface-curve-or-surface relates cauchy-riemann-equations: 涉及
+q-riemann-surface-curve-or-surface relates riemann-surfaces: 关于
+
+%% 第 11 章
+quaternions needs complex-numbers
+quaternions relates q-why-quaternions-failed: 回应
+ring needs quaternions
+division-algebra needs ring, vector-space
+octonions needs quaternions, division-algebra
+hurwitz-theorem needs division-algebra, octonions
+quaternion-rotations needs quaternions
+spinors needs quaternion-rotations
+rotation-composition needs quaternion-rotations
+clifford-algebra needs quaternions, vector-space, spinors
+reduced-spinors-chirality needs spinors, clifford-algebra
+reduced-spinors-chirality relates q-parity-violation: 回应
+grassmann-algebra needs clifford-algebra, vector-space
+wedge-product needs grassmann-algebra
+antisymmetrization needs wedge-product
+q-why-quaternions-failed relates quaternions: 关于
+q-why-quaternions-failed relates holomorphic-functions: 对照
+q-why-quaternions-failed relates complex-conjugation: 涉及
+q-parity-violation relates reduced-spinors-chirality: 关于
+q-parity-violation relates spinors: 涉及
+
+%% 第 12 章
+configuration-space relates q-why-higher-dimensions: 回应
+phase-space needs configuration-space
+phase-space relates q-why-higher-dimensions: 回应
+simply-connected needs spinors
+n-manifolds needs transition-functions
+tangent-space needs vector-fields, n-manifolds, vector-space
+covectors needs one-forms, tangent-space
+p-forms needs wedge-product, covectors, antisymmetrization
+integration-of-forms needs p-forms, integration
+exterior-derivative needs p-forms, gradient
+poincare-lemma needs exterior-derivative
+stokes-theorem needs exterior-derivative, integration-of-forms, fundamental-theorem-of-calculus
+compactness needs n-manifolds
+orientability needs n-manifolds
+volume-element needs p-forms
+summation-convention needs covectors
+tensors needs covectors, summation-convention
+abstract-index-notation needs tensors
+abstract-index-notation relates q-notation-conflict: 回应
+complex-manifolds needs n-manifolds, cauchy-riemann-equations, complex-vs-real-dimension
+configuration-space relates q-why-higher-dimensions: 解答
+phase-space relates q-why-higher-dimensions: 解答
+q-why-higher-dimensions relates n-manifolds: 关于
+abstract-index-notation relates q-notation-conflict: 解决
+q-notation-conflict relates tensors: 关于
+
+%% 第 13 章
+groups needs complex-numbers, complex-conjugation
+groups relates q-exact-symmetry: 回应
+so3 needs groups, n-manifolds
+normal-subgroups needs groups
+normal-subgroups relates q-broken-symmetry: 回应
+simple-groups needs normal-subgroups
+matrices needs vector-space, summation-convention
+general-linear-group needs matrices, groups
+determinant needs matrices, antisymmetrization
+trace needs matrices, determinant
+eigenvectors needs matrices, determinant, fundamental-theorem-of-algebra
+representation-theory needs groups, general-linear-group
+lie-algebra needs representation-theory, trace
+reducibility needs representation-theory, tensors, lie-algebra
+metric needs tensors, matrices
+orthogonal-group needs metric, so3, determinant
+orthogonal-group relates q-real-forms: 回应
+hermitian-conjugation needs complex-conjugation, matrices, covectors
+unitary-group needs hermitian-conjugation, general-linear-group
+symplectic-group needs orthogonal-group, unitary-group, lie-algebra
+q-exact-symmetry relates groups: 关于
+q-broken-symmetry relates normal-subgroups: 涉及
+q-broken-symmetry relates simple-groups: 涉及
+q-real-forms relates orthogonal-group: 关于
+q-real-forms relates metric: 涉及
+
+%% 第 14 章
+affine-space needs vector-space
+parallel-transport needs n-manifolds, tangent-space
+covariant-derivative needs parallel-transport, tensors, exterior-derivative
+torsion-tensor needs covariant-derivative
+curvature-tensor needs covariant-derivative
+bianchi-identity needs curvature-tensor
+geodesics needs covariant-derivative
+geodesic-parallelogram needs geodesics, curvature-tensor, torsion-tensor
+geodesic-deviation needs geodesics, curvature-tensor
+lie-bracket needs vector-fields, lie-algebra
+lie-derivative needs lie-bracket, tensors
+riemannian-manifold needs n-manifolds, metric, orthogonal-group
+levi-civita-connection needs riemannian-manifold, covariant-derivative, torsion-tensor
+riemann-tensor needs curvature-tensor, levi-civita-connection
+killing-vectors needs lie-derivative, levi-civita-connection
+symplectic-manifolds needs symplectic-group, exterior-derivative, n-manifolds
+poisson-bracket needs symplectic-manifolds
+q-spacetime-torsion relates torsion-tensor: 关于
+q-spacetime-torsion relates covariant-derivative: 涉及
+symplectic-manifolds relates q-flabby-structures: 例示
+q-flabby-structures relates riemannian-manifold: 对照
+
+%% 第 15 章
+kaluza-klein needs n-manifolds
+kaluza-klein relates q-extra-dimensions: 引出
+fibre-bundles needs n-manifolds, groups
+mobius-bundle needs fibre-bundles
+bundle-cross-sections needs fibre-bundles
+hopf-fibration needs fibre-bundles, riemann-sphere, bundle-cross-sections
+clifford-parallels needs hopf-fibration, geodesic-deviation
+complex-vector-bundles needs fibre-bundles, hopf-fibration
+tangent-bundle needs fibre-bundles, tangent-space
+cotangent-bundle needs tangent-bundle, symplectic-manifolds
+projective-space needs vector-space
+homogeneous-coordinates needs projective-space
+pappus-desargues-theorems needs projective-space
+gauge-connection needs fibre-bundles, covariant-derivative
+bundle-curvature needs gauge-connection, curvature-tensor
+bundle-curvature relates q-gauge-symmetry-origin: 引出
+q-extra-dimensions relates kaluza-klein: 关于
+fibre-bundles relates q-extra-dimensions: 另行解答
+q-gauge-symmetry-origin relates gauge-connection: 涉及
+q-gauge-symmetry-origin relates bundle-curvature: 涉及
+
+%% 第 16 章
+finite-fields needs rational-numbers
+finite-fields relates q-finite-or-infinite-physics: 回应
+finite-projective-geometry needs finite-fields, projective-space, pappus-desargues-theorems
+fano-plane needs finite-projective-geometry, octonions
+cardinality needs natural-numbers, rational-numbers
+axiom-of-choice needs cardinality
+axiom-of-choice relates q-platonic-world-real: 例示
+cantor-diagonal-argument needs cardinality, real-numbers
+continuum-hypothesis needs cantor-diagonal-argument
+continuum-hypothesis relates q-continuum-hypothesis-truth: 引出
+russell-paradox needs cantor-diagonal-argument
+turing-machines needs natural-numbers
+halting-problem needs turing-machines, cantor-diagonal-argument
+recursive-sets needs turing-machines
+godel-incompleteness needs halting-problem, axioms
+godel-incompleteness relates q-godel-unknowable-truths: 引出
+functional-freedom needs cardinality, n-manifolds
+q-finite-or-infinite-physics relates finite-fields: 涉及
+q-finite-or-infinite-physics relates finite-projective-geometry: 涉及
+q-finite-or-infinite-physics relates real-numbers: 质疑
+q-continuum-hypothesis-truth relates continuum-hypothesis: 关于
+q-continuum-hypothesis-truth relates axiom-of-choice: 平行于
+q-godel-unknowable-truths relates godel-incompleteness: 关于
+q-godel-unknowable-truths relates q-platonic-world-real: 关系到
+
+%% 第 17 章
+aristotelian-spacetime needs euclidean-geometry
+aristotelian-spacetime relates q-why-spacetime: 回应
+galilean-spacetime needs galilean-relativity, fibre-bundles, aristotelian-spacetime
+world-line needs galilean-spacetime
+newtons-laws needs galilean-spacetime, affine-space, world-line
+newtonian-gravity needs newtons-laws
+equivalence-principle needs newtonian-gravity, newtons-laws
+equivalence-principle relates q-gravity-a-force: 回应
+newton-cartan-spacetime needs equivalence-principle, galilean-spacetime, covariant-derivative
+tidal-effect needs newton-cartan-spacetime, geodesic-deviation, curvature-tensor
+light-cones needs world-line
+light-cones relates q-light-speed-vs-relativity: 回应
+relativity-of-simultaneity needs light-cones, galilean-spacetime
+relativity-of-simultaneity relates q-light-speed-vs-relativity: 解决
+minkowski-space needs light-cones, riemannian-manifold
+proper-time needs minkowski-space, world-line
+causal-structure needs light-cones, minkowski-space
+einsteinian-spacetime needs minkowski-space, newton-cartan-spacetime, levi-civita-connection
+einsteinian-spacetime relates q-time-travel: 引出
+q-why-spacetime relates aristotelian-spacetime: 对照
+galilean-spacetime relates q-why-spacetime: 解答
+q-gravity-a-force relates equivalence-principle: 关于
+tidal-effect relates q-gravity-a-force: 解答
+light-cones relates q-light-speed-vs-relativity: 解答
+relativity-of-simultaneity relates q-light-speed-vs-relativity: 解答
+q-light-speed-vs-relativity relates galilean-relativity: 涉及
+q-time-travel relates causal-structure: 关于
+q-time-travel relates einsteinian-spacetime: 涉及
+
+%% 第 18 章
+complexified-minkowski-space needs minkowski-space, complex-numbers
+complexified-minkowski-space relates q-imaginary-time: 表述
+poincare-group needs minkowski-space
+lorentzian-orthogonality needs minkowski-space, metric
+clock-paradox needs lorentzian-orthogonality, proper-time
+relativistic-velocity-space needs hyperbolic-geometry, minkowski-space
+rapidity needs relativistic-velocity-space
+relativistic-velocity-addition needs rapidity
+celestial-sphere needs riemann-sphere, light-cones, poincare-group
+stellar-aberration needs celestial-sphere
+lorentz-contraction needs lorentzian-orthogonality, celestial-sphere
+lorentz-contraction relates q-lorentz-contraction-visible: 回应
+kinetic-energy needs newtons-laws
+momentum-conservation needs newtons-laws, galilean-relativity
+angular-momentum needs momentum-conservation, grassmann-algebra
+four-momentum needs momentum-conservation, minkowski-space
+mass-energy-equivalence needs four-momentum
+mass-energy-equivalence relates q-mass-conservation: 回应
+rest-mass needs four-momentum
+rest-mass relates q-mass-conservation: 回应
+relativistic-angular-momentum needs four-momentum, angular-momentum, poincare-group
+q-imaginary-time relates complexified-minkowski-space: 关于
+q-imaginary-time relates minkowski-space: 关于
+q-lorentz-contraction-visible relates lorentz-contraction: 关于
+celestial-sphere relates q-lorentz-contraction-visible: 解答
+mass-energy-equivalence relates q-mass-conservation: 解答
+q-mass-conservation relates rest-mass: 涉及
+
+%% 第 19 章
+maxwell-field-tensor needs p-forms, minkowski-space
+hodge-dual needs p-forms, volume-element
+maxwell-equations needs maxwell-field-tensor, hodge-dual, exterior-derivative
+self-dual-field needs maxwell-equations, hodge-dual
+electromagnetic-waves needs maxwell-equations
+charge-conservation needs maxwell-equations, stokes-theorem
+electromagnetic-potential needs maxwell-equations, poincare-lemma
+electromagnetic-potential relates q-reality-of-potential: 回应
+gauge-invariance needs electromagnetic-potential, gauge-connection
+weyl-gauge-theory needs gauge-invariance
+aharonov-bohm-effect needs electromagnetic-potential, gauge-invariance
+aharonov-bohm-effect relates q-reality-of-potential: 回应
+energy-momentum-tensor needs four-momentum, charge-conservation
+killing-vector-conservation needs energy-momentum-tensor, killing-vectors
+killing-vector-conservation relates q-gravitational-energy: 回应
+ricci-tensor needs riemann-tensor, geodesic-deviation
+einstein-field-equations needs ricci-tensor, energy-momentum-tensor, bianchi-identity
+cosmological-constant needs einstein-field-equations
+cosmological-constant relates q-cosmological-constant: 回应
+weyl-tensor needs riemann-tensor, ricci-tensor
+gravitational-waves needs einstein-field-equations, weyl-tensor
+gravitational-waves relates q-gravitational-energy: 回应
+q-gravitational-energy relates energy-momentum-tensor: 关于
+q-gravitational-energy relates gravitational-waves: 涉及
+q-gravitational-energy relates equivalence-principle: 涉及
+q-cosmological-constant relates cosmological-constant: 关于
+q-reality-of-potential relates electromagnetic-potential: 关于
+aharonov-bohm-effect relates q-reality-of-potential: 探查
+
+%% 第 20 章
+lagrangian-formalism needs configuration-space, tangent-bundle, kinetic-energy
+euler-lagrange-equations needs lagrangian-formalism
+stationary-action needs lagrangian-formalism
+hamiltonian-formalism needs lagrangian-formalism, phase-space, cotangent-bundle
+hamilton-equations needs hamiltonian-formalism
+simple-harmonic-motion needs hamilton-equations
+normal-modes needs simple-harmonic-motion, eigenvectors
+hamiltonian-flow needs hamilton-equations, poisson-bracket, symplectic-manifolds
+liouville-theorem needs hamiltonian-flow
+functional-derivative needs euler-lagrange-equations
+field-lagrangian needs functional-derivative, stationary-action
+noether-theorem needs lagrangian-formalism, lie-algebra
+einstein-hilbert-action needs field-lagrangian, einstein-field-equations
+q-lagrangian-guidance relates field-lagrangian: 关于
+q-lagrangian-guidance relates noether-theorem: 涉及
+q-formal-elegance relates hamiltonian-formalism: 关于
+q-formal-elegance relates hamiltonian-flow: 涉及
+
+%% 第 21 章
+non-commuting-variables needs derivative, leibniz-rule
+canonical-commutation-relations needs non-commuting-variables
+canonical-quantization needs canonical-commutation-relations, hamiltonian-formalism
+wavefunction needs complex-numbers, canonical-quantization
+wavefunction relates q-quantum-reality: 回应
+schrodinger-equation needs wavefunction, canonical-quantization, laplace-equation
+planck-constant needs electromagnetic-waves
+de-broglie-wavelength needs planck-constant, four-momentum
+double-slit-experiment needs de-broglie-wavelength
+double-slit-experiment relates q-wave-particle: 回应
+wave-particle-duality needs double-slit-experiment, wavefunction
+wave-particle-duality relates q-wave-particle: 回应
+eigenstates needs eigenvectors, wavefunction
+momentum-states needs eigenstates, four-momentum
+wave-packet needs momentum-states, fourier-transform
+mach-zehnder-interferometer needs wave-particle-duality
+mach-zehnder-interferometer relates q-quantum-reality: 回应
+wavefunction-collapse needs schrodinger-equation, eigenstates
+wavefunction-collapse relates q-measurement-problem: 回应
+wavefunction-collapse relates q-u-and-r-consistency: 引出
+born-rule needs wavefunction, projective-space
+born-rule relates q-measurement-problem: 回应
+normalized-wavefunction needs born-rule
+position-states needs eigenstates, dirac-delta-function
+momentum-space needs fourier-transform, momentum-states, position-states
+uncertainty-principle needs momentum-space, canonical-commutation-relations
+q-quantum-reality relates wavefunction: 关于
+q-quantum-reality relates mach-zehnder-interferometer: 涉及
+q-wave-particle relates wave-particle-duality: 关于
+double-slit-experiment relates q-wave-particle: 提出
+q-measurement-problem relates wavefunction-collapse: 关于
+q-measurement-problem relates schrodinger-equation: 冲突于
+q-measurement-problem relates born-rule: 涉及
+schrodinger-cat relates q-measurement-problem: 例示
+environmental-decoherence relates q-measurement-problem: 未能解决
+many-worlds-interpretation relates q-measurement-problem: 未能解决
+q-probability-wave relates born-rule: 关于
+q-probability-wave relates wavefunction: 关于
+
+%% 第 22 章
+unitary-evolution needs schrodinger-equation, unitary-group
+quantum-linearity needs unitary-evolution
+quantum-linearity relates q-u-and-r-consistency: 深化
+hilbert-space needs vector-space
+dirac-notation needs hilbert-space, covectors
+heisenberg-picture needs unitary-evolution, canonical-commutation-relations
+quantum-observables needs eigenvectors, hilbert-space
+projection-postulate needs quantum-observables, born-rule
+null-measurement needs projection-postulate, mach-zehnder-interferometer
+helicity needs angular-momentum
+spin needs angular-momentum, lie-algebra, spinors
+two-spinors needs spin, spinors, abstract-index-notation
+casimir-operators needs lie-algebra, spin
+bloch-sphere needs riemann-sphere, projective-space, spin
+majorana-description needs bloch-sphere, two-spinors
+majorana-description relates q-quantum-vs-classical-spin: 回应
+spherical-harmonics needs laplace-equation, polar-coordinates, spin
+pauli-lubanski-vector needs poincare-group, relativistic-angular-momentum, casimir-operators
+quantum-harmonic-oscillator needs normal-modes, schrodinger-equation
+bohr-atom needs quantum-harmonic-oscillator, spherical-harmonics
+q-u-and-r-consistency relates quantum-linearity: 关于
+q-u-and-r-consistency relates wavefunction-collapse: 关于
+q-u-and-r-consistency relates unitary-evolution: 关于
+q-state-vector-reality relates heisenberg-picture: 关于
+q-state-vector-reality relates wavefunction-collapse: 关于
+q-quantum-vs-classical-spin relates majorana-description: 关于
+q-quantum-vs-classical-spin relates spherical-harmonics: 涉及
+
+%% 第 23 章
+many-particle-wavefunction needs schrodinger-equation
+many-particle-state-space needs many-particle-wavefunction, functional-freedom
+many-particle-state-space relates q-why-entanglement-unnoticed: 支撑
+tensor-product-states needs hilbert-space, tensors, dirac-notation
+entanglement needs tensor-product-states, quantum-linearity
+entanglement relates q-two-mysteries-of-entanglement: 引出
+epr-effects needs entanglement
+epr-effects relates q-epr-and-relativity: 引出
+bell-inequalities needs epr-effects, born-rule
+bell-inequalities relates q-two-mysteries-of-entanglement: 回应
+epr-bohm needs entanglement, spin, bell-inequalities
+hardy-example needs epr-bohm, projection-postulate
+bosons-and-fermions needs many-particle-wavefunction, spin
+pauli-exclusion-principle needs bosons-and-fermions
+bose-einstein-condensation needs bosons-and-fermions
+symmetrized-states needs bosons-and-fermions, tensor-product-states, grassmann-algebra
+quantum-teleportation needs epr-bohm, entanglement
+quantum-teleportation relates q-epr-and-relativity: 例示
+quanglement needs quantum-teleportation, entanglement
+quanglement relates q-epr-and-relativity: 回应
+no-signalling needs epr-effects, light-cones
+no-signalling relates q-epr-and-relativity: 回应
+q-two-mysteries-of-entanglement relates entanglement: 关于
+q-two-mysteries-of-entanglement relates bell-inequalities: 涉及
+q-why-entanglement-unnoticed relates entanglement: 关于
+q-why-entanglement-unnoticed relates wavefunction-collapse: 涉及
+q-why-entanglement-unnoticed relates q-u-and-r-consistency: 推广
+q-epr-and-relativity relates epr-effects: 关于
+q-epr-and-relativity relates quanglement: 涉及
+q-epr-and-relativity relates no-signalling: 涉及
+
+%% 第 24 章
+quantum-field-theory needs mass-energy-equivalence, antiparticles
+quantum-field-theory relates q-qm-relativity-tension: 回应
+pair-creation needs antiparticles, mass-energy-equivalence
+positive-frequency needs schrodinger-equation, frequency-splitting
+relativistic-hamiltonian needs four-momentum, schrodinger-equation, positive-frequency
+relativistic-hamiltonian relates q-negative-energy: 引出
+wave-operator needs minkowski-space, laplace-equation
+klein-gordon-equation needs wave-operator, rest-mass
+dirac-operator needs clifford-algebra, wave-operator
+dirac-equation needs dirac-operator, klein-gordon-equation, spinors
+dirac-magnetic-moment needs dirac-equation, maxwell-equations
+dirac-spinor needs dirac-equation, spin
+dirac-sea needs dirac-equation, pauli-exclusion-principle, positive-frequency
+dirac-sea relates q-negative-energy: 回应
+positron needs dirac-sea, antiparticles
+q-qm-relativity-tension relates quantum-field-theory: 关于
+q-qm-relativity-tension relates antiparticles: 涉及
+q-negative-energy relates relativistic-hamiltonian: 关于
+q-negative-energy relates positive-frequency: 涉及
+dirac-sea relates q-negative-energy: 解决
+
+%% 第 25 章
+standard-model needs dirac-equation, quantum-field-theory
+zigzag-picture needs dirac-equation, two-spinors, helicity
+zigzag-picture relates q-are-zigzags-real: 引出
+chirality needs zigzag-picture, clifford-algebra
+feynman-diagrams needs quantum-linearity, antiparticles
+weak-interaction needs zigzag-picture, feynman-diagrams
+parity-violation needs weak-interaction, chirality
+weyl-equation needs zigzag-picture, two-spinors
+cpt-theorem needs antiparticles, parity-violation
+antiparticle-time-reversal needs cpt-theorem, feynman-diagrams
+electroweak-theory needs weak-interaction, unitary-group, gauge-connection
+electroweak-theory relates q-broken-gauge-symmetry: 引出
+higgs-field needs electroweak-theory, zigzag-picture
+q-broken-gauge-symmetry relates higgs-field: 围绕
+weinberg-angle needs electroweak-theory
+hadrons needs bosons-and-fermions, standard-model
+quark-model needs hadrons, representation-theory, lie-algebra
+colour-charge needs quark-model, pauli-exclusion-principle
+quantum-chromodynamics needs colour-charge, gauge-connection, fibre-bundles
+cabibbo-angle needs quark-model, weak-interaction
+grand-unified-theories needs quantum-chromodynamics, electroweak-theory
+grand-unified-theories relates q-beyond-standard-model: 回应
+q-are-zigzags-real relates zigzag-picture: 关于
+q-are-zigzags-real relates chirality: 涉及
+q-broken-gauge-symmetry relates electroweak-theory: 关于
+q-broken-gauge-symmetry relates higgs-field: 涉及
+q-beyond-standard-model relates standard-model: 关于
+q-beyond-standard-model relates grand-unified-theories: 涉及
+
+%% 第 26 章
+creation-annihilation-operators needs bosons-and-fermions, hilbert-space, grassmann-algebra
+vacuum-state needs creation-annihilation-operators
+field-operator-algebra needs creation-annihilation-operators, clifford-algebra
+field-complex-structure needs field-operator-algebra, positive-frequency, maxwell-equations
+majorana-spinors needs dirac-equation, antiparticles
+inequivalent-vacua needs vacuum-state, dirac-sea
+path-integral needs lagrangian-formalism, stationary-action, quantum-linearity
+feynman-propagator needs path-integral, positive-frequency
+mass-shell needs four-momentum, feynman-diagrams
+s-matrix needs feynman-diagrams, feynman-propagator
+tree-and-loop-diagrams needs feynman-diagrams, mass-shell
+renormalization needs tree-and-loop-diagrams
+renormalization relates q-qft-infinities: 回应
+ultraviolet-divergence needs tree-and-loop-diagrams, uncertainty-principle
+vacuum-polarization needs feynman-diagrams, antiparticles
+asymptotic-freedom needs quantum-chromodynamics, renormalization
+fine-structure-constant needs renormalization
+fine-structure-constant relates q-puzzling-parameters: 例示
+perturbation-expansion needs power-series, feynman-diagrams, path-integral
+perturbation-expansion relates q-qft-infinities: 回应
+q-qft-infinities relates renormalization: 关于
+q-qft-infinities relates ultraviolet-divergence: 关于
+q-qft-infinities relates perturbation-expansion: 涉及
+q-path-integral-meaning relates path-integral: 关于
+q-path-integral-meaning relates feynman-propagator: 涉及
+q-choice-of-vacuum relates inequivalent-vacua: 关于
+q-choice-of-vacuum relates higgs-field: 涉及
+
+%% 第 27 章
+time-reversal-symmetry needs schrodinger-equation, hamiltonian-formalism
+time-reversal-symmetry relates q-arrow-of-time: 引出
+chaotic-systems needs time-reversal-symmetry
+q-arrow-of-time relates second-law: 关于
+entropy needs second-law
+coarse-graining needs phase-space
+boltzmann-entropy needs entropy, coarse-graining, logarithm
+thermal-equilibrium needs boltzmann-entropy
+gravitational-entropy needs entropy, thermal-equilibrium
+gravitational-entropy relates q-special-big-bang: 回应
+big-bang needs einstein-field-equations
+q-special-big-bang relates big-bang: 关于
+cosmic-microwave-background needs big-bang
+black-holes needs einstein-field-equations, light-cones
+chandrasekhar-limit needs pauli-exclusion-principle
+event-horizon needs black-holes, light-cones
+spacetime-singularities needs event-horizon, einsteinian-spacetime
+cosmic-censorship needs spacetime-singularities, event-horizon
+planck-units needs planck-constant, newtonian-gravity
+bekenstein-hawking-entropy needs black-holes, boltzmann-entropy, planck-units
+bekenstein-hawking-entropy relates q-special-big-bang: 量化
+flrw-models needs einstein-field-equations, hyperbolic-geometry, cosmological-constant
+conformal-diagrams needs conformal-mappings, light-cones
+particle-horizon needs conformal-diagrams, big-bang
+q-arrow-of-time relates time-reversal-symmetry: 涉及
+q-arrow-of-time relates boltzmann-entropy: 涉及
+q-universe-isolated-system relates entropy: 关于
+q-universe-isolated-system relates second-law: 涉及
+bekenstein-hawking-entropy relates q-special-big-bang: 度量
+q-special-big-bang relates gravitational-entropy: 涉及
+
+%% 第 28 章
+mexican-hat-potential needs higgs-field
+phase-transition needs mexican-hat-potential, inequivalent-vacua
+topological-defects needs phase-transition, fibre-bundles
+magnetic-monopoles needs maxwell-equations, gauge-connection, topological-defects
+cosmic-strings needs topological-defects, minkowski-space
+inflationary-cosmology needs flrw-models
+q-inflation-motivation relates inflationary-cosmology: 质疑
+horizon-problem needs particle-horizon, cosmic-microwave-background
+flatness-problem needs flrw-models
+de-sitter-space needs minkowski-space, cosmological-constant, einstein-field-equations
+anti-de-sitter-space needs de-sitter-space
+inflaton-field needs mexican-hat-potential, cosmological-constant
+anthropic-principle needs fine-structure-constant
+q-anthropic-special-big-bang relates anthropic-principle: 检验
+ricci-weyl-focusing needs weyl-tensor, ricci-tensor
+weyl-curvature-hypothesis needs ricci-weyl-focusing, spacetime-singularities, gravitational-entropy
+weyl-curvature-hypothesis relates q-special-big-bang: 回应
+naked-singularities needs cosmic-censorship
+wick-rotation needs minkowski-space, path-integral
+no-boundary-proposal needs wick-rotation, path-integral, big-bang
+no-boundary-proposal relates q-special-big-bang: 回应
+dark-matter needs flrw-models
+dark-energy needs cosmological-constant, flrw-models
+dark-energy relates q-cosmological-constant-problem: 引出
+q-inflation-motivation relates inflationary-cosmology: 关于
+q-inflation-motivation relates horizon-problem: 涉及
+q-inflation-motivation relates flatness-problem: 涉及
+q-symmetry-breaking-reality relates higgs-field: 关于
+q-symmetry-breaking-reality relates particle-horizon: 涉及
+q-anthropic-special-big-bang relates anthropic-principle: 关于
+q-anthropic-special-big-bang relates q-special-big-bang: 解答
+q-cosmological-constant-problem relates dark-energy: 关于
+q-cosmological-constant-problem relates renormalization: 涉及
+
+%% 第 29 章
+copenhagen-interpretation needs hilbert-space, wavefunction-collapse
+copenhagen-interpretation relates q-measurement-problem: 回应
+many-worlds-interpretation needs unitary-evolution, quantum-linearity, entanglement
+many-worlds-interpretation relates q-measurement-problem: 回应
+consistent-histories needs projection-postulate, hilbert-space
+consistent-histories relates q-measurement-problem: 回应
+pilot-wave-theory needs wavefunction, configuration-space
+pilot-wave-theory relates q-measurement-problem: 回应
+spectral-decomposition needs projection-postulate, quantum-observables, eigenvectors
+density-matrix needs hilbert-space, dirac-notation, projection-postulate
+density-matrix relates q-density-matrix-ontology: 引出
+mixed-states needs density-matrix
+mixed-states relates q-density-matrix-ontology: 引出
+reduced-density-matrix needs density-matrix, epr-bohm, entanglement
+environmental-decoherence needs reduced-density-matrix, entanglement
+environmental-decoherence relates q-measurement-problem: 回应
+schrodinger-cat needs quantum-linearity, unitary-evolution, mach-zehnder-interferometer
+schmidt-decomposition needs entanglement, density-matrix
+schmidt-decomposition relates q-measurement-problem: 未能解决
+copenhagen-interpretation relates q-reality-of-quantum-state: 否定地解答
+pilot-wave-theory relates q-reality-of-quantum-state: 解答
+consistent-histories relates q-reality-of-quantum-state: 解答
+q-density-matrix-ontology relates density-matrix: 关于
+q-density-matrix-ontology relates mixed-states: 关于
+bloch-sphere relates q-density-matrix-ontology: 图示
+
+%% 第 30 章
+quantum-anomalies needs poisson-bracket, canonical-quantization
+time-asymmetry-of-r needs wavefunction-collapse, born-rule, mach-zehnder-interferometer
+time-asymmetry-of-r relates q-gravity-and-state-reduction: 暗示
+hawking-temperature needs bekenstein-hawking-entropy, positive-frequency, black-holes
+unruh-effect needs positive-frequency, killing-vectors, vacuum-state
+rindler-coordinates needs minkowski-space
+complex-periodicity-temperature needs hawking-temperature, complexified-minkowski-space, rindler-coordinates
+eternal-black-hole needs black-holes, conformal-diagrams, killing-vectors
+time-travel-wormholes needs eternal-black-hole
+hawking-radiation needs hawking-temperature, killing-vectors, feynman-diagrams
+penrose-process needs black-holes, killing-vectors, four-momentum
+hawking-evaporation needs hawking-radiation
+hawking-evaporation relates q-black-hole-information-loss: 引出
+hawking-box needs phase-space, hawking-evaporation, weyl-curvature-hypothesis
+hawking-box relates q-black-hole-information-loss: 回应
+schrodinger-lump needs schrodinger-cat, eigenstates
+gravitational-self-energy-difference needs schrodinger-lump, einsteinian-spacetime, newton-cartan-spacetime
+schrodinger-newton-equation needs schrodinger-equation, newtonian-gravity, eigenstates
+gravitational-or needs gravitational-self-energy-difference, uncertainty-principle, schrodinger-newton-equation
+gravitational-or relates q-measurement-problem: 回应
+gravitational-or relates q-gravity-and-state-reduction: 回应
+felix-experiment needs gravitational-or, mach-zehnder-interferometer, double-slit-experiment
+felix-experiment relates q-gravity-and-state-reduction: 检验
+q-black-hole-information-loss relates hawking-evaporation: 源于
+hawking-box relates q-black-hole-information-loss: 分析
+q-black-hole-information-loss relates unitary-evolution: 挑战
+gravitational-or relates q-gravity-and-state-reduction: 解答
+felix-experiment relates q-gravity-and-state-reduction: 可检验
+time-asymmetry-of-r relates q-gravity-and-state-reduction: 推动
+q-origin-of-early-universe-fluctuations relates flrw-models: 关乎
+q-origin-of-early-universe-fluctuations relates gravitational-or: 需要
+environmental-decoherence relates q-origin-of-early-universe-fluctuations: 未能解决
+
+%% 第 31 章
+running-coupling-constants needs renormalization, fine-structure-constant
+supersymmetry needs bosons-and-fermions, lie-algebra, grassmann-algebra
+super-lie-algebra needs lie-algebra, grassmann-algebra, canonical-commutation-relations
+superalgebra needs grassmann-algebra, n-manifolds, p-forms
+supergravity needs supersymmetry, einstein-field-equations
+higher-dimensional-spacetime needs kaluza-klein, functional-freedom, ricci-tensor
+higher-dimensional-spacetime relates q-why-unseen-extra-dimensions: 引出
+hadronic-string-theory needs feynman-diagrams, riemann-surfaces, genus
+regge-trajectories needs hadronic-string-theory
+superstrings needs hadronic-string-theory, supersymmetry, quantum-anomalies
+superstrings relates q-string-quantum-gravity: 回应
+string-worldsheet needs superstrings, lagrangian-formalism, ricci-tensor
+kaluza-klein-modes needs higher-dimensional-spacetime, klein-gordon-equation, laplace-equation
+kaluza-klein-modes relates q-why-unseen-extra-dimensions: 回应
+calabi-yau-spaces needs complex-manifolds, symplectic-manifolds, ricci-tensor
+mirror-symmetry needs calabi-yau-spaces
+mirror-symmetry relates q-status-of-string-theory: 支持
+string-dualities needs superstrings
+m-theory needs string-dualities, supergravity
+bps-states needs supersymmetry, black-holes
+string-black-hole-entropy needs bekenstein-hawking-entropy, bps-states, black-holes
+holographic-principle needs anti-de-sitter-space, gauge-connection, functional-freedom
+d-branes needs m-theory, superstrings
+d-branes relates q-puzzling-parameters: 回应
+q-puzzling-parameters relates fine-structure-constant: 包含
+q-puzzling-parameters relates running-coupling-constants: 涉及
+kaluza-klein-modes relates q-why-unseen-extra-dimensions: 解答
+q-why-unseen-extra-dimensions relates higher-dimensional-spacetime: 关于
+spacetime-singularities relates q-why-unseen-extra-dimensions: 深化
+q-string-quantum-gravity relates superstrings: 关于
+q-string-quantum-gravity relates renormalization: 关乎
+q-string-quantum-gravity relates string-worldsheet: 涉及
+q-status-of-string-theory relates mirror-symmetry: 权衡
+q-status-of-string-theory relates m-theory: 关于
+q-status-of-string-theory relates string-black-hole-entropy: 权衡
+
+%% 第 32 章
+canonical-quantum-gravity needs einstein-field-equations, canonical-quantization, einsteinian-spacetime
+constraint-equations needs canonical-quantum-gravity, hamiltonian-formalism
+graviton-helicity needs helicity, gravitational-waves, weyl-tensor
+self-dual-weyl-curvature needs weyl-tensor, self-dual-field, volume-element
+ashtekar-variables needs canonical-quantum-gravity, two-spinors, gauge-connection
+barbero-immirzi-parameter needs ashtekar-variables, two-spinors, unitary-group
+wilson-loops needs parallel-transport, gauge-connection, trace
+loop-variables needs wilson-loops, ashtekar-variables, dirac-delta-function
+area-quantization needs loop-variables, barbero-immirzi-parameter
+jones-polynomial needs knots-and-links, abstract-index-notation
+q-deformation needs jones-polynomial, lie-algebra
+topological-quantum-field-theory needs quantum-field-theory, knots-and-links
+spin-networks needs spin, loop-variables, epr-bohm
+black-hole-entropy-loop needs spin-networks, bekenstein-hawking-entropy, barbero-immirzi-parameter
+spin-foams needs spin-networks
+q-chirality-of-gravity relates ashtekar-variables: 源于
+q-chirality-of-gravity relates graviton-helicity: 关于
+barbero-immirzi-parameter relates q-chirality-of-gravity: 遮蔽
+q-hamiltonian-constraint relates constraint-equations: 关于
+q-hamiltonian-constraint relates loop-variables: 挑战
+q-problem-of-time relates einsteinian-spacetime: 出自
+q-problem-of-time relates spin-networks: 涉及
+q-problem-of-time relates q-measurement-problem: 连接
+
+%% 第 33 章
+causal-sets needs light-cones, causal-structure
+regge-calculus needs riemann-tensor, dirac-delta-function
+category-theory needs cardinality
+noncommutative-geometry needs n-manifolds, canonical-commutation-relations
+twistor-correspondence needs light-cones, celestial-sphere, riemann-sphere
+conformal-group needs poincare-group, orthogonal-group
+compactified-minkowski-space needs minkowski-space, conformal-group, conformal-diagrams
+twistors needs twistor-correspondence, clifford-algebra, two-spinors
+projective-twistor-space needs twistors, projective-space
+robinson-congruence needs projective-twistor-space, clifford-parallels
+alpha-planes needs twistors, complexified-minkowski-space, self-dual-field
+twistor-quantization needs twistors, canonical-quantization, holomorphic-functions
+massless-field-equations needs two-spinors, maxwell-equations, wave-operator
+twistor-contour-integral needs twistor-quantization, massless-field-equations, contour-integration
+sheaf-cohomology needs transition-functions, holomorphic-functions, twistor-contour-integral
+twistor-frequency-splitting needs sheaf-cohomology, frequency-splitting
+nonlinear-graviton needs sheaf-cohomology, self-dual-weyl-curvature, einstein-field-equations
+ward-construction needs nonlinear-graviton, gauge-connection, fibre-bundles
+causal-sets relates q-discrete-spacetime: 试答
+regge-calculus relates q-discrete-spacetime: 回应
+q-discrete-spacetime relates spin-networks: 推动
+q-googly-problem relates nonlinear-graviton: 推广
+q-googly-problem relates q-chirality-of-gravity: 关联
+q-twistor-nonlocality-epr relates sheaf-cohomology: 关于
+q-twistor-nonlocality-epr relates entanglement: 涉及
+q-twistor-predictions relates twistors: 关于
+q-twistor-predictions relates cosmological-constant: 涉及
+
+%% 第 34 章
+fullerene-interference needs double-slit-experiment, gravitational-or
+popper-falsifiability relates q-can-wrong-theories-be-refuted: 回应
+quintessence needs cosmological-constant, dark-energy, inflationary-cosmology
+orch-or needs gravitational-or, quantum-linearity
+orch-or relates q-mind-in-physics: 回应
+binding-problem-bell-test needs bell-inequalities, orch-or
+binding-problem-bell-test relates q-mind-in-physics: 回应
+popper-falsifiability relates q-can-wrong-theories-be-refuted: 评判
+supersymmetry relates q-can-wrong-theories-be-refuted: 例示
+inflationary-cosmology relates q-can-wrong-theories-be-refuted: 例示
+superstrings relates q-fashion-in-physics: 例证
+q-fashion-in-physics relates q-mathematical-beauty-as-guide: 关联
+q-what-is-reality relates q-platonic-world-real: 重新审视
+q-what-is-reality relates q-mind-in-physics: 导向
+q-mind-in-physics relates anthropic-principle: 涉及
+q-measurement-problem relates q-mind-in-physics: 联系
+gravitational-or relates q-mind-in-physics: 解答
+mirror-symmetry relates q-mathematical-beauty-as-guide: 例证
+twistors relates q-mathematical-beauty-as-guide: 例证

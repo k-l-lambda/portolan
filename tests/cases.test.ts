@@ -67,7 +67,7 @@ describe("parse", () => {
 
   it("keeps the shipped maps free of consistency warnings", () => {
     // Infos such as I006 (an item without a relation) are left to the maps; warnings are not.
-    for (const f of ["../docs/example.rhumb", "../docs/demo/portolan.rhumb", "../docs/demo/civilization.rhumb"]) {
+    for (const f of ["../docs/example.rhumb", "../docs/demo/portolan.rhumb", "../docs/demo/civilization.rhumb", "../docs/demo/road-to-reality.en.rhumb", "../docs/demo/road-to-reality.zh.rhumb"]) {
       const warnings = derive(parse(readFileSync(join(import.meta.dirname, f), "utf8"))).diagnostics.filter((d) => d.level !== "info");
       expect(warnings, f).toEqual([]);
     }
