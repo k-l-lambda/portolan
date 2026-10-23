@@ -1290,878 +1290,1286 @@ links:
 %% 关系
 
 %% 第 1 章
-axioms needs mathematical-proof
-euclidean-geometry needs axioms
-mathematical-objectivity needs platonic-world
-mathematical-objectivity relates q-platonic-world-real: 回应
-fermat-last-theorem needs mathematical-proof
-three-worlds needs platonic-world
-three-worlds relates q-why-math-describes-physics: 回应
-q-platonic-world-real relates platonic-world: 关于
-q-platonic-world-real relates mathematical-objectivity: 取决于
-fermat-last-theorem relates q-platonic-world-real: 检验
-three-worlds relates q-why-math-describes-physics: 表述
-q-why-math-describes-physics relates platonic-world: 涉及
-three-worlds relates q-mind-from-matter: 表述
-q-three-worlds-paradox relates three-worlds: 关于
+axioms needs mathematical-proof: 证明是从公理推出定理的演绎链条
+euclidean-geometry needs axioms: 欧几里得几何由少数公理演绎出全部定理
+mathematical-objectivity needs platonic-world: 客观真理正是彭罗斯所说的柏拉图世界中的存在
+mathematical-objectivity relates q-platonic-world-real: 回应：费马定理等真理独立于任何人与文化而成立
+fermat-last-theorem needs mathematical-proof: 怀尔斯的证明确立了它，真理先于证明而定
+three-worlds needs platonic-world: 柏拉图数学世界是三个世界之一
+three-worlds relates q-why-math-describes-physics: 回应：第一重奥秘即物理世界服从一小部分数学
+q-platonic-world-real relates platonic-world: 关于：柏拉图的数学形式是否独立于心智而真实存在
+q-platonic-world-real relates mathematical-objectivity: 取决于：存在即数学真理客观，而非文化约定
+fermat-last-theorem relates q-platonic-world-real: 检验：其真假早在怀尔斯证明前已定，并非发明
+q-why-math-describes-physics relates platonic-world: 涉及：物理世界如此精确地遵循柏拉图数学形式
+three-worlds relates q-mind-from-matter: 引出：第二重奥秘连接物理大脑与心智世界
+q-three-worlds-paradox relates three-worlds: 关于：每个世界似乎都源于前一世界的一小部分
 
 %% 第 2 章
-pythagorean-theorem needs euclidean-geometry, mathematical-proof
-euclid-postulates needs axioms, euclidean-geometry
-parallel-postulate needs euclid-postulates
-parallel-postulate relates q-do-squares-exist: 回应
-triangle-angle-sum needs parallel-postulate
-similar-triangles needs triangle-angle-sum, pythagorean-theorem
-hyperbolic-geometry needs parallel-postulate
-hyperbolic-geometry relates q-parallel-postulate-provable: 回应
-poincare-disc needs hyperbolic-geometry
-lambert-area-formula needs hyperbolic-geometry, triangle-angle-sum
-hyperbolic-distance needs poincare-disc
-beltrami-klein-model needs hyperbolic-geometry, poincare-disc
-proof-by-contradiction needs mathematical-proof
-pseudosphere needs hyperbolic-geometry
-elliptic-geometry needs euclid-postulates
-q-do-squares-exist relates parallel-postulate: 依赖于
-q-do-squares-exist relates pythagorean-theorem: 涉及
-q-parallel-postulate-provable relates parallel-postulate: 关于
-hyperbolic-geometry relates q-parallel-postulate-provable: 判定
-proof-by-contradiction relates q-parallel-postulate-provable: 尝试解决
-q-geometry-of-universe relates hyperbolic-geometry: 考察
-q-geometry-of-universe relates elliptic-geometry: 考察
-q-geometry-of-universe relates euclidean-geometry: 考察
+pythagorean-theorem needs euclidean-geometry: 这是欧几里得平面几何中关于直角三角形的定理
+pythagorean-theorem needs mathematical-proof: 彭罗斯用两种正方形的铺砌给出其证明
+euclid-postulates needs axioms: 欧几里得公设是关于直线、圆和直角的公理
+euclid-postulates needs euclidean-geometry: 这些公设是欧几里得平面几何的出发点
+parallel-postulate needs euclid-postulates: 第五公设，远不如前四条那样不证自明
+parallel-postulate relates q-do-squares-exist: 回应：没有它，四个直角加等边未必构成正方形
+triangle-angle-sum needs parallel-postulate: 标准证明需作一条平行线才得内角和为 π
+similar-triangles needs triangle-angle-sum: 仅当内角和为 π 时，同角而不同大小的三角形才存在
+similar-triangles needs pythagorean-theorem: 相似三角形的面积比给出毕达哥拉斯定理的第二种证明
+hyperbolic-geometry needs parallel-postulate: 保留前四条公设而否定第五公设
+hyperbolic-geometry relates q-parallel-postulate-provable: 回应：其相容性表明第五公设不能由其他公设推出
+poincare-disc needs hyperbolic-geometry: 在圆内给出双曲平面的共形表示，如埃舍尔的画
+lambert-area-formula needs hyperbolic-geometry: 双曲几何中三角形面积由其三个角决定
+lambert-area-formula needs triangle-angle-sum: 面积度量内角和比 π 少了多少
+hyperbolic-distance needs poincare-disc: 圆盘中距离为与边界圆交比的对数
+beltrami-klein-model needs hyperbolic-geometry: 双曲平面的另一种表示，以直弦为直线
+beltrami-klein-model needs poincare-disc: 借助半球面表述与共形表示相互转换
+proof-by-contradiction needs mathematical-proof: 一种证明方式：由否定命题推出矛盾
+pseudosphere needs hyperbolic-geometry: 贝尔特拉米的曲面以恒负曲率局部实现双曲几何
+elliptic-geometry needs euclid-postulates: 球面上大圆总相交，第五公设不成立
+q-do-squares-exist relates parallel-postulate: 依赖于：仅凭平行公设，等边四直角才能闭合成正方形
+q-do-squares-exist relates pythagorean-theorem: 涉及：毕达哥拉斯定理的铺砌证明预设正方形存在
+q-parallel-postulate-provable relates parallel-postulate: 关于：第五公设能否由前四条推出
+proof-by-contradiction relates q-parallel-postulate-provable: 尝试解决：萨凯里否定第五公设求矛盾，却得出双曲几何
+q-geometry-of-universe relates hyperbolic-geometry: 考虑：负曲率空间，彭罗斯坦言偏爱这种情形
+q-geometry-of-universe relates elliptic-geometry: 考虑：正曲率空间，对应空间有限的闭宇宙
+q-geometry-of-universe relates euclidean-geometry: 考虑：平直空间，介于两者之间的零曲率情形
 
 %% 第 3 章
-irrationality-of-sqrt2 needs rational-numbers, proof-by-contradiction, pythagorean-theorem
-irrationality-of-sqrt2 relates q-pythagorean-catastrophe: 回应
-real-numbers needs rational-numbers, irrationality-of-sqrt2
-real-numbers relates q-pythagorean-catastrophe: 回应
-continued-fractions needs rational-numbers
-quadratic-irrationals needs continued-fractions
-eudoxus-ratios needs rational-numbers
-dedekind-cuts needs eudoxus-ratios, rational-numbers
-limits needs real-numbers
-von-neumann-ordinals needs natural-numbers
-von-neumann-ordinals relates q-natural-numbers-physical: 回应
-integers needs natural-numbers
-electric-charge-quantization needs integers
-additive-quantum-numbers needs integers, electric-charge-quantization
-antiparticles needs additive-quantum-numbers
-q-pythagorean-catastrophe relates irrationality-of-sqrt2: 源于
-real-numbers relates q-pythagorean-catastrophe: 解决
-q-continuum-or-discrete relates real-numbers: 质疑
-q-continuum-or-discrete relates limits: 涉及
-q-natural-numbers-physical relates natural-numbers: 关于
-von-neumann-ordinals relates q-natural-numbers-physical: 解答
+irrationality-of-sqrt2 needs rational-numbers: 证明没有整数之比 a/b 的平方等于 2
+irrationality-of-sqrt2 needs proof-by-contradiction: 假设 √2 = a/b 会导出无穷递降的更小整数
+irrationality-of-sqrt2 needs pythagorean-theorem: 毕达哥拉斯定理使 √2 成为单位正方形的对角线
+irrationality-of-sqrt2 relates q-pythagorean-catastrophe: 回应：它正是这场灾难背后的事实
+real-numbers needs rational-numbers: 实数扩充有理数，填补 √2 这样的空隙
+real-numbers needs irrationality-of-sqrt2: 无理长度表明仅靠有理数无法度量几何
+real-numbers relates q-pythagorean-catastrophe: 回应：实数为每个几何长度提供一个数
+continued-fractions needs rational-numbers: 连分数恰在其值为有理数时终止
+quadratic-irrationals needs continued-fractions: 拉格朗日：它们恰是连分数最终周期的数
+eudoxus-ratios needs rational-numbers: 以整数倍比较长度之比，超越有理比
+dedekind-cuts needs eudoxus-ratios: 戴德金的构造是欧多克索斯判据的现代形式
+dedekind-cuts needs rational-numbers: 每个实数定义为把有理数集分成两部分
+limits needs real-numbers: 1−1/3+1/5−… 这类无穷和需实数才有极限
+von-neumann-ordinals needs natural-numbers: 仅用空集构造出 0, 1, 2, … 等自然数
+von-neumann-ordinals relates q-natural-numbers-physical: 回应：自然数可从集合论产生，无需物理对象
+integers needs natural-numbers: 整数在自然数之外加入负数
+electric-charge-quantization needs integers: 孤立物体的电荷都是质子电荷的整数倍
+additive-quantum-numbers needs integers: 已知的加和性量子数都取整数值
+additive-quantum-numbers needs electric-charge-quantization: 电荷是典型的加和性量子数，按成分相加
+antiparticles needs additive-quantum-numbers: 反粒子的加和性量子数全部反号，质量仍为正
+q-pythagorean-catastrophe relates irrationality-of-sqrt2: 源于：没有分数能表示正方形对角线的长度
+q-continuum-or-discrete relates real-numbers: 质疑：实数连续统在最小物理尺度上是否成立
+q-continuum-or-discrete relates limits: 涉及：微积分与物理依赖连续统的极限过程
+q-natural-numbers-physical relates natural-numbers: 关于：计数是否依赖于持久存在的物理对象
 
 %% 第 4 章
-complex-numbers needs real-numbers
-complex-numbers relates q-why-nature-uses-complex-numbers: 引出
-fundamental-theorem-of-algebra needs complex-numbers
-cubic-formula needs complex-numbers
-power-series needs limits
-divergent-series needs power-series
-complex-plane needs complex-numbers
-poles needs complex-plane
-circle-of-convergence needs power-series, complex-plane, poles
-circle-of-convergence relates q-hidden-divergence: 回应
-mandelbrot-set needs complex-plane
-mandelbrot-set relates q-platonic-world-real: 例示
-q-why-nature-uses-complex-numbers relates complex-numbers: 关于
-q-why-nature-uses-complex-numbers relates q-why-math-describes-physics: 属于
-q-hidden-divergence relates power-series: 关于
-circle-of-convergence relates q-hidden-divergence: 解决
-poles relates q-hidden-divergence: 解释
-q-meaning-of-divergent-series relates divergent-series: 关于
+complex-numbers needs real-numbers: 复数 a+ib 由一对实数构成
+complex-numbers relates q-why-nature-uses-complex-numbers: 引出：人为引入的 i 竟主宰量子物理
+fundamental-theorem-of-algebra needs complex-numbers: 只有在复数中每个多项式都有根
+cubic-formula needs complex-numbers: 三个实根时，卡尔达诺公式须经复数中间值
+power-series needs limits: 幂级数的值是其部分和的极限
+divergent-series needs power-series: 在收敛范围外求幂级数的值得出 1+4+16+… = −1/3
+complex-plane needs complex-numbers: 把 z = x+iy 画成平面上的点 (x, y)
+poles needs complex-plane: 1/(1+z²) 的极点 ±i 位于实轴之外
+circle-of-convergence needs power-series: 幂级数在以原点为心的圆内收敛、圆外发散
+circle-of-convergence needs complex-plane: 收敛区域是复平面上的圆盘
+circle-of-convergence needs poles: 收敛圆半径延伸到最近的奇点
+circle-of-convergence relates q-hidden-divergence: 回应：±i 处的极点使收敛半径为 1
+mandelbrot-set needs complex-plane: 对复平面上的点 c 迭代 z ↦ z²+c
+mandelbrot-set relates q-platonic-world-real: 例证：其无穷精细结构是被发现的，而非人为发明
+q-why-nature-uses-complex-numbers relates complex-numbers: 关于：为何 i² = −1 的数构成物理的基础
+q-why-nature-uses-complex-numbers relates q-why-math-describes-physics: 属于：人为的抽象竟精确符合自然
+q-hidden-divergence relates power-series: 关于：1/(1+x²) 的级数为何在 |x| = 1 外失效
+poles relates q-hidden-divergence: 解释：隐藏在 ±i 的极点把收敛限制在 |x| < 1
+q-meaning-of-divergent-series relates divergent-series: 关于：欧拉给 1+4+16+… 的 −1/3 是否有真正意义
 
 %% 第 5 章
-complex-multiplication-geometry needs complex-plane
-complex-multiplication-geometry relates q-why-only-plane-rotations: 引出
-polar-coordinates needs complex-plane
-exponential-function needs power-series, circle-of-convergence
-complex-logarithm needs logarithm, exponential-function, polar-coordinates
-euler-identity needs exponential-function
-euler-formula needs exponential-function, polar-coordinates
-complex-powers needs complex-logarithm
-equiangular-spiral needs complex-powers
-roots-of-unity needs complex-powers, euler-formula
-cyclic-group needs roots-of-unity
-multiplicative-quantum-numbers needs roots-of-unity, additive-quantum-numbers
-parity needs multiplicative-quantum-numbers, antiparticles
-quarkiness needs multiplicative-quantum-numbers, cyclic-group, electric-charge-quantization
-q-why-only-plane-rotations relates complex-multiplication-geometry: 关于
-q-why-only-plane-rotations relates q-why-nature-uses-complex-numbers: 推广
-complex-powers relates q-complex-power-paradox: 解决
-q-complex-power-paradox relates complex-logarithm: 取决于
-complex-powers relates q-i-to-the-i: 解答
+complex-multiplication-geometry needs complex-plane: 加法平移平面，乘法旋转并伸缩平面
+complex-multiplication-geometry relates q-why-only-plane-rotations: 引出：什么能像复数乘法转平面那样转三维空间
+polar-coordinates needs complex-plane: 以距离 r 和幅角 θ 确定平面上的点
+exponential-function needs power-series: e^z 由级数 Σ zⁿ/n! 定义
+exponential-function needs circle-of-convergence: 指数级数收敛半径无穷大，处处收敛
+complex-logarithm needs logarithm: 把对数化乘为加的性质推广到复平面
+complex-logarithm needs exponential-function: 对数是 e^z 的逆，而 e^z 以 2πi 为周期
+complex-logarithm needs polar-coordinates: log w = log r + iθ，虚部即幅角
+euler-identity needs exponential-function: 在 e^z 中取 z = πi 得到 −1
+euler-formula needs exponential-function: e^(iθ) 的实部与虚部即 cos θ 与 sin θ
+euler-formula needs polar-coordinates: 使复数可写成极坐标形式 r e^(iθ)
+complex-powers needs complex-logarithm: w^z 定义为 e^(z log w)，需选定一支对数
+equiangular-spiral needs complex-powers: w^z 的多个值位于等角螺线的交点处
+roots-of-unity needs complex-powers: 1^(1/n) 的 n 个值是 1 的复数幂
+roots-of-unity needs euler-formula: 由 e^(2πik/n) 知它们构成单位圆上的正 n 边形
+cyclic-group needs roots-of-unity: n 次单位根在乘法下构成 Z_n
+multiplicative-quantum-numbers needs roots-of-unity: 其取值为 n 次单位根
+multiplicative-quantum-numbers needs additive-quantum-numbers: 按成分相乘组合，正如加和性量子数相加
+parity needs multiplicative-quantum-numbers: 宇称是 n = 2 的情形，ε = ±1
+parity needs antiparticles: 宇称为奇时，粒子的镜像即其反粒子
+quarkiness needs multiplicative-quantum-numbers: 彭罗斯的 n = 3 情形，取值 1, ω, ω²
+quarkiness needs cyclic-group: 夸克性取值 1, ω, ω² 构成群 Z₃
+quarkiness needs electric-charge-quantization: 由三分之一电荷 q 定义为 e^(−2qπi)，独立粒子取 1
+q-why-only-plane-rotations relates complex-multiplication-geometry: 关于：乘以单位复数即旋转平面
+q-why-only-plane-rotations relates q-why-nature-uses-complex-numbers: 推广：追问三维中什么扮演复数的角色
+complex-powers relates q-complex-power-paradox: 消解：选定对数的一支，幂便单值
+q-complex-power-paradox relates complex-logarithm: 取决于：对数只确定到 2πi 的整数倍
+complex-powers relates q-i-to-the-i: 解答：i^i = e^(−π/2)，是实数且有无穷多值
 
 %% 第 6 章
-function-as-mapping needs real-numbers
-heaviside-step-function needs function-as-mapping
-continuity needs function-as-mapping
-derivative needs function-as-mapping, continuity
-higher-derivatives needs derivative
-smooth-functions needs higher-derivatives, continuity
-taylor-series needs power-series, higher-derivatives
-analytic-functions needs taylor-series, smooth-functions
-analytic-functions relates q-what-is-a-function: 回应
-leibniz-rule needs derivative
-integration needs derivative
-fundamental-theorem-of-calculus needs derivative, integration
-dirac-delta-function needs heaviside-step-function, derivative, smooth-functions
-q-what-is-a-function relates function-as-mapping: 对照
-q-what-is-a-function relates smooth-functions: 检验
-analytic-functions relates q-what-is-a-function: 解答
-q-differentiation-vs-integration relates leibniz-rule: 涉及
-q-differentiation-vs-integration relates integration: 关于
-q-differentiation-vs-integration relates smooth-functions: 涉及
+function-as-mapping needs real-numbers: 按任意规则给每个实数指定一个值
+heaviside-step-function needs function-as-mapping: 映射观点使 θ(x) 无需单一公式即为真正函数
+continuity needs function-as-mapping: 考察映射的图像是否有跳跃
+derivative needs function-as-mapping: 函数图像上割线斜率的极限
+derivative needs continuity: 可导须先连续；|x| 连续却在尖点不可导
+higher-derivatives needs derivative: 反复求导；f′、f″ 的零点给出极值点与拐点
+smooth-functions needs higher-derivatives: C^n 表示存在且连续的导数阶数
+smooth-functions needs continuity: C^0 即连续，是光滑性等级的起点
+taylor-series needs power-series: 在一点由函数构造出的幂级数
+taylor-series needs higher-derivatives: 系数为 a_n = f^(n)(p)/n!
+analytic-functions needs taylor-series: 解析即在每点附近等于其泰勒级数
+analytic-functions needs smooth-functions: C^ω 强于 C^∞；exp(−1/x) 粘接 0 光滑却不解析
+analytic-functions relates q-what-is-a-function: 回应：解析性排除拼接，符合欧拉的单一函数观
+leibniz-rule needs derivative: d(fg) = f dg + g df 等法则使求导机械化
+integration needs derivative: 积分是求导的逆运算，相差一个常数
+fundamental-theorem-of-calculus needs derivative: f 下的面积等于 g(b) − g(a)，其中 g′ = f
+fundamental-theorem-of-calculus needs integration: 把作为面积的定积分与作为原函数的不定积分联系起来
+dirac-delta-function needs heaviside-step-function: δ 函数是阶梯函数的导数
+dirac-delta-function needs derivative: 对阶跃求导得到原点处无穷大的尖峰
+dirac-delta-function needs smooth-functions: 把 C^n 等级推向负数：δ 属于 C^−2
+q-what-is-a-function relates function-as-mapping: 对照：欧拉的单一函数与任意查表式映射
+q-what-is-a-function relates smooth-functions: 检验：C^∞ 是否足够，但光滑片段仍可拼接
+q-differentiation-vs-integration relates leibniz-rule: 涉及：这些法则使显式公式的求导成为例行运算
+q-differentiation-vs-integration relates integration: 关于：公式积分常需新函数，数值上却积分更易
+q-differentiation-vs-integration relates smooth-functions: 涉及：积分使 C^n 阶数升一，求导使其降一
 
 %% 第 7 章
-holomorphic-functions needs complex-plane, derivative, analytic-functions
-holomorphic-functions relates q-what-is-a-function: 回应
-contour-integration needs integration, holomorphic-functions, complex-logarithm
-homology-homotopy needs contour-integration
-cauchy-integral-formula needs contour-integration, holomorphic-functions
-complex-smooth-implies-analytic needs cauchy-integral-formula, taylor-series
-residue-theorem needs cauchy-integral-formula
-open-regions needs complex-plane
-analytic-continuation needs holomorphic-functions, circle-of-convergence, open-regions
-riemann-zeta-function needs analytic-continuation
-q-riemann-hypothesis relates riemann-zeta-function: 关于
-q-riemann-hypothesis relates analytic-continuation: 涉及
-q-magic-of-complex-smoothness relates complex-smooth-implies-analytic: 关于
-q-magic-of-complex-smoothness relates contour-integration: 涉及
+holomorphic-functions needs complex-plane: 定义在复平面区域上的 z 的函数
+holomorphic-functions needs derivative: 要求对复变量 z 可导，而不只对实数 x
+holomorphic-functions needs analytic-functions: 全纯函数最终证明就是复解析函数
+holomorphic-functions relates q-what-is-a-function: 回应：仅复光滑性便给出欧拉式不可拼接的函数
+contour-integration needs integration: 沿复平面上的路径而非实数区间积分
+contour-integration needs holomorphic-functions: 被积函数全纯时，路径形变不改变积分值
+contour-integration needs complex-logarithm: 绕原点的 ∮dz/z = 2πi，即对数的多值性
+homology-homotopy needs contour-integration: 区分哪些路径形变使周线积分不变
+cauchy-integral-formula needs contour-integration: f(p) 等于 f/(z−p) 绕 p 的周线积分
+cauchy-integral-formula needs holomorphic-functions: 全纯函数在环内的值由环上的值决定
+complex-smooth-implies-analytic needs cauchy-integral-formula: 柯西公式由一阶复导数给出全部各阶导数
+complex-smooth-implies-analytic needs taylor-series: 结论：泰勒级数收敛到函数本身
+residue-theorem needs cauchy-integral-formula: 把公式推广为周线内各极点留数之和
+open-regions needs complex-plane: 全纯函数所在的复平面开子集
+analytic-continuation needs holomorphic-functions: 沿每条路径唯一地把全纯函数延拓到原定义域外
+analytic-continuation needs circle-of-convergence: 串接相互交叠的幂级数收敛圆
+analytic-continuation needs open-regions: 延拓在相互交叠的开区域中进行
+riemann-zeta-function needs analytic-continuation: Σn^−z 仅在 Re z > 1 收敛，延拓到 z ≠ 1
+q-riemann-hypothesis relates riemann-zeta-function: 关于：ζ(z) 的非平凡零点位于何处
+q-riemann-hypothesis relates analytic-continuation: 涉及：Re z = 1/2 上的零点只属于延拓后的 ζ
+q-magic-of-complex-smoothness relates complex-smooth-implies-analytic: 关于：为何一阶复导数就迫使级数收敛
+q-magic-of-complex-smoothness relates contour-integration: 涉及：证明须经周线积分与柯西公式
 
 %% 第 8 章
-riemann-surfaces needs analytic-continuation, complex-logarithm
-riemann-surfaces relates q-multivalued-functions: 回应
-branch-points needs riemann-surfaces
-conformal-mappings needs holomorphic-functions
-mobius-transformations needs conformal-mappings
-riemann-sphere needs riemann-surfaces, mobius-transformations, stereographic-projection
-genus needs riemann-surfaces, riemann-sphere
-moduli needs genus
-riemann-mapping-theorem needs conformal-mappings, riemann-sphere
-zhukovsky-transformation needs riemann-mapping-theorem, conformal-mappings
-zhukovsky-transformation relates q-complex-structure-macroscopic: 例示
-riemann-surfaces relates q-multivalued-functions: 解答
-q-multivalued-functions relates complex-logarithm: 关于
-q-moduli-count-anomaly relates moduli: 关于
-q-moduli-count-anomaly relates genus: 涉及
-q-complex-structure-macroscopic relates holomorphic-functions: 涉及
+riemann-surfaces needs analytic-continuation: 沿所有路径延拓函数所铺出的定义域
+riemann-surfaces needs complex-logarithm: log z 在无穷层螺旋状的叶上变为单值
+riemann-surfaces relates q-multivalued-functions: 回应：让函数自建定义域，而非切割平面
+branch-points needs riemann-surfaces: 黎曼曲面各叶在此相连并相互置换的点
+conformal-mappings needs holomorphic-functions: 导数非零的全纯映射保持角度与小形状
+mobius-transformations needs conformal-mappings: 默比乌斯变换是把圆变成圆的共形映射
+riemann-sphere needs riemann-surfaces: 最简单的紧黎曼曲面，由 z 与 1/z 两个坐标片拼成
+riemann-sphere needs mobius-transformations: 默比乌斯变换恰是黎曼球面到自身的全纯映射
+riemann-sphere needs stereographic-projection: 球极平面投影把平面加 ∞ 等同于球面
+genus needs riemann-surfaces: 按环柄数对紧黎曼曲面作拓扑分类
+genus needs riemann-sphere: 黎曼球面是亏格 0 的情形
+moduli needs genus: 亏格 g ≥ 2 的曲面需 3g−3 个复模数
+riemann-mapping-theorem needs conformal-mappings: 任意简单闭环的内部都能共形映射到单位圆
+riemann-mapping-theorem needs riemann-sphere: 在球面上环外与环内地位相同，得到外部形式
+zhukovsky-transformation needs riemann-mapping-theorem: 显式把圆外映射到翼型外，如定理所保证
+zhukovsky-transformation needs conformal-mappings: w = (z + 1/z)/2 是全纯的共形映射
+zhukovsky-transformation relates q-complex-structure-macroscopic: 例证：经全纯映射算出机翼附近的理想气流
+q-multivalued-functions relates complex-logarithm: 关于：log z，其值相差 2πi 的整数倍
+q-moduli-count-anomaly relates moduli: 关于：m = 3g−3 为何对球面和环面失效
+q-moduli-count-anomaly relates genus: 涉及：计入 g = 0, 1 的自变换数 s 即复原公式
+q-complex-structure-macroscopic relates holomorphic-functions: 涉及：全纯结构在宏观系统中多被掩盖，理想流除外
 
 %% 第 9 章
-fourier-series needs euler-formula, integration
-laurent-series needs power-series, fourier-series
-annulus-of-convergence needs laurent-series, circle-of-convergence
-frequency-splitting needs laurent-series, riemann-sphere, holomorphic-functions
-fourier-transform needs fourier-series, integration
-hyperfunctions needs holomorphic-functions, frequency-splitting
-hyperfunctions relates q-appropriate-functions: 回应
-excision-theorem needs hyperfunctions, open-regions
-distributions needs dirac-delta-function, smooth-functions
-hyperfunctions relates q-appropriate-functions: 解答
-q-appropriate-functions relates analytic-functions: 涉及
-q-appropriate-functions relates q-what-is-a-function: 延续
-q-rigidity-vs-signals relates analytic-continuation: 涉及
-q-rigidity-vs-signals relates fourier-transform: 推动
+fourier-series needs euler-formula: 用 e^(inχ) 把正弦和余弦紧凑地写成复数项
+fourier-series needs integration: 每个系数都是一个周期上的积分
+laurent-series needs power-series: 把幂级数推广到 z 的负幂
+laurent-series needs fourier-series: 在单位圆 z = e^(iχ) 上恰是傅里叶级数
+annulus-of-convergence needs laurent-series: 洛朗级数收敛的圆环区域
+annulus-of-convergence needs circle-of-convergence: 正幂部分圆内收敛、负幂部分圆外收敛的交叠
+frequency-splitting needs laurent-series: 把洛朗级数拆成正幂与负幂两半
+frequency-splitting needs riemann-sphere: 每一半全纯延拓到黎曼球面的一个半球
+frequency-splitting needs holomorphic-functions: 正负频率即函数向哪一侧全纯延拓
+fourier-transform needs fourier-series: 令周期趋于无穷，级数化为积分
+fourier-transform needs integration: 变换对是一对积分
+hyperfunctions needs holomorphic-functions: 超函数是曲线两侧全纯函数之间的跃变
+hyperfunctions needs frequency-splitting: 把内外剖分推广为任意函数的全纯部分之差
+hyperfunctions relates q-appropriate-functions: 回应：完全由全纯函数构成，却包含极不规则的函数
+excision-theorem needs hyperfunctions: 保证超函数与所选的包围区域无关
+excision-theorem needs open-regions: 包含曲线的任意两个开区域给出相同超函数
+distributions needs dirac-delta-function: δ 函数是分布的原型
+distributions needs smooth-functions: 分布属于 C^−∞，是 C^∞ 函数的对偶
+q-appropriate-functions relates analytic-functions: 涉及：欧拉的解析函数与现代的一般函数之争
+q-appropriate-functions relates q-what-is-a-function: 延续：超函数如今连通欧拉全纯函数与任意函数
+q-rigidity-vs-signals relates analytic-continuation: 涉及：任意一小段即可决定解析信号的全部
+q-rigidity-vs-signals relates fourier-transform: 促成：把信号分解为频率，以描述波的传播
 
 %% 第 10 章
-complex-conjugation needs complex-numbers, complex-plane
-complex-vs-real-dimension needs complex-conjugation, riemann-surfaces, holomorphic-functions
-complex-vs-real-dimension relates q-riemann-surface-curve-or-surface: 回应
-partial-derivatives needs derivative, smooth-functions
-mixed-partial-derivatives needs partial-derivatives
-scalar-fields needs smooth-functions
-transition-functions needs partial-derivatives
-chain-rule needs partial-derivatives, transition-functions
-vector-fields needs chain-rule, scalar-fields
-vector-fields relates q-second-fundamental-confusion: 解释
-one-forms needs partial-derivatives, vector-fields
-gradient needs one-forms, scalar-fields
-scalar-product needs vector-fields, one-forms
-cauchy-riemann-equations needs complex-conjugation, partial-derivatives, holomorphic-functions
-cauchy-riemann-equations relates q-riemann-surface-curve-or-surface: 回应
-laplace-equation needs cauchy-riemann-equations, mixed-partial-derivatives
-q-second-fundamental-confusion relates partial-derivatives: 关于
-vector-fields relates q-second-fundamental-confusion: 解决
-q-second-fundamental-confusion relates chain-rule: 涉及
-q-riemann-surface-curve-or-surface relates complex-vs-real-dimension: 关于
-q-riemann-surface-curve-or-surface relates cauchy-riemann-equations: 涉及
-q-riemann-surface-curve-or-surface relates riemann-surfaces: 关于
+complex-conjugation needs complex-numbers: 把虚部反号，z̄ = x − iy
+complex-conjugation needs complex-plane: 几何上是平面关于实轴的反射
+complex-vs-real-dimension needs complex-conjugation: 引入 z̄ 后 F(z, z̄) 即 x, y 的普通实函数
+complex-vs-real-dimension needs riemann-surfaces: 黎曼曲面是一个复维、两个实维
+complex-vs-real-dimension needs holomorphic-functions: 全纯函数只依赖 z，不依赖 z̄
+complex-vs-real-dimension relates q-riemann-surface-curve-or-surface: 回应：一个复维是曲线，两个实维是曲面
+partial-derivatives needs derivative: 对一个变量求导，同时保持其他变量不变
+partial-derivatives needs smooth-functions: 多变量光滑性指偏导数连续
+mixed-partial-derivatives needs partial-derivatives: 对 C² 函数，∂/∂x 与 ∂/∂y 的次序可交换
+scalar-fields needs smooth-functions: 标量场是流形上的光滑函数
+transition-functions needs partial-derivatives: X(x,y)、Y(x,y) 的光滑性由其偏导数判定
+chain-rule needs partial-derivatives: 用新坐标的偏导数改写 ∂/∂x
+chain-rule needs transition-functions: 应用于交叠坐标拼块之间的转移函数
+vector-fields needs chain-rule: 链式法则表明 ξ 的分量如何随坐标变换
+vector-fields needs scalar-fields: ξ(Φ) 是 Φ 沿箭头方向的变化率
+vector-fields relates q-second-fundamental-confusion: 解释：∂/∂x 取决于保持哪个坐标不变
+one-forms needs partial-derivatives: dΦ = u dx + v dy 中 u、v 为 Φ 的偏导数
+one-forms needs vector-fields: 1 形式与矢量场配对得出数
+gradient needs one-forms: dΦ 是由标量场构成的 1 形式
+gradient needs scalar-fields: Φ 的等值线描绘其梯度 dΦ
+scalar-product needs one-forms: 与 1 形式分量 (u, v) 配对得 au + bv
+cauchy-riemann-equations needs complex-conjugation: 全纯性写成 ∂Φ/∂z̄ = 0
+cauchy-riemann-equations needs partial-derivatives: 实部与虚部对 x、y 偏导数之间的关系
+cauchy-riemann-equations needs holomorphic-functions: 它们是全纯性的实变量条件
+cauchy-riemann-equations relates q-riemann-surface-curve-or-surface: 回应：使黎曼曲面可当作实曲面处理
+laplace-equation needs cauchy-riemann-equations: 联立方程得出实部与虚部满足 ∇²α = 0
+laplace-equation needs mixed-partial-derivatives: 推导用到混合偏导数相等
+q-second-fundamental-confusion relates partial-derivatives: 关于：为何 X = x 时 ∂/∂X ≠ ∂/∂x
+q-second-fundamental-confusion relates chain-rule: 涉及：链式法则表明 ∂/∂x 依赖全部新坐标
+q-riemann-surface-curve-or-surface relates complex-vs-real-dimension: 关于：一个复维与两个实维之别
+q-riemann-surface-curve-or-surface relates cauchy-riemann-equations: 涉及：柯西－黎曼观点把它看作带附加结构的实二维曲面
+q-riemann-surface-curve-or-surface relates riemann-surfaces: 关于：黎曼曲面本身的性质
 
 %% 第 11 章
-quaternions needs complex-numbers
-quaternions relates q-why-quaternions-failed: 回应
-ring needs quaternions
-division-algebra needs ring, vector-space
-octonions needs quaternions, division-algebra
-hurwitz-theorem needs division-algebra, octonions
-quaternion-rotations needs quaternions
-spinors needs quaternion-rotations
-rotation-composition needs quaternion-rotations
-clifford-algebra needs quaternions, vector-space, spinors
-reduced-spinors-chirality needs spinors, clifford-algebra
-reduced-spinors-chirality relates q-parity-violation: 回应
-grassmann-algebra needs clifford-algebra, vector-space
-wedge-product needs grassmann-algebra
-antisymmetrization needs wedge-product
-q-why-quaternions-failed relates quaternions: 关于
-q-why-quaternions-failed relates holomorphic-functions: 对照
-q-why-quaternions-failed relates complex-conjugation: 涉及
-q-parity-violation relates reduced-spinors-chirality: 关于
-q-parity-violation relates spinors: 涉及
+quaternions needs complex-numbers: 在 a+ib 基础上再添两个 −1 的平方根 j、k
+quaternions relates q-why-quaternions-failed: 回应：四元数四维与时空符号差不合，且无全纯性
+ring needs quaternions: 四元数是乘法不可交换的环的范例
+division-algebra needs ring: 每个非零元都有乘法逆元的环
+division-algebra needs vector-space: 代数即带有双线性乘法的矢量空间
+octonions needs quaternions: 把四元数加倍为八元，如四元数失交换律般失去结合律
+octonions needs division-algebra: 八元数虽不满足结合律，非零元仍都可逆
+hurwitz-theorem needs division-algebra: 断言除代数只能是 1、2、4、8 维
+hurwitz-theorem needs octonions: 八元数是最后的 8 维情形，序列到此终止
+quaternion-rotations needs quaternions: i、j、k 实现为绕三根正交轴的 π 转动
+spinors needs quaternion-rotations: i²=−1 即 2π 转动变号，由此定义旋量体
+rotation-composition needs quaternion-rotations: 单位四元数相乘即转动复合，哈密顿用半角大圆弧表示
+clifford-algebra needs quaternions: 把 i、j、k 推广为 n 个反对易且平方为 −1 的 γ
+clifford-algebra needs vector-space: 生成元 γ 对应 n 维空间的反射，代数为 2ⁿ 维
+clifford-algebra needs spinors: 旋量空间定义为克利福德代数所作用的空间
+reduced-spinors-chirality needs spinors: 偶数维时旋量空间分裂为两个半旋量空间
+reduced-spinors-chirality needs clifford-algebra: 偶数 n 时克利福德代数的 2^{n/2} 维旋量空间按手征分裂
+reduced-spinors-chirality relates q-parity-violation: 回应：自然对两个约化旋量空间区别对待，破坏镜像对称
+grassmann-algebra needs clifford-algebra: 生成元平方为零而非 −1 的退化克利福德代数
+grassmann-algebra needs vector-space: 无需度规，由矢量构造反对易乘积
+wedge-product needs grassmann-algebra: 即格拉斯曼积，表示各阶有向面元
+antisymmetrization needs wedge-product: 方括号 A_[pq] 给出楔积的分量
+q-why-quaternions-failed relates quaternions: 关于：哈密顿推崇的四元数为何未成为物理语言
+q-why-quaternions-failed relates holomorphic-functions: 对照：复数有丰富的全纯理论，四元数却没有
+q-why-quaternions-failed relates complex-conjugation: 涉及：q̄ 可由 q 代数表出，不像 z̄ 独立于 z
+q-parity-violation relates reduced-spinors-chirality: 关于：四维时空中手征相反的两个约化旋量空间
+q-parity-violation relates spinors: 涉及：旋量分为左右手征两部分，自然对其区别对待
 
 %% 第 12 章
-configuration-space relates q-why-higher-dimensions: 回应
-phase-space needs configuration-space
-phase-space relates q-why-higher-dimensions: 回应
-simply-connected needs spinors
-n-manifolds needs transition-functions
-tangent-space needs vector-fields, n-manifolds, vector-space
-covectors needs one-forms, tangent-space
-p-forms needs wedge-product, covectors, antisymmetrization
-integration-of-forms needs p-forms, integration
-exterior-derivative needs p-forms, gradient
-poincare-lemma needs exterior-derivative
-stokes-theorem needs exterior-derivative, integration-of-forms, fundamental-theorem-of-calculus
-compactness needs n-manifolds
-orientability needs n-manifolds
-volume-element needs p-forms
-summation-convention needs covectors
-tensors needs covectors, summation-convention
-abstract-index-notation needs tensors
-abstract-index-notation relates q-notation-conflict: 回应
-complex-manifolds needs n-manifolds, cauchy-riemann-equations, complex-vs-real-dimension
-configuration-space relates q-why-higher-dimensions: 解答
-phase-space relates q-why-higher-dimensions: 解答
-q-why-higher-dimensions relates n-manifolds: 关于
-abstract-index-notation relates q-notation-conflict: 解决
-q-notation-conflict relates tensors: 关于
+configuration-space relates q-why-higher-dimensions: 回应：刚体需 6 维，气体需 3N 维
+phase-space needs configuration-space: 为每个位置坐标添一个动量，维数加倍
+phase-space relates q-why-higher-dimensions: 回应：即使少量空气，其相空间也达 6N 维
+simply-connected needs spinors: 转动空间有不可收缩的 2π 回路，对应旋量变号
+n-manifolds needs transition-functions: 如曲面一样，用光滑转换函数粘合 ℝⁿ 坐标片
+tangent-space needs vector-fields: 切矢量即矢量场在一点的取值，作为导子
+tangent-space needs n-manifolds: 将流形某点邻域无限放大至平直所得
+tangent-space needs vector-space: 每点附着一个 n 维矢量空间
+covectors needs one-forms: 如 dΦ 的 1 形式，现视为余切空间的元素
+covectors needs tangent-space: 切矢量到数的线性映射，即对偶空间
+p-forms needs wedge-product: 楔积把 p 个余矢量组合成 p 形式
+p-forms needs covectors: 余矢量即 p=1 情形，各定义一个 (n−1) 维面元
+p-forms needs antisymmetrization: 分量 α_[ab…c] 对指标完全反对称
+integration-of-forms needs p-forms: p 形式是 p 维区域上的天然被积量
+integration-of-forms needs integration: 把单变量定积分推广为区域上坐标无关的积分
+exterior-derivative needs p-forms: 以反对称化偏导把 p 形式变为 (p+1) 形式
+exterior-derivative needs gradient: 推广标量的梯度 dΦ，即 0 形式情形
+poincare-lemma needs exterior-derivative: d²=0 的局部逆命题：dα=0 则 α=dβ
+stokes-theorem needs exterior-derivative: dφ 在 R 上的积分等于 φ 在边界上的积分
+stokes-theorem needs integration-of-forms: 两边都是形式在相应维数区域上的积分
+stokes-theorem needs fundamental-theorem-of-calculus: 其一维情形正是 ∫f = g(b) − g(a)
+compactness needs n-manifolds: 流形或区域的性质，如球面、环面、闭圆盘
+orientability needs n-manifolds: 问能否在整个流形上一致地选定手征
+volume-element needs p-forms: 最高阶的 n 形式，度量 n 维密度
+summation-convention needs covectors: 余矢量 β 与矢量 ξ 的配对写作 β_r ξ^r
+tensors needs covectors: 矢量与余矢量的多重线性函数，推广余矢量的线性
+tensors needs summation-convention: 上下指标缩并使张量组合
+abstract-index-notation needs tensors: 指标抽象标记张量的槽位，而非坐标分量
+abstract-index-notation relates q-notation-conflict: 回应：保留指标的直观，又像 β·ξ 一样不依赖坐标
+complex-manifolds needs n-manifolds: 用 ℂⁿ 代替 ℝⁿ 坐标片，转换函数全纯
+complex-manifolds needs cauchy-riemann-equations: 近复结构 J 把柯西-黎曼条件推广到高维
+complex-manifolds needs complex-vs-real-dimension: 复 n 维流形即带额外结构的实 2n 维流形
+q-why-higher-dimensions relates n-manifolds: 关于：为何在四维时空之外还需任意 n 维流形
+q-notation-conflict relates tensors: 关于：张量运算用无坐标记法还是分量指标记法
 
 %% 第 13 章
-groups needs complex-numbers, complex-conjugation
-groups relates q-exact-symmetry: 回应
-so3 needs groups, n-manifolds
-normal-subgroups needs groups
-normal-subgroups relates q-broken-symmetry: 回应
-simple-groups needs normal-subgroups
-matrices needs vector-space, summation-convention
-general-linear-group needs matrices, groups
-determinant needs matrices, antisymmetrization
-trace needs matrices, determinant
-eigenvectors needs matrices, determinant, fundamental-theorem-of-algebra
-representation-theory needs groups, general-linear-group
-lie-algebra needs representation-theory, trace
-reducibility needs representation-theory, tensors, lie-algebra
-metric needs tensors, matrices
-orthogonal-group needs metric, so3, determinant
-orthogonal-group relates q-real-forms: 回应
-hermitian-conjugation needs complex-conjugation, matrices, covectors
-unitary-group needs hermitian-conjugation, general-linear-group
-symplectic-group needs orthogonal-group, unitary-group, lie-algebra
-q-exact-symmetry relates groups: 关于
-q-broken-symmetry relates normal-subgroups: 涉及
-q-broken-symmetry relates simple-groups: 涉及
-q-real-forms relates orthogonal-group: 关于
-q-real-forms relates metric: 涉及
+groups needs complex-numbers: 正方形的转动即乘以 1、i、−1、−i
+groups needs complex-conjugation: 复共轭 C 给出正方形的反射，满足 Ci=−iC
+groups relates q-exact-symmetry: 回应：群公理刻画精确对称，物理在规范联络中找到它
+so3 needs groups: 球面转动构成的连续群
+so3 needs n-manifolds: 全部转动本身构成一个三维流形
+normal-subgroups needs groups: 满足 Sg=gS 的子群，其陪集构成商群 G/S
+normal-subgroups relates q-broken-symmetry: 回应：观测到的对称或是大群破缺后留下的子群
+simple-groups needs normal-subgroups: 单群即无非平凡正规子群，因而无商群
+matrices needs vector-space: 保持矢量空间结构的线性变换，记为数组 T^a_b
+matrices needs summation-convention: 矩阵作用为 x^a ↦ T^a_b x^b，对 b 求和
+general-linear-group needs matrices: 非奇异 n×n 矩阵在乘法下构成的群
+general-linear-group needs groups: 可逆矩阵满足单位元、逆元和结合律等群公理
+determinant needs matrices: 由矩阵元算出的数，恰在矩阵奇异时为零
+determinant needs antisymmetrization: 用反对称的列维-齐维塔符号与矩阵缩并而成
+trace needs matrices: 对角元之和 T^a_a
+trace needs determinant: 无穷小时 det(I+εA)=1+ε·tr A
+eigenvectors needs matrices: 仅被 T 伸缩的矢量，Tv=λv
+eigenvectors needs determinant: 本征值是特征方程 det(T−λI)=0 的解
+eigenvectors needs fundamental-theorem-of-algebra: 保证特征多项式有复根，故本征值必存在
+representation-theory needs groups: 把群乘法保持到矩阵上的同态
+representation-theory needs general-linear-group: 目标群：每个 g 映为 GL(n) 中的 T(g)
+lie-algebra needs representation-theory: 无穷小元 I+εA 在表示中按矩阵处理
+lie-algebra needs trace: SL(n) 的无穷小元恰为无迹矩阵
+reducibility needs representation-theory: 问表示能否分解为较小表示的直和
+reducibility needs tensors: 张量空间分裂为对称与反对称部分
+reducibility needs lie-algebra: 紧致半单群（基灵型非奇异）完全可约
+metric needs tensors: 对称非奇异的 [0 2] 型张量 g_ab
+metric needs matrices: g_ab 作为对称矩阵可对角化为 ±1，定出符号差
+orthogonal-group needs metric: 保持度规 g_ab 的线性变换
+orthogonal-group needs so3: SO(3)、O(3) 是 n=3 正定度规的情形
+orthogonal-group needs determinant: SO(n) 是行列式为 +1 的子群，排除反射
+orthogonal-group relates q-real-forms: 回应：各种符号差的 O(p,q) 有同一复化 O(n,ℂ)
+hermitian-conjugation needs complex-conjugation: 埃尔米特型在一个变元上反线性，对标量取复共轭
+hermitian-conjugation needs matrices: * 运算即矩阵的共轭转置
+hermitian-conjugation needs covectors: 把矢量反线性地映为对偶余矢量，类似度规降指标
+unitary-group needs hermitian-conjugation: 保持埃尔米特型的复线性变换，T⁻¹=T*
+unitary-group needs general-linear-group: U(n) 是复 GL(n) 的子群
+symplectic-group needs orthogonal-group: 与正交群类似，但保持反对称而非对称的型
+symplectic-group needs unitary-group: 低维巧合：Sp(1)=SU(2)，局部同于 SO(3)
+symplectic-group needs lie-algebra: 构成基灵-嘉当单李代数分类中的 C 系列
+q-exact-symmetry relates groups: 关于：近似对称的世界何以服从精确的群对称
+q-broken-symmetry relates normal-subgroups: 涉及：破缺留下子群，是否正规决定能否形成商群
+q-broken-symmetry relates simple-groups: 涉及：在已分类的单李群中寻找基本对称群
+q-real-forms relates orthogonal-group: 关于：紧致 O(n) 与洛伦兹群等非紧 O(p,q)
+q-real-forms relates metric: 涉及：度规符号差 (p,q) 决定所取实形式
 
 %% 第 14 章
-affine-space needs vector-space
-parallel-transport needs n-manifolds, tangent-space
-covariant-derivative needs parallel-transport, tensors, exterior-derivative
-torsion-tensor needs covariant-derivative
-curvature-tensor needs covariant-derivative
-bianchi-identity needs curvature-tensor
-geodesics needs covariant-derivative
-geodesic-parallelogram needs geodesics, curvature-tensor, torsion-tensor
-geodesic-deviation needs geodesics, curvature-tensor
-lie-bracket needs vector-fields, lie-algebra
-lie-derivative needs lie-bracket, tensors
-riemannian-manifold needs n-manifolds, metric, orthogonal-group
-levi-civita-connection needs riemannian-manifold, covariant-derivative, torsion-tensor
-riemann-tensor needs curvature-tensor, levi-civita-connection
-killing-vectors needs lie-derivative, levi-civita-connection
-symplectic-manifolds needs symplectic-group, exterior-derivative, n-manifolds
-poisson-bracket needs symplectic-manifolds
-q-spacetime-torsion relates torsion-tensor: 关于
-q-spacetime-torsion relates covariant-derivative: 涉及
-symplectic-manifolds relates q-flabby-structures: 例示
-q-flabby-structures relates riemannian-manifold: 对照
+affine-space needs vector-space: 忘却了原点的矢量空间
+parallel-transport needs n-manifolds: 弯曲流形上以沿曲线移动代替整体平行
+parallel-transport needs tangent-space: 把切矢量从一点的切空间移到另一点
+covariant-derivative needs parallel-transport: 将场与其平行移动值比较来求导
+covariant-derivative needs tensors: ∇ 作用于任意型张量场，满足莱布尼茨法则
+covariant-derivative needs exterior-derivative: 无挠 ∇ 经反对称化后在形式上即为 d
+torsion-tensor needs covariant-derivative: ∇a∇b 作用于标量的反对称部分
+curvature-tensor needs covariant-derivative: 协变导数对易子 ∇a∇b−∇b∇a 作用于矢量场
+bianchi-identity needs curvature-tensor: 曲率的对称性 R_[abc]^d=0 与微分恒等式
+geodesics needs covariant-derivative: 切矢沿自身平行移动的曲线，t^a∇_a t^b=0
+geodesic-parallelogram needs geodesics: 以短测地线段为边的平行四边形
+geodesic-parallelogram needs curvature-tensor: 沿其平行移动一周可读出曲率 R
+geodesic-parallelogram needs torsion-tensor: 有挠率时四边形在 ε² 阶不闭合
+geodesic-deviation needs geodesics: 相邻测地线之间的相对加速度
+geodesic-deviation needs curvature-tensor: 正曲率使测地线汇聚，负曲率使其发散
+lie-bracket needs vector-fields: 两矢量场的对易子 ξη−ηξ 仍是矢量场
+lie-bracket needs lie-algebra: 如李代数对易子般满足反对称与雅可比恒等式
+lie-derivative needs lie-bracket: 作用于矢量场时即为李括号：£ξη=[ξ,η]
+lie-derivative needs tensors: 把沿 ξ 的拖曳推广到任意型张量场
+riemannian-manifold needs n-manifolds: 任意维光滑流形，在每点赋予度规
+riemannian-manifold needs metric: g_ab 度量长度 ds，其符号差可为洛伦兹型 +−−−
+riemannian-manifold needs orthogonal-group: 每点切空间的度规以 O(p,q) 为对称群
+levi-civita-connection needs riemannian-manifold: 度规唯一选定一个自然联络
+levi-civita-connection needs covariant-derivative: 满足 ∇g=0 的特定 ∇，平行移动保长
+levi-civita-connection needs torsion-tensor: 唯一性要求挠率为零
+riemann-tensor needs curvature-tensor: 用 g_ab 降指标后的曲率张量
+riemann-tensor needs levi-civita-connection: 该度规联络的曲率获得对称性 R_abcd=R_cdab
+killing-vectors needs lie-derivative: 保持度规不变的场 κ：£κg=0
+killing-vectors needs levi-civita-connection: 用此 ∇ 将 £κg=0 改写为 ∇(aκb)=0
+symplectic-manifolds needs symplectic-group: 每点辛形式 S_ab 以辛群为对称群
+symplectic-manifolds needs exterior-derivative: 要求辛 2 形式闭合，dS=0
+symplectic-manifolds needs n-manifolds: 带非奇异 2 形式场的偶数维流形
+poisson-bracket needs symplectic-manifolds: 借逆辛形式组合两个标量场的梯度
+q-spacetime-torsion relates torsion-tensor: 关于：时空联络是否真有非零挠率
+q-spacetime-torsion relates covariant-derivative: 涉及：爱因斯坦-嘉当理论与超引力放宽无挠假设
+symplectic-manifolds relates q-flabby-structures: 例示：辛流形局部完全相同，无曲率不变量
+q-flabby-structures relates riemannian-manifold: 对照：度规有局部曲率不变量，因而是刚性的
 
 %% 第 15 章
-kaluza-klein needs n-manifolds
-kaluza-klein relates q-extra-dimensions: 引出
-fibre-bundles needs n-manifolds, groups
-mobius-bundle needs fibre-bundles
-bundle-cross-sections needs fibre-bundles
-hopf-fibration needs fibre-bundles, riemann-sphere, bundle-cross-sections
-clifford-parallels needs hopf-fibration, geodesic-deviation
-complex-vector-bundles needs fibre-bundles, hopf-fibration
-tangent-bundle needs fibre-bundles, tangent-space
-cotangent-bundle needs tangent-bundle, symplectic-manifolds
-projective-space needs vector-space
-homogeneous-coordinates needs projective-space
-pappus-desargues-theorems needs projective-space
-gauge-connection needs fibre-bundles, covariant-derivative
-bundle-curvature needs gauge-connection, curvature-tensor
-bundle-curvature relates q-gauge-symmetry-origin: 引出
-q-extra-dimensions relates kaluza-klein: 关于
-fibre-bundles relates q-extra-dimensions: 另行解答
-q-gauge-symmetry-origin relates gauge-connection: 涉及
-q-gauge-symmetry-origin relates bundle-curvature: 涉及
+kaluza-klein needs n-manifolds: 时空变为带细小卷曲维度的高维流形
+kaluza-klein relates q-extra-dimensions: 引出：内部自由度是否真是如软管般细小的空间维
+fibre-bundles needs n-manifolds: 底空间与丛空间均为流形，局部为乘积 M×V
+fibre-bundles needs groups: 纤维的对称群决定纤维间如何粘合
+mobius-bundle needs fibre-bundles: 最简单的扭曲丛：圆上的直线丛
+bundle-cross-sections needs fibre-bundles: 在每个底点的纤维上连续地选取一点
+hopf-fibration needs fibre-bundles: S³ 作为 S² 上以 S¹ 为纤维的丛
+hopf-fibration needs riemann-sphere: 底空间 S² 即复坐标比值构成的黎曼球面
+hopf-fibration needs bundle-cross-sections: 克利福德丛不存在连续截面
+clifford-parallels needs hopf-fibration: 它们正是霍普夫纤维化的纤维圆
+clifford-parallels needs geodesic-deviation: S³ 的正曲率使斜交大圆相互靠拢，恰好保持等距
+complex-vector-bundles needs fibre-bundles: 纤维为复矢量空间的丛
+complex-vector-bundles needs hopf-fibration: S³ 是 CP¹ 上复线丛中的单位圆
+tangent-bundle needs fibre-bundles: 其截面恰为 M 上矢量场的丛
+tangent-bundle needs tangent-space: 每根纤维是 M 上一点的切空间
+cotangent-bundle needs tangent-bundle: 对偶构造：以余矢量取代矢量
+cotangent-bundle needs symplectic-manifolds: T*(M) 自然带辛结构，即经典相空间
+projective-space needs vector-space: 点即 (n+1) 维矢量空间中过原点的直线
+homogeneous-coordinates needs projective-space: 以比值 z⁰:z¹:…:zⁿ 标记过原点的直线
+pappus-desargues-theorems needs projective-space: 平行线交于无穷远点后可简洁表述
+gauge-connection needs fibre-bundles: 定义纤维值沿底空间曲线的“不变”
+gauge-connection needs covariant-derivative: ∇ 在丛上的类比，定义纤维间平行移动
+bundle-curvature needs gauge-connection: 丛导数 ∇a=∂a−Aa 的对易子给出 F_ab
+bundle-curvature needs curvature-tensor: 把 R 的对易子定义从切丛推广到任意丛
+bundle-curvature relates q-gauge-symmetry-origin: 引出：麦克斯韦场等即丛曲率，纤维对称从何而来
+q-extra-dimensions relates kaluza-klein: 关于：卡鲁扎-克莱因的细小额外维是否真实
+fibre-bundles relates q-extra-dimensions: 另解：内部自由度是丛纤维，而非额外空间维
+q-gauge-symmetry-origin relates gauge-connection: 涉及：规范联络须以纤维的精确对称为前提
+q-gauge-symmetry-origin relates bundle-curvature: 涉及：物理规范场表现为丛曲率 F_ab
 
 %% 第 16 章
-finite-fields needs rational-numbers
-finite-fields relates q-finite-or-infinite-physics: 回应
-finite-projective-geometry needs finite-fields, projective-space, pappus-desargues-theorems
-fano-plane needs finite-projective-geometry, octonions
-cardinality needs natural-numbers, rational-numbers
-axiom-of-choice needs cardinality
-axiom-of-choice relates q-platonic-world-real: 例示
-cantor-diagonal-argument needs cardinality, real-numbers
-continuum-hypothesis needs cantor-diagonal-argument
-continuum-hypothesis relates q-continuum-hypothesis-truth: 引出
-russell-paradox needs cantor-diagonal-argument
-turing-machines needs natural-numbers
-halting-problem needs turing-machines, cantor-diagonal-argument
-recursive-sets needs turing-machines
-godel-incompleteness needs halting-problem, axioms
-godel-incompleteness relates q-godel-unknowable-truths: 引出
-functional-freedom needs cardinality, n-manifolds
-q-finite-or-infinite-physics relates finite-fields: 涉及
-q-finite-or-infinite-physics relates finite-projective-geometry: 涉及
-q-finite-or-infinite-physics relates real-numbers: 质疑
-q-continuum-hypothesis-truth relates continuum-hypothesis: 关于
-q-continuum-hypothesis-truth relates axiom-of-choice: 平行于
-q-godel-unknowable-truths relates godel-incompleteness: 关于
-q-godel-unknowable-truths relates q-platonic-world-real: 关系到
+finite-fields relates q-finite-or-infinite-physics: 回应：F_p 表明算术与几何可只用有限个元素
+finite-projective-geometry needs finite-fields: 以 F_q 为坐标域，得 1+q+…+qⁿ 个点
+finite-projective-geometry needs projective-space: 在有限域而非 ℝ、ℂ 上构造 Pⁿ
+finite-projective-geometry needs pappus-desargues-theorems: 魔盘构造实现这些关联定理的有限版本
+fano-plane needs finite-projective-geometry: 最小情形 P²(F₂)，7 点 7 线
+fano-plane needs octonions: 其直线编码七个八元数虚单位的乘法表
+cardinality needs natural-numbers: ℕ 的势 ℵ₀ 是最小的无限基数
+cardinality needs rational-numbers: 有理数可与 ℕ 一一配对，势亦为 ℵ₀
+axiom-of-choice needs cardinality: 推出任意两个势都可比较
+axiom-of-choice relates q-platonic-world-real: 例示：其真理性或客观或仅属约定的命题
+cantor-diagonal-argument needs cardinality: 证明对任意势 α 有 α<2^α
+cantor-diagonal-argument needs real-numbers: 改写对角线小数位造出清单外的实数，C>ℵ₀
+continuum-hypothesis needs cantor-diagonal-argument: 既知 2^ℵ₀>ℵ₀，问其间是否无他：2^ℵ₀=ℵ₁
+continuum-hypothesis relates q-continuum-hypothesis-truth: 引出：哥德尔与科恩证其独立，它还有真假吗
+russell-paradox needs cantor-diagonal-argument: 对“所有集合的集合”用对角线法即生矛盾
+turing-machines needs natural-numbers: 机器作用于自然数，自身亦以自然数编码
+halting-problem needs turing-machines: 问第 n 台图灵机对输入 m 是否停机
+halting-problem needs cantor-diagonal-argument: 对角线构造击败任何判定停机的算法
+recursive-sets needs turing-machines: 其成员判定或枚举由某台图灵机完成
+godel-incompleteness needs halting-problem: 完备的证明系统可判定停机，故有真 Π₁ 命题不可证
+godel-incompleteness needs axioms: 针对形式系统：公理加推理规则产生定理
+godel-incompleteness relates q-godel-unknowable-truths: 引出：系统内不可证是否意味着人类不可知
+functional-freedom needs cardinality: 势无法区分各场空间，故以 ∞^(k∞ⁿ) 计其自由度
+functional-freedom needs n-manifolds: n 即变量数：场是 n 维流形上的函数
+q-finite-or-infinite-physics relates finite-fields: 涉及：物理能否以大 p 的 F_p 取代实数
+q-finite-or-infinite-physics relates finite-projective-geometry: 涉及：有限几何表明几何可由有限个点构成
+q-finite-or-infinite-physics relates real-numbers: 质疑：实数连续统是否只是某种有限结构的近似
+q-continuum-hypothesis-truth relates continuum-hypothesis: 关于：2^ℵ₀=ℵ₁ 是否有客观真值
+q-continuum-hypothesis-truth relates axiom-of-choice: 类比：二者都独立于标准集合论，考验其柏拉图性
+q-godel-unknowable-truths relates godel-incompleteness: 关于：真而不可证的哥德尔命题究竟意味着什么
+q-godel-unknowable-truths relates q-platonic-world-real: 关乎：我们能看出哥德尔命题为真，真理超越形式规则
 
 %% 第 17 章
-aristotelian-spacetime needs euclidean-geometry
-aristotelian-spacetime relates q-why-spacetime: 回应
-galilean-spacetime needs galilean-relativity, fibre-bundles, aristotelian-spacetime
-world-line needs galilean-spacetime
-newtons-laws needs galilean-spacetime, affine-space, world-line
-newtonian-gravity needs newtons-laws
-equivalence-principle needs newtonian-gravity, newtons-laws
-equivalence-principle relates q-gravity-a-force: 回应
-newton-cartan-spacetime needs equivalence-principle, galilean-spacetime, covariant-derivative
-tidal-effect needs newton-cartan-spacetime, geodesic-deviation, curvature-tensor
-light-cones needs world-line
-light-cones relates q-light-speed-vs-relativity: 回应
-relativity-of-simultaneity needs light-cones, galilean-spacetime
-relativity-of-simultaneity relates q-light-speed-vs-relativity: 解决
-minkowski-space needs light-cones, riemannian-manifold
-proper-time needs minkowski-space, world-line
-causal-structure needs light-cones, minkowski-space
-einsteinian-spacetime needs minkowski-space, newton-cartan-spacetime, levi-civita-connection
-einsteinian-spacetime relates q-time-travel: 引出
-q-why-spacetime relates aristotelian-spacetime: 对照
-galilean-spacetime relates q-why-spacetime: 解答
-q-gravity-a-force relates equivalence-principle: 关于
-tidal-effect relates q-gravity-a-force: 解答
-light-cones relates q-light-speed-vs-relativity: 解答
-relativity-of-simultaneity relates q-light-speed-vs-relativity: 解答
-q-light-speed-vs-relativity relates galilean-relativity: 涉及
-q-time-travel relates causal-structure: 关于
-q-time-travel relates einsteinian-spacetime: 涉及
+aristotelian-spacetime needs euclidean-geometry: 每一时刻的空间都是持续存在的欧几里得 E³
+aristotelian-spacetime relates q-why-spacetime: 回应：伽利略相对性迫使放弃的朴素图像 E¹×E³
+galilean-spacetime needs galilean-relativity: 无优越参考系，故不同时刻的空间不能等同
+galilean-spacetime needs fibre-bundles: 以时间 E¹ 为底、E³ 为纤维的丛，无乘积结构
+galilean-spacetime needs aristotelian-spacetime: 去掉亚里士多德时空对各时刻空间的逐点等同
+world-line needs galilean-spacetime: 粒子的历史画成时空中的曲线
+newtons-laws needs galilean-spacetime: 定律的表述在一切伽利略参考系中成立
+newtons-laws needs affine-space: 仿射结构使直线和力的矢量相加有意义
+newtons-laws needs world-line: 第一定律：自由粒子的世界线为直线
+newtonian-gravity needs newtons-laws: 把平方反比力 GmM/r² 代入第二定律
+equivalence-principle needs newtonian-gravity: GmM/r² 中引力质量等于惯性质量，万物同样下落
+equivalence-principle needs newtons-laws: F=ma 中的惯性质量与引力质量相消
+equivalence-principle relates q-gravity-a-force: 回应：自由下落如惯性运动，均匀引力感觉不到
+newton-cartan-spacetime needs equivalence-principle: 把自由下落世界线当作惯性测地线
+newton-cartan-spacetime needs galilean-spacetime: 保留以绝对时间 E¹ 为底的丛，更换其联络
+newton-cartan-spacetime needs covariant-derivative: 其测地线即自由下落的弯曲联络 ∇
+tidal-effect needs newton-cartan-spacetime: 自由下落粒子的相对挤压即该联络的曲率
+tidal-effect needs geodesic-deviation: 相邻自由下落测地线彼此有相对加速度
+tidal-effect needs curvature-tensor: 潮汐畸变直接读作曲率张量
+light-cones needs world-line: 过某事件的光子世界线构成的锥
+light-cones relates q-light-speed-vs-relativity: 回应：光速化为几何，所有观察者共享同一光锥
+relativity-of-simultaneity needs light-cones: 均匀光锥结构与固定的 E³ 时间切片不相容
+relativity-of-simultaneity needs galilean-spacetime: 放弃伽利略时空的绝对时间切片
+relativity-of-simultaneity relates q-light-speed-vs-relativity: 化解：放弃绝对时间，固定光速即与相对性相容
+minkowski-space needs light-cones: 光锥处处均匀排列的平直时空
+minkowski-space needs riemannian-manifold: 符号差 +−−− 的平直伪黎曼空间
+proper-time needs minkowski-space: 度规的 ds 度量类时曲线上的时间
+proper-time needs world-line: 沿类时世界线积分 τ=∫ds
+causal-structure needs light-cones: 光锥把方向分为类时、类光、类空
+causal-structure needs minkowski-space: 平直时空中各事件的光锥界定其因果未来
+einsteinian-spacetime needs minkowski-space: 弯曲洛伦兹流形，局部近似闵可夫斯基空间
+einsteinian-spacetime needs newton-cartan-spacetime: 如牛顿-嘉当推广伽利略般推广闵氏：引力即曲率
+einsteinian-spacetime needs levi-civita-connection: 度规的列维-齐维塔联络给出测地线与引力曲率
+einsteinian-spacetime relates q-time-travel: 引出：光锥倾斜可使信号返回自身过去
+q-why-spacetime relates aristotelian-spacetime: 对照：亚里士多德从一刻延续到下一刻的绝对空间
+galilean-spacetime relates q-why-spacetime: 解答：没有绝对空间，只剩以时间为底的空间之丛
+q-gravity-a-force relates equivalence-principle: 关于：若自由下落即惯性运动，引力似非力
+tidal-effect relates q-gravity-a-force: 解答：无法消去的是潮汐曲率，引力的真正标志
+q-light-speed-vs-relativity relates galilean-relativity: 涉及：麦克斯韦的固定光速似选出优越系，违背伽利略
+q-time-travel relates causal-structure: 关于：类时曲线自我闭合的因果结构
+q-time-travel relates einsteinian-spacetime: 涉及：广义相对论某些解允许此类回路，彭罗斯视为非物理
 
 %% 第 18 章
-complexified-minkowski-space needs minkowski-space, complex-numbers
-complexified-minkowski-space relates q-imaginary-time: 表述
-poincare-group needs minkowski-space
-lorentzian-orthogonality needs minkowski-space, metric
-clock-paradox needs lorentzian-orthogonality, proper-time
-relativistic-velocity-space needs hyperbolic-geometry, minkowski-space
-rapidity needs relativistic-velocity-space
-relativistic-velocity-addition needs rapidity
-celestial-sphere needs riemann-sphere, light-cones, poincare-group
-stellar-aberration needs celestial-sphere
-lorentz-contraction needs lorentzian-orthogonality, celestial-sphere
-lorentz-contraction relates q-lorentz-contraction-visible: 回应
-kinetic-energy needs newtons-laws
-momentum-conservation needs newtons-laws, galilean-relativity
-angular-momentum needs momentum-conservation, grassmann-algebra
-four-momentum needs momentum-conservation, minkowski-space
-mass-energy-equivalence needs four-momentum
-mass-energy-equivalence relates q-mass-conservation: 回应
-rest-mass needs four-momentum
-rest-mass relates q-mass-conservation: 回应
-relativistic-angular-momentum needs four-momentum, angular-momentum, poincare-group
-q-imaginary-time relates complexified-minkowski-space: 关于
-q-imaginary-time relates minkowski-space: 关于
-q-lorentz-contraction-visible relates lorentz-contraction: 关于
-celestial-sphere relates q-lorentz-contraction-visible: 解答
-mass-energy-equivalence relates q-mass-conservation: 解答
-q-mass-conservation relates rest-mass: 涉及
+complexified-minkowski-space needs minkowski-space: 复4维空间配全纯度规后的一个实截面
+complexified-minkowski-space needs complex-numbers: 复坐标使𝔼⁴与𝕄成为同一复空间的截面
+complexified-minkowski-space relates q-imaginary-time: 构建框架：t = iw 在ℂ𝕄的欧氏与闵氏截面间切换
+poincare-group needs minkowski-space: 𝕄的十维对称群：4个平移加洛伦兹转动
+lorentzian-orthogonality needs minkowski-space: 同时性空间是世界线在𝕄中的正交补
+lorentzian-orthogonality needs metric: 正交即洛伦兹度规下 g_ab uᵃvᵇ = 0
+clock-paradox needs proper-time: 旅行者的折线世界线记录的固有时更短
+relativistic-velocity-space needs hyperbolic-geometry: 4维速度的单位双曲面具有双曲几何
+relativistic-velocity-space needs minkowski-space: 闵可夫斯基空间中未来类时方向构成的双曲面
+rapidity needs relativistic-velocity-space: 速率是速度空间中的双曲距离 ρ = artanh v
+relativistic-velocity-addition needs rapidity: 共线速率直接相加，得 (u+v)/(1+uv)
+celestial-sphere needs riemann-sphere: 光线构成的天球具有黎曼球面的共形结构
+celestial-sphere needs light-cones: 天球的点是过去光锥上的类光母线
+celestial-sphere needs poincare-group: 洛伦兹变换在天球上作用为默比乌斯变换
+stellar-aberration needs celestial-sphere: 换观察者对天球作共形映射，圆仍为圆
+lorentz-contraction needs lorentzian-orthogonality: 运动物体长度在倾斜的同时性空间中测量
+lorentz-contraction needs celestial-sphere: 天球的共形映射使运动球面轮廓仍是圆
+lorentz-contraction relates q-lorentz-contraction-visible: 探讨：收缩真实存在，但光行时间使其看似转动
+kinetic-energy needs newtons-laws: 牛顿力做功使动能mv²/2与势能互换
+momentum-conservation needs newtons-laws: 第三定律作用反作用相等，总动量守恒
+momentum-conservation needs galilean-relativity: 动量守恒在每个伽利略参考系中一致成立
+angular-momentum needs momentum-conservation: 角动量是守恒动量的矩 x ∧ p
+angular-momentum needs grassmann-algebra: 楔积 x ∧ p 使角动量成为二重矢量
+four-momentum needs momentum-conservation: 相对论把能量作为第四分量并入守恒的3维动量
+four-momentum needs minkowski-space: 能量和动量组成闵可夫斯基空间中的矢量 p_a
+mass-energy-equivalence needs four-momentum: 四动量的时间分量同时度量能量和质量
+mass-energy-equivalence relates q-mass-conservation: 探讨：质量守恒只作为 p₀（能量）守恒保留
+rest-mass needs four-momentum: 静质量是 p_a 与参考系无关的闵氏长度
+rest-mass relates q-mass-conservation: 探讨：静质量不守恒，π介子可衰变为两光子
+relativistic-angular-momentum needs four-momentum: M^ab = xᵃpᵇ − xᵇpᵃ 由四动量构成
+relativistic-angular-momentum needs angular-momentum: 把 x ∧ p 与质心量 tp − mx 统一起来
+relativistic-angular-momentum needs poincare-group: 其6个分量对应洛伦兹转动与推进的守恒量
+q-imaginary-time relates complexified-minkowski-space: 关于：在ℂ𝕄中作 t = iw 转动是否有物理意义
+q-imaginary-time relates minkowski-space: 关于：把𝕄的洛伦兹号差换成欧氏号差
+q-lorentz-contraction-visible relates lorentz-contraction: 关于：菲茨杰拉德-洛伦兹收缩能否被看到
+celestial-sphere relates q-lorentz-contraction-visible: 解答：天球共形映射使运动球面轮廓保持圆形
+q-mass-conservation relates rest-mass: 涉及：与总质能不同，静质量不守恒
 
 %% 第 19 章
-maxwell-field-tensor needs p-forms, minkowski-space
-hodge-dual needs p-forms, volume-element
-maxwell-equations needs maxwell-field-tensor, hodge-dual, exterior-derivative
-self-dual-field needs maxwell-equations, hodge-dual
-electromagnetic-waves needs maxwell-equations
-charge-conservation needs maxwell-equations, stokes-theorem
-electromagnetic-potential needs maxwell-equations, poincare-lemma
-electromagnetic-potential relates q-reality-of-potential: 回应
-gauge-invariance needs electromagnetic-potential, gauge-connection
-weyl-gauge-theory needs gauge-invariance
-aharonov-bohm-effect needs electromagnetic-potential, gauge-invariance
-aharonov-bohm-effect relates q-reality-of-potential: 回应
-energy-momentum-tensor needs four-momentum, charge-conservation
-killing-vector-conservation needs energy-momentum-tensor, killing-vectors
-killing-vector-conservation relates q-gravitational-energy: 回应
-ricci-tensor needs riemann-tensor, geodesic-deviation
-einstein-field-equations needs ricci-tensor, energy-momentum-tensor, bianchi-identity
-cosmological-constant needs einstein-field-equations
-cosmological-constant relates q-cosmological-constant: 回应
-weyl-tensor needs riemann-tensor, ricci-tensor
-gravitational-waves needs einstein-field-equations, weyl-tensor
-gravitational-waves relates q-gravitational-energy: 回应
-q-gravitational-energy relates energy-momentum-tensor: 关于
-q-gravitational-energy relates gravitational-waves: 涉及
-q-gravitational-energy relates equivalence-principle: 涉及
-q-cosmological-constant relates cosmological-constant: 关于
-q-reality-of-potential relates electromagnetic-potential: 关于
-aharonov-bohm-effect relates q-reality-of-potential: 探查
+maxwell-field-tensor needs p-forms: 电场和磁场合成反对称2形式 F_ab
+maxwell-field-tensor needs minkowski-space: F 是时空张量，洛伦兹推进使 E 与 B 混合
+hodge-dual needs p-forms: 霍奇对偶把 p 形式变为 (4−p) 形式
+hodge-dual needs volume-element: 通过与体积形式 ε_abcd 缩并实现对偶
+maxwell-equations needs maxwell-field-tensor: 麦克斯韦方程即 dF = 0 与 d*F = 4π*J
+maxwell-equations needs hodge-dual: 有源方程借助对偶写成 d*F = 4π*J
+maxwell-equations needs exterior-derivative: 两方程都用外导数：dF = 0，d*F = 4π*J
+self-dual-field needs maxwell-equations: 自由麦克斯韦场分解为 F ± i*F（右/左旋光子）
+self-dual-field needs hodge-dual: F ± i*F 是霍奇对偶的本征形式
+electromagnetic-waves needs maxwell-equations: 自由麦克斯韦方程有以光速传播的波解
+charge-conservation needs maxwell-equations: d*F = 4π*J 两边取 d 得 d*J = 0
+charge-conservation needs stokes-theorem: 积分 d*J = 0 得闭3维曲面的电荷通量为零
+electromagnetic-potential needs maxwell-equations: dF = 0 使局部可写 F = dA
+electromagnetic-potential needs poincare-lemma: 闭形式局部恰当，故 dF = 0 给出 F = dA
+electromagnetic-potential relates q-reality-of-potential: 探讨：A + dΘ 给出同样的 F，A 不可局部测量
+gauge-invariance needs electromagnetic-potential: 带电场的相位改变由 A → A + dΘ 补偿
+gauge-invariance needs gauge-connection: A 是丛联络，其曲率就是麦克斯韦场
+weyl-gauge-theory needs gauge-invariance: 外尔的路径依赖标度改为单位模相位才成立
+aharonov-bohm-effect needs electromagnetic-potential: 条纹移动由绕螺线管的回路积分 ∮A 决定
+aharonov-bohm-effect needs gauge-invariance: 只有规范不变的回路相位 exp(ie∮A/ħ) 可观测
+aharonov-bohm-effect relates q-reality-of-potential: 探讨：A 的回路积分在无场区域产生可观测效应
+energy-momentum-tensor needs four-momentum: T_ab 给出四动量的密度和通量
+energy-momentum-tensor needs charge-conservation: ∇ᵃT_ab = 0 仿照 d*J = 0，对每个分量成立
+killing-vector-conservation needs energy-momentum-tensor: T_ab 与基灵矢量 κᵇ 缩并得守恒流
+killing-vector-conservation needs killing-vectors: ∇₍ₐκ_b₎ = 0 使 T_ab κᵇ 散度为零
+killing-vector-conservation relates q-gravitational-energy: 探讨：积分能量守恒需要弯曲时空一般没有的对称性
+ricci-tensor needs riemann-tensor: R_ab = R_acb^c 是黎曼张量的缩并
+ricci-tensor needs geodesic-deviation: 自由下落测地线云的初始体积加速
+einstein-field-equations needs ricci-tensor: 左端 R_ab − ½R g_ab 由里奇张量构成
+einstein-field-equations needs energy-momentum-tensor: 右端以 T_ab 作为引力源
+einstein-field-equations needs bianchi-identity: 缩并比安基恒等式使左端散度为零，匹配 ∇ᵃT_ab = 0
+cosmological-constant needs einstein-field-equations: 加入 Λg_ab 项，方程仍保持散度为零
+cosmological-constant relates q-cosmological-constant: 探讨：Λ为静态宇宙而加，后被弃，又因超新星数据复活
+weyl-tensor needs riemann-tensor: 外尔张量是黎曼张量的无迹部分
+weyl-tensor needs ricci-tensor: 黎曼张量去掉里奇部分即得外尔张量
+gravitational-waves needs einstein-field-equations: 引力波是真空场方程 R_ab = 0 的解
+gravitational-waves needs weyl-tensor: 真空中引力波完全由外尔曲率携带
+gravitational-waves relates q-gravitational-energy: 探讨：赫尔斯-泰勒轨道衰减表明引力波携带真实能量
+q-gravitational-energy relates energy-momentum-tensor: 关于：引力场自身能量不包含在 T_ab 中
+q-gravitational-energy relates gravitational-waves: 涉及：引力波穿过 T_ab = 0 的真空携带能量
+q-gravitational-energy relates equivalence-principle: 涉及：自由下落局部消除引力，故无局部能量密度
+q-cosmological-constant relates cosmological-constant: 关于：Λ是否非零，如超新星数据所示
+q-reality-of-potential relates electromagnetic-potential: 关于：只确定到 dΘ 的 A 是否物理实在
 
 %% 第 20 章
-lagrangian-formalism needs configuration-space, tangent-bundle, kinetic-energy
-euler-lagrange-equations needs lagrangian-formalism
-stationary-action needs lagrangian-formalism
-hamiltonian-formalism needs lagrangian-formalism, phase-space, cotangent-bundle
-hamilton-equations needs hamiltonian-formalism
-simple-harmonic-motion needs hamilton-equations
-normal-modes needs simple-harmonic-motion, eigenvectors
-hamiltonian-flow needs hamilton-equations, poisson-bracket, symplectic-manifolds
-liouville-theorem needs hamiltonian-flow
-functional-derivative needs euler-lagrange-equations
-field-lagrangian needs functional-derivative, stationary-action
-noether-theorem needs lagrangian-formalism, lie-algebra
-einstein-hilbert-action needs field-lagrangian, einstein-field-equations
-q-lagrangian-guidance relates field-lagrangian: 关于
-q-lagrangian-guidance relates noether-theorem: 涉及
-q-formal-elegance relates hamiltonian-formalism: 关于
-q-formal-elegance relates hamiltonian-flow: 涉及
+lagrangian-formalism needs configuration-space: 广义坐标 q 是位形空间上的坐标
+lagrangian-formalism needs tangent-bundle: L 是切丛上 q 与 q̇ 的函数
+lagrangian-formalism needs kinetic-energy: 拉格朗日量 L = K − V，动能减势能
+euler-lagrange-equations needs lagrangian-formalism: 由 L 导出的运动方程
+stationary-action needs lagrangian-formalism: 作用量是 L 对时间的积分
+hamiltonian-formalism needs lagrangian-formalism: 以动量 p = ∂L/∂q̇ 代替速度
+hamiltonian-formalism needs phase-space: 在坐标和动量构成的相空间中工作
+hamiltonian-formalism needs cotangent-bundle: 动量是余矢量，相空间即余切丛
+hamilton-equations needs hamiltonian-formalism: 由 H 导出的对称一阶运动方程
+simple-harmonic-motion needs hamilton-equations: 二次 H 给出 d²q/dt² = −ω²q
+normal-modes needs simple-harmonic-motion: 每个简正模独立地作简谐运动
+normal-modes needs eigenvectors: 简正模是 W = PQ 的本征矢，本征值给频率
+hamiltonian-flow needs hamilton-equations: 哈密顿方程在相空间上定义流矢量场
+hamiltonian-flow needs poisson-bracket: Q 的时间演化即泊松括号 {Q, H}
+hamiltonian-flow needs symplectic-manifolds: 哈密顿流保持辛形式 S_ab 不变
+liouville-theorem needs hamiltonian-flow: 哈密顿流保持辛形式的N次楔积，即相体积
+functional-derivative needs euler-lagrange-equations: 把欧拉-拉格朗日方程推广到无穷多场变量
+field-lagrangian needs functional-derivative: 场方程由 δS/δφ = 0 得到
+field-lagrangian needs stationary-action: 使密度的4形式积分即作用量 S 取平稳值
+noether-theorem needs lagrangian-formalism: L 的对称性给出守恒量
+noether-theorem needs lie-algebra: 连续对称性通过无穷小李代数生成元进入
+einstein-hilbert-action needs field-lagrangian: 标量曲率 R 作为引力的拉格朗日密度
+einstein-hilbert-action needs einstein-field-equations: 对 ∫R 变分度规得到爱因斯坦场方程
+q-lagrangian-guidance relates field-lagrangian: 关于：新理论都以拉格朗日量提出，却难判断对错
+q-lagrangian-guidance relates noether-theorem: 涉及：经内特尔定理由 L 的对称性得守恒量
+q-formal-elegance relates hamiltonian-formalism: 关于：完美的哈密顿图像被量子事实推翻
+q-formal-elegance relates hamiltonian-flow: 涉及：辛流和泊松括号仍为量子理论铺路
 
 %% 第 21 章
-non-commuting-variables needs derivative, leibniz-rule
-canonical-commutation-relations needs non-commuting-variables
-canonical-quantization needs canonical-commutation-relations, hamiltonian-formalism
-wavefunction needs complex-numbers, canonical-quantization
-wavefunction relates q-quantum-reality: 回应
-schrodinger-equation needs wavefunction, canonical-quantization, laplace-equation
-planck-constant needs electromagnetic-waves
-de-broglie-wavelength needs planck-constant, four-momentum
-double-slit-experiment needs de-broglie-wavelength
-double-slit-experiment relates q-wave-particle: 回应
-wave-particle-duality needs double-slit-experiment, wavefunction
-wave-particle-duality relates q-wave-particle: 回应
-eigenstates needs eigenvectors, wavefunction
-momentum-states needs eigenstates, four-momentum
-wave-packet needs momentum-states, fourier-transform
-mach-zehnder-interferometer needs wave-particle-duality
-mach-zehnder-interferometer relates q-quantum-reality: 回应
-wavefunction-collapse needs schrodinger-equation, eigenstates
-wavefunction-collapse relates q-measurement-problem: 回应
-wavefunction-collapse relates q-u-and-r-consistency: 引出
-born-rule needs wavefunction, projective-space
-born-rule relates q-measurement-problem: 回应
-normalized-wavefunction needs born-rule
-position-states needs eigenstates, dirac-delta-function
-momentum-space needs fourier-transform, momentum-states, position-states
-uncertainty-principle needs momentum-space, canonical-commutation-relations
-q-quantum-reality relates wavefunction: 关于
-q-quantum-reality relates mach-zehnder-interferometer: 涉及
-q-wave-particle relates wave-particle-duality: 关于
-double-slit-experiment relates q-wave-particle: 提出
-q-measurement-problem relates wavefunction-collapse: 关于
-q-measurement-problem relates schrodinger-equation: 冲突于
-q-measurement-problem relates born-rule: 涉及
-schrodinger-cat relates q-measurement-problem: 例示
-environmental-decoherence relates q-measurement-problem: 未能解决
-many-worlds-interpretation relates q-measurement-problem: 未能解决
-q-probability-wave relates born-rule: 关于
-q-probability-wave relates wavefunction: 关于
+non-commuting-variables needs derivative: 把 D = d/dx 当作代数量处理
+non-commuting-variables needs leibniz-rule: 乘积法则给出 Dx − xD = 1
+canonical-commutation-relations needs non-commuting-variables: 以 iħ∂/∂x 作动量，Dx − xD = 1 变成对易关系
+canonical-quantization needs canonical-commutation-relations: 用满足 [p, x] = iħ 的算符替换经典动量
+canonical-quantization needs hamiltonian-formalism: 把动量算符代入经典哈密顿量 H(q, p)
+wavefunction needs complex-numbers: ψ 取复数值，其相位至关重要
+wavefunction needs canonical-quantization: ψ 受量子化哈密顿量作用
+wavefunction relates q-quantum-reality: 探讨：彭罗斯认为 ψ 本身而非仅概率是实在的
+schrodinger-equation needs wavefunction: iħ∂ψ/∂t = Hψ 确定性地演化 ψ
+schrodinger-equation needs canonical-quantization: H 是正则量子化得到的哈密顿量
+schrodinger-equation needs laplace-equation: 动能项 p²/2m 变为 −(ħ²/2m)∇²
+planck-constant needs electromagnetic-waves: 电磁波的能量以 E = hν 的量子形式出现
+de-broglie-wavelength needs planck-constant: p = h/λ 与 E = hν 采用同一常数
+de-broglie-wavelength needs four-momentum: E = hν 与 p = h/λ 合成平面波的四动量
+double-slit-experiment needs de-broglie-wavelength: 干涉条纹间距显示德布罗意波长
+double-slit-experiment relates q-wave-particle: 探讨：粒子逐个成点到达，却累积成干涉图样
+wave-particle-duality needs double-slit-experiment: 单个粒子通过双缝产生干涉
+wave-particle-duality needs wavefunction: ψ 同时体现波的干涉与粒子的探测
+wave-particle-duality relates q-wave-particle: 探讨：同一个 ψ 同时解释光点与条纹
+eigenstates needs eigenvectors: 本征态是可观察量算符的本征矢量
+eigenstates needs wavefunction: 算符作用于 ψ 只乘一个数时 ψ 为本征态
+momentum-states needs eigenstates: 平面波是动量算符 iħ∂/∂x 的本征态
+momentum-states needs four-momentum: 每个平面波 exp(−iP·x/ħ) 有确定的四动量 P
+wave-packet needs momentum-states: 局域的波包由动量态叠加而成
+wave-packet needs fourier-transform: 波包的动量成分是其形状的傅里叶变换
+mach-zehnder-interferometer needs wave-particle-duality: 单光子依分束器设置表现为波或粒子
+mach-zehnder-interferometer relates q-quantum-reality: 探讨：干涉显示整体、非局域的 ψ 才是实在
+wavefunction-collapse needs schrodinger-equation: 测量以薛定谔方程无法描述的跳变打断演化
+wavefunction-collapse needs eigenstates: 态跳变到被测可观察量的一个本征态
+wavefunction-collapse relates q-measurement-problem: 探讨：R 是测量在 U 之外强加的跳变
+wavefunction-collapse relates q-u-and-r-consistency: 引出：不连续跳变与连续线性演化相矛盾
+born-rule needs wavefunction: |ψ|² 是位置的概率密度
+born-rule needs projective-space: 态是射线 ψ ~ kψ，即射影空间中的点
+born-rule relates q-measurement-problem: 探讨：玻恩规则给结果概率，却不说明何为测量
+normalized-wavefunction needs born-rule: ∫|ψ|² = 1 使 |ψ|² 成为真正的概率密度
+position-states needs eigenstates: 位置态是位置算符的本征态
+position-states needs dirac-delta-function: δ(x − X) 在 X 处无限集中
+momentum-space needs fourier-transform: ψ(x) 的傅里叶变换给出 ψ̃(p)
+momentum-space needs momentum-states: 动量态在动量空间中成为 δ 函数
+momentum-space needs position-states: 位置 δ 态在动量空间中成为平面波
+uncertainty-principle needs momentum-space: ψ(x) 越窄，其傅里叶变换 ψ̃(p) 越宽
+uncertainty-principle needs canonical-commutation-relations: 由 [p, x] = iħ 得 Δx Δp ≥ ħ/2
+q-quantum-reality relates wavefunction: 关于：ψ 描述物理实在还是仅是知识
+q-quantum-reality relates mach-zehnder-interferometer: 涉及：分束器干涉显示 ψ 的整体非局域性
+q-wave-particle relates wave-particle-duality: 关于：同一对象兼具干涉与分立探测
+q-measurement-problem relates wavefunction-collapse: 关于：测量时态何时、为何跳变
+q-measurement-problem relates schrodinger-equation: 冲突于：薛定谔演化连续，从不跳变
+q-measurement-problem relates born-rule: 涉及：跳变时由玻恩规则 |ψ|² 给出概率
+schrodinger-cat relates q-measurement-problem: 例示：仅用U，光子分束即放大为猫活与猫死的叠加
+environmental-decoherence relates q-measurement-problem: 未能解决：对环境求迹得对角密度矩阵，只是FAPP权宜之计
+many-worlds-interpretation relates q-measurement-problem: 未能解决：保留所有结局，却没说明为何只感知到一个
+q-probability-wave relates born-rule: 关于：|ψ|² 能否穷尽 ψ 的意义
+q-probability-wave relates wavefunction: 关于：相消干涉表明 ψ 不只是概率
 
 %% 第 22 章
-unitary-evolution needs schrodinger-equation, unitary-group
-quantum-linearity needs unitary-evolution
-quantum-linearity relates q-u-and-r-consistency: 深化
-hilbert-space needs vector-space
-dirac-notation needs hilbert-space, covectors
-heisenberg-picture needs unitary-evolution, canonical-commutation-relations
-quantum-observables needs eigenvectors, hilbert-space
-projection-postulate needs quantum-observables, born-rule
-null-measurement needs projection-postulate, mach-zehnder-interferometer
-helicity needs angular-momentum
-spin needs angular-momentum, lie-algebra, spinors
-two-spinors needs spin, spinors, abstract-index-notation
-casimir-operators needs lie-algebra, spin
-bloch-sphere needs riemann-sphere, projective-space, spin
-majorana-description needs bloch-sphere, two-spinors
-majorana-description relates q-quantum-vs-classical-spin: 回应
-spherical-harmonics needs laplace-equation, polar-coordinates, spin
-pauli-lubanski-vector needs poincare-group, relativistic-angular-momentum, casimir-operators
-quantum-harmonic-oscillator needs normal-modes, schrodinger-equation
-bohr-atom needs quantum-harmonic-oscillator, spherical-harmonics
-q-u-and-r-consistency relates quantum-linearity: 关于
-q-u-and-r-consistency relates wavefunction-collapse: 关于
-q-u-and-r-consistency relates unitary-evolution: 关于
-q-state-vector-reality relates heisenberg-picture: 关于
-q-state-vector-reality relates wavefunction-collapse: 关于
-q-quantum-vs-classical-spin relates majorana-description: 关于
-q-quantum-vs-classical-spin relates spherical-harmonics: 涉及
+unitary-evolution needs schrodinger-equation: U 即态矢的薛定谔演化
+unitary-evolution needs unitary-group: U 是幺正的，保持标量积
+quantum-linearity needs unitary-evolution: U 把叠加映射为演化后态的叠加
+quantum-linearity relates q-u-and-r-consistency: 加剧：线性 U 会叠加探测结果，而非给出单一结果
+hilbert-space needs vector-space: 具有正定埃尔米特标量积的复矢量空间
+dirac-notation needs hilbert-space: 右矢 |ψ⟩ 是希尔伯特空间 H 的元素
+dirac-notation needs covectors: 左矢 ⟨φ| 是对偶余矢量，⟨φ|ψ⟩ 为标量积
+heisenberg-picture needs unitary-evolution: 海森伯绘景把 U 的时间依赖从态移到算符
+heisenberg-picture needs canonical-commutation-relations: 算符按 iħ dQ/dt = [Q, H] 演化
+quantum-observables needs eigenvectors: 本征值为测量值，正交本征矢为结果态
+quantum-observables needs hilbert-space: 可观察量是希尔伯特空间上的线性算符
+projection-postulate needs quantum-observables: YES/NO 可观察量是投影算符 E = E* = E²
+projection-postulate needs born-rule: YES 的概率是投影后态矢的长度平方
+null-measurement needs projection-postulate: NO 的结果同样使态投影
+null-measurement needs mach-zehnder-interferometer: 埃利策-韦德曼炸弹检验采用马赫-曾德尔干涉仪
+helicity needs angular-momentum: 无质量粒子沿运动方向的自旋角动量
+spin needs angular-momentum: 量子角动量满足 [L₁, L₂] = iħL₃
+spin needs lie-algebra: 自旋态是 SO(3) 李代数的表示
+spin needs spinors: 自旋 ½ 态在 2π 转动下变号
+two-spinors needs spin: 自旋 n/2 态是全对称旋量 ψ_AB…F
+two-spinors needs spinors: 由二维旋量指标构成
+two-spinors needs abstract-index-notation: 旋量指标是抽象标号，而非坐标值
+casimir-operators needs lie-algebra: 卡西米尔算符与所有李代数生成元对易
+casimir-operators needs spin: J² 的本征值 j(j+1)ħ² 标记自旋
+bloch-sphere needs riemann-sphere: 自旋 ½ 态构成空间方向的黎曼球面
+bloch-sphere needs projective-space: 二维希尔伯特空间的射线构成球面 PH²
+bloch-sphere needs spin: 球面上每点是一个自旋向上方向
+majorana-description needs bloch-sphere: 自旋 n/2 态对应黎曼球面上 n 个无序点
+majorana-description needs two-spinors: 对称旋量分解为 n 个自旋 ½ 方向
+majorana-description relates q-quantum-vs-classical-spin: 探讨：大 j 的一般态马约拉纳点散布全球面
+spherical-harmonics needs laplace-equation: S² 上拉普拉斯算符的本征函数，本征值 −j(j+1)
+spherical-harmonics needs polar-coordinates: 方位角以 e^{imφ} 出现，d/dφ 本征值为 im
+spherical-harmonics needs spin: 以 j 和 m 标记的轨道角动量态
+pauli-lubanski-vector needs poincare-group: 在庞加莱群表示中刻画自旋
+pauli-lubanski-vector needs relativistic-angular-momentum: S_a 由 p_a、M^ab 与 ε 构成
+pauli-lubanski-vector needs casimir-operators: p_a p^a 与 S_a S^a 是庞加莱群的两个卡西米尔算符
+quantum-harmonic-oscillator needs normal-modes: 每个经典简正模成为量子振子
+quantum-harmonic-oscillator needs schrodinger-equation: 解薛定谔方程得能级 (n + ½)ħω
+bohr-atom needs spherical-harmonics: 氢原子角向态是球谐函数，j 与 m 量子化
+q-u-and-r-consistency relates quantum-linearity: 关于：线性性与单一测量结果相冲突
+q-u-and-r-consistency relates wavefunction-collapse: 关于：R 跳变到单一结果，U 中没有此过程
+q-u-and-r-consistency relates unitary-evolution: 关于：U 这一确定性的线性过程
+q-state-vector-reality relates heisenberg-picture: 关于：海森伯绘景把态的实在性藏进算符
+q-state-vector-reality relates wavefunction-collapse: 关于：态收缩是否真实的物理过程
+q-quantum-vs-classical-spin relates majorana-description: 关于：大 j 态的马约拉纳点很少像经典自旋那样聚集
+q-quantum-vs-classical-spin relates spherical-harmonics: 涉及：与大 j 态马约拉纳点相关的球谐函数
 
 %% 第 23 章
-many-particle-wavefunction needs schrodinger-equation
-many-particle-state-space needs many-particle-wavefunction, functional-freedom
-many-particle-state-space relates q-why-entanglement-unnoticed: 支撑
-tensor-product-states needs hilbert-space, tensors, dirac-notation
-entanglement needs tensor-product-states, quantum-linearity
-entanglement relates q-two-mysteries-of-entanglement: 引出
-epr-effects needs entanglement
-epr-effects relates q-epr-and-relativity: 引出
-bell-inequalities needs epr-effects, born-rule
-bell-inequalities relates q-two-mysteries-of-entanglement: 回应
-epr-bohm needs entanglement, spin, bell-inequalities
-hardy-example needs epr-bohm, projection-postulate
-bosons-and-fermions needs many-particle-wavefunction, spin
-pauli-exclusion-principle needs bosons-and-fermions
-bose-einstein-condensation needs bosons-and-fermions
-symmetrized-states needs bosons-and-fermions, tensor-product-states, grassmann-algebra
-quantum-teleportation needs epr-bohm, entanglement
-quantum-teleportation relates q-epr-and-relativity: 例示
-quanglement needs quantum-teleportation, entanglement
-quanglement relates q-epr-and-relativity: 回应
-no-signalling needs epr-effects, light-cones
-no-signalling relates q-epr-and-relativity: 回应
-q-two-mysteries-of-entanglement relates entanglement: 关于
-q-two-mysteries-of-entanglement relates bell-inequalities: 涉及
-q-why-entanglement-unnoticed relates entanglement: 关于
-q-why-entanglement-unnoticed relates wavefunction-collapse: 涉及
-q-why-entanglement-unnoticed relates q-u-and-r-consistency: 推广
-q-epr-and-relativity relates epr-effects: 关于
-q-epr-and-relativity relates quanglement: 涉及
-q-epr-and-relativity relates no-signalling: 涉及
+many-particle-wavefunction needs schrodinger-equation: 联合位形空间上的单一 ψ，共享一个时间
+many-particle-state-space needs many-particle-wavefunction: ψ 共同依赖所有粒子的坐标
+many-particle-state-space needs functional-freedom: 自由度 ∞^(2∞^(3n)) 远超 n 个独立场
+many-particle-state-space relates q-why-entanglement-unnoticed: 构成基础：巨大态空间中几乎所有态都纠缠
+tensor-product-states needs hilbert-space: 复合系统的态位于 H^p ⊗ H^q 中
+tensor-product-states needs tensors: 张量积是各空间的多线性积
+tensor-product-states needs dirac-notation: 简单积态写作 |ψ⟩|φ⟩
+entanglement needs tensor-product-states: 纠缠态是 H^p ⊗ H^q 中非积态的元素
+entanglement needs quantum-linearity: 积态的线性叠加产生纠缠态
+entanglement relates q-two-mysteries-of-entanglement: 引出：各部分没有态矢，却彼此关联
+epr-effects needs entanglement: 对纠缠各部分作远距离测量的关联
+epr-effects relates q-epr-and-relativity: 引出：类空测量无不变次序，无法判定谁导致收缩
+bell-inequalities needs epr-effects: 约束一切 EPR 关联的局域模型
+bell-inequalities needs born-rule: 由玻恩规则算出的联合概率违反该界限
+bell-inequalities relates q-two-mysteries-of-entanglement: 探讨：违反排除了任何局域实在图像
+epr-bohm needs entanglement: 处于纠缠的自旋 0 单态的两个自旋 ½ 粒子
+epr-bohm needs spin: 沿选定方向测量自旋分量
+epr-bohm needs bell-inequalities: 斯塔普的方向选择给出贝尔不等式的具体违反
+hardy-example needs epr-bohm: 玻姆型自旋对，但以自旋 1 的态发射
+hardy-example needs projection-postulate: 论证使用必然成立的 YES/NO 结果
+bosons-and-fermions needs many-particle-wavefunction: 交换全同粒子使 ψ 对称或反对称
+bosons-and-fermions needs spin: 整数自旋为玻色子，半奇数自旋为费米子
+pauli-exclusion-principle needs bosons-and-fermions: 费米子的反对称性禁止两者处于同一态
+bose-einstein-condensation needs bosons-and-fermions: 玻色子的对称性使粒子挤入同一态
+symmetrized-states needs bosons-and-fermions: 玻色子取对称化积态，费米子取反对称化积态
+symmetrized-states needs tensor-product-states: 张量积的对称与反对称部分
+symmetrized-states needs grassmann-algebra: 反对称化的费米子态即格拉斯曼楔积
+quantum-teleportation needs epr-bohm: 利用共享的自旋 ½ EPR 粒子对
+quantum-teleportation needs entanglement: 纠缠携带未知态，两个经典比特完成传送
+quantum-teleportation relates q-epr-and-relativity: 例示：经典比特受光速限制，纠缠链路却似非因果
+quanglement needs quantum-teleportation: 彭罗斯为隐形传态所传送之物造词 quanglement
+quanglement needs entanglement: 沿纠缠链路的非信号性影响
+quanglement relates q-epr-and-relativity: 探讨：沿 EPR 链路在时间上曲折传播但不带信号
+no-signalling needs epr-effects: EPR 关联不能传递经典信息
+no-signalling needs light-cones: 普通信号限于光锥之内
+no-signalling relates q-epr-and-relativity: 探讨：无超光速信号，故在操作上不违背相对论
+q-two-mysteries-of-entanglement relates entanglement: 关于：理解各部分没有态矢的纠缠态
+q-two-mysteries-of-entanglement relates bell-inequalities: 涉及：贝尔不等式的违反排除局域实在模型
+q-why-entanglement-unnoticed relates entanglement: 关于：几乎所有态都纠缠，日常物体却似不纠缠
+q-why-entanglement-unnoticed relates wavefunction-collapse: 涉及：彭罗斯认为 R 使世界保持不纠缠
+q-why-entanglement-unnoticed relates q-u-and-r-consistency: 延伸：U 只增加纠缠，故需 R 来消除
+q-epr-and-relativity relates epr-effects: 关于：类空分隔测量之间的 EPR 关联
+q-epr-and-relativity relates quanglement: 涉及：quanglement 描绘在时间上曲折传播的影响
+q-epr-and-relativity relates no-signalling: 涉及：不可传信号使 EPR 与相对论相容
 
 %% 第 24 章
-quantum-field-theory needs mass-energy-equivalence, antiparticles
-quantum-field-theory relates q-qm-relativity-tension: 回应
-pair-creation needs antiparticles, mass-energy-equivalence
-positive-frequency needs schrodinger-equation, frequency-splitting
-relativistic-hamiltonian needs four-momentum, schrodinger-equation, positive-frequency
-relativistic-hamiltonian relates q-negative-energy: 引出
-wave-operator needs minkowski-space, laplace-equation
-klein-gordon-equation needs wave-operator, rest-mass
-dirac-operator needs clifford-algebra, wave-operator
-dirac-equation needs dirac-operator, klein-gordon-equation, spinors
-dirac-magnetic-moment needs dirac-equation, maxwell-equations
-dirac-spinor needs dirac-equation, spin
-dirac-sea needs dirac-equation, pauli-exclusion-principle, positive-frequency
-dirac-sea relates q-negative-energy: 回应
-positron needs dirac-sea, antiparticles
-q-qm-relativity-tension relates quantum-field-theory: 关于
-q-qm-relativity-tension relates antiparticles: 涉及
-q-negative-energy relates relativistic-hamiltonian: 关于
-q-negative-energy relates positive-frequency: 涉及
-dirac-sea relates q-negative-energy: 解决
+quantum-field-theory needs mass-energy-equivalence: 能量可转化为静质量，故粒子数不守恒
+quantum-field-theory needs antiparticles: 相对论性理论必然带来反粒子，固定粒子数的描述容纳不下
+quantum-field-theory relates q-qm-relativity-tension: 处理：以场取代固定粒子数的波函数，粒子是场的激发
+pair-creation needs antiparticles: 能量产生的总是粒子与其反粒子成对出现
+pair-creation needs mass-energy-equivalence: 至少需要2mc²的能量提供粒子对的静质量
+positive-frequency needs schrodinger-equation: 能量是薛定谔方程中支配ψ时间依赖的H的本征值
+positive-frequency needs frequency-splitting: 正能量意味着只保留可全纯延拓到一个半球的正频部分
+relativistic-hamiltonian needs four-momentum: 由4动量的闵可夫斯基长度得E=√(m²c⁴+p²c²)
+relativistic-hamiltonian needs schrodinger-equation: 把这个平方根代入薛定谔方程作为H
+relativistic-hamiltonian needs positive-frequency: 平方根的符号须靠只保留正频率来确定
+relativistic-hamiltonian relates q-negative-energy: 引出：平方根隐含的符号歧义容许负能解
+wave-operator needs minkowski-space: 由闵可夫斯基度规构成，因而洛伦兹不变
+wave-operator needs laplace-equation: 空间部分即拉普拉斯算符，再按洛伦兹符号差加上∂²/∂t²
+klein-gordon-equation needs wave-operator: 在波算符上加质量项M²
+klein-gordon-equation needs rest-mass: M=μ/ħ即以长度倒数为单位的静质量
+dirac-operator needs clifford-algebra: 反对易的克利福德元γ_a使γ^a∂_a平方为波算符
+dirac-operator needs wave-operator: 它是波算符的一阶平方根
+dirac-equation needs dirac-operator: 用狄拉克算符写出一阶方程(∂̸+iM)ψ=0
+dirac-equation needs klein-gordon-equation: 各分量仍满足克莱因-戈登方程，因狄拉克算符是其因子
+dirac-equation needs spinors: 波函数取旋量值，自然给出电子的自旋½
+dirac-magnetic-moment needs dirac-equation: 将狄拉克方程与电磁势耦合即得电子磁矩
+dirac-magnetic-moment needs maxwell-equations: 电子所耦合的正是麦克斯韦理论中的电磁势
+dirac-spinor needs dirac-equation: γ矩阵需4×4表示，故ψ有四个分量
+dirac-spinor needs spin: 四个分量仍只描述泡利那样的双态自旋½粒子
+dirac-sea needs dirac-equation: 填满狄拉克方程容许的负能态
+dirac-sea needs pauli-exclusion-principle: 不相容原理阻止电子落入已填满的负能态
+dirac-sea needs positive-frequency: 负频率违背能量正定性，狄拉克海正为此而设
+dirac-sea relates q-negative-energy: 处理：填满全部负能态使物质稳定，并预言反物质
+positron needs dirac-sea: 海中的空穴表现为带正电的电子
+positron needs antiparticles: 它是电子的反粒子，1932年由安德森发现
+q-qm-relativity-tension relates quantum-field-theory: 关于：二者结合所迫出的QFT能否在数学上自洽
+q-qm-relativity-tension relates antiparticles: 涉及：相对论迫使量子理论纳入反粒子和粒子对产生
+q-negative-energy relates relativistic-hamiltonian: 关于：相对论性平方根能量的符号歧义
+q-negative-energy relates positive-frequency: 涉及：负能解违背的正是正频率条件
 
 %% 第 25 章
-standard-model needs dirac-equation, quantum-field-theory
-zigzag-picture needs dirac-equation, two-spinors, helicity
-zigzag-picture relates q-are-zigzags-real: 引出
-chirality needs zigzag-picture, clifford-algebra
-feynman-diagrams needs quantum-linearity, antiparticles
-weak-interaction needs zigzag-picture, feynman-diagrams
-parity-violation needs weak-interaction, chirality
-weyl-equation needs zigzag-picture, two-spinors
-cpt-theorem needs antiparticles, parity-violation
-antiparticle-time-reversal needs cpt-theorem, feynman-diagrams
-electroweak-theory needs weak-interaction, unitary-group, gauge-connection
-electroweak-theory relates q-broken-gauge-symmetry: 引出
-higgs-field needs electroweak-theory, zigzag-picture
-q-broken-gauge-symmetry relates higgs-field: 围绕
-weinberg-angle needs electroweak-theory
-hadrons needs bosons-and-fermions, standard-model
-quark-model needs hadrons, representation-theory, lie-algebra
-colour-charge needs quark-model, pauli-exclusion-principle
-quantum-chromodynamics needs colour-charge, gauge-connection, fibre-bundles
-cabibbo-angle needs quark-model, weak-interaction
-grand-unified-theories needs quantum-chromodynamics, electroweak-theory
-grand-unified-theories relates q-beyond-standard-model: 回应
-q-are-zigzags-real relates zigzag-picture: 关于
-q-are-zigzags-real relates chirality: 涉及
-q-broken-gauge-symmetry relates electroweak-theory: 关于
-q-broken-gauge-symmetry relates higgs-field: 涉及
-q-beyond-standard-model relates standard-model: 关于
-q-beyond-standard-model relates grand-unified-theories: 涉及
+standard-model needs dirac-equation: 夸克和轻子是由狄拉克型场描述的自旋½费米子
+standard-model needs quantum-field-theory: 它是关于所有已知粒子和相互作用的量子场论
+zigzag-picture needs dirac-equation: 把狄拉克方程改写成以质量耦合的两个二分量旋量方程
+zigzag-picture needs two-spinors: 把狄拉克旋量分成无撇的zig和带撇的zag二分量旋量
+zigzag-picture needs helicity: zig与zag无质量，螺旋性相反，分别左旋和右旋
+zigzag-picture relates q-are-zigzags-real: 引出：无质量的zig和zag是否物理实在
+chirality needs zigzag-picture: (1∓γ₅)ψ投影出zig和zag两部分
+chirality needs clifford-algebra: γ₅由四个克利福德生成元γ_a之积构成
+feynman-diagrams needs quantum-linearity: 按U的线性，所有图的振幅线性叠加
+feynman-diagrams needs antiparticles: 图线可代表反粒子，给出粒子对产生和湮灭的顶点
+weak-interaction needs zigzag-picture: W和Z只与左旋的zig部分耦合
+weak-interaction needs feynman-diagrams: 弱过程画成费米子线之间交换W或Z
+parity-violation needs weak-interaction: 钴60的β衰变等弱过程呈镜像不对称
+parity-violation needs chirality: 只有一个手征部分参与，故镜像对称破缺
+weyl-equation needs zigzag-picture: 令M=0使zig与zag解耦为各自的方程
+weyl-equation needs two-spinors: 外尔方程即二分量旋量方程∇^{AA'}ψ_A=0
+cpt-theorem needs antiparticles: C把每个粒子换成其反粒子
+cpt-theorem needs parity-violation: 弱相互作用破坏P（和C），而CPT组合保持严格
+antiparticle-time-reversal needs cpt-theorem: CPT严格成立给出C=PT，反粒子如同时间反演的粒子
+antiparticle-time-reversal needs feynman-diagrams: 反粒子线即逆时而行的粒子线，给出交叉对称性
+electroweak-theory needs weak-interaction: 把弱力的W±、Z⁰与光子统一起来
+electroweak-theory needs unitary-group: 对称群U(2)是幺正群，使W±、Z⁰、γ互相转动
+electroweak-theory needs gauge-connection: 这些玻色子是规范场，即U(2)丛上的联络
+electroweak-theory relates q-broken-gauge-symmetry: 引出：其U(2)严重破缺，不像色SU(3)那样严格
+higgs-field needs electroweak-theory: 破缺电弱U(2)，W和Z获得质量而光子仍无质量
+higgs-field needs zigzag-picture: zig-zag质量耦合被重新诠释为与希格斯场的耦合
+q-broken-gauge-symmetry relates higgs-field: 聚焦于：被希格斯场破缺的对称性是否真正的规范对称
+weinberg-angle needs electroweak-theory: 度量电弱U(2)中Z⁰与光子的混合
+hadrons needs bosons-and-fermions: 重子是费米子，介子是玻色子
+hadrons needs standard-model: 它们是标准模型的粒子群，按是否参与强相互作用分类
+quark-model needs hadrons: 把强子多重态解释为u、d、s夸克的束缚态
+quark-model needs representation-theory: 强子多重态是SU(3)/Z₃的表示
+quark-model needs lie-algebra: 八重法借SU(3)李代数结构对多重态分类
+colour-charge needs quark-model: 为每种夸克味赋予三种色
+colour-charge needs pauli-exclusion-principle: 三种色使Ω⁻等中的同种夸克能满足不相容原理
+quantum-chromodynamics needs colour-charge: 它是严格的色SU(3)对称性的规范理论
+quantum-chromodynamics needs gauge-connection: 胶子是非阿贝尔SU(3)规范联络
+quantum-chromodynamics needs fibre-bundles: 色是以SU(3)为群的时空上丛的纤维
+cabibbo-angle needs quark-model: 使d与s夸克态相对转动
+cabibbo-angle needs weak-interaction: 弱相互作用本征态是强作用夸克本征态的混合
+grand-unified-theories needs quantum-chromodynamics: 把色SU(3)嵌入更大的对称群
+grand-unified-theories needs electroweak-theory: 把电弱U(2)也纳入同一个大群
+grand-unified-theories relates q-beyond-standard-model: 处理：试图解释奇特的SU(3)×U(2)结构和自由参数
+q-are-zigzags-real relates zigzag-picture: 关于：电子的二分量旋量zig和zag成分
+q-are-zigzags-real relates chirality: 涉及：zig和zag即左、右手征部分
+q-broken-gauge-symmetry relates electroweak-theory: 关于：严重破缺的电弱SU(2)仍被当作规范群
+q-beyond-standard-model relates standard-model: 关于：标准模型约17个无法解释的参数
+q-beyond-standard-model relates grand-unified-theories: 涉及：大统一理论是超越它的主要尝试
 
 %% 第 26 章
-creation-annihilation-operators needs bosons-and-fermions, hilbert-space, grassmann-algebra
-vacuum-state needs creation-annihilation-operators
-field-operator-algebra needs creation-annihilation-operators, clifford-algebra
-field-complex-structure needs field-operator-algebra, positive-frequency, maxwell-equations
-majorana-spinors needs dirac-equation, antiparticles
-inequivalent-vacua needs vacuum-state, dirac-sea
-path-integral needs lagrangian-formalism, stationary-action, quantum-linearity
-feynman-propagator needs path-integral, positive-frequency
-mass-shell needs four-momentum, feynman-diagrams
-s-matrix needs feynman-diagrams, feynman-propagator
-tree-and-loop-diagrams needs feynman-diagrams, mass-shell
-renormalization needs tree-and-loop-diagrams
-renormalization relates q-qft-infinities: 回应
-ultraviolet-divergence needs tree-and-loop-diagrams, uncertainty-principle
-vacuum-polarization needs feynman-diagrams, antiparticles
-asymptotic-freedom needs quantum-chromodynamics, renormalization
-fine-structure-constant needs renormalization
-fine-structure-constant relates q-puzzling-parameters: 例示
-perturbation-expansion needs power-series, feynman-diagrams, path-integral
-perturbation-expansion relates q-qft-infinities: 回应
-q-qft-infinities relates renormalization: 关于
-q-qft-infinities relates ultraviolet-divergence: 关于
-q-qft-infinities relates perturbation-expansion: 涉及
-q-path-integral-meaning relates path-integral: 关于
-q-path-integral-meaning relates feynman-propagator: 涉及
-q-choice-of-vacuum relates inequivalent-vacua: 关于
-q-choice-of-vacuum relates higgs-field: 涉及
+creation-annihilation-operators needs bosons-and-fermions: 玻色子的算符对易，费米子的反对易
+creation-annihilation-operators needs hilbert-space: 作用在粒子数可变的希尔伯特空间上
+creation-annihilation-operators needs grassmann-algebra: 产生算符服从分次格拉斯曼代数，费米子算符为奇次
+vacuum-state needs creation-annihilation-operators: 每个湮灭算符都使|0⟩为零，产生算符在其上构造态
+field-operator-algebra needs creation-annihilation-operators: 由所有模式的产生和湮灭算符生成
+field-operator-algebra needs clifford-algebra: 费米子反对易关系构成无限维克利福德代数
+field-complex-structure needs field-operator-algebra: J决定哪些场组合充当产生或湮灭算符
+field-complex-structure needs positive-frequency: J在正频部分作用为i，在负频部分为-i
+majorana-spinors needs dirac-equation: 是被约束为等于其电荷共轭的狄拉克型旋量场
+majorana-spinors needs antiparticles: 其粒子就是自身的反粒子，与狄拉克粒子不同
+inequivalent-vacua needs vacuum-state: 不同的真空|0⟩选择，彼此无法由场算符代数连通
+inequivalent-vacua needs dirac-sea: 狄拉克海是与空真空不等价的真空实例
+path-integral needs lagrangian-formalism: 每个历史的作用量S是L对时间的积分
+path-integral needs stationary-action: 作用量稳定的路径主导求和，重现经典运动
+path-integral needs quantum-linearity: 所有历史的振幅exp(iS/ħ)按线性叠加相加
+feynman-propagator needs path-integral: 它是自由粒子在两点之间的路径积分振幅
+feynman-propagator needs positive-frequency: i-epsilon处方选出正频部分
+mass-shell needs four-momentum: 4动量空间中静质量固定的双曲面
+mass-shell needs feynman-diagrams: 费恩曼图外线在质壳上，内部虚线可离壳
+s-matrix needs feynman-diagrams: 其矩阵元由费恩曼图求和算出
+s-matrix needs feynman-propagator: 每条内线贡献一个费恩曼传播子
+tree-and-loop-diagrams needs feynman-diagrams: 按是否含闭合圈对费恩曼图分类
+tree-and-loop-diagrams needs mass-shell: 树图动量由守恒确定，圈图动量可在质壳外自由取值
+renormalization needs tree-and-loop-diagrams: 把发散的圈积分吸收进重新标定的电荷和质量
+renormalization relates q-qft-infinities: 处理：把发散藏进有限个实测参数
+ultraviolet-divergence needs tree-and-loop-diagrams: 闭合圈中无界的自由动量使积分发散
+ultraviolet-divergence needs uncertainty-principle: 由Δp Δx≥ħ/2，大动量对应小距离
+vacuum-polarization needs feynman-diagrams: 光子线分裂为虚正负电子圈的费恩曼图
+vacuum-polarization needs antiparticles: 虚正负电子对屏蔽电子的裸电荷
+asymptotic-freedom needs quantum-chromodynamics: 自相互作用的胶子使色耦合在高动量下减弱
+asymptotic-freedom needs renormalization: 它是重正化耦合常数随动量尺度的跑动
+fine-structure-constant needs renormalization: 实测值约1/137是重正化电荷而非裸电荷
+fine-structure-constant relates q-puzzling-parameters: 例示：无从解释α为何约1/137，重正化也给不出
+perturbation-expansion needs power-series: 是关于耦合常数的幂级数
+perturbation-expansion needs feynman-diagrams: 每个费恩曼图是级数中的一项
+perturbation-expansion needs path-integral: 由按耦合常数展开相互作用路径积分得到
+perturbation-expansion relates q-qft-infinities: 处理：即使重正化后QED级数也可能发散，又一个无穷大
+q-qft-infinities relates renormalization: 关于：重正化是否只是掩盖了更深理论须消除的发散
+q-qft-infinities relates ultraviolet-divergence: 关于：来自任意小距离的紫外发散
+q-qft-infinities relates perturbation-expansion: 涉及：微扰级数本身可能发散
+q-path-integral-meaning relates path-integral: 关于：历史求和缺乏严格的无限维测度
+q-path-integral-meaning relates feynman-propagator: 涉及：传播子只是形式求和，靠i-epsilon确定
+q-choice-of-vacuum relates inequivalent-vacua: 关于：哪一个不等价真空在物理上实现
+q-choice-of-vacuum relates higgs-field: 涉及：电弱破缺被描述为希格斯场选取真空
 
 %% 第 27 章
-time-reversal-symmetry needs schrodinger-equation, hamiltonian-formalism
-time-reversal-symmetry relates q-arrow-of-time: 引出
-chaotic-systems needs time-reversal-symmetry
-q-arrow-of-time relates second-law: 关于
-entropy needs second-law
-coarse-graining needs phase-space
-boltzmann-entropy needs entropy, coarse-graining, logarithm
-thermal-equilibrium needs boltzmann-entropy
-gravitational-entropy needs entropy, thermal-equilibrium
-gravitational-entropy relates q-special-big-bang: 回应
-big-bang needs einstein-field-equations
-q-special-big-bang relates big-bang: 关于
-cosmic-microwave-background needs big-bang
-black-holes needs einstein-field-equations, light-cones
-chandrasekhar-limit needs pauli-exclusion-principle
-event-horizon needs black-holes, light-cones
-spacetime-singularities needs event-horizon, einsteinian-spacetime
-cosmic-censorship needs spacetime-singularities, event-horizon
-planck-units needs planck-constant, newtonian-gravity
-bekenstein-hawking-entropy needs black-holes, boltzmann-entropy, planck-units
-bekenstein-hawking-entropy relates q-special-big-bang: 量化
-flrw-models needs einstein-field-equations, hyperbolic-geometry, cosmological-constant
-conformal-diagrams needs conformal-mappings, light-cones
-particle-horizon needs conformal-diagrams, big-bang
-q-arrow-of-time relates time-reversal-symmetry: 涉及
-q-arrow-of-time relates boltzmann-entropy: 涉及
-q-universe-isolated-system relates entropy: 关于
-q-universe-isolated-system relates second-law: 涉及
-bekenstein-hawking-entropy relates q-special-big-bang: 度量
-q-special-big-bang relates gravitational-entropy: 涉及
+time-reversal-symmetry needs schrodinger-equation: 薛定谔演化在配合复共轭时是时间对称的
+time-reversal-symmetry needs hamiltonian-formalism: 哈密顿方程在t→-t且动量反向时不变
+time-reversal-symmetry relates q-arrow-of-time: 引出：时间对称的定律本身无法解释单向的第二定律
+q-arrow-of-time relates second-law: 关于：熵为何只朝未来增加
+entropy needs second-law: 熵是第二定律断言不减少的量
+coarse-graining needs phase-space: 把相空间划分为宏观不可区分态的格子
+boltzmann-entropy needs entropy: 把熵精确化为S=k log V
+boltzmann-entropy needs coarse-graining: V是粗粒化格子的相空间体积
+boltzmann-entropy needs logarithm: 对数使复合系统的熵可以相加
+thermal-equilibrium needs boltzmann-entropy: 热平衡是玻尔兹曼熵最大的格子，几乎占满相空间
+gravitational-entropy needs entropy: 有引力时，成团而非弥散使熵增加
+gravitational-entropy needs thermal-equilibrium: 无引力时为平衡态的均匀气体，在引力下反成低熵
+gravitational-entropy relates q-special-big-bang: 处理：几何均匀意味着引力起初熵极低
+big-bang needs einstein-field-equations: 爱因斯坦方程的弗里德曼解始于奇异的大爆炸
+q-special-big-bang relates big-bang: 关于：大爆炸仅占相空间的10^(10^123)分之一
+cosmic-microwave-background needs big-bang: 它是炽热大爆炸遗留下的红移热辐射
+black-holes needs einstein-field-equations: 爱因斯坦方程的史瓦西解描述引力坍缩
+black-holes needs light-cones: 其内光锥向内倾，连光也逃不出
+chandrasekhar-limit needs pauli-exclusion-principle: 超过此质量，源于不相容原理的电子简并压撑不住
+event-horizon needs black-holes: 它是黑洞区域的边界
+event-horizon needs light-cones: 它是由恰好逃不出的光线生成的零超曲面
+spacetime-singularities needs event-horizon: 视界内形成的囚禁区使奇点不可避免
+spacetime-singularities needs einsteinian-spacetime: 爱因斯坦的弯曲洛伦兹时空在坍缩中产生无穷曲率
+cosmic-censorship needs spacetime-singularities: 猜想坍缩产生的奇点从外部永远看不见
+cosmic-censorship needs event-horizon: 负责隐藏奇点的正是事件视界
+planck-units needs planck-constant: 取ħ=1，同时c=G=k=1
+planck-units needs newtonian-gravity: 取牛顿引力常数G=1，从而定出普朗克长度
+bekenstein-hawking-entropy needs black-holes: 给黑洞赋予熵，正比于视界面积
+bekenstein-hawking-entropy needs boltzmann-entropy: 它是玻尔兹曼熵，尽管终态黑洞只需十个参数却极大
+bekenstein-hawking-entropy needs planck-units: 以普朗克单位计，熵等于视界面积的四分之一
+bekenstein-hawking-entropy relates q-special-big-bang: 量化：黑洞最大熵给出衡量大爆炸特殊性的10^123
+flrw-models needs einstein-field-equations: 爱因斯坦方程的均匀各向同性解
+flrw-models needs hyperbolic-geometry: K<0时空间截面是三维双曲空间
+flrw-models needs cosmological-constant: 模型可含Λ，改变晚期膨胀
+conformal-diagrams needs conformal-mappings: 共形变换把无穷远拉到有限边界并保持角度
+conformal-diagrams needs light-cones: 零锥画成45度以显示因果结构
+particle-horizon needs conformal-diagrams: 在共形图中即过去光锥与大爆炸的交界
+particle-horizon needs big-bang: 大爆炸是类空的过去边界，限制了可见范围
+q-arrow-of-time relates time-reversal-symmetry: 涉及：时间对称的动力学预言熵朝过去也增加
+q-arrow-of-time relates boltzmann-entropy: 涉及：相空间体积论证使熵在两个时间方向都可能增加
+q-universe-isolated-system relates entropy: 关于：膨胀本身能否抬高熵上限，从而免去特殊初态
+q-universe-isolated-system relates second-law: 涉及：第二定律只适用于宇宙可看作孤立系统时
+q-special-big-bang relates gravitational-entropy: 涉及：物质已热化而引力均匀，因而熵极低
 
 %% 第 28 章
-mexican-hat-potential needs higgs-field
-phase-transition needs mexican-hat-potential, inequivalent-vacua
-topological-defects needs phase-transition, fibre-bundles
-magnetic-monopoles needs maxwell-equations, gauge-connection, topological-defects
-cosmic-strings needs topological-defects, minkowski-space
-inflationary-cosmology needs flrw-models
-q-inflation-motivation relates inflationary-cosmology: 质疑
-horizon-problem needs particle-horizon, cosmic-microwave-background
-flatness-problem needs flrw-models
-de-sitter-space needs minkowski-space, cosmological-constant, einstein-field-equations
-anti-de-sitter-space needs de-sitter-space
-inflaton-field needs mexican-hat-potential, cosmological-constant
-anthropic-principle needs fine-structure-constant
-q-anthropic-special-big-bang relates anthropic-principle: 检验
-ricci-weyl-focusing needs weyl-tensor, ricci-tensor
-weyl-curvature-hypothesis needs ricci-weyl-focusing, spacetime-singularities, gravitational-entropy
-weyl-curvature-hypothesis relates q-special-big-bang: 回应
-naked-singularities needs cosmic-censorship
-wick-rotation needs minkowski-space, path-integral
-no-boundary-proposal needs wick-rotation, path-integral, big-bang
-no-boundary-proposal relates q-special-big-bang: 回应
-dark-matter needs flrw-models
-dark-energy needs cosmological-constant, flrw-models
-dark-energy relates q-cosmological-constant-problem: 引出
-q-inflation-motivation relates inflationary-cosmology: 关于
-q-inflation-motivation relates horizon-problem: 涉及
-q-inflation-motivation relates flatness-problem: 涉及
-q-symmetry-breaking-reality relates higgs-field: 关于
-q-symmetry-breaking-reality relates particle-horizon: 涉及
-q-anthropic-special-big-bang relates anthropic-principle: 关于
-q-anthropic-special-big-bang relates q-special-big-bang: 解答
-q-cosmological-constant-problem relates dark-energy: 关于
-q-cosmological-constant-problem relates renormalization: 涉及
+mexican-hat-potential needs higgs-field: 希格斯势的形状：对称顶部不稳定，极小值在帽檐
+phase-transition needs mexican-hat-potential: 冷却时态从帽顶滚落到帽檐上某点
+phase-transition needs inequivalent-vacua: 在QFT中相变是不等价真空之间的转换
+topological-defects needs phase-transition: 相变时各分离区域破缺方向不同，交界处形成缺陷
+topological-defects needs fibre-bundles: 场的扭曲丛构形无法抹平
+magnetic-monopoles needs maxwell-equations: 孤立磁荷将给麦克斯韦方程dF=0加上源
+magnetic-monopoles needs gauge-connection: 扭曲的U(1)丛消去狄拉克弦并迫使电荷量子化
+magnetic-monopoles needs topological-defects: 大统一对称性破缺产生点状的规范单极缺陷
+cosmic-strings needs topological-defects: 它们是线状的一类缺陷
+cosmic-strings needs minkowski-space: 外部时空是切去楔形再粘合的闵可夫斯基空间
+inflationary-cosmology needs flrw-models: 在早期FLRW模型中插入指数膨胀阶段
+q-inflation-motivation relates inflationary-cosmology: 质疑：一般初态不会被抹平，均匀性仍得不到解释
+horizon-problem needs particle-horizon: 互在粒子视界之外的区域不可能达到热化
+horizon-problem needs cosmic-microwave-background: 背景辐射温度在各方向上几乎相等
+flatness-problem needs flrw-models: 追问为何在FLRW模型中K如此接近平直
+de-sitter-space needs minkowski-space: 它是嵌入五维闵可夫斯基空间的四维洛伦兹球面
+de-sitter-space needs cosmological-constant: 它是宇宙学常数为正的真空解
+de-sitter-space needs einstein-field-equations: 它是含Λ的爱因斯坦真空方程的常曲率解
+anti-de-sitter-space needs de-sitter-space: 是Λ为负的对应物，除非展开否则含闭合类时曲线
+inflaton-field needs mexican-hat-potential: 它停在伪真空上，之后滚向真正的极小值
+inflaton-field needs cosmological-constant: 伪真空能起巨大等效宇宙学常数的作用
+anthropic-principle needs fine-structure-constant: 强形式试图用生命的要求解释α等常数
+q-anthropic-special-big-bang relates anthropic-principle: 检验：生命只需一小块光滑区域，相空间代价小得多
+ricci-weyl-focusing needs weyl-tensor: 外尔曲率像纯像散透镜一样扭曲光束
+ricci-weyl-focusing needs ricci-tensor: 物质产生的里奇曲率像正透镜一样聚焦光束
+weyl-curvature-hypothesis needs ricci-weyl-focusing: 按外尔或里奇曲率何者主导来区分奇点
+weyl-curvature-hypothesis needs spacetime-singularities: 要求初始奇点处外尔曲率为零，与黑洞奇点不同
+weyl-curvature-hypothesis needs gravitational-entropy: 外尔曲率为零即引力未成团，引力熵极低
+weyl-curvature-hypothesis relates q-special-big-bang: 处理：约束大爆炸几何，使其低熵成为一条定律
+naked-singularities needs cosmic-censorship: 它们正是宇宙监督所禁止的
+wick-rotation needs minkowski-space: 把t换成it使闵可夫斯基度规变为欧几里得度规
+wick-rotation needs path-integral: 振荡的exp(iS/ħ)变为衰减，使路径积分易于处理
+no-boundary-proposal needs wick-rotation: 对欧几里得化的黎曼几何而非洛伦兹几何求和
+no-boundary-proposal needs path-integral: 用引力路径积分定义宇宙的量子态
+no-boundary-proposal needs big-bang: 把大爆炸光滑封闭，没有奇异边界
+no-boundary-proposal relates q-special-big-bang: 处理：提出一种意在确定光滑初态的量子引力规则
+dark-matter needs flrw-models: 其密度进入FLRW模型，关系到K的符号
+dark-energy needs cosmological-constant: 观测到的加速膨胀归因于正的Λ
+dark-energy needs flrw-models: 超新星数据符合Λ为正、K接近零的FLRW模型
+dark-energy relates q-cosmological-constant-problem: 引出：观测Λ为何比QFT真空能估计小约10^120倍
+q-inflation-motivation relates horizon-problem: 涉及：暴胀声称扩展粒子视界，让背景辐射得以热化
+q-inflation-motivation relates flatness-problem: 涉及：暴胀声称能抹平曲率和不规则性
+q-symmetry-breaking-reality relates higgs-field: 关于：希格斯场是否真在早期宇宙中选定了真空
+q-symmetry-breaking-reality relates particle-horizon: 涉及：互在视界外的区域会各自独立地破缺对称性
+q-anthropic-special-big-bang relates q-special-big-bang: 解答：否，观测到的均匀宇宙远超生命所需的代价
+q-cosmological-constant-problem relates dark-energy: 关于：暗能量的Λ远小于QFT的预期
+q-cosmological-constant-problem relates renormalization: 涉及：重正化类效应算出的真空能超出10^120倍
 
 %% 第 29 章
-copenhagen-interpretation needs hilbert-space, wavefunction-collapse
-copenhagen-interpretation relates q-measurement-problem: 回应
-many-worlds-interpretation needs unitary-evolution, quantum-linearity, entanglement
-many-worlds-interpretation relates q-measurement-problem: 回应
-consistent-histories needs projection-postulate, hilbert-space
-consistent-histories relates q-measurement-problem: 回应
-pilot-wave-theory needs wavefunction, configuration-space
-pilot-wave-theory relates q-measurement-problem: 回应
-spectral-decomposition needs projection-postulate, quantum-observables, eigenvectors
-density-matrix needs hilbert-space, dirac-notation, projection-postulate
-density-matrix relates q-density-matrix-ontology: 引出
-mixed-states needs density-matrix
-mixed-states relates q-density-matrix-ontology: 引出
-reduced-density-matrix needs density-matrix, epr-bohm, entanglement
-environmental-decoherence needs reduced-density-matrix, entanglement
-environmental-decoherence relates q-measurement-problem: 回应
-schrodinger-cat needs quantum-linearity, unitary-evolution, mach-zehnder-interferometer
-schmidt-decomposition needs entanglement, density-matrix
-schmidt-decomposition relates q-measurement-problem: 未能解决
-copenhagen-interpretation relates q-reality-of-quantum-state: 否定地解答
-pilot-wave-theory relates q-reality-of-quantum-state: 解答
-consistent-histories relates q-reality-of-quantum-state: 解答
-q-density-matrix-ontology relates density-matrix: 关于
-q-density-matrix-ontology relates mixed-states: 关于
-bloch-sphere relates q-density-matrix-ontology: 图示
+copenhagen-interpretation needs hilbert-space: 把希尔伯特空间态矢只看作实验者的知识
+copenhagen-interpretation needs wavefunction-collapse: 把坍缩R解读为知识更新而非物理过程
+copenhagen-interpretation relates q-measurement-problem: 处理：否认R是物理过程，因而无需解释其机制
+many-worlds-interpretation needs unitary-evolution: 只有U发生，R从不出现
+many-worlds-interpretation needs quantum-linearity: U的线性产生叠加的结局，并全部保留
+many-worlds-interpretation needs entanglement: 观察者与各结局纠缠，分裂到各个分支中
+consistent-histories needs projection-postulate: 在中间时刻插入投影算符组来定义历史
+consistent-histories needs hilbert-space: 历史是希尔伯特空间态上的投影序列
+consistent-histories relates q-measurement-problem: 处理：选出概率服从经典规则的历史，无需物理坍缩
+pilot-wave-theory needs wavefunction: 波函数作为导波引导实际位形
+pilot-wave-theory needs configuration-space: 实际位形点在位形空间中受ψ引导运动
+pilot-wave-theory relates q-measurement-problem: 处理：位形始终取确定值，故结局确定
+spectral-decomposition needs projection-postulate: 厄米算符等于各本征值乘正交投影算符之和
+spectral-decomposition needs quantum-observables: 适用于表示可观测量的厄米或正规算符
+spectral-decomposition needs eigenvectors: 每个投影算符投到一个不同本征值的本征空间
+density-matrix needs hilbert-space: 希尔伯特空间态外积的加权和
+density-matrix needs dirac-notation: 用右矢和左矢写成Σp_i|ψ_i⟩⟨ψ_i|
+density-matrix needs projection-postulate: 对投影算符E回答为是的概率是trace(ED)
+density-matrix relates q-density-matrix-ontology: 引出：同一密度矩阵对应多种混合，实际存在何态不明
+mixed-states needs density-matrix: 不具纯态形式|ψ⟩⟨ψ|的密度矩阵
+mixed-states relates q-density-matrix-ontology: 引出：混合态有多种不等价的纯态分解
+reduced-density-matrix needs density-matrix: 对未知伙伴求和后留下一个密度矩阵
+reduced-density-matrix needs epr-bohm: 对单态粒子对它是I/2，与远处测量选择无关
+reduced-density-matrix needs entanglement: 纠缠系统的部分没有态矢，只有约化密度矩阵
+environmental-decoherence needs reduced-density-matrix: 对环境求迹得到近对角的约化密度矩阵
+environmental-decoherence needs entanglement: 被测系统与无法观测的环境纠缠
+schrodinger-cat needs quantum-linearity: 线性叠加从光子一路放大到活猫和死猫
+schrodinger-cat needs unitary-evolution: 单纯的U演化（无R）得出猫态叠加
+schrodinger-cat needs mach-zehnder-interferometer: 分束器产生触发与未触发两路的叠加
+schmidt-decomposition needs entanglement: 把纠缠态写成两侧正交基配对之和
+schmidt-decomposition needs density-matrix: 这种配对同时对角化两侧的约化密度矩阵
+schmidt-decomposition relates q-measurement-problem: 未能解决：其优选态未必是活猫与死猫
+copenhagen-interpretation relates q-reality-of-quantum-state: 否定地回答：|ψ⟩不是实在，只是实验者的知识
+pilot-wave-theory relates q-reality-of-quantum-state: 解答：波函数与粒子位形都实在，构成两层实在
+consistent-histories relates q-reality-of-quantum-state: 解答：实在在于相容的粗粒化历史，而非单个态矢
+q-density-matrix-ontology relates density-matrix: 关于：密度矩阵能否确定实际存在哪些态
+q-density-matrix-ontology relates mixed-states: 关于：混合态缺乏唯一的纯态分解
+bloch-sphere relates q-density-matrix-ontology: 图示：密度矩阵是球内点，可由多种混合表示
 
 %% 第 30 章
-quantum-anomalies needs poisson-bracket, canonical-quantization
-time-asymmetry-of-r needs wavefunction-collapse, born-rule, mach-zehnder-interferometer
-time-asymmetry-of-r relates q-gravity-and-state-reduction: 暗示
-hawking-temperature needs bekenstein-hawking-entropy, positive-frequency, black-holes
-unruh-effect needs positive-frequency, killing-vectors, vacuum-state
-rindler-coordinates needs minkowski-space
-complex-periodicity-temperature needs hawking-temperature, complexified-minkowski-space, rindler-coordinates
-eternal-black-hole needs black-holes, conformal-diagrams, killing-vectors
-time-travel-wormholes needs eternal-black-hole
-hawking-radiation needs hawking-temperature, killing-vectors, feynman-diagrams
-penrose-process needs black-holes, killing-vectors, four-momentum
-hawking-evaporation needs hawking-radiation
-hawking-evaporation relates q-black-hole-information-loss: 引出
-hawking-box needs phase-space, hawking-evaporation, weyl-curvature-hypothesis
-hawking-box relates q-black-hole-information-loss: 回应
-schrodinger-lump needs schrodinger-cat, eigenstates
-gravitational-self-energy-difference needs schrodinger-lump, einsteinian-spacetime, newton-cartan-spacetime
-schrodinger-newton-equation needs schrodinger-equation, newtonian-gravity, eigenstates
-gravitational-or needs gravitational-self-energy-difference, uncertainty-principle, schrodinger-newton-equation
-gravitational-or relates q-measurement-problem: 回应
-gravitational-or relates q-gravity-and-state-reduction: 回应
-felix-experiment needs gravitational-or, mach-zehnder-interferometer, double-slit-experiment
-felix-experiment relates q-gravity-and-state-reduction: 检验
-q-black-hole-information-loss relates hawking-evaporation: 源于
-hawking-box relates q-black-hole-information-loss: 分析
-q-black-hole-information-loss relates unitary-evolution: 挑战
-gravitational-or relates q-gravity-and-state-reduction: 解答
-felix-experiment relates q-gravity-and-state-reduction: 可检验
-time-asymmetry-of-r relates q-gravity-and-state-reduction: 推动
-q-origin-of-early-universe-fluctuations relates flrw-models: 关乎
-q-origin-of-early-universe-fluctuations relates gravitational-or: 需要
-environmental-decoherence relates q-origin-of-early-universe-fluctuations: 未能解决
+quantum-anomalies needs poisson-bracket: 经典对称性由泊松括号表达，量子对易式未能充分实现
+quantum-anomalies needs canonical-quantization: 量子化过程破坏经典对称性，只剩其子群
+time-asymmetry-of-r needs wavefunction-collapse: 被证明时间不对称的正是测量时的态收缩 R
+time-asymmetry-of-r needs born-rule: 模平方规则预言未来正确，反推过去却荒谬
+time-asymmetry-of-r needs mach-zehnder-interferometer: 论证借助光子源、分束器与探测器的实验装置
+time-asymmetry-of-r relates q-gravity-and-state-reduction: 暗示：R 的时间不对称性提示它是客观的引力过程
+hawking-temperature needs bekenstein-hawking-entropy: 经热力学，霍金温度把贝肯斯坦熵的系数定为 A/4
+hawking-temperature needs positive-frequency: 坍缩前后正频率划分不一致导致热辐射
+hawking-temperature needs black-holes: 辐射者是黑洞，温度由其表面引力决定
+unruh-effect needs positive-frequency: 加速改变了正频率的划分，真空因而呈热态
+unruh-effect needs killing-vectors: 加速观察者的时间由推动基灵矢量给出，定义频率
+unruh-effect needs vacuum-state: 闵可夫斯基真空 |0⟩ 在加速观察者看来是热态
+rindler-coordinates needs minkowski-space: 在平直闵可夫斯基空间一楔形区域上的双曲角坐标
+complex-periodicity-temperature needs hawking-temperature: 虚时间周期恰好重现霍金温度的倒数
+complex-periodicity-temperature needs complexified-minkowski-space: 洛伦兹与欧几里得度规是同一复化时空的实截面
+complex-periodicity-temperature needs rindler-coordinates: 林德勒时间 τ = iθ 在平直情形展示虚周期性
+eternal-black-hole needs black-holes: 史瓦西黑洞的最大解析扩展
+eternal-black-hole needs conformal-diagrams: 两外部区域与黑洞、白洞区域用共形图展示
+eternal-black-hole needs killing-vectors: 基灵矢量在外部类时、内部类空，两外部间反向
+time-travel-wormholes needs eternal-black-hole: 从永恒黑洞不可穿越的虫洞出发讨论
+hawking-radiation needs hawking-temperature: 为霍金温度的热辐射提供直观图像
+hawking-radiation needs killing-vectors: 只有基灵矢量类空处才允许负能量 p_aκ^a
+hawking-radiation needs feynman-diagrams: 真空中虚粒子对，其中之一变为实粒子
+penrose-process needs black-holes: 从旋转（克尔）黑洞中抽取能量
+penrose-process needs killing-vectors: 能层中基灵矢量变为类空，守恒能量可为负
+penrose-process needs four-momentum: 守恒能量为 p_aκ^a，分裂时总4维动量守恒
+hawking-evaporation needs hawking-radiation: 辐射带走质量，黑洞缩小、升温直至爆炸
+hawking-evaporation relates q-black-hole-information-loss: 引出：黑洞消失后，落入的信息去了哪里
+hawking-box needs phase-space: 盒内演化被看作其相空间中的流
+hawking-box needs hawking-evaporation: 盒内黑洞与辐射平衡，反复形成与蒸发
+hawking-box needs weyl-curvature-hypothesis: 奇点的时间不对称（无白洞）使相空间流收敛
+hawking-box relates q-black-hole-information-loss: 探讨：丢失的相空间体积须由 R 补回
+schrodinger-lump needs schrodinger-cat: 把猫换成处于两位置叠加的团块
+schrodinger-lump needs eigenstates: 每个位置都是定态，即能量本征态
+gravitational-self-energy-difference needs schrodinger-lump: E_G 度量团块两叠加位置对应时空的冲突
+gravitational-self-energy-difference needs einsteinian-spacetime: 广义协变性使两叠加时空的点无法对应
+gravitational-self-energy-difference needs newton-cartan-spacetime: 在牛顿-嘉当框架的牛顿极限下估算误差
+schrodinger-newton-equation needs schrodinger-equation: 在薛定谔方程中加入自引力势项
+schrodinger-newton-equation needs newtonian-gravity: 势为牛顿引力势，源于波函数的期望质量密度
+schrodinger-newton-equation needs eigenstates: 其定态解被提议为 R 所收缩到的优先态
+gravitational-or needs gravitational-self-energy-difference: 收缩时间约为 ħ/E_G，E_G 为引力自能差
+gravitational-or needs uncertainty-principle: 寿命 ħ/E_G 类比不稳定态的能量-时间不确定关系
+gravitational-or needs schrodinger-newton-equation: 态收缩到薛定谔-牛顿方程的定态解
+gravitational-or relates q-measurement-problem: 探讨：R 成为客观物理过程，无需观察者
+gravitational-or relates q-gravity-and-state-reduction: 探讨：给出时间尺度 ħ/E_G 的具体引力收缩规则
+felix-experiment needs gravitational-or: 旨在检测 ħ/E_G 时间尺度上的相干性丧失
+felix-experiment needs mach-zehnder-interferometer: 分束器分开X射线光子，再合束检验干涉
+felix-experiment needs double-slit-experiment: 沿用干涉仅在叠加保持时出现的思想
+felix-experiment relates q-gravity-and-state-reduction: 检验：叠加镜子的相干性是否按引力 OR 丧失
+q-black-hole-information-loss relates hawking-evaporation: 源于：黑洞完全蒸发，只留下热辐射
+q-black-hole-information-loss relates unitary-evolution: 挑战：纯态变为混合热态违背幺正演化 U
+q-origin-of-early-universe-fluctuations relates flrw-models: 关乎：严格对称的 FLRW 初态如何产生不均匀
+q-origin-of-early-universe-fluctuations relates gravitational-or: 要求：唯有客观 R 能打破 U 保持的对称性
+environmental-decoherence relates q-origin-of-early-universe-fluctuations: 未能解决：FAPP退相干保持FLRW对称，唯有客观约化能打破
 
 %% 第 31 章
-running-coupling-constants needs renormalization, fine-structure-constant
-supersymmetry needs bosons-and-fermions, lie-algebra, grassmann-algebra
-super-lie-algebra needs lie-algebra, grassmann-algebra, canonical-commutation-relations
-superalgebra needs grassmann-algebra, n-manifolds, p-forms
-supergravity needs supersymmetry, einstein-field-equations
-higher-dimensional-spacetime needs kaluza-klein, functional-freedom, ricci-tensor
-higher-dimensional-spacetime relates q-why-unseen-extra-dimensions: 引出
-hadronic-string-theory needs feynman-diagrams, riemann-surfaces, genus
-regge-trajectories needs hadronic-string-theory
-superstrings needs hadronic-string-theory, supersymmetry, quantum-anomalies
-superstrings relates q-string-quantum-gravity: 回应
-string-worldsheet needs superstrings, lagrangian-formalism, ricci-tensor
-kaluza-klein-modes needs higher-dimensional-spacetime, klein-gordon-equation, laplace-equation
-kaluza-klein-modes relates q-why-unseen-extra-dimensions: 回应
-calabi-yau-spaces needs complex-manifolds, symplectic-manifolds, ricci-tensor
-mirror-symmetry needs calabi-yau-spaces
-mirror-symmetry relates q-status-of-string-theory: 支持
-string-dualities needs superstrings
-m-theory needs string-dualities, supergravity
-bps-states needs supersymmetry, black-holes
-string-black-hole-entropy needs bekenstein-hawking-entropy, bps-states, black-holes
-holographic-principle needs anti-de-sitter-space, gauge-connection, functional-freedom
-d-branes needs m-theory, superstrings
-d-branes relates q-puzzling-parameters: 回应
-q-puzzling-parameters relates fine-structure-constant: 包含
-q-puzzling-parameters relates running-coupling-constants: 涉及
-kaluza-klein-modes relates q-why-unseen-extra-dimensions: 解答
-q-why-unseen-extra-dimensions relates higher-dimensional-spacetime: 关于
-spacetime-singularities relates q-why-unseen-extra-dimensions: 深化
-q-string-quantum-gravity relates superstrings: 关于
-q-string-quantum-gravity relates renormalization: 关乎
-q-string-quantum-gravity relates string-worldsheet: 涉及
-q-status-of-string-theory relates mirror-symmetry: 权衡
-q-status-of-string-theory relates m-theory: 关于
-q-status-of-string-theory relates string-black-hole-entropy: 权衡
+running-coupling-constants needs renormalization: 重正化使有效耦合依赖于能量标度
+running-coupling-constants needs fine-structure-constant: 观测值 1/137 是跑动耦合的低能极限
+supersymmetry needs bosons-and-fermions: 每个玻色子配一个费米子超伴子，反之亦然
+supersymmetry needs lie-algebra: 以新生成元扩展时空对称性的李代数
+supersymmetry needs grassmann-algebra: 超对称变换参数是反对易的格拉斯曼量
+super-lie-algebra needs lie-algebra: 在李代数中加入奇生成元加以推广
+super-lie-algebra needs grassmann-algebra: 群参数取格拉斯曼元而非实数
+super-lie-algebra needs canonical-commutation-relations: 奇生成元间的反对易式与常规对易式并存
+superalgebra needs grassmann-algebra: 在实数上添加反对易的格拉斯曼生成元
+superalgebra needs n-manifolds: 超流形是添加了反对易坐标的流形
+supergravity needs supersymmetry: 局域化超对称，引力子配自旋3/2引力微子
+supergravity needs einstein-field-equations: 被超对称化的玻色部分正是爱因斯坦广义相对论
+higher-dimensional-spacetime needs kaluza-klein: 复兴卡鲁扎-克莱因的微小卷曲额外维思想
+higher-dimensional-spacetime needs functional-freedom: 额外维使函数自由度远超 ∞^(k∞⁴)
+higher-dimensional-spacetime needs ricci-tensor: 高维真空方程要求里奇平直
+higher-dimensional-spacetime relates q-why-unseen-extra-dimensions: 引出：若有额外维，为何从未观测到其激发
+hadronic-string-theory needs feynman-diagrams: 强子散射 s、t 道费恩曼图的对偶性催生弦
+hadronic-string-theory needs riemann-surfaces: 弦的历史构成黎曼面，其拓扑决定振幅
+hadronic-string-theory needs genus: 圈图阶数对应弦历史曲面的亏格
+regge-trajectories needs hadronic-string-theory: 有张力的旋转弦给出自旋与质量平方的线性关系
+superstrings needs hadronic-string-theory: 把强子弦重新解释为普朗克尺度的引力理论
+superstrings needs supersymmetry: 超对称把所需维数从26降到10
+superstrings needs quantum-anomalies: 反常相消决定了维数与规范群
+superstrings relates q-string-quantum-gravity: 探讨：给出自旋2引力子并期望圈振幅有限
+string-worldsheet needs superstrings: 世界叶是超弦的二维历史
+string-worldsheet needs lagrangian-formalism: 弦的作用量是世界叶上的面积拉格朗日量
+string-worldsheet needs ricci-tensor: 共形一致性要求最低阶下背景里奇平直
+kaluza-klein-modes needs higher-dimensional-spacetime: 模是绕微小紧致额外维的振动
+kaluza-klein-modes needs klein-gordon-equation: 每个模服从四维克莱因-戈登方程，具普朗克质量
+kaluza-klein-modes needs laplace-equation: 模由小空间上拉普拉斯算符的本征态求得
+kaluza-klein-modes relates q-why-unseen-extra-dimensions: 探讨：普朗克质量据称使额外维无法激发
+calabi-yau-spaces needs complex-manifolds: 卡拉比-丘空间是复三维流形
+calabi-yau-spaces needs symplectic-manifolds: 凯勒结构把复结构与相容的辛结构结合
+calabi-yau-spaces needs ricci-tensor: 它们是里奇平直的，正如弦的一致性所要求
+mirror-symmetry needs calabi-yau-spaces: 把给出相同弦物理的不同卡拉比-丘空间配对
+mirror-symmetry relates q-status-of-string-theory: 支持：正确计数有理曲线，显示弦论的数学威力
+string-dualities needs superstrings: 对偶性联系五种不同的超弦理论
+m-theory needs string-dualities: 对偶性提示五种理论是同一理论的极限
+m-theory needs supergravity: 11维超引力是它的低能极限
+bps-states needs supersymmetry: 超对称保护 BPS 态在耦合增大时不受修正
+bps-states needs black-holes: 强耦合下 BPS 态成为极端带电黑洞
+string-black-hole-entropy needs bekenstein-hawking-entropy: 态计数重现极端黑洞的 S = A/4
+string-black-hole-entropy needs bps-states: 把弱耦合下 BPS 态计数外推到强耦合
+string-black-hole-entropy needs black-holes: 只适用于极端带电黑洞，非真实天体黑洞
+holographic-principle needs anti-de-sitter-space: 弦处于 AdS5×S5，场论位于其共形边界
+holographic-principle needs gauge-connection: 边界理论是超对称杨-米尔斯规范理论
+holographic-principle needs functional-freedom: 彭罗斯指出体与边界的函数自由度不匹配
+d-branes needs m-theory: D膜属于 M 理论中的各类 p 膜
+d-branes needs superstrings: 开超弦的端点落在D膜上
+d-branes relates q-puzzling-parameters: 探讨：膜世界试图解释引力之弱，即等级问题
+q-puzzling-parameters relates fine-structure-constant: 包括：α 为何约为 1/137 仍无解释
+q-puzzling-parameters relates running-coupling-constants: 涉及：观测常数是跑动耦合的低能极限
+q-why-unseen-extra-dimensions relates higher-dimensional-spacetime: 关于：微小额外维是否稳定且隐藏
+spacetime-singularities relates q-why-unseen-extra-dimensions: 加剧：受扰动的紧致额外维会在极短时间内经典地出现奇点
+q-string-quantum-gravity relates superstrings: 关于：超弦微扰论是否在各阶有限
+q-string-quantum-gravity relates renormalization: 关乎：有限性可避开量子引力不可重正化
+q-string-quantum-gravity relates string-worldsheet: 涉及：对世界叶亏格求和很可能发散
+q-status-of-string-theory relates mirror-symmetry: 权衡：数学成就惊人，却非自然界的证据
+q-status-of-string-theory relates m-theory: 关于：M 理论仍是假设，其表述未知
+q-status-of-string-theory relates string-black-hole-entropy: 权衡：仅对极端黑洞符合 A/4，彭罗斯不信服
 
 %% 第 32 章
-canonical-quantum-gravity needs einstein-field-equations, canonical-quantization, einsteinian-spacetime
-constraint-equations needs canonical-quantum-gravity, hamiltonian-formalism
-graviton-helicity needs helicity, gravitational-waves, weyl-tensor
-self-dual-weyl-curvature needs weyl-tensor, self-dual-field, volume-element
-ashtekar-variables needs canonical-quantum-gravity, two-spinors, gauge-connection
-barbero-immirzi-parameter needs ashtekar-variables, two-spinors, unitary-group
-wilson-loops needs parallel-transport, gauge-connection, trace
-loop-variables needs wilson-loops, ashtekar-variables, dirac-delta-function
-area-quantization needs loop-variables, barbero-immirzi-parameter
-jones-polynomial needs knots-and-links, abstract-index-notation
-q-deformation needs jones-polynomial, lie-algebra
-topological-quantum-field-theory needs quantum-field-theory, knots-and-links
-spin-networks needs spin, loop-variables, epr-bohm
-black-hole-entropy-loop needs spin-networks, bekenstein-hawking-entropy, barbero-immirzi-parameter
-spin-foams needs spin-networks
-q-chirality-of-gravity relates ashtekar-variables: 源于
-q-chirality-of-gravity relates graviton-helicity: 关于
-barbero-immirzi-parameter relates q-chirality-of-gravity: 遮蔽
-q-hamiltonian-constraint relates constraint-equations: 关于
-q-hamiltonian-constraint relates loop-variables: 挑战
-q-problem-of-time relates einsteinian-spacetime: 出自
-q-problem-of-time relates spin-networks: 涉及
-q-problem-of-time relates q-measurement-problem: 连接
+canonical-quantum-gravity needs einstein-field-equations: 把爱因斯坦方程改写成哈密顿形式再量子化
+canonical-quantum-gravity needs canonical-quantization: 对3维几何及其共轭动量做正则量子化
+canonical-quantum-gravity needs einsteinian-spacetime: 把弯曲时空分解为随时间演化的类空3维曲面
+constraint-equations needs canonical-quantum-gravity: 初始3维面数据的约束成为作用于态的算符条件
+constraint-equations needs hamiltonian-formalism: 约束源于广义相对论哈密顿形式中的规范自由
+graviton-helicity needs helicity: 引力子螺旋性为沿运动方向的自旋，取 ±2
+graviton-helicity needs gravitational-waves: 引力子是引力波的量子
+graviton-helicity needs weyl-tensor: 自由的外尔曲率承载引力子的自由度
+self-dual-weyl-curvature needs weyl-tensor: 把复外尔张量分成自对偶与反自对偶两半
+self-dual-weyl-curvature needs self-dual-field: 沿用麦克斯韦场 F±i*F 的分解区分引力子手征
+self-dual-weyl-curvature needs volume-element: 对偶由与体积元 ε 缩并得到
+ashtekar-variables needs canonical-quantum-gravity: 新的正则变量使引力约束变为多项式
+ashtekar-variables needs two-spinors: 只用无撇（单一手征）的自旋联络
+ashtekar-variables needs gauge-connection: 基本变量是联络，使引力类似规范理论
+barbero-immirzi-parameter needs ashtekar-variables: 把阿什台卡联络中的 i 换成实参数 η
+barbero-immirzi-parameter needs two-spinors: 自旋群变为紧致，代价是失去自对偶手征
+barbero-immirzi-parameter needs unitary-group: 把非紧的 SL(2,C) 变成紧致的 SU(2)
+wilson-loops needs parallel-transport: 旋量沿闭合圈的平行移动
+wilson-loops needs gauge-connection: 联络绕圈的和乐
+wilson-loops needs trace: 取迹使和乐与基的选择无关
+loop-variables needs wilson-loops: 以威尔逊圈为基本变量，得到圈上的态
+loop-variables needs ashtekar-variables: 阿什台卡联络的威尔逊圈构成圈表示
+loop-variables needs dirac-delta-function: 圈态的支撑集中在圈上，呈δ函数形式
+area-quantization needs loop-variables: 面积计数圈穿过探测曲面的次数
+area-quantization needs barbero-immirzi-parameter: η 进入面积公式 8πGηħ√(j(j+1))
+jones-polynomial needs knots-and-links: 这些多项式是区分结和链的不变量
+jones-polynomial needs abstract-index-notation: 考夫曼的图示代数推广了二元旋量图示记号
+q-deformation needs jones-polynomial: 由考夫曼括号以 q = A² 变形二元旋量演算
+q-deformation needs lie-algebra: 所谓量子群是李群结构的变形
+topological-quantum-field-theory needs quantum-field-theory: 无局域自由度、只含整体拓扑信息的量子场论
+topological-quantum-field-theory needs knots-and-links: 威腾的拓扑量子场论给出琼斯多项式等纽结不变量
+spin-networks needs spin: 每条线是总自旋单元，按角动量规则组合
+spin-networks needs loop-variables: 带交点的圈变量态组织成自旋网络
+spin-networks needs epr-bohm: 以两对 EPR-玻姆自旋0对的组合说明有理概率
+black-hole-entropy-loop needs spin-networks: 计数穿过视界的自旋网络边
+black-hole-entropy-loop needs bekenstein-hawking-entropy: 计数须重现 S = A/4
+black-hole-entropy-loop needs barbero-immirzi-parameter: 符合 A/4 定出 η = log2/(π√3)
+spin-foams needs spin-networks: 自旋泡沫是自旋网络演化的时空历史
+q-chirality-of-gravity relates ashtekar-variables: 源于：阿什台卡变量只用一种手征的自旋联络
+q-chirality-of-gravity relates graviton-helicity: 关于：自然是否不对称地对待引力子两种螺旋性
+barbero-immirzi-parameter relates q-chirality-of-gravity: 掩盖：实 η 以手征性换取紧致群
+q-hamiltonian-constraint relates constraint-equations: 关于：生成离开3维面演化的那个约束
+q-hamiltonian-constraint relates loop-variables: 挑战：圈态解决空间约束，但未明确处理动力学
+q-problem-of-time relates einsteinian-spacetime: 源于：广义协变性不提供优先的时间坐标
+q-problem-of-time relates spin-networks: 涉及：叠加的自旋网络之间位置无法对应
+q-problem-of-time relates q-measurement-problem: 联系：几何的叠加也是引力 R 背后的问题
 
 %% 第 33 章
-causal-sets needs light-cones, causal-structure
-regge-calculus needs riemann-tensor, dirac-delta-function
-category-theory needs cardinality
-noncommutative-geometry needs n-manifolds, canonical-commutation-relations
-twistor-correspondence needs light-cones, celestial-sphere, riemann-sphere
-conformal-group needs poincare-group, orthogonal-group
-compactified-minkowski-space needs minkowski-space, conformal-group, conformal-diagrams
-twistors needs twistor-correspondence, clifford-algebra, two-spinors
-projective-twistor-space needs twistors, projective-space
-robinson-congruence needs projective-twistor-space, clifford-parallels
-alpha-planes needs twistors, complexified-minkowski-space, self-dual-field
-twistor-quantization needs twistors, canonical-quantization, holomorphic-functions
-massless-field-equations needs two-spinors, maxwell-equations, wave-operator
-twistor-contour-integral needs twistor-quantization, massless-field-equations, contour-integration
-sheaf-cohomology needs transition-functions, holomorphic-functions, twistor-contour-integral
-twistor-frequency-splitting needs sheaf-cohomology, frequency-splitting
-nonlinear-graviton needs sheaf-cohomology, self-dual-weyl-curvature, einstein-field-equations
-ward-construction needs nonlinear-graviton, gauge-connection, fibre-bundles
-causal-sets relates q-discrete-spacetime: 试答
-regge-calculus relates q-discrete-spacetime: 回应
-q-discrete-spacetime relates spin-networks: 推动
-q-googly-problem relates nonlinear-graviton: 推广
-q-googly-problem relates q-chirality-of-gravity: 关联
-q-twistor-nonlocality-epr relates sheaf-cohomology: 关于
-q-twistor-nonlocality-epr relates entanglement: 涉及
-q-twistor-predictions relates twistors: 关于
-q-twistor-predictions relates cosmological-constant: 涉及
+causal-sets needs light-cones: 离散点之间的因果次序取代连续光锥
+causal-sets needs causal-structure: 只保留点之间的因果关系作为基本概念
+regge-calculus needs riemann-tensor: 曲率化为集中在二维“骨”上的亏角
+regge-calculus needs dirac-delta-function: 曲率在骨上呈δ函数，其余处平直
+noncommutative-geometry needs n-manifolds: 流形可从其光滑函数的交换代数重构
+noncommutative-geometry needs canonical-commutation-relations: 如 [p, x] = iħ 的非对易代数定义量子“空间”
+twistor-correspondence needs light-cones: 事件对应其光锥上的光线集合
+twistor-correspondence needs celestial-sphere: 事件的天球成为 PN 中的黎曼球面
+twistor-correspondence needs riemann-sphere: 每个时空事件由一个黎曼球面表示
+conformal-group needs poincare-group: 把10维庞加莱群扩大为15维 O(2,4)
+conformal-group needs orthogonal-group: 共形群是赝正交群 O(2,4)
+compactified-minkowski-space needs minkowski-space: 在闵可夫斯基空间无穷远处添加一个光锥
+compactified-minkowski-space needs conformal-group: 共形群只在紧化空间上整体作用
+compactified-minkowski-space needs conformal-diagrams: 把共形图中过去与未来零无穷远粘合为一个光锥
+twistors needs twistor-correspondence: 扭量为光线图像提供坐标，并推广到非零类
+twistors needs clifford-algebra: 扭量是由 O(2,4) 克利福德代数得到的约化旋量
+twistors needs two-spinors: 扭量是一对二旋量 (ω, π)
+projective-twistor-space needs twistors: 将扭量空间 T 射影化为 PT = CP³
+projective-twistor-space needs projective-space: PT 是过 T 原点直线构成的复射影3维空间
+robinson-congruence needs projective-twistor-space: PT+ 或 PT- 中一点给出一族扭转光线
+robinson-congruence needs clifford-parallels: 固定时刻其光线投影为克利福德平行的霍普夫圆
+alpha-planes needs twistors: 每个扭量经关联关系对应一个 α 平面
+alpha-planes needs complexified-minkowski-space: α 平面是复化闵可夫斯基空间中的复零2维平面
+alpha-planes needs self-dual-field: 其切二重矢量自对偶，β 平面则反自对偶
+twistor-quantization needs twistors: 扭量 Z 与共轭 Z̄ 成为不对易的算符
+twistor-quantization needs canonical-quantization: Z̄ 作用为 -∂/∂Z，如同动量作为导数
+twistor-quantization needs holomorphic-functions: 扭量波函数只依赖 Z，因而是全纯的
+massless-field-equations needs two-spinors: 场为对称旋量，满足 ∇^{AA'}φ_{AB…} = 0
+massless-field-equations needs maxwell-equations: 麦克斯韦方程是自旋1的情形
+massless-field-equations needs wave-operator: 每个分量都满足波动方程 □φ = 0
+twistor-contour-integral needs twistor-quantization: 积分全纯扭量波函数得到时空场
+twistor-contour-integral needs massless-field-equations: 积分自动给出指定螺旋性的无质量场方程解
+twistor-contour-integral needs contour-integration: 沿 PT 中黎曼球面直线的周线积分
+sheaf-cohomology needs transition-functions: 上闭链是拼块重叠区上的函数，如转移函数
+sheaf-cohomology needs holomorphic-functions: 扭量函数是重叠区上的全纯上闭链
+sheaf-cohomology needs twistor-contour-integral: 把周线积分函数的自由度解释为上同调类
+twistor-frequency-splitting needs sheaf-cohomology: 延拓到 PT+ 或 PT- 的上同调给出正负频率
+twistor-frequency-splitting needs frequency-splitting: 推广黎曼球面赤道上函数的频率分裂
+nonlinear-graviton needs sheaf-cohomology: 用上同调数据变形拼块得到弯曲扭量空间
+nonlinear-graviton needs self-dual-weyl-curvature: 所得时空的外尔曲率是纯反自对偶的
+nonlinear-graviton needs einstein-field-equations: 所得时空自动满足真空爱因斯坦方程
+ward-construction needs nonlinear-graviton: 非线性引力子构造在规范场中的类比
+ward-construction needs gauge-connection: 以扭量描述反自对偶杨-米尔斯联络
+ward-construction needs fibre-bundles: 用扭量空间上的全纯矢量丛
+causal-sets relates q-discrete-spacetime: 提出解答：时空是带因果次序的离散点集
+regge-calculus relates q-discrete-spacetime: 探讨：用平直单形逼近弯曲时空
+q-discrete-spacetime relates spin-networks: 推动：由组合式自旋网络导出空间方向
+q-googly-problem relates nonlinear-graviton: 推广：寻求反自对偶构造的右手对应
+q-googly-problem relates q-chirality-of-gravity: 关联：二者都涉及描述引力时的手征不对称
+q-twistor-nonlocality-epr relates sheaf-cohomology: 关于：上同调的本质非局域性是否有物理意义
+q-twistor-nonlocality-epr relates entanglement: 涉及：EPR 纠缠态的非局域关联
+q-twistor-predictions relates twistors: 关于：扭量理论能做出何种物理预言
+q-twistor-predictions relates cosmological-constant: 涉及：扭量全纯性暗示 K < 0，或许 Λ = 0
 
 %% 第 34 章
-fullerene-interference needs double-slit-experiment, gravitational-or
-popper-falsifiability relates q-can-wrong-theories-be-refuted: 回应
-quintessence needs cosmological-constant, dark-energy, inflationary-cosmology
-orch-or needs gravitational-or, quantum-linearity
-orch-or relates q-mind-in-physics: 回应
-binding-problem-bell-test needs bell-inequalities, orch-or
-binding-problem-bell-test relates q-mind-in-physics: 回应
-popper-falsifiability relates q-can-wrong-theories-be-refuted: 评判
-supersymmetry relates q-can-wrong-theories-be-refuted: 例示
-inflationary-cosmology relates q-can-wrong-theories-be-refuted: 例示
-superstrings relates q-fashion-in-physics: 例证
-q-fashion-in-physics relates q-mathematical-beauty-as-guide: 关联
-q-what-is-reality relates q-platonic-world-real: 重新审视
-q-what-is-reality relates q-mind-in-physics: 导向
-q-mind-in-physics relates anthropic-principle: 涉及
-q-measurement-problem relates q-mind-in-physics: 联系
-gravitational-or relates q-mind-in-physics: 解答
-mirror-symmetry relates q-mathematical-beauty-as-guide: 例证
-twistors relates q-mathematical-beauty-as-guide: 例证
+fullerene-interference needs double-slit-experiment: 以 C60、C70 分子重复双缝干涉
+fullerene-interference needs gravitational-or: 其质量远低于引力 OR 起作用的尺度
+popper-falsifiability relates q-can-wrong-theories-be-refuted: 探讨：要求可证伪，彭罗斯认为对可调理论太苛刻
+quintessence needs cosmological-constant: 以动力学场模拟有效宇宙学常数
+quintessence needs dark-energy: 场的负压强提供观测到的暗能量
+quintessence needs inflationary-cosmology: 类似暴胀子的标量场，用于解释晚期加速
+orch-or needs gravitational-or: 意识事件是微管相干态的引力 OR
+orch-or needs quantum-linearity: 需要收缩前由线性 U 维持的大尺度相干
+orch-or relates q-mind-in-physics: 探讨：意识依赖客观收缩，而非相反
+binding-problem-bell-test needs bell-inequalities: 在不同脑区之间寻找贝尔不等式的违背
+binding-problem-bell-test needs orch-or: 检验 Orch-OR 所需的大尺度量子相干是否连接脑区
+binding-problem-bell-test relates q-mind-in-physics: 探讨：为意识中的量子效应提供实验检验
+supersymmetry relates q-can-wrong-theories-be-refuted: 例示：超伴子质量总能被提高以逃避探测
+inflationary-cosmology relates q-can-wrong-theories-be-refuted: 例示：暴胀不断调整参数以规避实验反驳
+superstrings relates q-fashion-in-physics: 例证：无实验指引下的研究潮流
+q-fashion-in-physics relates q-mathematical-beauty-as-guide: 关联：时尚常追随所谓的美与“奇迹”
+q-what-is-reality relates q-platonic-world-real: 重访：三个世界及数学是否客观实在
+q-what-is-reality relates q-mind-in-physics: 引向：心智世界在物理与数学世界中的地位
+q-mind-in-physics relates anthropic-principle: 涉及：用观察者的存在解释自然常数
+q-measurement-problem relates q-mind-in-physics: 关联：有人认为意识触发 R，彭罗斯则反之
+gravitational-or relates q-mind-in-physics: 解答：客观 OR 可能是意识的基础，而非心智导致 R
+mirror-symmetry relates q-mathematical-beauty-as-guide: 例证：数学上惊人成功的弦论“奇迹”
+twistors relates q-mathematical-beauty-as-guide: 例证：扭量理论由复全纯性之美驱动

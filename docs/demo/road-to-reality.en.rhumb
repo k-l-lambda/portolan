@@ -1292,878 +1292,1286 @@ links:
 %% relations
 
 %% chapter 1
-axioms needs mathematical-proof
-euclidean-geometry needs axioms
-mathematical-objectivity needs platonic-world
-mathematical-objectivity relates q-platonic-world-real: addresses
-fermat-last-theorem needs mathematical-proof
-three-worlds needs platonic-world
-three-worlds relates q-why-math-describes-physics: addresses
-q-platonic-world-real relates platonic-world: is about
-q-platonic-world-real relates mathematical-objectivity: turns on
-fermat-last-theorem relates q-platonic-world-real: tests
-three-worlds relates q-why-math-describes-physics: frames
-q-why-math-describes-physics relates platonic-world: involves
-three-worlds relates q-mind-from-matter: frames
-q-three-worlds-paradox relates three-worlds: is about
+axioms needs mathematical-proof: proof is the deductive chain that turns axioms into theorems
+euclidean-geometry needs axioms: Euclid built geometry as theorems deduced from a few assumed axioms
+mathematical-objectivity needs platonic-world: objective truth is Penrose's meaning for existence in Plato's world
+mathematical-objectivity relates q-platonic-world-real: addresses: truths like Fermat's hold independently of any mathematician or culture
+fermat-last-theorem needs mathematical-proof: Wiles's proof settled it, showing truth fixed before anyone proved it
+three-worlds needs platonic-world: the Platonic mathematical world is one of the three worlds
+three-worlds relates q-why-math-describes-physics: addresses: names the first mystery, physics obeying a small part of mathematics
+q-platonic-world-real relates platonic-world: is about: whether Plato's mathematical forms really exist, independent of minds
+q-platonic-world-real relates mathematical-objectivity: turns on: existence means mathematical truth is objective, not cultural agreement
+fermat-last-theorem relates q-platonic-world-real: tests: its truth was fixed long before Wiles's proof, not invented
+q-why-math-describes-physics relates platonic-world: involves: physics follows Platonic forms with such precision
+three-worlds relates q-mind-from-matter: frames: the second mystery links physical brains to the mental world
+q-three-worlds-paradox relates three-worlds: is about: each world seems to emerge from part of the one before
 
 %% chapter 2
-pythagorean-theorem needs euclidean-geometry, mathematical-proof
-euclid-postulates needs axioms, euclidean-geometry
-parallel-postulate needs euclid-postulates
-parallel-postulate relates q-do-squares-exist: addresses
-triangle-angle-sum needs parallel-postulate
-similar-triangles needs triangle-angle-sum, pythagorean-theorem
-hyperbolic-geometry needs parallel-postulate
-hyperbolic-geometry relates q-parallel-postulate-provable: addresses
-poincare-disc needs hyperbolic-geometry
-lambert-area-formula needs hyperbolic-geometry, triangle-angle-sum
-hyperbolic-distance needs poincare-disc
-beltrami-klein-model needs hyperbolic-geometry, poincare-disc
-proof-by-contradiction needs mathematical-proof
-pseudosphere needs hyperbolic-geometry
-elliptic-geometry needs euclid-postulates
-q-do-squares-exist relates parallel-postulate: depends on
-q-do-squares-exist relates pythagorean-theorem: involves
-q-parallel-postulate-provable relates parallel-postulate: is about
-hyperbolic-geometry relates q-parallel-postulate-provable: settles
-proof-by-contradiction relates q-parallel-postulate-provable: attempts
-q-geometry-of-universe relates hyperbolic-geometry: considers
-q-geometry-of-universe relates elliptic-geometry: considers
-q-geometry-of-universe relates euclidean-geometry: considers
+pythagorean-theorem needs euclidean-geometry: a theorem of Euclidean plane geometry about right triangles
+pythagorean-theorem needs mathematical-proof: Penrose proves it by a tiling of two sizes of square
+euclid-postulates needs axioms: Euclid's postulates are the axioms for lines, circles and right angles
+euclid-postulates needs euclidean-geometry: the postulates are the starting assumptions of Euclidean plane geometry
+parallel-postulate needs euclid-postulates: the fifth postulate, less self-evident than the first four
+parallel-postulate relates q-do-squares-exist: addresses: without it, four right angles with equal sides need not close up
+triangle-angle-sum needs parallel-postulate: the standard proof that the angles sum to π draws a parallel line
+similar-triangles needs triangle-angle-sum: triangles of equal angles but different size exist only when angles sum to π
+similar-triangles needs pythagorean-theorem: area scaling of similar triangles gives a second proof of Pythagoras
+hyperbolic-geometry needs parallel-postulate: keeps the first four postulates but denies the fifth
+hyperbolic-geometry relates q-parallel-postulate-provable: addresses: its consistency shows the fifth postulate cannot follow from the others
+poincare-disc needs hyperbolic-geometry: a conformal model of the hyperbolic plane inside a circle, as in Escher
+lambert-area-formula needs hyperbolic-geometry: in hyperbolic geometry a triangle's area is fixed by its angles
+lambert-area-formula needs triangle-angle-sum: area measures how far the angle sum falls short of π
+hyperbolic-distance needs poincare-disc: distance in the disc is a log of a cross-ratio with the boundary circle
+beltrami-klein-model needs hyperbolic-geometry: another model of the hyperbolic plane, with straight chords as lines
+beltrami-klein-model needs poincare-disc: related to the conformal model through the hemisphere picture
+proof-by-contradiction needs mathematical-proof: a style of proof: derive a contradiction from the statement's denial
+pseudosphere needs hyperbolic-geometry: Beltrami's surface realizes hyperbolic geometry locally with constant negative curvature
+elliptic-geometry needs euclid-postulates: on a sphere great circles always meet, so the fifth postulate fails
+q-do-squares-exist relates parallel-postulate: depends on: four equal sides and right angles close up only with this postulate
+q-do-squares-exist relates pythagorean-theorem: involves: the tiling proof of Pythagoras presupposes that squares exist
+q-parallel-postulate-provable relates parallel-postulate: is about: whether the fifth postulate follows from the other four
+proof-by-contradiction relates q-parallel-postulate-provable: attempts: Saccheri denied the fifth postulate seeking a contradiction, finding hyperbolic geometry
+q-geometry-of-universe relates hyperbolic-geometry: considers: negative-curvature space, the case Penrose admits preferring
+q-geometry-of-universe relates elliptic-geometry: considers: positively curved space, giving a spatially finite closed universe
+q-geometry-of-universe relates euclidean-geometry: considers: flat space, the zero-curvature case between the other two
 
 %% chapter 3
-irrationality-of-sqrt2 needs rational-numbers, proof-by-contradiction, pythagorean-theorem
-irrationality-of-sqrt2 relates q-pythagorean-catastrophe: addresses
-real-numbers needs rational-numbers, irrationality-of-sqrt2
-real-numbers relates q-pythagorean-catastrophe: addresses
-continued-fractions needs rational-numbers
-quadratic-irrationals needs continued-fractions
-eudoxus-ratios needs rational-numbers
-dedekind-cuts needs eudoxus-ratios, rational-numbers
-limits needs real-numbers
-von-neumann-ordinals needs natural-numbers
-von-neumann-ordinals relates q-natural-numbers-physical: addresses
-integers needs natural-numbers
-electric-charge-quantization needs integers
-additive-quantum-numbers needs integers, electric-charge-quantization
-antiparticles needs additive-quantum-numbers
-q-pythagorean-catastrophe relates irrationality-of-sqrt2: arises from
-real-numbers relates q-pythagorean-catastrophe: resolves
-q-continuum-or-discrete relates real-numbers: questions
-q-continuum-or-discrete relates limits: involves
-q-natural-numbers-physical relates natural-numbers: is about
-von-neumann-ordinals relates q-natural-numbers-physical: answers
+irrationality-of-sqrt2 needs rational-numbers: shows no ratio a/b of integers squares to 2
+irrationality-of-sqrt2 needs proof-by-contradiction: assuming √2 = a/b leads to an endless descent of smaller integers
+irrationality-of-sqrt2 needs pythagorean-theorem: Pythagoras makes √2 the diagonal of the unit square
+irrationality-of-sqrt2 relates q-pythagorean-catastrophe: addresses: it is the very fact behind the catastrophe
+real-numbers needs rational-numbers: reals extend the rationals to fill gaps like √2
+real-numbers needs irrationality-of-sqrt2: irrational lengths show that rationals alone cannot measure geometry
+real-numbers relates q-pythagorean-catastrophe: addresses: reals supply a number for every geometric length
+continued-fractions needs rational-numbers: a continued fraction terminates exactly when its number is rational
+quadratic-irrationals needs continued-fractions: Lagrange showed they are exactly numbers with eventually periodic continued fractions
+eudoxus-ratios needs rational-numbers: compares length ratios via integer multiples, beyond rational ratios
+dedekind-cuts needs eudoxus-ratios: Dedekind's cuts are a modern form of Eudoxus' criterion
+dedekind-cuts needs rational-numbers: each real is defined as a split of the rationals into two parts
+limits needs real-numbers: infinite sums like 1−1/3+1/5−… need reals to have a limit
+von-neumann-ordinals needs natural-numbers: builds 0, 1, 2, … as sets made purely from the empty set
+von-neumann-ordinals relates q-natural-numbers-physical: addresses: naturals arise from set theory with no physical objects
+integers needs natural-numbers: integers add negatives to the natural numbers
+electric-charge-quantization needs integers: every isolated charge is an integer multiple of the proton charge
+additive-quantum-numbers needs integers: all known additive quantum numbers take integer values
+additive-quantum-numbers needs electric-charge-quantization: electric charge is the model additive quantum number, summed over constituents
+antiparticles needs additive-quantum-numbers: an antiparticle negates every additive quantum number but keeps positive mass
+q-pythagorean-catastrophe relates irrationality-of-sqrt2: arises from: no fraction gives the length of a square's diagonal
+q-continuum-or-discrete relates real-numbers: questions: whether the real-number continuum holds at the smallest physical scales
+q-continuum-or-discrete relates limits: involves: calculus and physics rely on continuum limits
+q-natural-numbers-physical relates natural-numbers: is about: whether counting depends on persistent physical things
 
 %% chapter 4
-complex-numbers needs real-numbers
-complex-numbers relates q-why-nature-uses-complex-numbers: raises
-fundamental-theorem-of-algebra needs complex-numbers
-cubic-formula needs complex-numbers
-power-series needs limits
-divergent-series needs power-series
-complex-plane needs complex-numbers
-poles needs complex-plane
-circle-of-convergence needs power-series, complex-plane, poles
-circle-of-convergence relates q-hidden-divergence: addresses
-mandelbrot-set needs complex-plane
-mandelbrot-set relates q-platonic-world-real: illustrates
-q-why-nature-uses-complex-numbers relates complex-numbers: is about
-q-why-nature-uses-complex-numbers relates q-why-math-describes-physics: is a case of
-q-hidden-divergence relates power-series: is about
-circle-of-convergence relates q-hidden-divergence: resolves
-poles relates q-hidden-divergence: explains
-q-meaning-of-divergent-series relates divergent-series: is about
+complex-numbers needs real-numbers: complex numbers a+ib are built from pairs of reals
+complex-numbers relates q-why-nature-uses-complex-numbers: raises: an invented number i ends up governing quantum physics
+fundamental-theorem-of-algebra needs complex-numbers: only in complex numbers does every polynomial have a root
+cubic-formula needs complex-numbers: with three real roots, Cardano's formula passes through complex intermediate values
+power-series needs limits: a power series' value is the limit of its partial sums
+divergent-series needs power-series: evaluating a power series beyond convergence gives Euler's 1+4+16+… = −1/3
+complex-plane needs complex-numbers: plots z = x+iy as the point (x, y)
+poles needs complex-plane: the poles of 1/(1+z²) at ±i lie off the real line
+circle-of-convergence needs power-series: a power series converges inside a circle about the origin, diverges outside
+circle-of-convergence needs complex-plane: the convergence region is a disc in the complex plane
+circle-of-convergence needs poles: the circle's radius reaches out to the nearest singularity
+circle-of-convergence relates q-hidden-divergence: addresses: poles at ±i set the convergence radius to 1
+mandelbrot-set needs complex-plane: iterates z ↦ z²+c for points c in the complex plane
+mandelbrot-set relates q-platonic-world-real: illustrates: its endless intricacy was discovered, not invented by Mandelbrot
+q-why-nature-uses-complex-numbers relates complex-numbers: is about: why numbers with i² = −1 underlie physics
+q-why-nature-uses-complex-numbers relates q-why-math-describes-physics: is a case of: an invented abstraction matching nature with precision
+q-hidden-divergence relates power-series: is about: why the series for 1/(1+x²) fails beyond |x| = 1
+poles relates q-hidden-divergence: explains: hidden poles at ±i limit convergence to |x| < 1
+q-meaning-of-divergent-series relates divergent-series: is about: whether Euler's −1/3 for 1+4+16+… carries real meaning
 
 %% chapter 5
-complex-multiplication-geometry needs complex-plane
-complex-multiplication-geometry relates q-why-only-plane-rotations: raises
-polar-coordinates needs complex-plane
-exponential-function needs power-series, circle-of-convergence
-complex-logarithm needs logarithm, exponential-function, polar-coordinates
-euler-identity needs exponential-function
-euler-formula needs exponential-function, polar-coordinates
-complex-powers needs complex-logarithm
-equiangular-spiral needs complex-powers
-roots-of-unity needs complex-powers, euler-formula
-cyclic-group needs roots-of-unity
-multiplicative-quantum-numbers needs roots-of-unity, additive-quantum-numbers
-parity needs multiplicative-quantum-numbers, antiparticles
-quarkiness needs multiplicative-quantum-numbers, cyclic-group, electric-charge-quantization
-q-why-only-plane-rotations relates complex-multiplication-geometry: is about
-q-why-only-plane-rotations relates q-why-nature-uses-complex-numbers: extends
-complex-powers relates q-complex-power-paradox: resolves
-q-complex-power-paradox relates complex-logarithm: turns on
-complex-powers relates q-i-to-the-i: answers
+complex-multiplication-geometry needs complex-plane: addition translates the plane, multiplication rotates and scales it
+complex-multiplication-geometry relates q-why-only-plane-rotations: raises: what rotates space as complex multiplication rotates a plane
+polar-coordinates needs complex-plane: locates a point of the plane by distance r and angle θ
+exponential-function needs power-series: e^z is defined by the series Σ zⁿ/n!
+exponential-function needs circle-of-convergence: the exponential series has infinite radius, converging everywhere
+complex-logarithm needs logarithm: extends log's product-to-sum rule to the complex plane
+complex-logarithm needs exponential-function: log is the inverse of e^z, which repeats with period 2πi
+complex-logarithm needs polar-coordinates: log w = log r + iθ, its imaginary part the argument
+euler-identity needs exponential-function: setting z = πi in e^z gives −1
+euler-formula needs exponential-function: splitting e^(iθ) into real and imaginary parts gives cos θ + i sin θ
+euler-formula needs polar-coordinates: lets z be written in polar form as r e^(iθ)
+complex-powers needs complex-logarithm: w^z is defined as e^(z log w), needing a chosen branch
+equiangular-spiral needs complex-powers: the many values of w^z lie where equiangular spirals intersect
+roots-of-unity needs complex-powers: the n values of 1^(1/n) are complex powers of 1
+roots-of-unity needs euler-formula: e^(2πik/n) places them as a regular n-gon on the unit circle
+cyclic-group needs roots-of-unity: the nth roots of unity form Z_n under multiplication
+multiplicative-quantum-numbers needs roots-of-unity: their values are nth roots of unity
+multiplicative-quantum-numbers needs additive-quantum-numbers: combine by products over constituents as additive ones do by sums
+parity needs multiplicative-quantum-numbers: parity is the n = 2 case, ε = ±1
+parity needs antiparticles: for odd parity a particle's mirror image is its antiparticle
+quarkiness needs multiplicative-quantum-numbers: Penrose's n = 3 case, taking values 1, ω, ω²
+quarkiness needs cyclic-group: quarkiness values 1, ω, ω² form the group Z₃
+quarkiness needs electric-charge-quantization: defined as e^(−2qπi) from third-integer quark charges; free particles give 1
+q-why-only-plane-rotations relates complex-multiplication-geometry: is about: multiplying by a unit complex number rotates a plane
+q-why-only-plane-rotations relates q-why-nature-uses-complex-numbers: extends: asks what plays the role of complex numbers in 3D
+complex-powers relates q-complex-power-paradox: resolves: fixing a branch of log makes powers single-valued
+q-complex-power-paradox relates complex-logarithm: turns on: log is defined only up to multiples of 2πi
+complex-powers relates q-i-to-the-i: answers: i^i = e^(i log i) = e^(−π/2), real with infinitely many values
 
 %% chapter 6
-function-as-mapping needs real-numbers
-heaviside-step-function needs function-as-mapping
-continuity needs function-as-mapping
-derivative needs function-as-mapping, continuity
-higher-derivatives needs derivative
-smooth-functions needs higher-derivatives, continuity
-taylor-series needs power-series, higher-derivatives
-analytic-functions needs taylor-series, smooth-functions
-analytic-functions relates q-what-is-a-function: addresses
-leibniz-rule needs derivative
-integration needs derivative
-fundamental-theorem-of-calculus needs derivative, integration
-dirac-delta-function needs heaviside-step-function, derivative, smooth-functions
-q-what-is-a-function relates function-as-mapping: contrasts with
-q-what-is-a-function relates smooth-functions: tests
-analytic-functions relates q-what-is-a-function: answers
-q-differentiation-vs-integration relates leibniz-rule: involves
-q-differentiation-vs-integration relates integration: is about
-q-differentiation-vs-integration relates smooth-functions: involves
+function-as-mapping needs real-numbers: assigns a real value to each real number by any rule
+heaviside-step-function needs function-as-mapping: the mapping view makes theta(x) a genuine function without one formula
+continuity needs function-as-mapping: asks whether a mapping's graph has jumps
+derivative needs function-as-mapping: the limiting slope of chords on a function's graph
+derivative needs continuity: differentiability needs continuity; |x| is continuous yet fails at its corner
+higher-derivatives needs derivative: differentiate repeatedly; zeros of f' and f'' give extrema and inflections
+smooth-functions needs higher-derivatives: C^n counts how many derivatives exist and are continuous
+smooth-functions needs continuity: C^0 is plain continuity, the base of the smoothness scale
+taylor-series needs power-series: a power series built from a function at a point
+taylor-series needs higher-derivatives: coefficients are a_n = f^(n)(p)/n!
+analytic-functions needs taylor-series: analytic means equal to its Taylor series near every point
+analytic-functions needs smooth-functions: C^ω is stronger than C^∞; exp(−1/x) glued to 0 is smooth, not analytic
+analytic-functions relates q-what-is-a-function: addresses: analyticity rules out gluing, matching Euler's single-formula notion
+leibniz-rule needs derivative: rules like d(fg) = f dg + g df make differentiating formulas mechanical
+integration needs derivative: integration undoes differentiation, up to a constant
+fundamental-theorem-of-calculus needs derivative: area under f equals g(b) − g(a) for any g with g' = f
+fundamental-theorem-of-calculus needs integration: links definite integrals as areas to indefinite integrals as antiderivatives
+dirac-delta-function needs heaviside-step-function: the delta function is the derivative of the step function
+dirac-delta-function needs derivative: differentiating the step's jump yields an infinite spike at the origin
+dirac-delta-function needs smooth-functions: extends the C^n scale below zero: delta is C^−2
+q-what-is-a-function relates function-as-mapping: contrasts with: Euler's single unglued function versus an arbitrary look-up table
+q-what-is-a-function relates smooth-functions: tests: whether C^∞ is enough, but smooth pieces can still be glued
+q-differentiation-vs-integration relates leibniz-rule: involves: these rules make differentiating explicit formulas routine
+q-differentiation-vs-integration relates integration: is about: integrals of formulas often need new functions, yet numerics favour integration
+q-differentiation-vs-integration relates smooth-functions: involves: integrating raises the C^n class by one, differentiating lowers it
 
 %% chapter 7
-holomorphic-functions needs complex-plane, derivative, analytic-functions
-holomorphic-functions relates q-what-is-a-function: addresses
-contour-integration needs integration, holomorphic-functions, complex-logarithm
-homology-homotopy needs contour-integration
-cauchy-integral-formula needs contour-integration, holomorphic-functions
-complex-smooth-implies-analytic needs cauchy-integral-formula, taylor-series
-residue-theorem needs cauchy-integral-formula
-open-regions needs complex-plane
-analytic-continuation needs holomorphic-functions, circle-of-convergence, open-regions
-riemann-zeta-function needs analytic-continuation
-q-riemann-hypothesis relates riemann-zeta-function: is about
-q-riemann-hypothesis relates analytic-continuation: involves
-q-magic-of-complex-smoothness relates complex-smooth-implies-analytic: is about
-q-magic-of-complex-smoothness relates contour-integration: involves
+holomorphic-functions needs complex-plane: functions of z defined on regions of the complex plane
+holomorphic-functions needs derivative: requires a derivative with respect to complex z, not just real x
+holomorphic-functions needs analytic-functions: holomorphic functions turn out to be complex-analytic
+holomorphic-functions relates q-what-is-a-function: addresses: complex smoothness alone gives Euler's rigid, unglued kind of function
+contour-integration needs integration: integrates along paths in the complex plane instead of real intervals
+contour-integration needs holomorphic-functions: for holomorphic integrands the value is unchanged when the path is deformed
+contour-integration needs complex-logarithm: ∮dz/z around the origin is 2πi, the log's multivaluedness
+homology-homotopy needs contour-integration: classifies which path deformations leave a contour integral unchanged
+cauchy-integral-formula needs contour-integration: f(p) is a contour integral of f/(z−p) around p
+cauchy-integral-formula needs holomorphic-functions: a holomorphic function's values inside a loop are fixed by its values on it
+complex-smooth-implies-analytic needs cauchy-integral-formula: Cauchy's formula yields all derivatives from a single complex derivative
+complex-smooth-implies-analytic needs taylor-series: shows the Taylor series converges to the function itself
+residue-theorem needs cauchy-integral-formula: generalizes the formula to sum residues at poles inside the contour
+open-regions needs complex-plane: open subsets of the plane where holomorphic functions live
+analytic-continuation needs holomorphic-functions: extends a holomorphic function beyond its domain, uniquely along each path
+analytic-continuation needs circle-of-convergence: chains overlapping circles of convergence of power series
+analytic-continuation needs open-regions: continuation proceeds through overlapping open regions
+riemann-zeta-function needs analytic-continuation: Σn^−z converges only for Re z > 1; continuation extends it to all z ≠ 1
+q-riemann-hypothesis relates riemann-zeta-function: is about: where the non-trivial zeros of ζ(z) lie
+q-riemann-hypothesis relates analytic-continuation: involves: the zeros on Re z = 1/2 exist only for the continued ζ
+q-magic-of-complex-smoothness relates complex-smooth-implies-analytic: is about: why one complex derivative forces a convergent series
+q-magic-of-complex-smoothness relates contour-integration: involves: the proof runs through contour integrals and Cauchy's formula
 
 %% chapter 8
-riemann-surfaces needs analytic-continuation, complex-logarithm
-riemann-surfaces relates q-multivalued-functions: addresses
-branch-points needs riemann-surfaces
-conformal-mappings needs holomorphic-functions
-mobius-transformations needs conformal-mappings
-riemann-sphere needs riemann-surfaces, mobius-transformations, stereographic-projection
-genus needs riemann-surfaces, riemann-sphere
-moduli needs genus
-riemann-mapping-theorem needs conformal-mappings, riemann-sphere
-zhukovsky-transformation needs riemann-mapping-theorem, conformal-mappings
-zhukovsky-transformation relates q-complex-structure-macroscopic: illustrates
-riemann-surfaces relates q-multivalued-functions: answers
-q-multivalued-functions relates complex-logarithm: is about
-q-moduli-count-anomaly relates moduli: is about
-q-moduli-count-anomaly relates genus: involves
-q-complex-structure-macroscopic relates holomorphic-functions: involves
+riemann-surfaces needs analytic-continuation: the domain traced out by continuing a function along all paths
+riemann-surfaces needs complex-logarithm: log z becomes single-valued on an endless spiral of sheets
+riemann-surfaces relates q-multivalued-functions: addresses: the function builds its own domain instead of cutting the plane
+branch-points needs riemann-surfaces: points where sheets of the Riemann surface join and permute
+conformal-mappings needs holomorphic-functions: holomorphic maps with nonzero derivative preserve angles and small shapes
+mobius-transformations needs conformal-mappings: Möbius maps are conformal maps sending circles to circles
+riemann-sphere needs riemann-surfaces: the simplest compact Riemann surface, built from z and 1/z patches
+riemann-sphere needs mobius-transformations: Möbius maps are exactly the holomorphic self-maps of the sphere
+riemann-sphere needs stereographic-projection: stereographic projection identifies the plane plus ∞ with a sphere
+genus needs riemann-surfaces: classifies compact Riemann surfaces topologically by handle count
+genus needs riemann-sphere: the sphere is the genus-0 case
+moduli needs genus: genus-g surfaces need 3g−3 complex moduli for g ≥ 2
+riemann-mapping-theorem needs conformal-mappings: any simple loop's interior maps conformally onto the unit disc
+riemann-mapping-theorem needs riemann-sphere: on the sphere the loop's outside counts like its inside, giving the exterior version
+zhukovsky-transformation needs riemann-mapping-theorem: explicitly maps a circle's exterior onto an aerofoil's exterior, as the theorem allows
+zhukovsky-transformation needs conformal-mappings: w = (z + 1/z)/2 is a holomorphic conformal map
+zhukovsky-transformation relates q-complex-structure-macroscopic: illustrates: idealized airflow past a wing computed by a holomorphic map
+q-multivalued-functions relates complex-logarithm: is about: log z, whose values differ by multiples of 2πi
+q-moduli-count-anomaly relates moduli: is about: why m = 3g−3 fails for sphere and torus
+q-moduli-count-anomaly relates genus: involves: counting self-transformations s at g = 0, 1 restores m − s = 3g−3
+q-complex-structure-macroscopic relates holomorphic-functions: involves: holomorphic structure stays buried in large systems, except idealized flows
 
 %% chapter 9
-fourier-series needs euler-formula, integration
-laurent-series needs power-series, fourier-series
-annulus-of-convergence needs laurent-series, circle-of-convergence
-frequency-splitting needs laurent-series, riemann-sphere, holomorphic-functions
-fourier-transform needs fourier-series, integration
-hyperfunctions needs holomorphic-functions, frequency-splitting
-hyperfunctions relates q-appropriate-functions: addresses
-excision-theorem needs hyperfunctions, open-regions
-distributions needs dirac-delta-function, smooth-functions
-hyperfunctions relates q-appropriate-functions: answers
-q-appropriate-functions relates analytic-functions: involves
-q-appropriate-functions relates q-what-is-a-function: continues
-q-rigidity-vs-signals relates analytic-continuation: involves
-q-rigidity-vs-signals relates fourier-transform: motivates
+fourier-series needs euler-formula: e^(inχ) packs sines and cosines into compact complex terms
+fourier-series needs integration: each coefficient is an integral over one period
+laurent-series needs power-series: a power series extended to negative powers of z
+laurent-series needs fourier-series: on the unit circle z = e^(iχ) it is exactly the Fourier series
+annulus-of-convergence needs laurent-series: the ring where a Laurent series converges
+annulus-of-convergence needs circle-of-convergence: overlap of the inside disc for positive powers and outside for negative
+frequency-splitting needs laurent-series: splits a Laurent series into its positive- and negative-power halves
+frequency-splitting needs riemann-sphere: each half extends holomorphically into one hemisphere of the Riemann sphere
+frequency-splitting needs holomorphic-functions: positive versus negative frequency means which side holomorphically extends
+fourier-transform needs fourier-series: letting the period go to infinity turns a series into an integral
+fourier-transform needs integration: the transform pair is a pair of integrals
+hyperfunctions needs holomorphic-functions: a hyperfunction is the jump between holomorphic functions on either side of a curve
+hyperfunctions needs frequency-splitting: generalizes the inside/outside split to any function as holomorphic pieces
+hyperfunctions relates q-appropriate-functions: addresses: built purely from holomorphic pieces, yet they include wild functions
+excision-theorem needs hyperfunctions: ensures a hyperfunction does not depend on the chosen surrounding region
+excision-theorem needs open-regions: any two open regions containing the curve give the same hyperfunctions
+distributions needs dirac-delta-function: the delta function is the prototype distribution
+distributions needs smooth-functions: distributions are C^−∞, the duals of C^∞ test functions
+q-appropriate-functions relates analytic-functions: involves: Euler's analytic functions versus the general modern notion
+q-appropriate-functions relates q-what-is-a-function: continues: hyperfunctions now bridge Euler's holomorphic functions and arbitrary ones
+q-rigidity-vs-signals relates analytic-continuation: involves: any small piece fixes an analytic signal everywhere
+q-rigidity-vs-signals relates fourier-transform: motivates: decomposing signals into frequencies, as wave propagation needs
 
 %% chapter 10
-complex-conjugation needs complex-numbers, complex-plane
-complex-vs-real-dimension needs complex-conjugation, riemann-surfaces, holomorphic-functions
-complex-vs-real-dimension relates q-riemann-surface-curve-or-surface: addresses
-partial-derivatives needs derivative, smooth-functions
-mixed-partial-derivatives needs partial-derivatives
-scalar-fields needs smooth-functions
-transition-functions needs partial-derivatives
-chain-rule needs partial-derivatives, transition-functions
-vector-fields needs chain-rule, scalar-fields
-vector-fields relates q-second-fundamental-confusion: explains
-one-forms needs partial-derivatives, vector-fields
-gradient needs one-forms, scalar-fields
-scalar-product needs vector-fields, one-forms
-cauchy-riemann-equations needs complex-conjugation, partial-derivatives, holomorphic-functions
-cauchy-riemann-equations relates q-riemann-surface-curve-or-surface: addresses
-laplace-equation needs cauchy-riemann-equations, mixed-partial-derivatives
-q-second-fundamental-confusion relates partial-derivatives: is about
-vector-fields relates q-second-fundamental-confusion: resolves
-q-second-fundamental-confusion relates chain-rule: involves
-q-riemann-surface-curve-or-surface relates complex-vs-real-dimension: is about
-q-riemann-surface-curve-or-surface relates cauchy-riemann-equations: involves
-q-riemann-surface-curve-or-surface relates riemann-surfaces: is about
+complex-conjugation needs complex-numbers: flips the sign of the imaginary part, z̄ = x − iy
+complex-conjugation needs complex-plane: geometrically a reflection of the plane in the real axis
+complex-vs-real-dimension needs complex-conjugation: admitting z̄ makes F(z, z̄) an ordinary real function of x, y
+complex-vs-real-dimension needs riemann-surfaces: a Riemann surface is one complex dimension but two real ones
+complex-vs-real-dimension needs holomorphic-functions: holomorphic functions depend on z alone, never on z̄
+complex-vs-real-dimension relates q-riemann-surface-curve-or-surface: addresses: one complex dimension is a curve; two real dimensions a surface
+partial-derivatives needs derivative: differentiate in one variable while holding the others fixed
+partial-derivatives needs smooth-functions: smoothness in several variables means continuous partial derivatives
+mixed-partial-derivatives needs partial-derivatives: for C² functions, order of ∂/∂x and ∂/∂y does not matter
+scalar-fields needs smooth-functions: a scalar field is a smooth function on a manifold
+transition-functions needs partial-derivatives: smoothness of X(x,y), Y(x,y) is judged by their partial derivatives
+chain-rule needs partial-derivatives: rewrites ∂/∂x via partial derivatives of the new coordinates
+chain-rule needs transition-functions: applied to transitions between overlapping coordinate patches
+vector-fields needs chain-rule: the chain rule shows how ξ's components transform between coordinates
+vector-fields needs scalar-fields: ξ(Φ) is the rate of change of Φ along the arrows
+vector-fields relates q-second-fundamental-confusion: explains: ∂/∂x depends on which other coordinate is held fixed
+one-forms needs partial-derivatives: in dΦ = u dx + v dy, u and v are the partials of Φ
+one-forms needs vector-fields: 1-forms are what pair with vector fields to give numbers
+gradient needs one-forms: dΦ is the 1-form built from a scalar field
+gradient needs scalar-fields: contour lines of Φ picture its gradient dΦ
+scalar-product needs one-forms: pairs them with 1-form components (u, v) to give au + bv
+cauchy-riemann-equations needs complex-conjugation: holomorphy is written as ∂Φ/∂z̄ = 0
+cauchy-riemann-equations needs partial-derivatives: relations between partials of real and imaginary parts in x and y
+cauchy-riemann-equations needs holomorphic-functions: they are the real-variable condition for being holomorphic
+cauchy-riemann-equations relates q-riemann-surface-curve-or-surface: addresses: they let a Riemann surface be treated as a real surface
+laplace-equation needs cauchy-riemann-equations: combining the equations gives ∇²α = 0 for real and imaginary parts
+laplace-equation needs mixed-partial-derivatives: the derivation uses equality of mixed partials
+q-second-fundamental-confusion relates partial-derivatives: is about: why ∂/∂X ≠ ∂/∂x even when X = x
+q-second-fundamental-confusion relates chain-rule: involves: chain rule shows each ∂/∂x depends on all new coordinates
+q-riemann-surface-curve-or-surface relates complex-vs-real-dimension: is about: one complex dimension versus two real dimensions
+q-riemann-surface-curve-or-surface relates cauchy-riemann-equations: involves: the Cauchy-Riemann view treats it as a real 2-surface with extra structure
+q-riemann-surface-curve-or-surface relates riemann-surfaces: is about: the nature of Riemann surfaces themselves
 
 %% chapter 11
-quaternions needs complex-numbers
-quaternions relates q-why-quaternions-failed: addresses
-ring needs quaternions
-division-algebra needs ring, vector-space
-octonions needs quaternions, division-algebra
-hurwitz-theorem needs division-algebra, octonions
-quaternion-rotations needs quaternions
-spinors needs quaternion-rotations
-rotation-composition needs quaternion-rotations
-clifford-algebra needs quaternions, vector-space, spinors
-reduced-spinors-chirality needs spinors, clifford-algebra
-reduced-spinors-chirality relates q-parity-violation: addresses
-grassmann-algebra needs clifford-algebra, vector-space
-wedge-product needs grassmann-algebra
-antisymmetrization needs wedge-product
-q-why-quaternions-failed relates quaternions: is about
-q-why-quaternions-failed relates holomorphic-functions: contrasts with
-q-why-quaternions-failed relates complex-conjugation: involves
-q-parity-violation relates reduced-spinors-chirality: is about
-q-parity-violation relates spinors: involves
+quaternions needs complex-numbers: extend a+ib with two more square roots of −1, j and k
+quaternions relates q-why-quaternions-failed: addresses: their 4 dimensions misfit spacetime signature, and they lack holomorphy
+ring needs quaternions: quaternions are the model of a ring whose multiplication fails to commute
+division-algebra needs ring: a ring in which every nonzero element has a multiplicative inverse
+division-algebra needs vector-space: an algebra is a vector space with a bilinear multiplication
+octonions needs quaternions: doubles quaternions to 8 units, losing associativity as quaternions lost commutativity
+octonions needs division-algebra: every nonzero octonion still has an inverse, though multiplication is non-associative
+hurwitz-theorem needs division-algebra: says which division algebras can exist: only dimensions 1, 2, 4, 8
+hurwitz-theorem needs octonions: octonions are the final, 8-dimensional case, so the list stops there
+quaternion-rotations needs quaternions: i, j, k realized as π-rotations about three perpendicular axes
+spinors needs quaternion-rotations: i² = −1 means a 2π rotation flips sign, defining spinorial objects
+rotation-composition needs quaternion-rotations: unit quaternions compose rotations; Hamilton pictures this with half-angle great-circle arcs
+clifford-algebra needs quaternions: generalizes i, j, k to n anticommuting γᵣ with γᵣ² = −1
+clifford-algebra needs vector-space: generators γᵣ are reflections in n-dimensional space; the algebra has 2ⁿ dimensions
+clifford-algebra needs spinors: spin space is defined as the space the Clifford algebra acts on
+reduced-spinors-chirality needs spinors: in even dimensions the spinor space splits into two half-spinor spaces
+reduced-spinors-chirality needs clifford-algebra: for even n, the Clifford algebra's 2^{n/2}-dimensional spin space splits by handedness
+reduced-spinors-chirality relates q-parity-violation: addresses: nature treats the two reduced spin spaces differently, breaking reflection symmetry
+grassmann-algebra needs clifford-algebra: the degenerate case where generators square to zero instead of −1
+grassmann-algebra needs vector-space: builds anticommuting products of vectors without needing any metric
+wedge-product needs grassmann-algebra: the Grassmann product, read as oriented plane elements of each rank
+antisymmetrization needs wedge-product: brackets A_[pq] give the components of wedge products
+q-why-quaternions-failed relates quaternions: is about: why Hamilton's quaternion programme never became the language of physics
+q-why-quaternions-failed relates holomorphic-functions: contrasts with: complex numbers have a rich holomorphic theory, quaternions have none
+q-why-quaternions-failed relates complex-conjugation: involves: quaternionic q̄ is algebraic in q, unlike z̄, which is independent of z
+q-parity-violation relates reduced-spinors-chirality: is about: the two half-spinor spaces of opposite handedness in 4D spacetime
+q-parity-violation relates spinors: involves: spinors split into left- and right-handed parts that nature treats unequally
 
 %% chapter 12
-configuration-space relates q-why-higher-dimensions: addresses
-phase-space needs configuration-space
-phase-space relates q-why-higher-dimensions: addresses
-simply-connected needs spinors
-n-manifolds needs transition-functions
-tangent-space needs vector-fields, n-manifolds, vector-space
-covectors needs one-forms, tangent-space
-p-forms needs wedge-product, covectors, antisymmetrization
-integration-of-forms needs p-forms, integration
-exterior-derivative needs p-forms, gradient
-poincare-lemma needs exterior-derivative
-stokes-theorem needs exterior-derivative, integration-of-forms, fundamental-theorem-of-calculus
-compactness needs n-manifolds
-orientability needs n-manifolds
-volume-element needs p-forms
-summation-convention needs covectors
-tensors needs covectors, summation-convention
-abstract-index-notation needs tensors
-abstract-index-notation relates q-notation-conflict: addresses
-complex-manifolds needs n-manifolds, cauchy-riemann-equations, complex-vs-real-dimension
-configuration-space relates q-why-higher-dimensions: answers
-phase-space relates q-why-higher-dimensions: answers
-q-why-higher-dimensions relates n-manifolds: is about
-abstract-index-notation relates q-notation-conflict: resolves
-q-notation-conflict relates tensors: is about
+configuration-space relates q-why-higher-dimensions: addresses: a rigid body needs 6 dimensions, a gas 3N
+phase-space needs configuration-space: adds a momentum for each position coordinate, doubling the dimension
+phase-space relates q-why-higher-dimensions: addresses: even a little air has a 6N-dimensional phase space
+simply-connected needs spinors: rotation space has a 2π loop that won't shrink, matching the spinor sign change
+n-manifolds needs transition-functions: patches of ℝⁿ glued by smooth transition functions, as for surfaces
+tangent-space needs vector-fields: tangent vectors are vector fields evaluated at a point, acting as derivations
+tangent-space needs n-manifolds: the neighbourhood of a manifold point, magnified until it looks flat
+tangent-space needs vector-space: it is an n-dimensional vector space attached at each point
+covectors needs one-forms: 1-forms like dΦ, now seen as elements of the cotangent space
+covectors needs tangent-space: linear maps from tangent vectors to numbers, the dual space
+p-forms needs wedge-product: the wedge product combines p covectors into a p-form
+p-forms needs covectors: covectors are the p = 1 case, each defining an (n−1)-plane element
+p-forms needs antisymmetrization: components α_[ab…c] are fully antisymmetric in their indices
+integration-of-forms needs p-forms: a p-form is the natural integrand over a p-dimensional region
+integration-of-forms needs integration: generalizes the one-variable definite integral to coordinate-invariant integrals over regions
+exterior-derivative needs p-forms: maps p-forms to (p+1)-forms by antisymmetrized derivatives
+exterior-derivative needs gradient: generalizes the gradient dΦ of a scalar, the 0-form case
+poincare-lemma needs exterior-derivative: converse of d² = 0: locally, dα = 0 implies α = dβ
+stokes-theorem needs exterior-derivative: integrating dφ over R equals integrating φ over its boundary
+stokes-theorem needs integration-of-forms: both sides are integrals of forms over regions of matching dimension
+stokes-theorem needs fundamental-theorem-of-calculus: its 1-dimensional case is ∫f = g(b) − g(a)
+compactness needs n-manifolds: a property of manifolds and regions such as sphere, torus or closed disc
+orientability needs n-manifolds: asks whether handedness can be chosen consistently over the whole manifold
+volume-element needs p-forms: an n-form, the top-rank form, measuring n-dimensional density
+summation-convention needs covectors: the pairing of covector β with vector ξ is written β_r ξ^r
+tensors needs covectors: multilinear functions of vectors and covectors, generalizing a covector's linearity
+tensors needs summation-convention: contracting upper with lower indices combines tensors
+abstract-index-notation needs tensors: indices label a tensor's slots abstractly, not coordinate components
+abstract-index-notation relates q-notation-conflict: addresses: keeps index readability while staying as coordinate-free as β·ξ
+complex-manifolds needs n-manifolds: patches of ℂⁿ instead of ℝⁿ, with holomorphic transition functions
+complex-manifolds needs cauchy-riemann-equations: the almost complex structure J generalizes Cauchy-Riemann conditions to n dimensions
+complex-manifolds needs complex-vs-real-dimension: a complex n-manifold is a real 2n-manifold with extra structure
+q-why-higher-dimensions relates n-manifolds: is about: why manifolds of any dimension n are needed beyond 4D spacetime
+q-notation-conflict relates tensors: is about: writing tensor operations coordinate-free versus with component indices
 
 %% chapter 13
-groups needs complex-numbers, complex-conjugation
-groups relates q-exact-symmetry: addresses
-so3 needs groups, n-manifolds
-normal-subgroups needs groups
-normal-subgroups relates q-broken-symmetry: addresses
-simple-groups needs normal-subgroups
-matrices needs vector-space, summation-convention
-general-linear-group needs matrices, groups
-determinant needs matrices, antisymmetrization
-trace needs matrices, determinant
-eigenvectors needs matrices, determinant, fundamental-theorem-of-algebra
-representation-theory needs groups, general-linear-group
-lie-algebra needs representation-theory, trace
-reducibility needs representation-theory, tensors, lie-algebra
-metric needs tensors, matrices
-orthogonal-group needs metric, so3, determinant
-orthogonal-group relates q-real-forms: addresses
-hermitian-conjugation needs complex-conjugation, matrices, covectors
-unitary-group needs hermitian-conjugation, general-linear-group
-symplectic-group needs orthogonal-group, unitary-group, lie-algebra
-q-exact-symmetry relates groups: is about
-q-broken-symmetry relates normal-subgroups: involves
-q-broken-symmetry relates simple-groups: involves
-q-real-forms relates orthogonal-group: is about
-q-real-forms relates metric: involves
+groups needs complex-numbers: the square's rotations are multiplication by 1, i, −1, −i
+groups needs complex-conjugation: conjugation C supplies the square's reflections, with Ci = −iC
+groups relates q-exact-symmetry: addresses: group axioms describe exact symmetry, which physics finds in gauge connections
+so3 needs groups: the continuous group of rotations of a sphere
+so3 needs n-manifolds: the rotations themselves form a 3-dimensional manifold
+normal-subgroups needs groups: subgroups S with Sg = gS, whose cosets form G/S
+normal-subgroups relates q-broken-symmetry: addresses: observed symmetries may be subgroups left after a larger group breaks
+simple-groups needs normal-subgroups: simple means no nontrivial normal subgroup, hence no quotient
+matrices needs vector-space: linear maps preserving vector-space structure, written as arrays T^a_b
+matrices needs summation-convention: a matrix acts as x^a ↦ T^a_b x^b, summed over b
+general-linear-group needs matrices: the non-singular n×n matrices under multiplication
+general-linear-group needs groups: invertible matrices satisfy the group axioms: identity, inverses, associativity
+determinant needs matrices: a number from the matrix entries, zero exactly when the matrix is singular
+determinant needs antisymmetrization: built by contracting the matrix with antisymmetric Levi-Civita symbols
+trace needs matrices: the sum of the diagonal elements T^a_a
+trace needs determinant: det(I + εA) = 1 + ε trace A, and det e^A = e^{trace A}
+eigenvectors needs matrices: vectors that T merely rescales, Tv = λv
+eigenvectors needs determinant: eigenvalues solve the characteristic equation det(T − λI) = 0
+eigenvectors needs fundamental-theorem-of-algebra: guarantees the characteristic polynomial has complex roots, so eigenvalues exist
+representation-theory needs groups: a homomorphism carrying the group's multiplication into matrices
+representation-theory needs general-linear-group: the target group: each g maps to an element T(g) of GL(n)
+lie-algebra needs representation-theory: infinitesimal elements I + εA are handled as matrices in a representation
+lie-algebra needs trace: infinitesimal SL(n) elements are exactly the traceless matrices
+reducibility needs representation-theory: asks whether a representation splits into a direct sum of smaller ones
+reducibility needs tensors: tensor spaces split into symmetric and antisymmetric parts
+reducibility needs lie-algebra: complete reducibility holds for compact semisimple groups, with non-singular Killing form
+metric needs tensors: a symmetric non-singular [0 2]-tensor g_ab
+metric needs matrices: g_ab as a symmetric matrix diagonalizes to ±1 entries, fixing the signature
+orthogonal-group needs metric: the linear maps that preserve the metric g_ab
+orthogonal-group needs so3: SO(3) and O(3) are the n = 3 positive-definite cases
+orthogonal-group needs determinant: SO(n) is the subgroup with determinant +1, excluding reflections
+orthogonal-group relates q-real-forms: addresses: O(p,q) of every signature share one complexification O(n,ℂ)
+hermitian-conjugation needs complex-conjugation: a Hermitian form is antilinear, conjugating scalars, in one slot
+hermitian-conjugation needs matrices: the * operation is the conjugate transpose of a matrix
+hermitian-conjugation needs covectors: maps each vector antilinearly to a dual covector, like a metric lowering an index
+unitary-group needs hermitian-conjugation: complex maps preserving the Hermitian form, so T⁻¹ = T*
+unitary-group needs general-linear-group: U(n) is a subgroup of complex GL(n)
+symplectic-group needs orthogonal-group: like orthogonal groups but preserving an antisymmetric form, not a symmetric one
+symplectic-group needs unitary-group: low-dimensional coincidence Sp(1) = SU(2), locally SO(3)
+symplectic-group needs lie-algebra: fills the C series of the Killing-Cartan classification of simple Lie algebras
+q-exact-symmetry relates groups: is about: how exact group symmetry can hold in an approximately symmetric world
+q-broken-symmetry relates normal-subgroups: involves: breaking leaves a subgroup; normality decides whether a quotient group arises
+q-broken-symmetry relates simple-groups: involves: candidate fundamental groups are sought among the classified simple Lie groups
+q-real-forms relates orthogonal-group: is about: compact O(n) versus non-compact O(p,q) such as the Lorentz group
+q-real-forms relates metric: involves: the metric's signature (p,q) picks out the real form
 
 %% chapter 14
-affine-space needs vector-space
-parallel-transport needs n-manifolds, tangent-space
-covariant-derivative needs parallel-transport, tensors, exterior-derivative
-torsion-tensor needs covariant-derivative
-curvature-tensor needs covariant-derivative
-bianchi-identity needs curvature-tensor
-geodesics needs covariant-derivative
-geodesic-parallelogram needs geodesics, curvature-tensor, torsion-tensor
-geodesic-deviation needs geodesics, curvature-tensor
-lie-bracket needs vector-fields, lie-algebra
-lie-derivative needs lie-bracket, tensors
-riemannian-manifold needs n-manifolds, metric, orthogonal-group
-levi-civita-connection needs riemannian-manifold, covariant-derivative, torsion-tensor
-riemann-tensor needs curvature-tensor, levi-civita-connection
-killing-vectors needs lie-derivative, levi-civita-connection
-symplectic-manifolds needs symplectic-group, exterior-derivative, n-manifolds
-poisson-bracket needs symplectic-manifolds
-q-spacetime-torsion relates torsion-tensor: is about
-q-spacetime-torsion relates covariant-derivative: involves
-symplectic-manifolds relates q-flabby-structures: illustrates
-q-flabby-structures relates riemannian-manifold: contrasts with
+affine-space needs vector-space: a vector space that has forgotten which point is its origin
+parallel-transport needs n-manifolds: on a curved manifold, transport along curves replaces global parallelism
+parallel-transport needs tangent-space: carries tangent vectors from one point's tangent space to another's
+covariant-derivative needs parallel-transport: differentiates fields by comparing them with their parallel-transported values
+covariant-derivative needs tensors: ∇ acts on tensor fields of any valence, obeying Leibniz's rule
+covariant-derivative needs exterior-derivative: torsion-free ∇, antisymmetrized, reproduces d on forms
+torsion-tensor needs covariant-derivative: the antisymmetric part of ∇a∇b acting on scalars
+curvature-tensor needs covariant-derivative: the commutator ∇a∇b − ∇b∇a acting on vector fields
+bianchi-identity needs curvature-tensor: symmetry R_[abc]^d = 0 and differential identity ∇_[a R_bc]d^e = 0 of the curvature
+geodesics needs covariant-derivative: curves whose tangent is parallel along itself, t^a∇_a t^b = 0
+geodesic-parallelogram needs geodesics: parallelograms whose sides are short geodesic segments
+geodesic-parallelogram needs curvature-tensor: transporting a vector around one reads off the curvature R
+geodesic-parallelogram needs torsion-tensor: with torsion the parallelogram fails to close at order ε²
+geodesic-deviation needs geodesics: the relative acceleration between neighbouring geodesics
+geodesic-deviation needs curvature-tensor: positive curvature makes geodesics converge, negative makes them spread
+lie-bracket needs vector-fields: the commutator ξη − ηξ of two vector fields is again a vector field
+lie-bracket needs lie-algebra: obeys antisymmetry and the Jacobi identity, like Lie-algebra commutators
+lie-derivative needs lie-bracket: on a vector field it is the bracket: £ξη = [ξ,η]
+lie-derivative needs tensors: extends dragging along ξ to tensor fields of any valence
+riemannian-manifold needs n-manifolds: a smooth manifold of any dimension, now given a metric at every point
+riemannian-manifold needs metric: g_ab measures lengths ds; its signature may be Lorentzian +−−−
+riemannian-manifold needs orthogonal-group: each tangent space's metric has O(p,q) as its symmetry group
+levi-civita-connection needs riemannian-manifold: the metric singles out one natural connection
+levi-civita-connection needs covariant-derivative: the particular ∇ with ∇g = 0, preserving lengths under transport
+levi-civita-connection needs torsion-tensor: uniqueness requires the torsion to vanish
+riemann-tensor needs curvature-tensor: the curvature tensor with an index lowered by g_ab
+riemann-tensor needs levi-civita-connection: this metric connection's curvature gains the symmetry R_abcd = R_cdab
+killing-vectors needs lie-derivative: fields κ that leave the metric unchanged: £κ g = 0
+killing-vectors needs levi-civita-connection: £κ g = 0 rewritten with this ∇ as ∇(a κb) = 0
+symplectic-manifolds needs symplectic-group: the symplectic form S_ab at each point has Sp as symmetry group
+symplectic-manifolds needs exterior-derivative: requires the symplectic 2-form to be closed, dS = 0
+symplectic-manifolds needs n-manifolds: an even-dimensional manifold carrying a nonsingular 2-form field
+poisson-bracket needs symplectic-manifolds: combines gradients of two scalar fields via the inverse symplectic form
+q-spacetime-torsion relates torsion-tensor: is about: whether spacetime's connection really has nonzero torsion
+q-spacetime-torsion relates covariant-derivative: involves: Einstein-Cartan and supergravity relax the torsion-free ∇ assumption
+symplectic-manifolds relates q-flabby-structures: illustrates: all symplectic manifolds look locally alike, with no curvature invariant
+q-flabby-structures relates riemannian-manifold: contrasts with: a metric has local curvature invariants, so it is rigid
 
 %% chapter 15
-kaluza-klein needs n-manifolds
-kaluza-klein relates q-extra-dimensions: raises
-fibre-bundles needs n-manifolds, groups
-mobius-bundle needs fibre-bundles
-bundle-cross-sections needs fibre-bundles
-hopf-fibration needs fibre-bundles, riemann-sphere, bundle-cross-sections
-clifford-parallels needs hopf-fibration, geodesic-deviation
-complex-vector-bundles needs fibre-bundles, hopf-fibration
-tangent-bundle needs fibre-bundles, tangent-space
-cotangent-bundle needs tangent-bundle, symplectic-manifolds
-projective-space needs vector-space
-homogeneous-coordinates needs projective-space
-pappus-desargues-theorems needs projective-space
-gauge-connection needs fibre-bundles, covariant-derivative
-bundle-curvature needs gauge-connection, curvature-tensor
-bundle-curvature relates q-gauge-symmetry-origin: raises
-q-extra-dimensions relates kaluza-klein: is about
-fibre-bundles relates q-extra-dimensions: answers alternatively
-q-gauge-symmetry-origin relates gauge-connection: involves
-q-gauge-symmetry-origin relates bundle-curvature: involves
+kaluza-klein needs n-manifolds: spacetime becomes a higher-dimensional manifold with tiny curled-up dimensions
+kaluza-klein relates q-extra-dimensions: raises: are internal degrees of freedom literally tiny spatial dimensions, like a hosepipe
+fibre-bundles needs n-manifolds: base and bundle space are both manifolds, locally a product M×V
+fibre-bundles needs groups: a symmetry group of the fibre governs how fibres are glued
+mobius-bundle needs fibre-bundles: the simplest twisted bundle, a line over a circle
+bundle-cross-sections needs fibre-bundles: a continuous choice of one fibre point over each base point
+hopf-fibration needs fibre-bundles: S³ as a circle bundle over S², with fibres S¹
+hopf-fibration needs riemann-sphere: the base S² is the Riemann sphere of ratios of complex coordinates
+hopf-fibration needs bundle-cross-sections: the Clifford bundle admits no continuous cross-section
+clifford-parallels needs hopf-fibration: they are exactly the fibre circles of the Hopf fibration
+clifford-parallels needs geodesic-deviation: S³'s positive curvature bends skew great circles together, keeping them equidistant
+complex-vector-bundles needs fibre-bundles: bundles whose fibres are complex vector spaces
+complex-vector-bundles needs hopf-fibration: S³ sits in the complex line bundle over CP¹ as its unit circles
+tangent-bundle needs fibre-bundles: a bundle whose cross-sections are exactly the vector fields on M
+tangent-bundle needs tangent-space: each fibre is the tangent space at a point of M
+cotangent-bundle needs tangent-bundle: the dual construction, using covectors in place of vectors
+cotangent-bundle needs symplectic-manifolds: T*(M) carries a natural symplectic form, making it classical phase space
+projective-space needs vector-space: points are lines through the origin of an (n+1)-dimensional vector space
+homogeneous-coordinates needs projective-space: label each line through the origin by ratios z⁰:z¹:…:zⁿ
+pappus-desargues-theorems needs projective-space: stated cleanly once parallel lines meet at points at infinity
+gauge-connection needs fibre-bundles: defines 'constancy' of fibre values along curves in the base
+gauge-connection needs covariant-derivative: the bundle analogue of ∇, defining parallel transport between fibres
+bundle-curvature needs gauge-connection: the commutator of bundle derivatives ∇a = ∂a − Aa gives F_ab
+bundle-curvature needs curvature-tensor: generalizes the commutator definition of R from tangent to arbitrary bundles
+bundle-curvature relates q-gauge-symmetry-origin: raises: gauge fields like Maxwell's are bundle curvature, so where does fibre symmetry come from
+q-extra-dimensions relates kaluza-klein: is about: whether Kaluza-Klein's tiny extra dimensions are physically real
+fibre-bundles relates q-extra-dimensions: answers alternatively: internal freedom as bundle fibres, not extra spatial dimensions
+q-gauge-symmetry-origin relates gauge-connection: involves: a gauge connection presupposes an exact symmetry of the fibre
+q-gauge-symmetry-origin relates bundle-curvature: involves: the physical gauge fields appear as bundle curvature F_ab
 
 %% chapter 16
-finite-fields needs rational-numbers
-finite-fields relates q-finite-or-infinite-physics: addresses
-finite-projective-geometry needs finite-fields, projective-space, pappus-desargues-theorems
-fano-plane needs finite-projective-geometry, octonions
-cardinality needs natural-numbers, rational-numbers
-axiom-of-choice needs cardinality
-axiom-of-choice relates q-platonic-world-real: illustrates
-cantor-diagonal-argument needs cardinality, real-numbers
-continuum-hypothesis needs cantor-diagonal-argument
-continuum-hypothesis relates q-continuum-hypothesis-truth: raises
-russell-paradox needs cantor-diagonal-argument
-turing-machines needs natural-numbers
-halting-problem needs turing-machines, cantor-diagonal-argument
-recursive-sets needs turing-machines
-godel-incompleteness needs halting-problem, axioms
-godel-incompleteness relates q-godel-unknowable-truths: raises
-functional-freedom needs cardinality, n-manifolds
-q-finite-or-infinite-physics relates finite-fields: involves
-q-finite-or-infinite-physics relates finite-projective-geometry: involves
-q-finite-or-infinite-physics relates real-numbers: questions
-q-continuum-hypothesis-truth relates continuum-hypothesis: is about
-q-continuum-hypothesis-truth relates axiom-of-choice: parallels
-q-godel-unknowable-truths relates godel-incompleteness: is about
-q-godel-unknowable-truths relates q-platonic-world-real: bears on
+finite-fields relates q-finite-or-infinite-physics: addresses: F_p shows arithmetic and geometry can work with finitely many elements
+finite-projective-geometry needs finite-fields: uses F_q as the coordinate field, giving 1+q+…+qⁿ points
+finite-projective-geometry needs projective-space: Pⁿ built over a finite field instead of ℝ or ℂ
+finite-projective-geometry needs pappus-desargues-theorems: magic-disc constructions realize finite versions of these incidence theorems
+fano-plane needs finite-projective-geometry: the smallest case, P²(F₂), with 7 points and 7 lines
+fano-plane needs octonions: its lines encode the multiplication table of the seven octonion units
+cardinality needs natural-numbers: ℵ₀, the size of ℕ, is the smallest infinite cardinal
+cardinality needs rational-numbers: the rationals can be listed against ℕ, so they also have ℵ₀
+axiom-of-choice needs cardinality: implies that any two cardinals are comparable
+axiom-of-choice relates q-platonic-world-real: illustrates: a statement whose truth may be objective or merely a chosen convention
+cantor-diagonal-argument needs cardinality: proves α < 2^α for every cardinal α
+cantor-diagonal-argument needs real-numbers: altering diagonal decimal digits builds a real missing from any list, so C > ℵ₀
+continuum-hypothesis needs cantor-diagonal-argument: given 2^ℵ₀ > ℵ₀, asks whether nothing lies between: 2^ℵ₀ = ℵ₁
+continuum-hypothesis relates q-continuum-hypothesis-truth: raises: Gödel and Cohen showed it independent, so is it true at all
+russell-paradox needs cantor-diagonal-argument: the diagonal argument applied to the set of all sets yields contradiction
+turing-machines needs natural-numbers: machines act on natural numbers and are themselves coded by numbers
+halting-problem needs turing-machines: asks whether the n-th machine halts on input m
+halting-problem needs cantor-diagonal-argument: a diagonal construction defeats any proposed halting-deciding algorithm
+recursive-sets needs turing-machines: membership or listing is computed by some Turing machine
+godel-incompleteness needs halting-problem: a complete proof system would decide halting, so some true Π₁ sentences are unprovable
+godel-incompleteness needs axioms: concerns formal systems: axioms plus proof rules generating theorems
+godel-incompleteness relates q-godel-unknowable-truths: raises: does unprovability in a system mean some truths are humanly unknowable
+functional-freedom needs cardinality: cardinality cannot tell field spaces apart, so freedom is counted as ∞^(k∞ⁿ)
+functional-freedom needs n-manifolds: n counts the variables: fields are functions on an n-dimensional manifold
+q-finite-or-infinite-physics relates finite-fields: involves: could physics rest on F_p with large p instead of the reals
+q-finite-or-infinite-physics relates finite-projective-geometry: involves: finite geometries show geometry itself can be built from finitely many points
+q-finite-or-infinite-physics relates real-numbers: questions: is the real continuum only an approximation to something finite
+q-continuum-hypothesis-truth relates continuum-hypothesis: is about: whether 2^ℵ₀ = ℵ₁ has an objective truth value
+q-continuum-hypothesis-truth relates axiom-of-choice: parallels: both are independent of standard set theory, testing how Platonic their truth is
+q-godel-unknowable-truths relates godel-incompleteness: is about: what the true but unprovable Gödel sentence really implies
+q-godel-unknowable-truths relates q-platonic-world-real: bears on: we see the Gödel sentence is true, so truth outruns formal rules
 
 %% chapter 17
-aristotelian-spacetime needs euclidean-geometry
-aristotelian-spacetime relates q-why-spacetime: addresses
-galilean-spacetime needs galilean-relativity, fibre-bundles, aristotelian-spacetime
-world-line needs galilean-spacetime
-newtons-laws needs galilean-spacetime, affine-space, world-line
-newtonian-gravity needs newtons-laws
-equivalence-principle needs newtonian-gravity, newtons-laws
-equivalence-principle relates q-gravity-a-force: addresses
-newton-cartan-spacetime needs equivalence-principle, galilean-spacetime, covariant-derivative
-tidal-effect needs newton-cartan-spacetime, geodesic-deviation, curvature-tensor
-light-cones needs world-line
-light-cones relates q-light-speed-vs-relativity: addresses
-relativity-of-simultaneity needs light-cones, galilean-spacetime
-relativity-of-simultaneity relates q-light-speed-vs-relativity: resolves
-minkowski-space needs light-cones, riemannian-manifold
-proper-time needs minkowski-space, world-line
-causal-structure needs light-cones, minkowski-space
-einsteinian-spacetime needs minkowski-space, newton-cartan-spacetime, levi-civita-connection
-einsteinian-spacetime relates q-time-travel: raises
-q-why-spacetime relates aristotelian-spacetime: contrasts with
-galilean-spacetime relates q-why-spacetime: answers
-q-gravity-a-force relates equivalence-principle: is about
-tidal-effect relates q-gravity-a-force: answers
-light-cones relates q-light-speed-vs-relativity: answers
-relativity-of-simultaneity relates q-light-speed-vs-relativity: answers
-q-light-speed-vs-relativity relates galilean-relativity: involves
-q-time-travel relates causal-structure: is about
-q-time-travel relates einsteinian-spacetime: involves
+aristotelian-spacetime needs euclidean-geometry: each moment's space is Euclidean E³, persisting through time
+aristotelian-spacetime relates q-why-spacetime: addresses: the naive picture E¹×E³ that Galilean relativity forces us to abandon
+galilean-spacetime needs galilean-relativity: no frame is preferred, so spaces at different times are not identified
+galilean-spacetime needs fibre-bundles: a bundle over time E¹ with fibre E³, but no product structure
+galilean-spacetime needs aristotelian-spacetime: drops the pointwise identification of spaces that Aristotelian spacetime assumed
+world-line needs galilean-spacetime: a particle's history drawn as a curve in spacetime
+newtons-laws needs galilean-spacetime: the laws are formulated so that they hold in every Galilean frame
+newtons-laws needs affine-space: affine structure makes straight lines and vector sums of forces meaningful
+newtons-laws needs world-line: the first law: free particles have straight world lines
+newtonian-gravity needs newtons-laws: the inverse-square force GmM/r² inserted into the second law
+equivalence-principle needs newtonian-gravity: gravitational mass in GmM/r² equals inertial mass, so all bodies fall alike
+equivalence-principle needs newtons-laws: inertial mass from F = ma cancels against gravitational mass
+equivalence-principle relates q-gravity-a-force: addresses: free fall feels like inertial motion, so uniform gravity is not felt
+newton-cartan-spacetime needs equivalence-principle: free-fall world lines are taken as the inertial geodesics
+newton-cartan-spacetime needs galilean-spacetime: keeps the bundle over absolute time E¹ but changes its connection
+newton-cartan-spacetime needs covariant-derivative: a curved connection ∇ whose geodesics are free falls
+tidal-effect needs newton-cartan-spacetime: the relative squash of free-falling particles is this connection's curvature
+tidal-effect needs geodesic-deviation: neighbouring free-fall geodesics accelerate relative to each other
+tidal-effect needs curvature-tensor: the tidal distortion is read directly as the curvature tensor
+light-cones needs world-line: the cone of photon world lines through an event
+light-cones relates q-light-speed-vs-relativity: addresses: light speed becomes geometry, the same null cone for every observer
+relativity-of-simultaneity needs light-cones: a uniform null-cone structure is incompatible with fixed E³ time slices
+relativity-of-simultaneity needs galilean-spacetime: abandons Galilean spacetime's absolute time slicing
+relativity-of-simultaneity relates q-light-speed-vs-relativity: resolves: give up absolute time, and a fixed c fits the relativity principle
+minkowski-space needs light-cones: flat spacetime with null cones uniformly arranged everywhere
+minkowski-space needs riemannian-manifold: a flat pseudo-Riemannian space with metric signature +−−−
+proper-time needs minkowski-space: the metric's ds measures time along timelike curves
+proper-time needs world-line: τ = ∫ds integrated along a timelike world line
+causal-structure needs light-cones: null cones split directions into timelike, null and spacelike
+causal-structure needs minkowski-space: in flat spacetime the cone at each event bounds its causal future
+einsteinian-spacetime needs minkowski-space: a curved Lorentzian manifold, locally like Minkowski space
+einsteinian-spacetime needs newton-cartan-spacetime: generalizes Minkowski as Newton-Cartan generalizes Galilean: gravity as curvature
+einsteinian-spacetime needs levi-civita-connection: the metric's Levi-Civita connection gives geodesics and gravitational curvature
+einsteinian-spacetime relates q-time-travel: raises: curved cones may tip so signals loop back to their own past
+q-why-spacetime relates aristotelian-spacetime: contrasts with: Aristotle's absolute space persisting from moment to moment
+galilean-spacetime relates q-why-spacetime: answers: without absolute space only a bundle of spaces over time remains
+q-gravity-a-force relates equivalence-principle: is about: if free fall is inertial, gravity seems to be no force at all
+tidal-effect relates q-gravity-a-force: answers: what cannot be transformed away is tidal curvature, gravity's true signature
+q-light-speed-vs-relativity relates galilean-relativity: involves: Maxwell's fixed c seems to single out a preferred frame, against Galileo
+q-time-travel relates causal-structure: is about: causal structures in which timelike curves close on themselves
+q-time-travel relates einsteinian-spacetime: involves: some general-relativity solutions allow such loops; Penrose deems them unphysical
 
 %% chapter 18
-complexified-minkowski-space needs minkowski-space, complex-numbers
-complexified-minkowski-space relates q-imaginary-time: frames
-poincare-group needs minkowski-space
-lorentzian-orthogonality needs minkowski-space, metric
-clock-paradox needs lorentzian-orthogonality, proper-time
-relativistic-velocity-space needs hyperbolic-geometry, minkowski-space
-rapidity needs relativistic-velocity-space
-relativistic-velocity-addition needs rapidity
-celestial-sphere needs riemann-sphere, light-cones, poincare-group
-stellar-aberration needs celestial-sphere
-lorentz-contraction needs lorentzian-orthogonality, celestial-sphere
-lorentz-contraction relates q-lorentz-contraction-visible: addresses
-kinetic-energy needs newtons-laws
-momentum-conservation needs newtons-laws, galilean-relativity
-angular-momentum needs momentum-conservation, grassmann-algebra
-four-momentum needs momentum-conservation, minkowski-space
-mass-energy-equivalence needs four-momentum
-mass-energy-equivalence relates q-mass-conservation: addresses
-rest-mass needs four-momentum
-rest-mass relates q-mass-conservation: addresses
-relativistic-angular-momentum needs four-momentum, angular-momentum, poincare-group
-q-imaginary-time relates complexified-minkowski-space: is about
-q-imaginary-time relates minkowski-space: is about
-q-lorentz-contraction-visible relates lorentz-contraction: is about
-celestial-sphere relates q-lorentz-contraction-visible: answers
-mass-energy-equivalence relates q-mass-conservation: answers
-q-mass-conservation relates rest-mass: involves
+complexified-minkowski-space needs minkowski-space: real slice of a complex 4-space whose metric is holomorphic
+complexified-minkowski-space needs complex-numbers: complex coordinates turn E⁴ and M into slices of one complex space
+complexified-minkowski-space relates q-imaginary-time: frames: t = iw passes between the Euclidean and Minkowski slices of ℂ𝕄
+poincare-group needs minkowski-space: its ten-dimensional symmetry group: four translations plus Lorentz rotations
+lorentzian-orthogonality needs minkowski-space: simultaneous spaces are Minkowski orthogonal complements of a world-line
+lorentzian-orthogonality needs metric: orthogonality means g_ab uᵃvᵇ = 0 for the Lorentzian metric
+clock-paradox needs proper-time: travelling twin's broken world-line records less proper time
+relativistic-velocity-space needs hyperbolic-geometry: unit hyperboloid of 4-velocities carries hyperbolic geometry
+relativistic-velocity-space needs minkowski-space: hyperboloid of future timelike directions in Minkowski space
+rapidity needs relativistic-velocity-space: hyperbolic distance in velocity space, ρ = artanh v
+relativistic-velocity-addition needs rapidity: collinear rapidities simply add, giving (u+v)/(1+uv)
+celestial-sphere needs riemann-sphere: sky of light rays carries a Riemann sphere's conformal structure
+celestial-sphere needs light-cones: sky points are null generators of the past light cone
+celestial-sphere needs poincare-group: Lorentz transformations act on the sky as Möbius maps
+stellar-aberration needs celestial-sphere: change of observer maps the sky conformally, so circles stay circles
+lorentz-contraction needs lorentzian-orthogonality: moving length is measured in the tilted simultaneous space
+lorentz-contraction needs celestial-sphere: conformal sky map keeps a moving sphere's outline circular
+lorentz-contraction relates q-lorentz-contraction-visible: addresses: flattening is real, but light delays make it look rotated
+kinetic-energy needs newtons-laws: Newtonian work exchanges kinetic mv²/2 with potential energy
+momentum-conservation needs newtons-laws: third law's equal and opposite forces conserve total momentum
+momentum-conservation needs galilean-relativity: conservation holds consistently in every Galilean frame
+angular-momentum needs momentum-conservation: moment x ∧ p of the conserved momentum
+angular-momentum needs grassmann-algebra: wedge product x ∧ p makes angular momentum a bivector
+four-momentum needs momentum-conservation: relativity adjoins energy to conserved 3-momentum as a fourth component
+four-momentum needs minkowski-space: energy and momentum form one vector p_a in Minkowski space
+mass-energy-equivalence needs four-momentum: time component of 4-momentum measures both energy and mass
+mass-energy-equivalence relates q-mass-conservation: addresses: mass conservation survives only as conservation of p₀ (energy)
+rest-mass needs four-momentum: frame-independent Minkowski length of p_a
+rest-mass relates q-mass-conservation: addresses: rest mass is not conserved, so a pion can decay to photons
+relativistic-angular-momentum needs four-momentum: M^ab = xᵃpᵇ − xᵇpᵃ is built from the 4-momentum
+relativistic-angular-momentum needs angular-momentum: unifies x ∧ p with the centre-of-mass quantity tp − mx
+relativistic-angular-momentum needs poincare-group: its six components are conserved by Lorentz rotations and boosts
+q-imaginary-time relates complexified-minkowski-space: is about: whether rotating t = iw into ℂ𝕄 has physical meaning
+q-imaginary-time relates minkowski-space: is about: replacing M's Lorentzian signature by a Euclidean one
+q-lorentz-contraction-visible relates lorentz-contraction: is about: whether FitzGerald-Lorentz flattening is visually seen
+celestial-sphere relates q-lorentz-contraction-visible: answers: conformal sky maps keep a moving sphere's outline circular
+q-mass-conservation relates rest-mass: involves: rest mass, unlike total mass-energy, is not conserved
 
 %% chapter 19
-maxwell-field-tensor needs p-forms, minkowski-space
-hodge-dual needs p-forms, volume-element
-maxwell-equations needs maxwell-field-tensor, hodge-dual, exterior-derivative
-self-dual-field needs maxwell-equations, hodge-dual
-electromagnetic-waves needs maxwell-equations
-charge-conservation needs maxwell-equations, stokes-theorem
-electromagnetic-potential needs maxwell-equations, poincare-lemma
-electromagnetic-potential relates q-reality-of-potential: addresses
-gauge-invariance needs electromagnetic-potential, gauge-connection
-weyl-gauge-theory needs gauge-invariance
-aharonov-bohm-effect needs electromagnetic-potential, gauge-invariance
-aharonov-bohm-effect relates q-reality-of-potential: addresses
-energy-momentum-tensor needs four-momentum, charge-conservation
-killing-vector-conservation needs energy-momentum-tensor, killing-vectors
-killing-vector-conservation relates q-gravitational-energy: addresses
-ricci-tensor needs riemann-tensor, geodesic-deviation
-einstein-field-equations needs ricci-tensor, energy-momentum-tensor, bianchi-identity
-cosmological-constant needs einstein-field-equations
-cosmological-constant relates q-cosmological-constant: addresses
-weyl-tensor needs riemann-tensor, ricci-tensor
-gravitational-waves needs einstein-field-equations, weyl-tensor
-gravitational-waves relates q-gravitational-energy: addresses
-q-gravitational-energy relates energy-momentum-tensor: is about
-q-gravitational-energy relates gravitational-waves: involves
-q-gravitational-energy relates equivalence-principle: involves
-q-cosmological-constant relates cosmological-constant: is about
-q-reality-of-potential relates electromagnetic-potential: is about
-aharonov-bohm-effect relates q-reality-of-potential: probes
+maxwell-field-tensor needs p-forms: E and B fields combine into the antisymmetric 2-form F_ab
+maxwell-field-tensor needs minkowski-space: F is a spacetime tensor, so boosts mix E and B
+hodge-dual needs p-forms: maps p-forms to (4−p)-forms
+hodge-dual needs volume-element: contracts with the volume form ε_abcd
+maxwell-equations needs maxwell-field-tensor: Maxwell equations are dF = 0 and d*F = 4π*J for the 2-form F
+maxwell-equations needs hodge-dual: source equation is written with the dual: d*F = 4π*J
+maxwell-equations needs exterior-derivative: both equations use d: dF = 0, d*F = 4π*J
+self-dual-field needs maxwell-equations: free Maxwell fields split into F ± i*F (right/left-handed photons)
+self-dual-field needs hodge-dual: F ± i*F are eigenforms of the Hodge dual
+electromagnetic-waves needs maxwell-equations: free Maxwell equations admit waves travelling at light speed
+charge-conservation needs maxwell-equations: d of d*F = 4π*J gives d*J = 0, since d² = 0
+charge-conservation needs stokes-theorem: integrating d*J = 0 gives zero charge flux through closed 3-surfaces
+electromagnetic-potential needs maxwell-equations: dF = 0 lets F = dA locally
+electromagnetic-potential needs poincare-lemma: closed forms are locally exact, so dF = 0 gives F = dA
+electromagnetic-potential relates q-reality-of-potential: addresses: A + dΘ gives the same F, so A is not locally measurable
+gauge-invariance needs electromagnetic-potential: phase changes of charged fields compensated by A → A + dΘ
+gauge-invariance needs gauge-connection: A is a bundle connection whose curvature is the Maxwell field
+weyl-gauge-theory needs gauge-invariance: Weyl's path-dependent scale works once reread as a unit-modulus phase
+aharonov-bohm-effect needs electromagnetic-potential: fringe shift is set by the loop integral ∮A around the solenoid
+aharonov-bohm-effect needs gauge-invariance: only the gauge-invariant loop phase exp(ie∮A/ħ) is observed
+aharonov-bohm-effect relates q-reality-of-potential: addresses: A's loop integral has effects in a field-free region
+energy-momentum-tensor needs four-momentum: T_ab gives densities and fluxes of 4-momentum
+energy-momentum-tensor needs charge-conservation: ∇ᵃT_ab = 0 copies d*J = 0, one for each 4-momentum component
+killing-vector-conservation needs energy-momentum-tensor: contracting T_ab with a Killing vector κᵇ gives a conserved current
+killing-vector-conservation needs killing-vectors: ∇₍ₐκ_b₎ = 0 makes T_ab κᵇ divergence-free
+killing-vector-conservation relates q-gravitational-energy: addresses: integral energy conservation needs a symmetry curved spacetime lacks
+ricci-tensor needs riemann-tensor: contraction R_ab = R_acb^c of the Riemann tensor
+ricci-tensor needs geodesic-deviation: initial volume acceleration of a cloud of free-falling geodesics
+einstein-field-equations needs ricci-tensor: left side R_ab − ½R g_ab is built from the Ricci tensor
+einstein-field-equations needs energy-momentum-tensor: T_ab is the source of gravity on the right side
+einstein-field-equations needs bianchi-identity: contracted Bianchi identity makes the left side divergence-free, matching ∇ᵃT_ab = 0
+cosmological-constant needs einstein-field-equations: adds Λg_ab, which keeps the equations divergence-free
+cosmological-constant relates q-cosmological-constant: addresses: Λ added for a static universe, dropped, revived by supernova data
+weyl-tensor needs riemann-tensor: trace-free part of the Riemann tensor
+weyl-tensor needs ricci-tensor: Riemann tensor with its Ricci part removed
+gravitational-waves needs einstein-field-equations: solve the vacuum field equations R_ab = 0
+gravitational-waves needs weyl-tensor: in vacuum the waves are pure Weyl curvature
+gravitational-waves relates q-gravitational-energy: addresses: Hulse-Taylor orbital decay shows the waves carry real energy
+q-gravitational-energy relates energy-momentum-tensor: is about: gravity's own energy is excluded from T_ab
+q-gravitational-energy relates gravitational-waves: involves: waves carry energy through empty space where T_ab = 0
+q-gravitational-energy relates equivalence-principle: involves: free fall removes gravity locally, so no local energy density
+q-cosmological-constant relates cosmological-constant: is about: whether Λ is nonzero, as supernova data suggest
+q-reality-of-potential relates electromagnetic-potential: is about: whether A, fixed only up to dΘ, is physically real
 
 %% chapter 20
-lagrangian-formalism needs configuration-space, tangent-bundle, kinetic-energy
-euler-lagrange-equations needs lagrangian-formalism
-stationary-action needs lagrangian-formalism
-hamiltonian-formalism needs lagrangian-formalism, phase-space, cotangent-bundle
-hamilton-equations needs hamiltonian-formalism
-simple-harmonic-motion needs hamilton-equations
-normal-modes needs simple-harmonic-motion, eigenvectors
-hamiltonian-flow needs hamilton-equations, poisson-bracket, symplectic-manifolds
-liouville-theorem needs hamiltonian-flow
-functional-derivative needs euler-lagrange-equations
-field-lagrangian needs functional-derivative, stationary-action
-noether-theorem needs lagrangian-formalism, lie-algebra
-einstein-hilbert-action needs field-lagrangian, einstein-field-equations
-q-lagrangian-guidance relates field-lagrangian: is about
-q-lagrangian-guidance relates noether-theorem: involves
-q-formal-elegance relates hamiltonian-formalism: is about
-q-formal-elegance relates hamiltonian-flow: involves
+lagrangian-formalism needs configuration-space: generalized coordinates q are coordinates on configuration space
+lagrangian-formalism needs tangent-bundle: L is a function of q and q̇ on the tangent bundle
+lagrangian-formalism needs kinetic-energy: Lagrangian L = K − V, kinetic minus potential energy
+euler-lagrange-equations needs lagrangian-formalism: equations of motion derived from L
+stationary-action needs lagrangian-formalism: action is the time integral of L
+hamiltonian-formalism needs lagrangian-formalism: momenta p = ∂L/∂q̇ replace the velocities
+hamiltonian-formalism needs phase-space: works in the space of positions and momenta
+hamiltonian-formalism needs cotangent-bundle: momenta are covectors, so phase space is the cotangent bundle
+hamilton-equations needs hamiltonian-formalism: symmetric first-order equations of motion derived from H
+simple-harmonic-motion needs hamilton-equations: quadratic H gives d²q/dt² = −ω²q
+normal-modes needs simple-harmonic-motion: each normal mode oscillates independently as simple harmonic motion
+normal-modes needs eigenvectors: modes are eigenvectors of W = PQ, their frequencies the eigenvalues
+hamiltonian-flow needs hamilton-equations: Hamilton's equations define a flow vector field on phase space
+hamiltonian-flow needs poisson-bracket: time evolution of Q is the Poisson bracket {Q, H}
+hamiltonian-flow needs symplectic-manifolds: Hamiltonian flow preserves the symplectic form S_ab
+liouville-theorem needs hamiltonian-flow: flow preserves volume, the N-th wedge power of the symplectic form
+functional-derivative needs euler-lagrange-equations: extends Euler-Lagrange equations to infinitely many field variables
+field-lagrangian needs functional-derivative: field equations come from δS/δφ = 0
+field-lagrangian needs stationary-action: the action S, a 4-form integral of the density, is made stationary
+noether-theorem needs lagrangian-formalism: symmetries of L give conserved quantities
+noether-theorem needs lie-algebra: continuous symmetries enter through infinitesimal Lie-algebra generators
+einstein-hilbert-action needs field-lagrangian: scalar curvature R is the gravitational Lagrangian density
+einstein-hilbert-action needs einstein-field-equations: varying the metric in ∫R recovers Einstein's field equations
+q-lagrangian-guidance relates field-lagrangian: is about: new theories posed as Lagrangians with little guidance on which is right
+q-lagrangian-guidance relates noether-theorem: involves: symmetries of L give conserved quantities via Noether
+q-formal-elegance relates hamiltonian-formalism: is about: the perfect Hamiltonian picture overturned by quantum facts
+q-formal-elegance relates hamiltonian-flow: involves: its symplectic flow and Poisson brackets still led to quantum theory
 
 %% chapter 21
-non-commuting-variables needs derivative, leibniz-rule
-canonical-commutation-relations needs non-commuting-variables
-canonical-quantization needs canonical-commutation-relations, hamiltonian-formalism
-wavefunction needs complex-numbers, canonical-quantization
-wavefunction relates q-quantum-reality: addresses
-schrodinger-equation needs wavefunction, canonical-quantization, laplace-equation
-planck-constant needs electromagnetic-waves
-de-broglie-wavelength needs planck-constant, four-momentum
-double-slit-experiment needs de-broglie-wavelength
-double-slit-experiment relates q-wave-particle: addresses
-wave-particle-duality needs double-slit-experiment, wavefunction
-wave-particle-duality relates q-wave-particle: addresses
-eigenstates needs eigenvectors, wavefunction
-momentum-states needs eigenstates, four-momentum
-wave-packet needs momentum-states, fourier-transform
-mach-zehnder-interferometer needs wave-particle-duality
-mach-zehnder-interferometer relates q-quantum-reality: addresses
-wavefunction-collapse needs schrodinger-equation, eigenstates
-wavefunction-collapse relates q-measurement-problem: addresses
-wavefunction-collapse relates q-u-and-r-consistency: raises
-born-rule needs wavefunction, projective-space
-born-rule relates q-measurement-problem: addresses
-normalized-wavefunction needs born-rule
-position-states needs eigenstates, dirac-delta-function
-momentum-space needs fourier-transform, momentum-states, position-states
-uncertainty-principle needs momentum-space, canonical-commutation-relations
-q-quantum-reality relates wavefunction: is about
-q-quantum-reality relates mach-zehnder-interferometer: involves
-q-wave-particle relates wave-particle-duality: is about
-double-slit-experiment relates q-wave-particle: poses
-q-measurement-problem relates wavefunction-collapse: is about
-q-measurement-problem relates schrodinger-equation: conflicts with
-q-measurement-problem relates born-rule: involves
-schrodinger-cat relates q-measurement-problem: illustrates
-environmental-decoherence relates q-measurement-problem: does not solve
-many-worlds-interpretation relates q-measurement-problem: does not solve
-q-probability-wave relates born-rule: is about
-q-probability-wave relates wavefunction: is about
+non-commuting-variables needs derivative: treats D = d/dx as an algebraic quantity
+non-commuting-variables needs leibniz-rule: product rule gives Dx − xD = 1
+canonical-commutation-relations needs non-commuting-variables: p = iħ∂/∂x turns Dx − xD = 1 into [p, x] = iħ
+canonical-quantization needs canonical-commutation-relations: replaces classical momenta with operators obeying [p, x] = iħ
+canonical-quantization needs hamiltonian-formalism: substitutes momentum operators into the classical Hamiltonian H(q, p)
+wavefunction needs complex-numbers: ψ is complex-valued, its phase being essential
+wavefunction needs canonical-quantization: ψ is acted on by the quantized Hamiltonian
+wavefunction relates q-quantum-reality: addresses: Penrose takes ψ itself, not just probabilities, as real
+schrodinger-equation needs wavefunction: iħ∂ψ/∂t = Hψ deterministically evolves ψ
+schrodinger-equation needs canonical-quantization: H is the canonically quantized Hamiltonian
+schrodinger-equation needs laplace-equation: kinetic term p²/2m becomes −(ħ²/2m)∇²
+planck-constant needs electromagnetic-waves: light's energy comes in quanta E = hν of the wave's frequency
+de-broglie-wavelength needs planck-constant: p = h/λ parallels E = hν with the same constant
+de-broglie-wavelength needs four-momentum: E = hν and p = h/λ combine into a plane wave's 4-momentum
+double-slit-experiment needs de-broglie-wavelength: fringe spacing reveals the de Broglie wavelength
+double-slit-experiment relates q-wave-particle: addresses: spots arrive singly yet build an interference pattern
+wave-particle-duality needs double-slit-experiment: single particles interfering through both slits
+wave-particle-duality needs wavefunction: ψ carries both wave interference and particle detection
+wave-particle-duality relates q-wave-particle: addresses: one ψ explains both the spots and the fringes
+eigenstates needs eigenvectors: an eigenstate is an eigenvector of the observable's operator
+eigenstates needs wavefunction: ψ is an eigenstate when the operator just multiplies it by a number
+momentum-states needs eigenstates: plane waves are eigenstates of the momentum operator iħ∂/∂x
+momentum-states needs four-momentum: each plane wave exp(−iP·x/ħ) has definite 4-momentum P
+wave-packet needs momentum-states: localized lump superposed from momentum states
+wave-packet needs fourier-transform: its momentum content is the Fourier transform of its shape
+mach-zehnder-interferometer needs wave-particle-duality: one photon shows wave or particle behaviour by beam-splitter setup
+mach-zehnder-interferometer relates q-quantum-reality: addresses: interference reveals a holistic, non-local ψ as the real thing
+wavefunction-collapse needs schrodinger-equation: measurement interrupts Schrödinger evolution with a jump it cannot describe
+wavefunction-collapse needs eigenstates: state jumps to an eigenstate of the measured observable
+wavefunction-collapse relates q-measurement-problem: addresses: R is the jump measurement forces outside U
+wavefunction-collapse relates q-u-and-r-consistency: raises: a discontinuous jump contradicts continuous linear evolution
+born-rule needs wavefunction: |ψ|² is the probability density for position
+born-rule needs projective-space: states are rays, ψ ~ kψ, points of projective space
+born-rule relates q-measurement-problem: addresses: Born gives outcome probabilities but not what a measurement is
+normalized-wavefunction needs born-rule: ∫|ψ|² = 1 makes |ψ|² a true probability density
+position-states needs eigenstates: position states are eigenstates of position
+position-states needs dirac-delta-function: δ(x − X) is infinitely concentrated at X
+momentum-space needs fourier-transform: Fourier transform of ψ(x) gives ψ̃(p)
+momentum-space needs momentum-states: momentum states become δ-functions in momentum space
+momentum-space needs position-states: position δ-states become plane waves in momentum space
+uncertainty-principle needs momentum-space: narrowing ψ(x) broadens its Fourier transform ψ̃(p)
+uncertainty-principle needs canonical-commutation-relations: [p, x] = iħ yields Δx Δp ≥ ħ/2
+q-quantum-reality relates wavefunction: is about: whether ψ describes physical reality or just knowledge
+q-quantum-reality relates mach-zehnder-interferometer: involves: beam-splitter interference shows ψ's holistic, non-local nature
+q-wave-particle relates wave-particle-duality: is about: one entity showing both interference and discrete detection
+q-measurement-problem relates wavefunction-collapse: is about: when and why the state jumps on measurement
+q-measurement-problem relates schrodinger-equation: conflicts with: Schrödinger evolution is continuous and never jumps
+q-measurement-problem relates born-rule: involves: Born's |ψ|² probabilities assigned at the jump
+schrodinger-cat relates q-measurement-problem: illustrates: U alone turns one photon's beam-splitter choice into a live-dead cat superposition
+environmental-decoherence relates q-measurement-problem: does not solve: tracing out the environment gives a diagonal density matrix, only FAPP
+many-worlds-interpretation relates q-measurement-problem: does not solve: keeping all outcomes leaves unexplained why we perceive just one
+q-probability-wave relates born-rule: is about: whether |ψ|² exhausts the meaning of ψ
+q-probability-wave relates wavefunction: is about: destructive interference shows ψ is more than a probability
 
 %% chapter 22
-unitary-evolution needs schrodinger-equation, unitary-group
-quantum-linearity needs unitary-evolution
-quantum-linearity relates q-u-and-r-consistency: sharpens
-hilbert-space needs vector-space
-dirac-notation needs hilbert-space, covectors
-heisenberg-picture needs unitary-evolution, canonical-commutation-relations
-quantum-observables needs eigenvectors, hilbert-space
-projection-postulate needs quantum-observables, born-rule
-null-measurement needs projection-postulate, mach-zehnder-interferometer
-helicity needs angular-momentum
-spin needs angular-momentum, lie-algebra, spinors
-two-spinors needs spin, spinors, abstract-index-notation
-casimir-operators needs lie-algebra, spin
-bloch-sphere needs riemann-sphere, projective-space, spin
-majorana-description needs bloch-sphere, two-spinors
-majorana-description relates q-quantum-vs-classical-spin: addresses
-spherical-harmonics needs laplace-equation, polar-coordinates, spin
-pauli-lubanski-vector needs poincare-group, relativistic-angular-momentum, casimir-operators
-quantum-harmonic-oscillator needs normal-modes, schrodinger-equation
-bohr-atom needs quantum-harmonic-oscillator, spherical-harmonics
-q-u-and-r-consistency relates quantum-linearity: is about
-q-u-and-r-consistency relates wavefunction-collapse: is about
-q-u-and-r-consistency relates unitary-evolution: is about
-q-state-vector-reality relates heisenberg-picture: is about
-q-state-vector-reality relates wavefunction-collapse: is about
-q-quantum-vs-classical-spin relates majorana-description: is about
-q-quantum-vs-classical-spin relates spherical-harmonics: involves
+unitary-evolution needs schrodinger-equation: U is the Schrödinger evolution of the state vector
+unitary-evolution needs unitary-group: U is unitary, preserving scalar products
+quantum-linearity needs unitary-evolution: U maps superpositions to superpositions of evolved states
+quantum-linearity relates q-u-and-r-consistency: sharpens: linear U would superpose detector outcomes, not give one
+hilbert-space needs vector-space: complex vector space with a positive-definite Hermitian scalar product
+dirac-notation needs hilbert-space: kets |ψ⟩ are elements of Hilbert space H
+dirac-notation needs covectors: bras ⟨φ| are dual covectors; ⟨φ|ψ⟩ is the scalar product
+heisenberg-picture needs unitary-evolution: Heisenberg picture moves U's time dependence from states to operators
+heisenberg-picture needs canonical-commutation-relations: operators evolve by iħ dQ/dt = [Q, H]
+quantum-observables needs eigenvectors: eigenvalues are measured values, orthogonal eigenvectors the outcome states
+quantum-observables needs hilbert-space: observables are linear operators on Hilbert space
+projection-postulate needs quantum-observables: yes/no observables are projectors E = E* = E²
+projection-postulate needs born-rule: YES probability is the squared length of the projected state
+null-measurement needs projection-postulate: a NO result still projects the state
+null-measurement needs mach-zehnder-interferometer: Elitzur-Vaidman bomb test uses a Mach-Zehnder interferometer
+helicity needs angular-momentum: spin angular momentum along a massless particle's motion
+spin needs angular-momentum: quantum angular momentum obeying [L₁, L₂] = iħL₃
+spin needs lie-algebra: spin states represent the SO(3) Lie algebra
+spin needs spinors: spin-½ states change sign under a 2π rotation
+two-spinors needs spin: spin-n/2 states are totally symmetric spinors ψ_AB…F
+two-spinors needs spinors: built from two-component spinor indices
+two-spinors needs abstract-index-notation: spinor indices are abstract labels, not coordinate values
+casimir-operators needs lie-algebra: Casimirs commute with all Lie-algebra generators
+casimir-operators needs spin: J², with eigenvalue j(j+1)ħ², labels the spin
+bloch-sphere needs riemann-sphere: spin-½ states form a Riemann sphere of spatial directions
+bloch-sphere needs projective-space: rays of 2-dimensional Hilbert space form PH², a sphere
+bloch-sphere needs spin: each sphere point is a spin-up direction
+majorana-description needs bloch-sphere: spin-n/2 state is n unordered points on the Riemann sphere
+majorana-description needs two-spinors: symmetric spinor factorizes into n spin-½ directions
+majorana-description relates q-quantum-vs-classical-spin: addresses: large-j generic states scatter Majorana points over the sphere
+spherical-harmonics needs laplace-equation: eigenfunctions of the Laplacian on S² with eigenvalue −j(j+1)
+spherical-harmonics needs polar-coordinates: azimuthal angle enters as e^{imφ}, with d/dφ eigenvalue im
+spherical-harmonics needs spin: orbital angular momentum states labelled by j and m
+pauli-lubanski-vector needs poincare-group: classifies spin in Poincaré group representations
+pauli-lubanski-vector needs relativistic-angular-momentum: S_a is built from p_a and M^ab with ε
+pauli-lubanski-vector needs casimir-operators: p_a p^a and S_a S^a are the two Poincaré Casimirs
+quantum-harmonic-oscillator needs normal-modes: each classical normal mode becomes a quantum oscillator
+quantum-harmonic-oscillator needs schrodinger-equation: solving Schrödinger's equation gives energies (n + ½)ħω
+bohr-atom needs spherical-harmonics: hydrogen's angular states are spherical harmonics, quantizing j and m
+q-u-and-r-consistency relates quantum-linearity: is about: linearity conflicts with single measurement outcomes
+q-u-and-r-consistency relates wavefunction-collapse: is about: R jumps to one outcome, absent from U
+q-u-and-r-consistency relates unitary-evolution: is about: U, the deterministic linear procedure
+q-state-vector-reality relates heisenberg-picture: is about: the Heisenberg picture hides the state's reality in operators
+q-state-vector-reality relates wavefunction-collapse: is about: whether collapse is a real physical process
+q-quantum-vs-classical-spin relates majorana-description: is about: Majorana points of large-j states rarely cluster like classical spin
+q-quantum-vs-classical-spin relates spherical-harmonics: involves: spherical harmonics tied to Majorana points of large-j states
 
 %% chapter 23
-many-particle-wavefunction needs schrodinger-equation
-many-particle-state-space needs many-particle-wavefunction, functional-freedom
-many-particle-state-space relates q-why-entanglement-unnoticed: underlies
-tensor-product-states needs hilbert-space, tensors, dirac-notation
-entanglement needs tensor-product-states, quantum-linearity
-entanglement relates q-two-mysteries-of-entanglement: raises
-epr-effects needs entanglement
-epr-effects relates q-epr-and-relativity: raises
-bell-inequalities needs epr-effects, born-rule
-bell-inequalities relates q-two-mysteries-of-entanglement: addresses
-epr-bohm needs entanglement, spin, bell-inequalities
-hardy-example needs epr-bohm, projection-postulate
-bosons-and-fermions needs many-particle-wavefunction, spin
-pauli-exclusion-principle needs bosons-and-fermions
-bose-einstein-condensation needs bosons-and-fermions
-symmetrized-states needs bosons-and-fermions, tensor-product-states, grassmann-algebra
-quantum-teleportation needs epr-bohm, entanglement
-quantum-teleportation relates q-epr-and-relativity: illustrates
-quanglement needs quantum-teleportation, entanglement
-quanglement relates q-epr-and-relativity: addresses
-no-signalling needs epr-effects, light-cones
-no-signalling relates q-epr-and-relativity: addresses
-q-two-mysteries-of-entanglement relates entanglement: is about
-q-two-mysteries-of-entanglement relates bell-inequalities: involves
-q-why-entanglement-unnoticed relates entanglement: is about
-q-why-entanglement-unnoticed relates wavefunction-collapse: involves
-q-why-entanglement-unnoticed relates q-u-and-r-consistency: extends
-q-epr-and-relativity relates epr-effects: is about
-q-epr-and-relativity relates quanglement: involves
-q-epr-and-relativity relates no-signalling: involves
+many-particle-wavefunction needs schrodinger-equation: one ψ on the joint configuration space, with a single time
+many-particle-state-space needs many-particle-wavefunction: ψ depends jointly on all particle coordinates
+many-particle-state-space needs functional-freedom: freedom ∞^(2∞^(3n)) far exceeds n separate fields
+many-particle-state-space relates q-why-entanglement-unnoticed: underlies: almost every state in the huge space is entangled
+tensor-product-states needs hilbert-space: composite states live in H^p ⊗ H^q
+tensor-product-states needs tensors: tensor product is the multilinear product of the spaces
+tensor-product-states needs dirac-notation: simple products are written |ψ⟩|φ⟩
+entanglement needs tensor-product-states: entangled states are elements of H^p ⊗ H^q that are not products
+entanglement needs quantum-linearity: linear superposition of product states produces them
+entanglement relates q-two-mysteries-of-entanglement: raises: parts lack state vectors, yet correlate
+epr-effects needs entanglement: correlations between distant measurements on entangled parts
+epr-effects relates q-epr-and-relativity: raises: spacelike measurements have no invariant order to say which causes
+bell-inequalities needs epr-effects: bound any local model of EPR correlations
+bell-inequalities needs born-rule: quantum joint probabilities from the Born rule violate the bounds
+bell-inequalities relates q-two-mysteries-of-entanglement: addresses: violation rules out any local realistic picture
+epr-bohm needs entanglement: two spin-½ particles in an entangled spin-0 singlet
+epr-bohm needs spin: spin components measured along chosen directions
+epr-bohm needs bell-inequalities: Stapp's choice of directions shows a concrete Bell violation
+hardy-example needs epr-bohm: Bohm-type spin pair, but emitted in a spin-1 state
+hardy-example needs projection-postulate: argument uses yes/no outcomes that hold with certainty
+bosons-and-fermions needs many-particle-wavefunction: exchanging identical particles makes ψ symmetric or antisymmetric
+bosons-and-fermions needs spin: integer spin gives bosons, half-odd-integer spin gives fermions
+pauli-exclusion-principle needs bosons-and-fermions: fermion antisymmetry forbids two in the same state
+bose-einstein-condensation needs bosons-and-fermions: boson symmetry lets particles crowd into one state
+symmetrized-states needs bosons-and-fermions: bosons take symmetrized, fermions antisymmetrized product states
+symmetrized-states needs tensor-product-states: symmetric and antisymmetric parts of the tensor product
+symmetrized-states needs grassmann-algebra: antisymmetrized fermion states are Grassmann wedge products
+quantum-teleportation needs epr-bohm: uses a shared EPR pair of spin-½ particles
+quantum-teleportation needs entanglement: entanglement carries the unknown state, two classical bits complete it
+quantum-teleportation relates q-epr-and-relativity: illustrates: classical bits are light-bound, while the entangled link looks acausal
+quanglement needs quantum-teleportation: Penrose coins it for what teleportation transmits
+quanglement needs entanglement: non-signalling influence along entanglement links
+quanglement relates q-epr-and-relativity: addresses: zigzags in time along EPR links but carries no signal
+no-signalling needs epr-effects: EPR correlations cannot transmit classical information
+no-signalling needs light-cones: ordinary signals stay inside light cones
+no-signalling relates q-epr-and-relativity: addresses: no superluminal signal means no operational conflict
+q-two-mysteries-of-entanglement relates entanglement: is about: grasping states whose parts lack state vectors
+q-two-mysteries-of-entanglement relates bell-inequalities: involves: Bell violation rules out local realistic models
+q-why-entanglement-unnoticed relates entanglement: is about: why everyday objects seem unentangled though nearly all states are
+q-why-entanglement-unnoticed relates wavefunction-collapse: involves: Penrose argues R keeps the world disentangled
+q-why-entanglement-unnoticed relates q-u-and-r-consistency: extends: U only increases entanglement, so R must undo it
+q-epr-and-relativity relates epr-effects: is about: EPR correlations between spacelike-separated measurements
+q-epr-and-relativity relates quanglement: involves: quanglement pictures the influence zigzagging in time
+q-epr-and-relativity relates no-signalling: involves: no-signalling keeps EPR compatible with relativity
 
 %% chapter 24
-quantum-field-theory needs mass-energy-equivalence, antiparticles
-quantum-field-theory relates q-qm-relativity-tension: addresses
-pair-creation needs antiparticles, mass-energy-equivalence
-positive-frequency needs schrodinger-equation, frequency-splitting
-relativistic-hamiltonian needs four-momentum, schrodinger-equation, positive-frequency
-relativistic-hamiltonian relates q-negative-energy: raises
-wave-operator needs minkowski-space, laplace-equation
-klein-gordon-equation needs wave-operator, rest-mass
-dirac-operator needs clifford-algebra, wave-operator
-dirac-equation needs dirac-operator, klein-gordon-equation, spinors
-dirac-magnetic-moment needs dirac-equation, maxwell-equations
-dirac-spinor needs dirac-equation, spin
-dirac-sea needs dirac-equation, pauli-exclusion-principle, positive-frequency
-dirac-sea relates q-negative-energy: addresses
-positron needs dirac-sea, antiparticles
-q-qm-relativity-tension relates quantum-field-theory: is about
-q-qm-relativity-tension relates antiparticles: involves
-q-negative-energy relates relativistic-hamiltonian: is about
-q-negative-energy relates positive-frequency: involves
-dirac-sea relates q-negative-energy: resolves
+quantum-field-theory needs mass-energy-equivalence: energy can turn into rest mass, so particle number is not conserved
+quantum-field-theory needs antiparticles: relativistic theory forces antiparticles, which a fixed-particle-number description cannot accommodate
+quantum-field-theory relates q-qm-relativity-tension: addresses: replaces fixed-number wavefunctions by fields whose excitations are particles
+pair-creation needs antiparticles: energy creates a particle together with its antiparticle, never a lone particle
+pair-creation needs mass-energy-equivalence: at least 2mc² of energy is needed to supply the pair's rest masses
+positive-frequency needs schrodinger-equation: energy is the eigenvalue of H governing ψ's time dependence in Schrödinger's equation
+positive-frequency needs frequency-splitting: positive energy means keeping only the part holomorphic in one hemisphere
+relativistic-hamiltonian needs four-momentum: E = √(m²c⁴ + p²c²) from the 4-momentum's Minkowski length
+relativistic-hamiltonian needs schrodinger-equation: puts this square root in place of H in the Schrödinger equation
+relativistic-hamiltonian needs positive-frequency: the square root's sign must be fixed by keeping only positive frequencies
+relativistic-hamiltonian relates q-negative-energy: raises: the square root's hidden sign ambiguity admits negative-energy solutions
+wave-operator needs minkowski-space: built from the Minkowski metric, so it is Lorentz invariant
+wave-operator needs laplace-equation: its spatial part is the Laplacian, with ∂²/∂t² added in Lorentzian signature
+klein-gordon-equation needs wave-operator: adds the mass term M² to the wave operator
+klein-gordon-equation needs rest-mass: M = μ/ħ is the rest mass expressed in inverse-length units
+dirac-operator needs clifford-algebra: anticommuting Clifford elements γ_a make γ^a∂_a square to the wave operator
+dirac-operator needs wave-operator: it is a first-order square root of the wave operator
+dirac-equation needs dirac-operator: uses this operator to write the first-order equation (d-slash + iM)ψ = 0
+dirac-equation needs klein-gordon-equation: each component still satisfies Klein-Gordon, since Dirac's operator factorizes it
+dirac-equation needs spinors: its wavefunction is spinor-valued, which automatically gives the electron spin ½
+dirac-magnetic-moment needs dirac-equation: coupling the Dirac equation to a potential yields the electron's magnetic moment
+dirac-magnetic-moment needs maxwell-equations: the electron couples to the electromagnetic potential of Maxwell's theory
+dirac-spinor needs dirac-equation: the γ matrices need a 4×4 representation, so ψ has four components
+dirac-spinor needs spin: four components yet describe a two-state spin-½ particle, like Pauli's two
+dirac-sea needs dirac-equation: fills the negative-energy states that the Dirac equation allows
+dirac-sea needs pauli-exclusion-principle: exclusion keeps electrons from falling into the already filled negative-energy states
+dirac-sea needs positive-frequency: negative frequencies violate energy positivity, the defect the sea is meant to cure
+dirac-sea relates q-negative-energy: addresses: filling all negative-energy states stabilizes matter and predicts antimatter
+positron needs dirac-sea: a hole in the sea behaves as a positively charged electron
+positron needs antiparticles: it is the electron's antiparticle, found by Anderson in 1932
+q-qm-relativity-tension relates quantum-field-theory: is about: whether QFT, forced by the fusion, can be made mathematically consistent
+q-qm-relativity-tension relates antiparticles: involves: relativity forces antiparticles and pair creation into quantum theory
+q-negative-energy relates relativistic-hamiltonian: is about: the sign ambiguity of the relativistic square-root energy
+q-negative-energy relates positive-frequency: involves: positive frequency is the condition negative-energy solutions violate
 
 %% chapter 25
-standard-model needs dirac-equation, quantum-field-theory
-zigzag-picture needs dirac-equation, two-spinors, helicity
-zigzag-picture relates q-are-zigzags-real: raises
-chirality needs zigzag-picture, clifford-algebra
-feynman-diagrams needs quantum-linearity, antiparticles
-weak-interaction needs zigzag-picture, feynman-diagrams
-parity-violation needs weak-interaction, chirality
-weyl-equation needs zigzag-picture, two-spinors
-cpt-theorem needs antiparticles, parity-violation
-antiparticle-time-reversal needs cpt-theorem, feynman-diagrams
-electroweak-theory needs weak-interaction, unitary-group, gauge-connection
-electroweak-theory relates q-broken-gauge-symmetry: raises
-higgs-field needs electroweak-theory, zigzag-picture
-q-broken-gauge-symmetry relates higgs-field: centres on
-weinberg-angle needs electroweak-theory
-hadrons needs bosons-and-fermions, standard-model
-quark-model needs hadrons, representation-theory, lie-algebra
-colour-charge needs quark-model, pauli-exclusion-principle
-quantum-chromodynamics needs colour-charge, gauge-connection, fibre-bundles
-cabibbo-angle needs quark-model, weak-interaction
-grand-unified-theories needs quantum-chromodynamics, electroweak-theory
-grand-unified-theories relates q-beyond-standard-model: addresses
-q-are-zigzags-real relates zigzag-picture: is about
-q-are-zigzags-real relates chirality: involves
-q-broken-gauge-symmetry relates electroweak-theory: is about
-q-broken-gauge-symmetry relates higgs-field: involves
-q-beyond-standard-model relates standard-model: is about
-q-beyond-standard-model relates grand-unified-theories: involves
+standard-model needs dirac-equation: quarks and leptons are spin-½ fermions described by Dirac-type fields
+standard-model needs quantum-field-theory: it is a quantum field theory of all known particles and forces
+zigzag-picture needs dirac-equation: rewrites the Dirac equation as two two-spinor equations coupled by mass
+zigzag-picture needs two-spinors: splits the Dirac spinor into unprimed zig and primed zag two-spinors
+zigzag-picture needs helicity: zig and zag are massless with opposite helicities, left- and right-handed
+zigzag-picture relates q-are-zigzags-real: raises: whether the massless zig and zag are physically real
+chirality needs zigzag-picture: (1 ∓ γ₅)ψ project out the zig and zag parts
+chirality needs clifford-algebra: γ₅ is built from the product of the four Clifford generators γ_a
+feynman-diagrams needs quantum-linearity: amplitudes of all diagrams superpose linearly, as U requires
+feynman-diagrams needs antiparticles: lines can be antiparticles, giving pair creation and annihilation vertices
+weak-interaction needs zigzag-picture: W and Z couple only to the left-handed zig part
+weak-interaction needs feynman-diagrams: weak processes are drawn as W or Z exchange between fermion lines
+parity-violation needs weak-interaction: weak processes like cobalt-60 beta decay are mirror-asymmetric
+parity-violation needs chirality: only one chiral part takes part, so mirror symmetry fails
+weyl-equation needs zigzag-picture: setting M = 0 decouples zig and zag into separate equations
+weyl-equation needs two-spinors: the Weyl equation is the two-spinor equation ∇^{AA'}ψ_A = 0
+cpt-theorem needs antiparticles: C swaps each particle with its antiparticle
+cpt-theorem needs parity-violation: weak interactions violate P (and C), but the combination CPT stays exact
+antiparticle-time-reversal needs cpt-theorem: exact CPT gives C = PT, so an antiparticle acts as a time-reversed particle
+antiparticle-time-reversal needs feynman-diagrams: antiparticle lines become particle lines running backward, giving crossing symmetry
+electroweak-theory needs weak-interaction: unifies the W±, Z⁰ of the weak force with the photon
+electroweak-theory needs unitary-group: its group U(2), a unitary group, rotates W±, Z⁰ and γ into each other
+electroweak-theory needs gauge-connection: the bosons are gauge fields, a connection on a U(2) bundle
+electroweak-theory relates q-broken-gauge-symmetry: raises: its U(2) is badly broken, unlike exact colour SU(3)
+higgs-field needs electroweak-theory: breaks electroweak U(2), giving W and Z mass but leaving the photon massless
+higgs-field needs zigzag-picture: the zig-zag mass coupling is reinterpreted as coupling to the Higgs field
+q-broken-gauge-symmetry relates higgs-field: centres on: whether symmetry broken by the Higgs field is genuine gauge symmetry
+weinberg-angle needs electroweak-theory: measures how Z⁰ and photon mix within electroweak U(2)
+hadrons needs bosons-and-fermions: baryons are fermions and mesons are bosons
+hadrons needs standard-model: they are the standard model's particle zoo, sorted by the strong interaction
+quark-model needs hadrons: explains hadron multiplets as bound states of u, d, s quarks
+quark-model needs representation-theory: hadron multiplets are representations of SU(3)/Z₃
+quark-model needs lie-algebra: the eightfold way classifies multiplets via the SU(3) Lie algebra structure
+colour-charge needs quark-model: gives each quark flavour three colours
+colour-charge needs pauli-exclusion-principle: three colours let identical quarks, as in Ω⁻, obey the exclusion principle
+quantum-chromodynamics needs colour-charge: it is the gauge theory of the exact colour SU(3) symmetry
+quantum-chromodynamics needs gauge-connection: gluons are a non-Abelian SU(3) gauge connection
+quantum-chromodynamics needs fibre-bundles: colour is the fibre of a bundle over spacetime with group SU(3)
+cabibbo-angle needs quark-model: rotates the d and s quark states relative to each other
+cabibbo-angle needs weak-interaction: weak-interaction eigenstates are mixtures of strong-interaction quark eigenstates
+grand-unified-theories needs quantum-chromodynamics: embeds colour SU(3) in a larger symmetry group
+grand-unified-theories needs electroweak-theory: includes electroweak U(2) in the same larger group
+grand-unified-theories relates q-beyond-standard-model: addresses: seeks to explain the odd SU(3)×U(2) structure and free parameters
+q-are-zigzags-real relates zigzag-picture: is about: the electron's two-spinor zig and zag components
+q-are-zigzags-real relates chirality: involves: zig and zag are the left- and right-handed chiral parts
+q-broken-gauge-symmetry relates electroweak-theory: is about: electroweak SU(2) treated as gauge group despite being badly broken
+q-beyond-standard-model relates standard-model: is about: the standard model's some 17 unexplained parameters
+q-beyond-standard-model relates grand-unified-theories: involves: GUTs are a main attempt to go beyond it
 
 %% chapter 26
-creation-annihilation-operators needs bosons-and-fermions, hilbert-space, grassmann-algebra
-vacuum-state needs creation-annihilation-operators
-field-operator-algebra needs creation-annihilation-operators, clifford-algebra
-field-complex-structure needs field-operator-algebra, positive-frequency, maxwell-equations
-majorana-spinors needs dirac-equation, antiparticles
-inequivalent-vacua needs vacuum-state, dirac-sea
-path-integral needs lagrangian-formalism, stationary-action, quantum-linearity
-feynman-propagator needs path-integral, positive-frequency
-mass-shell needs four-momentum, feynman-diagrams
-s-matrix needs feynman-diagrams, feynman-propagator
-tree-and-loop-diagrams needs feynman-diagrams, mass-shell
-renormalization needs tree-and-loop-diagrams
-renormalization relates q-qft-infinities: addresses
-ultraviolet-divergence needs tree-and-loop-diagrams, uncertainty-principle
-vacuum-polarization needs feynman-diagrams, antiparticles
-asymptotic-freedom needs quantum-chromodynamics, renormalization
-fine-structure-constant needs renormalization
-fine-structure-constant relates q-puzzling-parameters: illustrates
-perturbation-expansion needs power-series, feynman-diagrams, path-integral
-perturbation-expansion relates q-qft-infinities: addresses
-q-qft-infinities relates renormalization: is about
-q-qft-infinities relates ultraviolet-divergence: is about
-q-qft-infinities relates perturbation-expansion: involves
-q-path-integral-meaning relates path-integral: is about
-q-path-integral-meaning relates feynman-propagator: involves
-q-choice-of-vacuum relates inequivalent-vacua: is about
-q-choice-of-vacuum relates higgs-field: involves
+creation-annihilation-operators needs bosons-and-fermions: they commute for bosons and anticommute for fermions
+creation-annihilation-operators needs hilbert-space: they act on a Hilbert space of variable particle number
+creation-annihilation-operators needs grassmann-algebra: creation operators obey graded Grassmann rules, fermionic ones being odd
+vacuum-state needs creation-annihilation-operators: every annihilation operator kills |0⟩, and creation operators build states on it
+field-operator-algebra needs creation-annihilation-operators: generated by the creation and annihilation operators of all modes
+field-operator-algebra needs clifford-algebra: fermion anticommutation relations form an infinite-dimensional Clifford algebra
+field-complex-structure needs field-operator-algebra: J fixes which field combinations act as creation or annihilation operators
+field-complex-structure needs positive-frequency: J acts as i on positive-frequency and -i on negative-frequency parts
+majorana-spinors needs dirac-equation: a Dirac-type spinor field constrained to equal its charge conjugate
+majorana-spinors needs antiparticles: its particle is its own antiparticle, unlike a Dirac particle
+inequivalent-vacua needs vacuum-state: different choices of |0⟩ not connected by any field-algebra operator
+inequivalent-vacua needs dirac-sea: the Dirac sea is an example of a vacuum inequivalent to the empty one
+path-integral needs lagrangian-formalism: each history's action S is the time integral of L
+path-integral needs stationary-action: stationary-action paths dominate the sum, recovering classical motion
+path-integral needs quantum-linearity: amplitudes exp(iS/ħ) of all histories add by linear superposition
+feynman-propagator needs path-integral: it is the path-integral amplitude for a free particle between two points
+feynman-propagator needs positive-frequency: the i-epsilon prescription selects the positive-frequency part
+mass-shell needs four-momentum: the hyperboloid of fixed rest mass in 4-momentum space
+mass-shell needs feynman-diagrams: external diagram lines lie on the shell, internal virtual lines may be off it
+s-matrix needs feynman-diagrams: its entries are computed by summing Feynman diagrams
+s-matrix needs feynman-propagator: each internal line contributes a Feynman propagator
+tree-and-loop-diagrams needs feynman-diagrams: classifies diagrams by whether they contain closed loops
+tree-and-loop-diagrams needs mass-shell: tree momenta are fixed by conservation, loop momenta range freely off shell
+renormalization needs tree-and-loop-diagrams: absorbs divergent loop integrals into rescaled charge and mass
+renormalization relates q-qft-infinities: addresses: hides divergences in a finite number of measured parameters
+ultraviolet-divergence needs tree-and-loop-diagrams: unbounded free momenta in closed loops make the integrals diverge
+ultraviolet-divergence needs uncertainty-principle: large momenta mean small distances, via Δp Δx ≥ ħ/2
+vacuum-polarization needs feynman-diagrams: a diagram where a photon line opens into a virtual electron-positron loop
+vacuum-polarization needs antiparticles: virtual electron-positron pairs screen the electron's bare charge
+asymptotic-freedom needs quantum-chromodynamics: self-interacting gluons make the colour coupling weaken at high momenta
+asymptotic-freedom needs renormalization: it is the running of the renormalized coupling with momentum scale
+fine-structure-constant needs renormalization: the measured value ≈1/137 is the renormalized, not bare, charge
+fine-structure-constant relates q-puzzling-parameters: illustrates: nothing explains why α ≈ 1/137, and renormalization cannot supply it
+perturbation-expansion needs power-series: a power series in the coupling constant
+perturbation-expansion needs feynman-diagrams: each Feynman diagram is one term of the series
+perturbation-expansion needs path-integral: generated by expanding the interacting path integral in the coupling
+perturbation-expansion relates q-qft-infinities: addresses: even renormalized QED's series probably diverges, a further infinity
+q-qft-infinities relates renormalization: is about: whether renormalization merely hides divergences a deeper theory must remove
+q-qft-infinities relates ultraviolet-divergence: is about: the ultraviolet infinities from arbitrarily small distances
+q-qft-infinities relates perturbation-expansion: involves: the perturbation series itself probably diverges
+q-path-integral-meaning relates path-integral: is about: the sum over histories lacking a proper infinite-dimensional measure
+q-path-integral-meaning relates feynman-propagator: involves: the propagator is only formally summed, fixed by i-epsilon
+q-choice-of-vacuum relates inequivalent-vacua: is about: which of the inequivalent vacua is physically realized
+q-choice-of-vacuum relates higgs-field: involves: electroweak breaking is modelled by the Higgs field picking a vacuum
 
 %% chapter 27
-time-reversal-symmetry needs schrodinger-equation, hamiltonian-formalism
-time-reversal-symmetry relates q-arrow-of-time: raises
-chaotic-systems needs time-reversal-symmetry
-q-arrow-of-time relates second-law: is about
-entropy needs second-law
-coarse-graining needs phase-space
-boltzmann-entropy needs entropy, coarse-graining, logarithm
-thermal-equilibrium needs boltzmann-entropy
-gravitational-entropy needs entropy, thermal-equilibrium
-gravitational-entropy relates q-special-big-bang: addresses
-big-bang needs einstein-field-equations
-q-special-big-bang relates big-bang: is about
-cosmic-microwave-background needs big-bang
-black-holes needs einstein-field-equations, light-cones
-chandrasekhar-limit needs pauli-exclusion-principle
-event-horizon needs black-holes, light-cones
-spacetime-singularities needs event-horizon, einsteinian-spacetime
-cosmic-censorship needs spacetime-singularities, event-horizon
-planck-units needs planck-constant, newtonian-gravity
-bekenstein-hawking-entropy needs black-holes, boltzmann-entropy, planck-units
-bekenstein-hawking-entropy relates q-special-big-bang: quantifies
-flrw-models needs einstein-field-equations, hyperbolic-geometry, cosmological-constant
-conformal-diagrams needs conformal-mappings, light-cones
-particle-horizon needs conformal-diagrams, big-bang
-q-arrow-of-time relates time-reversal-symmetry: involves
-q-arrow-of-time relates boltzmann-entropy: involves
-q-universe-isolated-system relates entropy: is about
-q-universe-isolated-system relates second-law: involves
-bekenstein-hawking-entropy relates q-special-big-bang: measures
-q-special-big-bang relates gravitational-entropy: involves
+time-reversal-symmetry needs schrodinger-equation: Schrödinger evolution is time-symmetric, combined with complex conjugation
+time-reversal-symmetry needs hamiltonian-formalism: Hamilton's equations are invariant under t → -t with momenta reversed
+time-reversal-symmetry relates q-arrow-of-time: raises: time-symmetric laws cannot themselves explain the one-way second law
+q-arrow-of-time relates second-law: is about: why entropy increases only toward the future
+entropy needs second-law: entropy is the quantity the second law says does not decrease
+coarse-graining needs phase-space: partitions phase space into boxes of macroscopically indistinguishable states
+boltzmann-entropy needs entropy: makes entropy precise as S = k log V
+boltzmann-entropy needs coarse-graining: V is the phase-space volume of the coarse-graining box
+boltzmann-entropy needs logarithm: the logarithm makes entropies of combined systems add
+thermal-equilibrium needs boltzmann-entropy: equilibrium is the box of maximal Boltzmann entropy, nearly filling phase space
+gravitational-entropy needs entropy: with gravity, clumping rather than spreading increases entropy
+gravitational-entropy needs thermal-equilibrium: uniform gas, equilibrium without gravity, becomes low-entropy once gravity acts
+gravitational-entropy relates q-special-big-bang: addresses: uniform geometry means gravity started extremely low-entropy
+big-bang needs einstein-field-equations: Friedmann solutions of Einstein's equations start with a singular Big Bang
+q-special-big-bang relates big-bang: is about: the Big Bang's tiny 1 in 10^(10^123) phase-space region
+cosmic-microwave-background needs big-bang: it is the redshifted thermal relic radiation of the hot Big Bang
+black-holes needs einstein-field-equations: the Schwarzschild solution of Einstein's equations models gravitational collapse
+black-holes needs light-cones: inside, light cones tip inward so nothing, not even light, escapes
+chandrasekhar-limit needs pauli-exclusion-principle: electron degeneracy pressure from the exclusion principle fails above this mass
+event-horizon needs black-holes: it is the boundary of the black hole region
+event-horizon needs light-cones: it is a null hypersurface generated by light rays that just fail to escape
+spacetime-singularities needs event-horizon: a trapped region forming inside the horizon makes a singularity inevitable
+spacetime-singularities needs einsteinian-spacetime: Einstein's curved Lorentzian spacetime is what develops infinite curvature in collapse
+cosmic-censorship needs spacetime-singularities: conjectures that collapse singularities are never visible from outside
+cosmic-censorship needs event-horizon: the event horizon is what is supposed to hide them
+planck-units needs planck-constant: sets ħ = 1 along with c = G = k = 1
+planck-units needs newtonian-gravity: sets Newton's constant G = 1, fixing the Planck length scale
+bekenstein-hawking-entropy needs black-holes: assigns entropy to the black hole, proportional to its horizon area
+bekenstein-hawking-entropy needs boltzmann-entropy: it is a Boltzmann entropy, huge although the final hole needs ten parameters
+bekenstein-hawking-entropy needs planck-units: entropy equals a quarter of the horizon area in Planck units
+bekenstein-hawking-entropy relates q-special-big-bang: quantifies: maximal black-hole entropy gives the 10^123 measuring the Big Bang's specialness
+flrw-models needs einstein-field-equations: homogeneous isotropic solutions of Einstein's equations
+flrw-models needs hyperbolic-geometry: spatial sections are hyperbolic 3-spaces when K < 0
+flrw-models needs cosmological-constant: models may include Λ, which changes the late expansion
+conformal-diagrams needs conformal-mappings: a conformal rescaling brings infinity to a finite boundary, preserving angles
+conformal-diagrams needs light-cones: null cones are drawn at 45 degrees to show causal structure
+particle-horizon needs conformal-diagrams: seen in conformal diagrams where the past light cone meets the Big Bang
+particle-horizon needs big-bang: the Big Bang is a spacelike past boundary, limiting what is visible
+q-arrow-of-time relates time-reversal-symmetry: involves: time-symmetric dynamics predict entropy rising into the past too
+q-arrow-of-time relates boltzmann-entropy: involves: phase-space volume arguments make entropy increase likely in both directions
+q-universe-isolated-system relates entropy: is about: whether expansion alone raises the entropy ceiling, removing a special start
+q-universe-isolated-system relates second-law: involves: the second law applies only if the universe counts as isolated
+q-special-big-bang relates gravitational-entropy: involves: matter was thermalized but gravity was uniform, hence low-entropy
 
 %% chapter 28
-mexican-hat-potential needs higgs-field
-phase-transition needs mexican-hat-potential, inequivalent-vacua
-topological-defects needs phase-transition, fibre-bundles
-magnetic-monopoles needs maxwell-equations, gauge-connection, topological-defects
-cosmic-strings needs topological-defects, minkowski-space
-inflationary-cosmology needs flrw-models
-q-inflation-motivation relates inflationary-cosmology: questions
-horizon-problem needs particle-horizon, cosmic-microwave-background
-flatness-problem needs flrw-models
-de-sitter-space needs minkowski-space, cosmological-constant, einstein-field-equations
-anti-de-sitter-space needs de-sitter-space
-inflaton-field needs mexican-hat-potential, cosmological-constant
-anthropic-principle needs fine-structure-constant
-q-anthropic-special-big-bang relates anthropic-principle: tests
-ricci-weyl-focusing needs weyl-tensor, ricci-tensor
-weyl-curvature-hypothesis needs ricci-weyl-focusing, spacetime-singularities, gravitational-entropy
-weyl-curvature-hypothesis relates q-special-big-bang: addresses
-naked-singularities needs cosmic-censorship
-wick-rotation needs minkowski-space, path-integral
-no-boundary-proposal needs wick-rotation, path-integral, big-bang
-no-boundary-proposal relates q-special-big-bang: addresses
-dark-matter needs flrw-models
-dark-energy needs cosmological-constant, flrw-models
-dark-energy relates q-cosmological-constant-problem: raises
-q-inflation-motivation relates inflationary-cosmology: is about
-q-inflation-motivation relates horizon-problem: involves
-q-inflation-motivation relates flatness-problem: involves
-q-symmetry-breaking-reality relates higgs-field: is about
-q-symmetry-breaking-reality relates particle-horizon: involves
-q-anthropic-special-big-bang relates anthropic-principle: is about
-q-anthropic-special-big-bang relates q-special-big-bang: answers
-q-cosmological-constant-problem relates dark-energy: is about
-q-cosmological-constant-problem relates renormalization: involves
+mexican-hat-potential needs higgs-field: the Higgs potential's shape: unstable symmetric top, minima on the rim
+phase-transition needs mexican-hat-potential: on cooling the state rolls from the hat's top to a rim point
+phase-transition needs inequivalent-vacua: in QFT the transition is a change between inequivalent vacua
+topological-defects needs phase-transition: defects form where separated regions break the symmetry differently at the transition
+topological-defects needs fibre-bundles: the field's twisted bundle configuration cannot be smoothed away
+magnetic-monopoles needs maxwell-equations: isolated magnetic charge would add a source to Maxwell's equation dF = 0
+magnetic-monopoles needs gauge-connection: a twisted U(1) bundle removes the Dirac string and forces charge quantization
+magnetic-monopoles needs topological-defects: GUT symmetry breaking produces point-like gauge monopoles as defects
+cosmic-strings needs topological-defects: they are the line-like kind of defect
+cosmic-strings needs minkowski-space: outside, spacetime is Minkowski space with a wedge cut out and re-glued
+inflationary-cosmology needs flrw-models: inserts an exponential expansion phase into an early FLRW model
+q-inflation-motivation relates inflationary-cosmology: questions: a generic initial state would not be smoothed, so uniformity stays unexplained
+horizon-problem needs particle-horizon: regions outside each other's particle horizons could never have thermalized
+horizon-problem needs cosmic-microwave-background: the background temperature is almost equal in all directions
+flatness-problem needs flrw-models: asks why K is so close to flat among FLRW models
+de-sitter-space needs minkowski-space: it is a Lorentzian 4-sphere embedded in 5-dimensional Minkowski space
+de-sitter-space needs cosmological-constant: it is the vacuum solution with positive cosmological constant
+de-sitter-space needs einstein-field-equations: it solves Einstein's vacuum equations with Λ, with constant curvature
+anti-de-sitter-space needs de-sitter-space: is its negative-Λ counterpart, with closed timelike curves unless unwrapped
+inflaton-field needs mexican-hat-potential: it sits in a false vacuum before rolling to the true minimum
+inflaton-field needs cosmological-constant: false-vacuum energy acts as a huge effective cosmological constant
+anthropic-principle needs fine-structure-constant: the strong form tries to explain constants like α by life's requirements
+q-anthropic-special-big-bang relates anthropic-principle: tests: a small smooth region would suffice for life at far less phase-space cost
+ricci-weyl-focusing needs weyl-tensor: Weyl curvature distorts light as a pure astigmatic lens
+ricci-weyl-focusing needs ricci-tensor: Ricci curvature from matter focuses light like a positive lens
+weyl-curvature-hypothesis needs ricci-weyl-focusing: distinguishes singularities by which curvature, Weyl or Ricci, dominates
+weyl-curvature-hypothesis needs spacetime-singularities: requires Weyl curvature to vanish at initial singularities, unlike black holes
+weyl-curvature-hypothesis needs gravitational-entropy: zero Weyl curvature means unclumped gravity, hence low gravitational entropy
+weyl-curvature-hypothesis relates q-special-big-bang: addresses: constrains the Big Bang's geometry, making its low entropy a law
+naked-singularities needs cosmic-censorship: they are exactly what cosmic censorship forbids
+wick-rotation needs minkowski-space: replacing t by it turns the Minkowski metric Euclidean
+wick-rotation needs path-integral: oscillating exp(iS/ħ) becomes damped, making the path integral tractable
+no-boundary-proposal needs wick-rotation: sums over Euclideanized, Riemannian geometries rather than Lorentzian ones
+no-boundary-proposal needs path-integral: defines the universe's quantum state by a gravitational path integral
+no-boundary-proposal needs big-bang: closes off the Big Bang smoothly, without a singular boundary
+no-boundary-proposal relates q-special-big-bang: addresses: offers a quantum-gravity rule meant to fix a smooth initial state
+dark-matter needs flrw-models: its density enters the FLRW models and bears on the sign of K
+dark-energy needs cosmological-constant: the observed accelerating expansion is attributed to a positive Λ
+dark-energy needs flrw-models: supernova data fit FLRW models with positive Λ and K near zero
+dark-energy relates q-cosmological-constant-problem: raises: why observed Λ is about 10^120 below QFT vacuum-energy estimates
+q-inflation-motivation relates horizon-problem: involves: inflation claims to stretch particle horizons so the CMB could thermalize
+q-inflation-motivation relates flatness-problem: involves: inflation claims to iron out curvature and irregularities
+q-symmetry-breaking-reality relates higgs-field: is about: whether the Higgs field literally chose a vacuum in the early universe
+q-symmetry-breaking-reality relates particle-horizon: involves: regions beyond each other's horizons would break symmetry independently
+q-anthropic-special-big-bang relates q-special-big-bang: answers: no, the observed uniform universe costs far more than life needs
+q-cosmological-constant-problem relates dark-energy: is about: dark energy's Λ being far smaller than QFT predicts
+q-cosmological-constant-problem relates renormalization: involves: vacuum energy from renormalization-type effects gives the 10^120 excess
 
 %% chapter 29
-copenhagen-interpretation needs hilbert-space, wavefunction-collapse
-copenhagen-interpretation relates q-measurement-problem: addresses
-many-worlds-interpretation needs unitary-evolution, quantum-linearity, entanglement
-many-worlds-interpretation relates q-measurement-problem: addresses
-consistent-histories needs projection-postulate, hilbert-space
-consistent-histories relates q-measurement-problem: addresses
-pilot-wave-theory needs wavefunction, configuration-space
-pilot-wave-theory relates q-measurement-problem: addresses
-spectral-decomposition needs projection-postulate, quantum-observables, eigenvectors
-density-matrix needs hilbert-space, dirac-notation, projection-postulate
-density-matrix relates q-density-matrix-ontology: raises
-mixed-states needs density-matrix
-mixed-states relates q-density-matrix-ontology: raises
-reduced-density-matrix needs density-matrix, epr-bohm, entanglement
-environmental-decoherence needs reduced-density-matrix, entanglement
-environmental-decoherence relates q-measurement-problem: addresses
-schrodinger-cat needs quantum-linearity, unitary-evolution, mach-zehnder-interferometer
-schmidt-decomposition needs entanglement, density-matrix
-schmidt-decomposition relates q-measurement-problem: fails to resolve
-copenhagen-interpretation relates q-reality-of-quantum-state: answers negatively
-pilot-wave-theory relates q-reality-of-quantum-state: answers
-consistent-histories relates q-reality-of-quantum-state: answers
-q-density-matrix-ontology relates density-matrix: is about
-q-density-matrix-ontology relates mixed-states: is about
-bloch-sphere relates q-density-matrix-ontology: pictures
+copenhagen-interpretation needs hilbert-space: treats the Hilbert-space state vector as encoding only the experimenter's knowledge
+copenhagen-interpretation needs wavefunction-collapse: reads collapse R as an update of knowledge, not a physical process
+copenhagen-interpretation relates q-measurement-problem: addresses: denies R is physical, so no mechanism needs explaining
+many-worlds-interpretation needs unitary-evolution: only U happens, R never occurs
+many-worlds-interpretation needs quantum-linearity: linearity of U makes superposed outcomes, all of which are retained
+many-worlds-interpretation needs entanglement: observers become entangled with each outcome, splitting among the branches
+consistent-histories needs projection-postulate: inserts sets of projectors at intermediate times to define histories
+consistent-histories needs hilbert-space: histories are sequences of projections on Hilbert-space states
+consistent-histories relates q-measurement-problem: addresses: selects histories whose probabilities obey classical rules, without physical collapse
+pilot-wave-theory needs wavefunction: the wavefunction acts as a wave guiding the actual configuration
+pilot-wave-theory needs configuration-space: the actual point moves in configuration space, guided by ψ
+pilot-wave-theory relates q-measurement-problem: addresses: the configuration always has definite values, so outcomes are definite
+spectral-decomposition needs projection-postulate: a Hermitian operator is a sum of eigenvalues times orthogonal projectors
+spectral-decomposition needs quantum-observables: applies to the Hermitian or normal operators representing observables
+spectral-decomposition needs eigenvectors: each projector projects onto the eigenspace of a distinct eigenvalue
+density-matrix needs hilbert-space: a weighted sum of outer products of Hilbert-space states
+density-matrix needs dirac-notation: written Σ p_i |ψ_i⟩⟨ψ_i| using kets and bras
+density-matrix needs projection-postulate: the probability of a yes for projector E is trace(ED)
+density-matrix relates q-density-matrix-ontology: raises: one density matrix fits many mixtures, so which states are present is unclear
+mixed-states needs density-matrix: density matrices not of the pure form |ψ⟩⟨ψ|
+mixed-states relates q-density-matrix-ontology: raises: a mixed state has many inequivalent decompositions into pure states
+reduced-density-matrix needs density-matrix: summing over the unknown partner leaves a density matrix
+reduced-density-matrix needs epr-bohm: for a singlet pair it is I/2, independent of the distant measurement choice
+reduced-density-matrix needs entanglement: a part of an entangled system has no state vector, only this
+environmental-decoherence needs reduced-density-matrix: tracing over the environment gives a nearly diagonal reduced density matrix
+environmental-decoherence needs entanglement: the measured system becomes entangled with the inaccessible environment
+schrodinger-cat needs quantum-linearity: linear superposition is amplified from a photon to a live and dead cat
+schrodinger-cat needs unitary-evolution: pure U evolution, without R, yields the cat superposition
+schrodinger-cat needs mach-zehnder-interferometer: a beam splitter creates the superposition of triggered and untriggered paths
+schmidt-decomposition needs entanglement: writes an entangled state as a sum of paired orthogonal bases on each side
+schmidt-decomposition needs density-matrix: the pairing diagonalizes both sides' reduced density matrices
+schmidt-decomposition relates q-measurement-problem: fails to resolve: its preferred states need not be live and dead cat
+copenhagen-interpretation relates q-reality-of-quantum-state: answers negatively: |ψ⟩ is not reality, only the experimenter's knowledge
+pilot-wave-theory relates q-reality-of-quantum-state: answers: both the wavefunction and the particle configuration are real, two levels
+consistent-histories relates q-reality-of-quantum-state: answers: reality lies in consistent coarse-grained histories, not one state vector
+q-density-matrix-ontology relates density-matrix: is about: whether a density matrix can fix which states are actually present
+q-density-matrix-ontology relates mixed-states: is about: mixed states lacking a unique decomposition into pure states
+bloch-sphere relates q-density-matrix-ontology: pictures: a density matrix is an inner point, many mixtures alike
 
 %% chapter 30
-quantum-anomalies needs poisson-bracket, canonical-quantization
-time-asymmetry-of-r needs wavefunction-collapse, born-rule, mach-zehnder-interferometer
-time-asymmetry-of-r relates q-gravity-and-state-reduction: hints at
-hawking-temperature needs bekenstein-hawking-entropy, positive-frequency, black-holes
-unruh-effect needs positive-frequency, killing-vectors, vacuum-state
-rindler-coordinates needs minkowski-space
-complex-periodicity-temperature needs hawking-temperature, complexified-minkowski-space, rindler-coordinates
-eternal-black-hole needs black-holes, conformal-diagrams, killing-vectors
-time-travel-wormholes needs eternal-black-hole
-hawking-radiation needs hawking-temperature, killing-vectors, feynman-diagrams
-penrose-process needs black-holes, killing-vectors, four-momentum
-hawking-evaporation needs hawking-radiation
-hawking-evaporation relates q-black-hole-information-loss: raises
-hawking-box needs phase-space, hawking-evaporation, weyl-curvature-hypothesis
-hawking-box relates q-black-hole-information-loss: addresses
-schrodinger-lump needs schrodinger-cat, eigenstates
-gravitational-self-energy-difference needs schrodinger-lump, einsteinian-spacetime, newton-cartan-spacetime
-schrodinger-newton-equation needs schrodinger-equation, newtonian-gravity, eigenstates
-gravitational-or needs gravitational-self-energy-difference, uncertainty-principle, schrodinger-newton-equation
-gravitational-or relates q-measurement-problem: addresses
-gravitational-or relates q-gravity-and-state-reduction: addresses
-felix-experiment needs gravitational-or, mach-zehnder-interferometer, double-slit-experiment
-felix-experiment relates q-gravity-and-state-reduction: tests
-q-black-hole-information-loss relates hawking-evaporation: arises from
-hawking-box relates q-black-hole-information-loss: analyses
-q-black-hole-information-loss relates unitary-evolution: challenges
-gravitational-or relates q-gravity-and-state-reduction: answers
-felix-experiment relates q-gravity-and-state-reduction: could test
-time-asymmetry-of-r relates q-gravity-and-state-reduction: motivates
-q-origin-of-early-universe-fluctuations relates flrw-models: concerns
-q-origin-of-early-universe-fluctuations relates gravitational-or: calls for
-environmental-decoherence relates q-origin-of-early-universe-fluctuations: does not solve
+quantum-anomalies needs poisson-bracket: classical symmetries expressed by Poisson brackets that quantum commutators fail to reproduce
+quantum-anomalies needs canonical-quantization: anomalies arise when quantizing breaks a classical symmetry, leaving only a subgroup
+time-asymmetry-of-r needs wavefunction-collapse: R, the jump on measurement, is what is shown to be time-asymmetric
+time-asymmetry-of-r needs born-rule: the squared-modulus rule predicts the future correctly but retrodicts absurdly
+time-asymmetry-of-r needs mach-zehnder-interferometer: the argument uses a beam-splitter setup of photon source and detectors
+time-asymmetry-of-r relates q-gravity-and-state-reduction: hints at: a time-asymmetric R suggests an objective, gravitational process
+hawking-temperature needs bekenstein-hawking-entropy: via thermodynamics, Hawking's temperature fixed Bekenstein's entropy constant at A/4
+hawking-temperature needs positive-frequency: thermal emission comes from mismatched positive-frequency splittings before and after collapse
+hawking-temperature needs black-holes: the radiating object is a black hole, temperature set by surface gravity
+unruh-effect needs positive-frequency: acceleration changes which modes count as positive frequency, giving a thermal vacuum
+unruh-effect needs killing-vectors: the accelerated observer's time is the boost Killing vector, defining frequency
+unruh-effect needs vacuum-state: the Minkowski vacuum |0> appears to the accelerated observer as thermal
+rindler-coordinates needs minkowski-space: hyperbolic-angle coordinates covering a wedge of flat Minkowski space
+complex-periodicity-temperature needs hawking-temperature: the imaginary-time period reproduces the inverse Hawking temperature
+complex-periodicity-temperature needs complexified-minkowski-space: Lorentzian and Euclidean metrics as real slices of one complexified spacetime
+complex-periodicity-temperature needs rindler-coordinates: Rindler time tau = i theta shows imaginary periodicity in the flat case
+eternal-black-hole needs black-holes: the maximal analytic extension of the Schwarzschild black hole
+eternal-black-hole needs conformal-diagrams: its two exteriors and black/white-hole regions are shown in a conformal diagram
+eternal-black-hole needs killing-vectors: the Killing vector is timelike outside, spacelike inside, reversing between exteriors
+time-travel-wormholes needs eternal-black-hole: starts from the eternal hole's wormhole, which pinches off and is non-traversable
+hawking-radiation needs hawking-temperature: an intuitive picture of the thermal emission at the Hawking temperature
+hawking-radiation needs killing-vectors: negative energy p_a kappa^a is possible only where kappa is spacelike, inside
+hawking-radiation needs feynman-diagrams: virtual particle-antiparticle pairs from vacuum loops, one partner made real
+penrose-process needs black-holes: energy is extracted from a rotating (Kerr) black hole
+penrose-process needs killing-vectors: the Killing vector turns spacelike in the ergosphere, allowing negative conserved energy
+penrose-process needs four-momentum: conserved energy is p_a kappa^a; splitting conserves total 4-momentum
+hawking-evaporation needs hawking-radiation: radiation carries away mass, so the hole shrinks, heats and explodes
+hawking-evaporation relates q-black-hole-information-loss: raises: once the hole vanishes, what happened to the information that fell in
+hawking-box needs phase-space: evolution in the box is tracked as flow in its phase space
+hawking-box needs hawking-evaporation: black holes in the box form and evaporate in equilibrium with radiation
+hawking-box needs weyl-curvature-hypothesis: time-asymmetric singularities (no white holes) make phase-space flow converge
+hawking-box relates q-black-hole-information-loss: addresses: lost phase-space volume must be regained, Penrose suggests, through R
+schrodinger-lump needs schrodinger-cat: replaces the cat by a lump superposed in two locations
+schrodinger-lump needs eigenstates: each location is a stationary state, an energy eigenstate
+gravitational-self-energy-difference needs schrodinger-lump: E_G measures the spacetime conflict for the lump's two superposed positions
+gravitational-self-energy-difference needs einsteinian-spacetime: general covariance gives no way to identify points of two superposed spacetimes
+gravitational-self-energy-difference needs newton-cartan-spacetime: the error is estimated in the Newtonian limit via Newton-Cartan free-fall fields
+schrodinger-newton-equation needs schrodinger-equation: adds a self-gravitational potential term to the Schrodinger equation
+schrodinger-newton-equation needs newtonian-gravity: the potential is Newtonian, sourced by the wavefunction's expected mass density
+schrodinger-newton-equation needs eigenstates: its stationary solutions are proposed as the preferred states R reduces to
+gravitational-or needs gravitational-self-energy-difference: reduction time is about hbar/E_G, with E_G the gravitational self-energy
+gravitational-or needs uncertainty-principle: the lifetime hbar/E_G mirrors the energy-time uncertainty for unstable states
+gravitational-or needs schrodinger-newton-equation: states reduce to stationary Schrodinger-Newton solutions as the preferred basis
+gravitational-or relates q-measurement-problem: addresses: R becomes an objective physical process, needing no observer
+gravitational-or relates q-gravity-and-state-reduction: addresses: gives a concrete gravitational reduction rule with timescale hbar/E_G
+felix-experiment needs gravitational-or: it aims to detect decoherence on the hbar/E_G timescale
+felix-experiment needs mach-zehnder-interferometer: an X-ray photon split by a beam splitter, recombined to check interference
+felix-experiment needs double-slit-experiment: uses the standard idea that interference survives only while superposition persists
+felix-experiment relates q-gravity-and-state-reduction: tests: whether a superposed mirror's coherence is lost as gravitational OR predicts
+q-black-hole-information-loss relates hawking-evaporation: arises from: the complete evaporation of the hole leaving only thermal radiation
+q-black-hole-information-loss relates unitary-evolution: challenges: pure states turning into mixed thermal ones violates unitary U
+q-origin-of-early-universe-fluctuations relates flrw-models: concerns: how irregularities arise from an exactly symmetric FLRW initial state
+q-origin-of-early-universe-fluctuations relates gravitational-or: calls for: only an objective R can break the symmetry U preserves
+environmental-decoherence relates q-origin-of-early-universe-fluctuations: does not solve: FAPP decoherence keeps exact FLRW symmetry, only objective reduction breaks it
 
 %% chapter 31
-running-coupling-constants needs renormalization, fine-structure-constant
-supersymmetry needs bosons-and-fermions, lie-algebra, grassmann-algebra
-super-lie-algebra needs lie-algebra, grassmann-algebra, canonical-commutation-relations
-superalgebra needs grassmann-algebra, n-manifolds, p-forms
-supergravity needs supersymmetry, einstein-field-equations
-higher-dimensional-spacetime needs kaluza-klein, functional-freedom, ricci-tensor
-higher-dimensional-spacetime relates q-why-unseen-extra-dimensions: raises
-hadronic-string-theory needs feynman-diagrams, riemann-surfaces, genus
-regge-trajectories needs hadronic-string-theory
-superstrings needs hadronic-string-theory, supersymmetry, quantum-anomalies
-superstrings relates q-string-quantum-gravity: addresses
-string-worldsheet needs superstrings, lagrangian-formalism, ricci-tensor
-kaluza-klein-modes needs higher-dimensional-spacetime, klein-gordon-equation, laplace-equation
-kaluza-klein-modes relates q-why-unseen-extra-dimensions: addresses
-calabi-yau-spaces needs complex-manifolds, symplectic-manifolds, ricci-tensor
-mirror-symmetry needs calabi-yau-spaces
-mirror-symmetry relates q-status-of-string-theory: supports
-string-dualities needs superstrings
-m-theory needs string-dualities, supergravity
-bps-states needs supersymmetry, black-holes
-string-black-hole-entropy needs bekenstein-hawking-entropy, bps-states, black-holes
-holographic-principle needs anti-de-sitter-space, gauge-connection, functional-freedom
-d-branes needs m-theory, superstrings
-d-branes relates q-puzzling-parameters: addresses
-q-puzzling-parameters relates fine-structure-constant: includes
-q-puzzling-parameters relates running-coupling-constants: involves
-kaluza-klein-modes relates q-why-unseen-extra-dimensions: answers
-q-why-unseen-extra-dimensions relates higher-dimensional-spacetime: is about
-spacetime-singularities relates q-why-unseen-extra-dimensions: sharpens
-q-string-quantum-gravity relates superstrings: is about
-q-string-quantum-gravity relates renormalization: concerns
-q-string-quantum-gravity relates string-worldsheet: involves
-q-status-of-string-theory relates mirror-symmetry: weighs
-q-status-of-string-theory relates m-theory: is about
-q-status-of-string-theory relates string-black-hole-entropy: weighs
+running-coupling-constants needs renormalization: renormalization makes effective coupling depend on the energy scale
+running-coupling-constants needs fine-structure-constant: the observed 1/137 is the low-energy limit of the running value
+supersymmetry needs bosons-and-fermions: each boson gets a fermion superpartner and vice versa
+supersymmetry needs lie-algebra: extends the spacetime symmetry algebra with new generators
+supersymmetry needs grassmann-algebra: supersymmetry parameters are anticommuting Grassmann quantities
+super-lie-algebra needs lie-algebra: generalizes the commutator algebra by adding odd generators
+super-lie-algebra needs grassmann-algebra: group parameters are Grassmann elements rather than real numbers
+super-lie-algebra needs canonical-commutation-relations: anticommutators among odd generators sit alongside the usual commutators
+superalgebra needs grassmann-algebra: adjoins anticommuting Grassmann generators to the real numbers
+superalgebra needs n-manifolds: a supermanifold is a manifold with extra anticommuting coordinates
+supergravity needs supersymmetry: supersymmetry made local, pairing the graviton with a spin-3/2 gravitino
+supergravity needs einstein-field-equations: Einstein's general relativity is the bosonic part being supersymmetrized
+higher-dimensional-spacetime needs kaluza-klein: revives Kaluza-Klein's idea of tiny curled-up extra dimensions
+higher-dimensional-spacetime needs functional-freedom: extra dimensions raise freedom from infinity^(k infinity^4) to far larger
+higher-dimensional-spacetime needs ricci-tensor: the higher-dimensional vacuum equations demand Ricci-flatness
+higher-dimensional-spacetime relates q-why-unseen-extra-dimensions: raises: if extra dimensions exist, why are their excitations never seen
+hadronic-string-theory needs feynman-diagrams: duality of s- and t-channel hadron scattering diagrams motivated strings
+hadronic-string-theory needs riemann-surfaces: string histories form Riemann surfaces whose topology fixes the amplitude
+hadronic-string-theory needs genus: loop order corresponds to the genus of the string history surface
+regge-trajectories needs hadronic-string-theory: spinning strings with tension give linear spin versus mass-squared relations
+superstrings needs hadronic-string-theory: reinterprets hadronic strings at Planck scale as a theory of gravity
+superstrings needs supersymmetry: supersymmetry cuts the required dimensions from 26 to 10
+superstrings needs quantum-anomalies: anomaly cancellation fixes the dimension and gauge group
+superstrings relates q-string-quantum-gravity: addresses: offers a spin-2 graviton with hoped-for finite loop amplitudes
+string-worldsheet needs superstrings: the worldsheet is the 2D history of a superstring
+string-worldsheet needs lagrangian-formalism: the string action is an area Lagrangian on the worldsheet
+string-worldsheet needs ricci-tensor: conformal consistency demands a Ricci-flat background to lowest order
+kaluza-klein-modes needs higher-dimensional-spacetime: modes are vibrations around the small compact extra dimensions
+kaluza-klein-modes needs klein-gordon-equation: each mode obeys a 4D Klein-Gordon equation with Planck-scale mass
+kaluza-klein-modes needs laplace-equation: modes are found as eigenstates of the Laplacian on the small space
+kaluza-klein-modes relates q-why-unseen-extra-dimensions: addresses: Planck-scale mode masses supposedly keep extra dimensions unexcited
+calabi-yau-spaces needs complex-manifolds: Calabi-Yau spaces are complex 3-manifolds
+calabi-yau-spaces needs symplectic-manifolds: the Kahler structure combines complex and compatible symplectic structure
+calabi-yau-spaces needs ricci-tensor: they are Ricci-flat, as string consistency requires
+mirror-symmetry needs calabi-yau-spaces: pairs distinct Calabi-Yau spaces giving the same string physics
+mirror-symmetry relates q-status-of-string-theory: supports: its correct rational-curve counts show string theory's mathematical power
+string-dualities needs superstrings: dualities relate the five distinct superstring theories
+m-theory needs string-dualities: dualities suggest the five theories are limits of one theory
+m-theory needs supergravity: 11D supergravity is its low-energy limit
+bps-states needs supersymmetry: supersymmetry protects BPS states from corrections as coupling grows
+bps-states needs black-holes: strong-coupling BPS states are extremal charged black holes
+string-black-hole-entropy needs bekenstein-hawking-entropy: the count reproduces S = A/4 for extremal holes
+string-black-hole-entropy needs bps-states: weak-coupling BPS state counts are extrapolated to strong coupling
+string-black-hole-entropy needs black-holes: applies only to extremal charged holes, not realistic astrophysical ones
+holographic-principle needs anti-de-sitter-space: strings live on AdS5 x S5, whose conformal boundary hosts the field theory
+holographic-principle needs gauge-connection: the boundary theory is a supersymmetric Yang-Mills gauge theory
+holographic-principle needs functional-freedom: Penrose objects that bulk and boundary have mismatched functional freedom
+d-branes needs m-theory: branes are among the p-brane objects of M-theory
+d-branes needs superstrings: open superstrings end on D-branes
+d-branes relates q-puzzling-parameters: addresses: brane worlds aim to explain gravity's weakness, the hierarchy problem
+q-puzzling-parameters relates fine-structure-constant: includes: why alpha is about 1/137 remains unexplained
+q-puzzling-parameters relates running-coupling-constants: involves: observed constants are low-energy limits of running couplings
+q-why-unseen-extra-dimensions relates higher-dimensional-spacetime: is about: whether small extra dimensions are stable and hidden
+spacetime-singularities relates q-why-unseen-extra-dimensions: sharpens: perturbed compact extra dimensions classically develop singularities almost instantly
+q-string-quantum-gravity relates superstrings: is about: whether superstring perturbation theory is finite at all orders
+q-string-quantum-gravity relates renormalization: concerns: finiteness would avoid the non-renormalizability of quantized gravity
+q-string-quantum-gravity relates string-worldsheet: involves: the sum over worldsheet genus likely diverges
+q-status-of-string-theory relates mirror-symmetry: weighs: an impressive mathematical success, but no evidence about nature
+q-status-of-string-theory relates m-theory: is about: M-theory remains hypothetical, its formulation unknown
+q-status-of-string-theory relates string-black-hole-entropy: weighs: matches A/4 only for extremal holes, unconvincing to Penrose
 
 %% chapter 32
-canonical-quantum-gravity needs einstein-field-equations, canonical-quantization, einsteinian-spacetime
-constraint-equations needs canonical-quantum-gravity, hamiltonian-formalism
-graviton-helicity needs helicity, gravitational-waves, weyl-tensor
-self-dual-weyl-curvature needs weyl-tensor, self-dual-field, volume-element
-ashtekar-variables needs canonical-quantum-gravity, two-spinors, gauge-connection
-barbero-immirzi-parameter needs ashtekar-variables, two-spinors, unitary-group
-wilson-loops needs parallel-transport, gauge-connection, trace
-loop-variables needs wilson-loops, ashtekar-variables, dirac-delta-function
-area-quantization needs loop-variables, barbero-immirzi-parameter
-jones-polynomial needs knots-and-links, abstract-index-notation
-q-deformation needs jones-polynomial, lie-algebra
-topological-quantum-field-theory needs quantum-field-theory, knots-and-links
-spin-networks needs spin, loop-variables, epr-bohm
-black-hole-entropy-loop needs spin-networks, bekenstein-hawking-entropy, barbero-immirzi-parameter
-spin-foams needs spin-networks
-q-chirality-of-gravity relates ashtekar-variables: arises from
-q-chirality-of-gravity relates graviton-helicity: is about
-barbero-immirzi-parameter relates q-chirality-of-gravity: obscures
-q-hamiltonian-constraint relates constraint-equations: is about
-q-hamiltonian-constraint relates loop-variables: challenges
-q-problem-of-time relates einsteinian-spacetime: stems from
-q-problem-of-time relates spin-networks: involves
-q-problem-of-time relates q-measurement-problem: connects to
+canonical-quantum-gravity needs einstein-field-equations: the Einstein equations are recast in Hamiltonian form for quantization
+canonical-quantum-gravity needs canonical-quantization: applies canonical quantization to the 3-geometry and its conjugate momentum
+canonical-quantum-gravity needs einsteinian-spacetime: splits curved spacetime into spacelike 3-surfaces evolving in time
+constraint-equations needs canonical-quantum-gravity: constraints on initial 3-surface data become operator conditions on states
+constraint-equations needs hamiltonian-formalism: constraints arise because GR's Hamiltonian form has gauge freedom
+graviton-helicity needs helicity: graviton helicity is spin about the direction of motion, plus or minus 2
+graviton-helicity needs gravitational-waves: gravitons are the quanta of gravitational waves
+graviton-helicity needs weyl-tensor: the free Weyl curvature carries the graviton's degrees of freedom
+self-dual-weyl-curvature needs weyl-tensor: splits the complex Weyl tensor into self-dual and anti-self-dual halves
+self-dual-weyl-curvature needs self-dual-field: same F +/- i*F split as Maxwell, now for gravitons' handedness
+self-dual-weyl-curvature needs volume-element: the dual is formed by contracting with the volume element epsilon
+ashtekar-variables needs canonical-quantum-gravity: new canonical variables that make the gravity constraints polynomial
+ashtekar-variables needs two-spinors: uses only the unprimed (one-handed) spin connection
+ashtekar-variables needs gauge-connection: the basic variable is a connection, making gravity resemble gauge theory
+barbero-immirzi-parameter needs ashtekar-variables: replaces the i in Ashtekar's connection by a real parameter eta
+barbero-immirzi-parameter needs two-spinors: the spin group becomes compact while losing the self-dual chirality
+barbero-immirzi-parameter needs unitary-group: turns the noncompact SL(2,C) into the compact SU(2)
+wilson-loops needs parallel-transport: parallel transport of spinors around a closed loop
+wilson-loops needs gauge-connection: the holonomy of the connection around a loop
+wilson-loops needs trace: taking the trace makes the holonomy basis-independent
+loop-variables needs wilson-loops: Wilson loops are the basic variables, giving states on loops
+loop-variables needs ashtekar-variables: Wilson loops of Ashtekar's connection make the loop representation
+loop-variables needs dirac-delta-function: loop states have delta-function support concentrated on the loops
+area-quantization needs loop-variables: area counts the loop crossings of the probe surface
+area-quantization needs barbero-immirzi-parameter: eta enters the area formula 8 pi G eta hbar sqrt(j(j+1))
+jones-polynomial needs knots-and-links: the polynomials are invariants distinguishing knots and links
+jones-polynomial needs abstract-index-notation: Kauffman's diagrammatic algebra extends the binor diagram notation
+q-deformation needs jones-polynomial: deforms the binor calculus by q = A^2 from the Kauffman bracket
+q-deformation needs lie-algebra: so-called quantum groups are deformations of Lie group structure
+topological-quantum-field-theory needs quantum-field-theory: QFT with no local degrees of freedom, only global topological data
+topological-quantum-field-theory needs knots-and-links: Witten's TQFT yields knot invariants such as the Jones polynomial
+spin-networks needs spin: each line is a total-spin unit, combined by angular-momentum rules
+spin-networks needs loop-variables: loop-variable states with intersections organize into spin networks
+spin-networks needs epr-bohm: illustrated by combining two EPR-Bohm spin-0 pairs, giving rational probabilities
+black-hole-entropy-loop needs spin-networks: counts spin-network edges piercing the horizon
+black-hole-entropy-loop needs bekenstein-hawking-entropy: the count must reproduce S = A/4
+black-hole-entropy-loop needs barbero-immirzi-parameter: matching A/4 fixes eta = log 2/(pi sqrt 3)
+spin-foams needs spin-networks: spin foams are the spacetime histories of evolving spin networks
+q-chirality-of-gravity relates ashtekar-variables: arises from: Ashtekar's variables use only one handedness of spin connection
+q-chirality-of-gravity relates graviton-helicity: is about: whether the two graviton helicities are treated asymmetrically by nature
+barbero-immirzi-parameter relates q-chirality-of-gravity: obscures: a real eta trades Ashtekar's chirality for a compact group
+q-hamiltonian-constraint relates constraint-equations: is about: the one constraint generating evolution off the 3-surface
+q-hamiltonian-constraint relates loop-variables: challenges: loop states solve spatial constraints but not dynamics unambiguously
+q-problem-of-time relates einsteinian-spacetime: stems from: general covariance gives no preferred time coordinate
+q-problem-of-time relates spin-networks: involves: superposed spin networks lack any correspondence between locations
+q-problem-of-time relates q-measurement-problem: connects to: superposing geometries is the same issue behind gravitational R
 
 %% chapter 33
-causal-sets needs light-cones, causal-structure
-regge-calculus needs riemann-tensor, dirac-delta-function
-category-theory needs cardinality
-noncommutative-geometry needs n-manifolds, canonical-commutation-relations
-twistor-correspondence needs light-cones, celestial-sphere, riemann-sphere
-conformal-group needs poincare-group, orthogonal-group
-compactified-minkowski-space needs minkowski-space, conformal-group, conformal-diagrams
-twistors needs twistor-correspondence, clifford-algebra, two-spinors
-projective-twistor-space needs twistors, projective-space
-robinson-congruence needs projective-twistor-space, clifford-parallels
-alpha-planes needs twistors, complexified-minkowski-space, self-dual-field
-twistor-quantization needs twistors, canonical-quantization, holomorphic-functions
-massless-field-equations needs two-spinors, maxwell-equations, wave-operator
-twistor-contour-integral needs twistor-quantization, massless-field-equations, contour-integration
-sheaf-cohomology needs transition-functions, holomorphic-functions, twistor-contour-integral
-twistor-frequency-splitting needs sheaf-cohomology, frequency-splitting
-nonlinear-graviton needs sheaf-cohomology, self-dual-weyl-curvature, einstein-field-equations
-ward-construction needs nonlinear-graviton, gauge-connection, fibre-bundles
-causal-sets relates q-discrete-spacetime: proposes an answer to
-regge-calculus relates q-discrete-spacetime: addresses
-q-discrete-spacetime relates spin-networks: motivates
-q-googly-problem relates nonlinear-graviton: extends
-q-googly-problem relates q-chirality-of-gravity: relates to
-q-twistor-nonlocality-epr relates sheaf-cohomology: is about
-q-twistor-nonlocality-epr relates entanglement: involves
-q-twistor-predictions relates twistors: is about
-q-twistor-predictions relates cosmological-constant: involves
+causal-sets needs light-cones: the causal order between discrete points replaces continuous light cones
+causal-sets needs causal-structure: only causal relations among points are kept as basic
+regge-calculus needs riemann-tensor: curvature becomes deficit angles concentrated on 2D bones
+regge-calculus needs dirac-delta-function: curvature is a delta function on the bones, flat elsewhere
+noncommutative-geometry needs n-manifolds: a manifold can be rebuilt from its commutative algebra of smooth functions
+noncommutative-geometry needs canonical-commutation-relations: noncommuting algebras like [p, x] = i hbar define quantum 'spaces'
+twistor-correspondence needs light-cones: an event corresponds to the set of light rays on its light cone
+twistor-correspondence needs celestial-sphere: an event's celestial sphere of rays becomes a Riemann sphere in PN
+twistor-correspondence needs riemann-sphere: each spacetime event is represented by a Riemann sphere
+conformal-group needs poincare-group: enlarges the ten-dimensional Poincare group to the fifteen-dimensional O(2,4)
+conformal-group needs orthogonal-group: the conformal group is the pseudo-orthogonal group O(2,4)
+compactified-minkowski-space needs minkowski-space: adds a light cone at infinity to Minkowski space
+compactified-minkowski-space needs conformal-group: the conformal group acts globally only on the compactified space
+compactified-minkowski-space needs conformal-diagrams: glues the conformal diagram's past and future null infinity into one cone
+twistors needs twistor-correspondence: twistors give coordinates to the light-ray picture, extended to non-null ones
+twistors needs clifford-algebra: twistors are reduced spinors of O(2,4) built from its Clifford algebra
+twistors needs two-spinors: a twistor is a pair of two-spinors (omega, pi)
+projective-twistor-space needs twistors: projectivizes twistor space T to PT = CP3
+projective-twistor-space needs projective-space: PT is the complex projective 3-space of lines through T's origin
+robinson-congruence needs projective-twistor-space: a point of PT+ or PT- gives a twisting light-ray family
+robinson-congruence needs clifford-parallels: at fixed time its rays project to the Clifford-parallel Hopf circles
+alpha-planes needs twistors: each twistor corresponds to an alpha-plane via the incidence relation
+alpha-planes needs complexified-minkowski-space: alpha-planes are complex null 2-planes in complexified Minkowski space
+alpha-planes needs self-dual-field: their tangent bivectors are self-dual, beta-planes anti-self-dual
+twistor-quantization needs twistors: twistor Z and conjugate Z-bar become non-commuting operators
+twistor-quantization needs canonical-quantization: Z-bar acts as -d/dZ, like momentum as a derivative
+twistor-quantization needs holomorphic-functions: twistor wavefunctions depend on Z alone, hence holomorphic
+massless-field-equations needs two-spinors: fields are symmetric spinors with nabla^{AA'} phi_{AB...} = 0
+massless-field-equations needs maxwell-equations: Maxwell's equations are the spin-1 case
+massless-field-equations needs wave-operator: each component satisfies the wave equation box phi = 0
+twistor-contour-integral needs twistor-quantization: integrates holomorphic twistor wavefunctions to get spacetime fields
+twistor-contour-integral needs massless-field-equations: the integrals automatically solve massless field equations of given helicity
+twistor-contour-integral needs contour-integration: a contour integral over a Riemann-sphere line in PT
+sheaf-cohomology needs transition-functions: cocycles are functions on patch overlaps, like transition functions
+sheaf-cohomology needs holomorphic-functions: twistor functions are holomorphic cocycles on overlaps
+sheaf-cohomology needs twistor-contour-integral: explains the contour-integral functions' gauge freedom as cohomology classes
+twistor-frequency-splitting needs sheaf-cohomology: cohomology extending into PT+ or PT- gives positive or negative frequency
+twistor-frequency-splitting needs frequency-splitting: generalizes splitting functions on the Riemann sphere's equator
+nonlinear-graviton needs sheaf-cohomology: deforming patches by cohomology data yields curved twistor spaces
+nonlinear-graviton needs self-dual-weyl-curvature: the resulting spacetimes have purely anti-self-dual Weyl curvature
+nonlinear-graviton needs einstein-field-equations: the spacetimes automatically solve the vacuum Einstein equations
+ward-construction needs nonlinear-graviton: the gauge-field analogue of the nonlinear graviton construction
+ward-construction needs gauge-connection: encodes anti-self-dual Yang-Mills connections in twistor terms
+ward-construction needs fibre-bundles: uses holomorphic vector bundles over twistor space
+causal-sets relates q-discrete-spacetime: proposes an answer to: spacetime as a discrete set with causal order
+regge-calculus relates q-discrete-spacetime: addresses: approximates curved spacetime by flat simplices
+q-discrete-spacetime relates spin-networks: motivates: combinatorial spin networks from which space directions emerge
+q-googly-problem relates nonlinear-graviton: extends: seeks the right-handed counterpart of the anti-self-dual construction
+q-googly-problem relates q-chirality-of-gravity: relates to: both concern the handedness asymmetry in describing gravity
+q-twistor-nonlocality-epr relates sheaf-cohomology: is about: whether cohomology's essential nonlocality is physically meaningful
+q-twistor-nonlocality-epr relates entanglement: involves: the nonlocal correlations of EPR entangled states
+q-twistor-predictions relates twistors: is about: what physical predictions twistor theory can make
+q-twistor-predictions relates cosmological-constant: involves: twistor holomorphy suggests K < 0 and perhaps Lambda = 0
 
 %% chapter 34
-fullerene-interference needs double-slit-experiment, gravitational-or
-popper-falsifiability relates q-can-wrong-theories-be-refuted: addresses
-quintessence needs cosmological-constant, dark-energy, inflationary-cosmology
-orch-or needs gravitational-or, quantum-linearity
-orch-or relates q-mind-in-physics: addresses
-binding-problem-bell-test needs bell-inequalities, orch-or
-binding-problem-bell-test relates q-mind-in-physics: addresses
-popper-falsifiability relates q-can-wrong-theories-be-refuted: judges
-supersymmetry relates q-can-wrong-theories-be-refuted: illustrates
-inflationary-cosmology relates q-can-wrong-theories-be-refuted: illustrates
-superstrings relates q-fashion-in-physics: exemplifies
-q-fashion-in-physics relates q-mathematical-beauty-as-guide: relates to
-q-what-is-reality relates q-platonic-world-real: revisits
-q-what-is-reality relates q-mind-in-physics: leads to
-q-mind-in-physics relates anthropic-principle: involves
-q-measurement-problem relates q-mind-in-physics: is linked to
-gravitational-or relates q-mind-in-physics: answers
-mirror-symmetry relates q-mathematical-beauty-as-guide: exemplifies
-twistors relates q-mathematical-beauty-as-guide: exemplifies
+fullerene-interference needs double-slit-experiment: two-slit interference repeated with C60 and C70 molecules
+fullerene-interference needs gravitational-or: their masses are far below where gravitational OR would act
+popper-falsifiability relates q-can-wrong-theories-be-refuted: addresses: demands refutability, too harsh for adjustable theories, Penrose thinks
+quintessence needs cosmological-constant: a dynamical field mimics an effective cosmological constant
+quintessence needs dark-energy: negative pressure of the field supplies the observed dark energy
+quintessence needs inflationary-cosmology: a scalar field like the inflaton, invoked for late-time acceleration
+orch-or needs gravitational-or: conscious events are gravitational OR of coherent microtubule states
+orch-or needs quantum-linearity: needs large-scale coherence maintained by linear U before reduction
+orch-or relates q-mind-in-physics: addresses: consciousness rests on objective reduction, not the reverse
+binding-problem-bell-test needs bell-inequalities: look for Bell-inequality violations between separate brain areas
+binding-problem-bell-test needs orch-or: tests whether large-scale quantum coherence links brain areas, as Orch-OR requires
+binding-problem-bell-test relates q-mind-in-physics: addresses: offers an experimental check for quantum effects in consciousness
+supersymmetry relates q-can-wrong-theories-be-refuted: illustrates: superpartner masses can always be raised to evade detection
+inflationary-cosmology relates q-can-wrong-theories-be-refuted: illustrates: inflation keeps adjusting parameters to evade experimental refutation
+superstrings relates q-fashion-in-physics: exemplifies: a bandwagon steering research without experimental guidance
+q-fashion-in-physics relates q-mathematical-beauty-as-guide: relates to: fashion often follows perceived beauty and 'miracles'
+q-what-is-reality relates q-platonic-world-real: revisits: the three worlds and whether mathematics is objectively real
+q-what-is-reality relates q-mind-in-physics: leads to: the mental world's place among physical and mathematical ones
+q-mind-in-physics relates anthropic-principle: involves: observers' existence used to explain the constants of nature
+q-measurement-problem relates q-mind-in-physics: is linked to: some argue consciousness triggers R; Penrose reverses this
+gravitational-or relates q-mind-in-physics: answers: real OR could underlie consciousness, rather than mind causing R
+mirror-symmetry relates q-mathematical-beauty-as-guide: exemplifies: a string 'miracle' with striking mathematical success
+twistors relates q-mathematical-beauty-as-guide: exemplifies: twistor theory is driven by the beauty of complex holomorphy
